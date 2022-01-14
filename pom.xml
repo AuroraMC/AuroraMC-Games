@@ -125,11 +125,11 @@
     <repositories>
         <repository>
             <id>nexus</id>
-            <url>http://nexus.block2block.me/repository/AuroraMC-Core/</url>
+            <url>https://nexus.block2block.me/repository/AuroraMC-Core/</url>
         </repository>
         <repository>
             <id>nexus-engine</id>
-            <url>http://nexus.block2block.me/repository/AuroraMC-Game-Engine/</url>
+            <url>https://nexus.block2block.me/repository/AuroraMC-Game-Engine/</url>
         </repository>
     </repositories>
 
@@ -154,6 +154,7 @@
             <version>1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>net.auroramc</groupId>
             <artifactId>AuroraMC-Game-Engine</artifactId>
