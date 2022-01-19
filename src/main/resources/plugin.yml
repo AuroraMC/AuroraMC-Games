@@ -3,3 +3,5 @@ main: net.auroramc.games.AuroraMCGames
 version: 1.0-SNAPSHOT
 author: "The AuroraMC Development Team"
 website: auroramc.net
+depend:
+  - AuroraMC-Game-Engine
