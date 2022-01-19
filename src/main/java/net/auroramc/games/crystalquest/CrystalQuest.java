@@ -4,6 +4,7 @@
 
 package net.auroramc.games.crystalquest;
 
+import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
@@ -33,11 +34,6 @@ public class CrystalQuest extends Game {
 
     @Override
     public void start() {
-
-    }
-
-    @Override
-    public void end() {
 
     }
 
