@@ -14,13 +14,17 @@ import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.games.Kit;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.spleef.kits.SpleefKit;
+import net.auroramc.games.spleef.listeners.BreakListener;
 import net.auroramc.games.spleef.listeners.DeathListener;
+import net.auroramc.games.spleef.listeners.HungerListener;
 import net.auroramc.games.spleef.listeners.ItemSpawnListener;
 import net.auroramc.games.util.PlayersTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,6 +41,8 @@ public class Spleef extends Game {
 
     private DeathListener deathListener;
     private ItemSpawnListener itemSpawnListener;
+    private BreakListener breakListener;
+    private HungerListener hungerListener;
 
     @Override
     public void preLoad() {
@@ -81,8 +87,12 @@ public class Spleef extends Game {
         }
         deathListener = new DeathListener();
         itemSpawnListener = new ItemSpawnListener();
+        hungerListener = new HungerListener();
+        breakListener = new BreakListener();
         Bukkit.getPluginManager().registerEvents(deathListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(itemSpawnListener, EngineAPI.getGameEngine());
+        Bukkit.getPluginManager().registerEvents(hungerListener, EngineAPI.getGameEngine());
+        Bukkit.getPluginManager().registerEvents(breakListener, EngineAPI.getGameEngine());
     }
 
     @Override
@@ -100,6 +110,8 @@ public class Spleef extends Game {
     private void end() {
         EntityDamageEvent.getHandlerList().unregister(deathListener);
         ItemSpawnEvent.getHandlerList().unregister(itemSpawnListener);
+        FoodLevelChangeEvent.getHandlerList().unregister(hungerListener);
+        BlockBreakEvent.getHandlerList().unregister(breakListener);
     }
 
     @Override
