@@ -30,7 +30,7 @@ public class DeathListener implements Listener {
                 if (e.getCause() == EntityDamageEvent.DamageCause.LAVA) {
                     gamePlayer.setSpectator(true);
                     gamePlayer.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You died."));
-                    JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("spectator").getJSONObject(0);
+                    JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
                     int x, y, z;
                     x = specSpawn.getInt("x");
                     y = specSpawn.getInt("y");
