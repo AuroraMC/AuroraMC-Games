@@ -53,11 +53,11 @@ public class Spleef extends Game {
     public void start() {
         super.start();
         int spawnIndex = 0;
-        JSONArray spawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("players");
+        JSONArray spawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
             if (gp.isSpectator()) {
-                JSONObject specSpawn = this.map.getMapData().getJSONObject("spawn").getJSONArray("spectator").getJSONObject(0);
+                JSONObject specSpawn = this.map.getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
                 int x, y, z;
                 x = specSpawn.getInt("x");
                 y = specSpawn.getInt("y");
