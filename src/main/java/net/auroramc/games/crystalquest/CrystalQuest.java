@@ -34,7 +34,7 @@ public class CrystalQuest extends Game {
 
     @Override
     public void start() {
-
+        super.start();
     }
 
     @Override
