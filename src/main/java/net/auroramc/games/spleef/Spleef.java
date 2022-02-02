@@ -107,6 +107,10 @@ public class Spleef extends Game {
         super.end(winner, winnerName);
     }
 
+    @Override
+    public void generateTeam(AuroraMCPlayer auroraMCPlayer) {
+    }
+
     private void end() {
         EntityDamageEvent.getHandlerList().unregister(deathListener);
         ItemSpawnEvent.getHandlerList().unregister(itemSpawnListener);
@@ -121,6 +125,11 @@ public class Spleef extends Game {
 
     @Override
     public void onPlayerJoin(AuroraMCGamePlayer auroraMCGamePlayer) {
+
+    }
+
+    @Override
+    public void onPlayerLeave(AuroraMCGamePlayer auroraMCGamePlayer) {
 
     }
 }

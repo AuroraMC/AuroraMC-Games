@@ -38,12 +38,22 @@ public class CrystalQuest extends Game {
     }
 
     @Override
+    public void generateTeam(AuroraMCPlayer auroraMCPlayer) {
+
+    }
+
+    @Override
     public void onPlayerJoin(Player player) {
 
     }
 
     @Override
     public void onPlayerJoin(AuroraMCGamePlayer auroraMCGamePlayer) {
+
+    }
+
+    @Override
+    public void onPlayerLeave(AuroraMCGamePlayer auroraMCGamePlayer) {
 
     }
 
