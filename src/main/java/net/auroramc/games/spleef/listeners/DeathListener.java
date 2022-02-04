@@ -37,10 +37,6 @@ public class DeathListener implements Listener {
                     z = specSpawn.getInt("z");
                     float yaw = specSpawn.getFloat("yaw");
                     gamePlayer.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
-                    gamePlayer.getPlayer().setHealth(20);
-                    gamePlayer.getPlayer().setFoodLevel(20);
-                    gamePlayer.getPlayer().setAllowFlight(true);
-                    gamePlayer.getPlayer().setFlying(true);
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         player.hidePlayer(gamePlayer.getPlayer());
                     }
