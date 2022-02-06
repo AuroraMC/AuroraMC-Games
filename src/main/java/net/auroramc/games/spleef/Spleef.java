@@ -136,7 +136,7 @@ public class Spleef extends Game {
                     player2.hidePlayer(player);
                 }
             }
-        }.runTask(AuroraMCAPI.getCore());
+        }.runTaskLater(AuroraMCAPI.getCore(), 2);
     }
 
     @Override
