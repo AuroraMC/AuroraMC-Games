@@ -129,9 +129,14 @@ public class Spleef extends Game {
         z = specSpawn.getInt("z");
         float yaw = specSpawn.getFloat("yaw");
         player.teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
-        for (Player player2 : Bukkit.getOnlinePlayers()) {
-            player2.hidePlayer(player);
-        }
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for (Player player2 : Bukkit.getOnlinePlayers()) {
+                    player2.hidePlayer(player);
+                }
+            }
+        }.runTask(AuroraMCAPI.getCore());
     }
 
     @Override
