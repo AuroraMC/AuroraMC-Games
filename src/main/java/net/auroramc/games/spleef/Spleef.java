@@ -26,6 +26,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -132,7 +133,13 @@ public class Spleef extends Game {
 
     @Override
     public void onPlayerJoin(AuroraMCGamePlayer auroraMCGamePlayer) {
-        auroraMCGamePlayer.setSpectator(true, true);
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                auroraMCGamePlayer.setSpectator(true, true);
+            }
+        }.runTaskAsynchronously(AuroraMCAPI.getCore());
+
     }
 
     @Override
