@@ -137,8 +137,11 @@ public class Spleef extends Game {
             @Override
             public void run() {
                 auroraMCGamePlayer.setSpectator(true, true);
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    player.hidePlayer(auroraMCGamePlayer.getPlayer());
+                }
             }
-        }.runTaskAsynchronously(AuroraMCAPI.getCore());
+        }.runTask(AuroraMCAPI.getCore());
 
     }
 
