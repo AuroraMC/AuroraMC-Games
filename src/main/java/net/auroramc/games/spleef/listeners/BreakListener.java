@@ -8,6 +8,7 @@ import net.auroramc.engine.api.EngineAPI;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 
 public class BreakListener implements Listener {
 
@@ -16,6 +17,11 @@ public class BreakListener implements Listener {
         if (EngineAPI.getActiveGame().isStarting()) {
             e.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onDrop(PlayerDropItemEvent e) {
+        e.setCancelled(true);
     }
 
 }
