@@ -55,7 +55,7 @@ public class DeathListener implements Listener {
 
     @EventHandler
     public void onPlayerShow(PlayerShowEvent e) {
-        if (!EngineAPI.getActiveGame().isStarting() && EngineAPI.getServerState() == ServerState.IN_GAME) {
+        if (EngineAPI.getServerState() == ServerState.IN_GAME) {
             e.setHidden(true);
         }
     }
