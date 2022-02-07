@@ -5,6 +5,7 @@
 package net.auroramc.games.spleef;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.events.player.PlayerShowEvent;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Team;
 import net.auroramc.engine.api.EngineAPI;
@@ -118,6 +119,7 @@ public class Spleef extends Game {
         ItemSpawnEvent.getHandlerList().unregister(itemSpawnListener);
         FoodLevelChangeEvent.getHandlerList().unregister(hungerListener);
         BlockBreakEvent.getHandlerList().unregister(breakListener);
+        PlayerShowEvent.getHandlerList().unregister(deathListener);
     }
 
     @Override
