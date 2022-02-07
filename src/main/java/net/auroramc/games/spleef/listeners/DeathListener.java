@@ -29,7 +29,7 @@ public class DeathListener implements Listener {
             AuroraMCGamePlayer gamePlayer = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getEntity().getUniqueId());
             if (!EngineAPI.getActiveGame().isStarting() && !gamePlayer.isSpectator()) {
                 e.setDamage(0);
-                if (e.getCause() == EntityDamageEvent.DamageCause.LAVA) {
+                if (e.getCause() == EntityDamageEvent.DamageCause.LAVA || e.getCause() == EntityDamageEvent.DamageCause.VOID) {
                     gamePlayer.getRewards().stop();
                     gamePlayer.setSpectator(true, true);
                     gamePlayer.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You died."));
