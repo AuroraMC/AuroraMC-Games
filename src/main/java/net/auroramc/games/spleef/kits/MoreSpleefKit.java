@@ -12,7 +12,7 @@ import org.bukkit.Material;
 public class MoreSpleefKit extends Kit {
 
     public MoreSpleefKit() {
-        super(0, 3, "&cMore Spleef Kit", "A better kit for Spleef.", Material.SNOW_BALL, 1000);
+        super(2, 2, "&cMore Spleef Kit", "A better kit for Spleef.", Material.SNOW_BALL, 1000);
     }
 
     @Override
