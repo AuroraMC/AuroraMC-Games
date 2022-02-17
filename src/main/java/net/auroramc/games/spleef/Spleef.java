@@ -165,4 +165,8 @@ public class Spleef extends Game {
             EngineAPI.getActiveGame().end(playersAlive.get(0));
         }
     }
+
+    @Override
+    public void onRespawn(AuroraMCGamePlayer auroraMCGamePlayer) {
+    }
 }

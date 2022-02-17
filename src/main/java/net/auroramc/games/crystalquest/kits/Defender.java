@@ -17,7 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class Defender extends Kit {
 
     public Defender() {
-        super(1, 1, "&3&lDefender", "Some description for Miner", Material.STAINED_GLASS, 8000);
+        super(1, 1, "&3&lDefender", "Some description for Defender", Material.STAINED_GLASS, 8000);
     }
 
     @Override

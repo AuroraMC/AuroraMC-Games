@@ -11,17 +11,15 @@ import net.auroramc.games.crystalquest.entities.Crystal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CQRed implements Team {
+public class CQBlue implements Team {
 
     private final List<AuroraMCPlayer> players;
-    private int crystalsCaptured;
     private Crystal bossCrystal;
     private Crystal towerACrystal;
     private Crystal towerBCrystal;
 
-    public CQRed() {
+    public CQBlue() {
         players = new ArrayList<>();
-        crystalsCaptured = 0;
     }
 
 
@@ -30,22 +28,14 @@ public class CQRed implements Team {
         return 0;
     }
 
-    public int getCrystalsCaptured() {
-        return crystalsCaptured;
-    }
-
-    public void setCrystalsCaptured(int crystalsCaptured) {
-        this.crystalsCaptured = crystalsCaptured;
-    }
-
     @Override
     public char getTeamColor() {
-        return 'c';
+        return '9';
     }
 
     @Override
     public String getName() {
-        return "Red";
+        return "Blue";
     }
 
     @Override

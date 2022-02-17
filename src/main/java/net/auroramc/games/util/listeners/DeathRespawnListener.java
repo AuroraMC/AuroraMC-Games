@@ -21,11 +21,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONObject;
 
 public class DeathRespawnListener implements Listener {
 
-    public static DeathRespawnListener instance;
+    private final static DeathRespawnListener instance;
+    private static long timeout;
 
     static {
         instance = new DeathRespawnListener();
@@ -114,20 +116,38 @@ public class DeathRespawnListener implements Listener {
                         killReason = KillMessage.KillReason.ENTITY;
                     }
                 } else {
-
+                    killReason = KillMessage.KillReason.UNKNOWN;
                 }
 
+                String finalMessage = killMessage.onKill(player, killer, entity, killReason);
 
                 for (Player player2 : Bukkit.getOnlinePlayers()) {
                     player2.hidePlayer(player.getPlayer());
+                    player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", finalMessage));
                 }
+
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        //Check if they are still connected.
+                        if (player.getPlayer().isOnline()) {
+                            EngineAPI.getActiveGame().onRespawn(player);
+                            for (Player player2 : Bukkit.getOnlinePlayers()) {
+                                player2.showPlayer(player.getPlayer());
+                            }
+                            player.setSpectator(false, false);
+                        }
+                    }
+                }.runTaskLater(AuroraMCAPI.getCore(), timeout);
+
             }
         }
     }
 
 
-    public static void register() {
+    public static void register(int timeout) {
         Bukkit.getPluginManager().registerEvents(instance, EngineAPI.getGameEngine());
+        DeathRespawnListener.timeout = timeout;
     }
 
     public static void unregister() {
