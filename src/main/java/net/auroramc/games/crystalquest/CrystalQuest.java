@@ -86,7 +86,7 @@ public class CrystalQuest extends Game {
         List<Location> locations = new ArrayList<>();
         for (int i = 0;i < dataLocations.length();i++) {
             JSONObject object = dataLocations.getJSONObject(i);
-            Location location = new Location(EngineAPI.getMapWorld(), object.getInt("x"), object.getInt("y"), object.getInt("z"));
+            Location location = new Location(EngineAPI.getMapWorld(), object.getInt("x") + 0.5, object.getInt("y"), object.getInt("z") + 0.5);
             locations.add(location);
         }
         Collections.shuffle(locations);
@@ -113,11 +113,11 @@ public class CrystalQuest extends Game {
         JSONArray tower = object.getJSONArray("TOWER RED");
         JSONObject boss = object.getJSONArray("BOSS RED").getJSONObject(0);
 
-        Crystal bossCrystal = new Crystal(new Location(EngineAPI.getMapWorld(), boss.getInt("x"), boss.getInt("y"), boss.getInt("z")), true);
+        Crystal bossCrystal = new Crystal(new Location(EngineAPI.getMapWorld(), boss.getInt("x") + 0.5, boss.getInt("y"), boss.getInt("z") + 0.5), true);
         red.setBossCrystal(bossCrystal);
-        Crystal towerA = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(0).getInt("x"), tower.getJSONObject(0).getInt("y"), tower.getJSONObject(0).getInt("z")), false);
+        Crystal towerA = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(0).getInt("x") + 0.5, tower.getJSONObject(0).getInt("y"), tower.getJSONObject(0).getInt("z") + 0.5), false);
         red.setTowerACrystal(towerA);
-        Crystal towerB = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(1).getInt("x"), tower.getJSONObject(1).getInt("y"), tower.getJSONObject(1).getInt("z")), false);
+        Crystal towerB = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(1).getInt("x") + 0.5, tower.getJSONObject(1).getInt("y"), tower.getJSONObject(1).getInt("z") + 0.5), false);
         red.setTowerBCrystal(towerB);
 
 
@@ -127,16 +127,16 @@ public class CrystalQuest extends Game {
 
         bossCrystal = new Crystal(new Location(EngineAPI.getMapWorld(), boss.getInt("x"), boss.getInt("y"), boss.getInt("z")), true);
         blue.setBossCrystal(bossCrystal);
-        towerA = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(0).getInt("x"), tower.getJSONObject(0).getInt("y"), tower.getJSONObject(0).getInt("z")), false);
+        towerA = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(0).getInt("x"), tower.getJSONObject(0).getInt("y") + 0.5, tower.getJSONObject(0).getInt("z") + 0.5), false);
         blue.setTowerACrystal(towerA);
-        towerB = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(1).getInt("x"), tower.getJSONObject(1).getInt("y"), tower.getJSONObject(1).getInt("z")), false);
+        towerB = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(1).getInt("x"), tower.getJSONObject(1).getInt("y") + 0.5, tower.getJSONObject(1).getInt("z") + 0.5), false);
         blue.setTowerBCrystal(towerB);
 
         //Now spawn shops.
         JSONObject shops = map.getMapData().getJSONObject("game").getJSONObject("SHOP");
         for (Object obj : shops.getJSONArray("PLAYER")) {
             JSONObject playerShop = (JSONObject) obj;
-            Location location = new Location(EngineAPI.getMapWorld(), playerShop.getInt("x"), playerShop.getInt("y"), playerShop.getInt("z"), playerShop.getFloat("yaw"), 0);
+            Location location = new Location(EngineAPI.getMapWorld(), playerShop.getInt("x") + 0.5, playerShop.getInt("y"), playerShop.getInt("z") + 0.5, playerShop.getFloat("yaw"), 0);
             Villager villager = EngineAPI.getMapWorld().spawn(location, Villager.class);
             CraftEntity craftEntity = ((CraftEntity)villager);
             NBTTagCompound tag = craftEntity.getHandle().getNBTTag();
@@ -169,7 +169,7 @@ public class CrystalQuest extends Game {
 
         for (Object obj : shops.getJSONArray("TEAM")) {
             JSONObject playerShop = (JSONObject) obj;
-            Location location = new Location(EngineAPI.getMapWorld(), playerShop.getInt("x"), playerShop.getInt("y"), playerShop.getInt("z"), playerShop.getFloat("yaw"), 0);
+            Location location = new Location(EngineAPI.getMapWorld(), playerShop.getInt("x") + 0.5, playerShop.getInt("y"), playerShop.getInt("z") + 0.5, playerShop.getFloat("yaw"), 0);
             Villager villager = EngineAPI.getMapWorld().spawn(location, Villager.class);
             CraftEntity craftEntity = ((CraftEntity)villager);
             NBTTagCompound tag = craftEntity.getHandle().getNBTTag();
@@ -310,10 +310,5 @@ public class CrystalQuest extends Game {
     @Override
     public void onRespawn(AuroraMCGamePlayer auroraMCGamePlayer) {
 
-    }
-
-    @Override
-    public List<Kit> getKits() {
-        return this.kits;
     }
 }
