@@ -125,11 +125,11 @@ public class CrystalQuest extends Game {
         tower = object.getJSONArray("TOWER BLUE");
         boss = object.getJSONArray("BOSS BLUE").getJSONObject(0);
 
-        bossCrystal = new Crystal(new Location(EngineAPI.getMapWorld(), boss.getInt("x"), boss.getInt("y"), boss.getInt("z")), true);
+        bossCrystal = new Crystal(new Location(EngineAPI.getMapWorld(), boss.getInt("x") + 0.5, boss.getInt("y"), boss.getInt("z") + 0.5), true);
         blue.setBossCrystal(bossCrystal);
-        towerA = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(0).getInt("x"), tower.getJSONObject(0).getInt("y") + 0.5, tower.getJSONObject(0).getInt("z") + 0.5), false);
+        towerA = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(0).getInt("x") + 0.5, tower.getJSONObject(0).getInt("y") + 0.5, tower.getJSONObject(0).getInt("z") + 0.5), false);
         blue.setTowerACrystal(towerA);
-        towerB = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(1).getInt("x"), tower.getJSONObject(1).getInt("y") + 0.5, tower.getJSONObject(1).getInt("z") + 0.5), false);
+        towerB = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(1).getInt("x") + 0.5, tower.getJSONObject(1).getInt("y") + 0.5, tower.getJSONObject(1).getInt("z") + 0.5), false);
         blue.setTowerBCrystal(towerB);
 
         //Now spawn shops.
