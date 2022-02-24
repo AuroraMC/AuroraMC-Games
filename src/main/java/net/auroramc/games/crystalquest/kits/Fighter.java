@@ -28,6 +28,7 @@ public class Fighter extends Kit {
 
         player.getPlayer().getInventory().setItem(0, new GUIItem(Material.STONE_SWORD).getItem());
         player.getPlayer().getInventory().setItem(1, new GUIItem(Material.STONE_PICKAXE).getItem());
+        player.getPlayer().getInventory().setItem(2, new GUIItem(Material.WOOD_AXE).getItem());
 
         player.getPlayer().getInventory().setItem(8, CrystalQuest.compass);
     }
