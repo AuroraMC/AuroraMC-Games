@@ -33,6 +33,9 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Villager;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
@@ -269,7 +272,9 @@ public class CrystalQuest extends Game {
 
     private void onEnd() {
         PlayerShowEvent.getHandlerList().unregister(showListener);
-        PlayerShowEvent.getHandlerList().unregister(shopListener);
+        PlayerInteractAtEntityEvent.getHandlerList().unregister(shopListener);
+        InventoryOpenEvent.getHandlerList().unregister(shopListener);
+        EntityDamageByEntityEvent.getHandlerList().unregister(shopListener);
         DeathRespawnListener.unregister();
     }
 
