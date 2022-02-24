@@ -143,7 +143,7 @@ public class PlayerShop extends GUI {
         }
         this.setItem(2, 5, item);
 
-        if (player.getPlayer().getInventory().contains(Material.SHEARS)) {
+        if (!player.getPlayer().getInventory().contains(Material.SHEARS)) {
             this.setItem(3, 5, new GUIItem(Material.SHEARS, "&3Shears", 1, ";&rClick here to buy;&7Shears.;;&rCost: &b32 &7Iron."));
         } else {
             this.setItem(3, 5, new GUIItem(Material.SHEARS, "&3Shears", 1, ";&rYou already have Shears."));
@@ -165,7 +165,7 @@ public class PlayerShop extends GUI {
         }
         this.setItem(1, 7, item);
 
-        if (player.getPlayer().getInventory().contains(Material.BOW)) {
+        if (!player.getPlayer().getInventory().contains(Material.BOW)) {
             this.setItem(2, 7, new GUIItem(Material.BOW, "&3Bow", 1, ";&rClick here to buy;&7Bow.;;&rCost: &b16 &7Iron."));
         } else {
             this.setItem(2, 7, new GUIItem(Material.BOW, "&3Bow", 1, ";&rYou already have a Bow."));
