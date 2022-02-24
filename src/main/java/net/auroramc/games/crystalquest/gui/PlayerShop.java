@@ -102,10 +102,10 @@ public class PlayerShop extends GUI {
         this.setItem(4, 1, item);
 
 
-        this.setItem(1, 3, new GUIItem(Material.CLAY, "&3&l16 Clay Blocks", 16, ";&rClick to purchase **16** Clay Blocks.;;&rCost: &b20&7 Iron Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
+        this.setItem(1, 3, new GUIItem(Material.STAINED_CLAY, "&3&l16 Clay Blocks", 16, ";&rClick to purchase **16** Clay Blocks.;;&rCost: &b20&7 Iron Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
         this.setItem(2, 3, new GUIItem(Material.WOOL, "&3&l16 Wool Blocks", 16, ";&rClick to purchase **16** Wool Blocks.;;&rCost: &b24&7 Iron Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
-        this.setItem(3, 3, new GUIItem(Material.WOOD, "&3&l16 Wood Blocks", 16, ";&rClick to purchase **16** Wood Blocks.;;&rCost: &b8&6 Gold Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
-        this.setItem(4, 3, new GUIItem(Material.GLASS, "&3&l16 Glass Blocks", 16, ";&rClick to purchase **16** Glass Blocks.;;&rCost: &b32&6 Gold Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
+        this.setItem(3, 3, new GUIItem(Material.WOOD, "&3&l16 Wood Blocks", 16, ";&rClick to purchase **16** Wood Blocks.;;&rCost: &b8&6 Gold Ingots"));
+        this.setItem(4, 3, new GUIItem(Material.STAINED_GLASS, "&3&l16 Glass Blocks", 16, ";&rClick to purchase **16** Glass Blocks.;;&rCost: &b32&6 Gold Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
 
         switch (player.getPlayer().getInventory().getItem(1).getType()) {
             case STONE_PICKAXE: {
