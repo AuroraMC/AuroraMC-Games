@@ -15,16 +15,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class Fighter extends Kit {
 
-    private final static ItemStack is;
-
-    static {
-        is = new ItemStack(Material.DIAMOND_PICKAXE);
-        is.addEnchantment(Enchantment.DIG_SPEED, 5);
-        ItemMeta im = is.getItemMeta();
-        im.spigot().setUnbreakable(true);
-        is.setItemMeta(im);
-    }
-
     public Fighter() {
         super(2, 1, "&3&lFighter", "Some description for Fighter", Material.DIAMOND_SWORD, 4000);
     }
@@ -39,7 +29,6 @@ public class Fighter extends Kit {
         player.getPlayer().getInventory().setItem(0, new GUIItem(Material.STONE_SWORD).getItem());
         player.getPlayer().getInventory().setItem(1, new GUIItem(Material.STONE_PICKAXE).getItem());
 
-        player.getPlayer().getInventory().setItem(1, is);
         player.getPlayer().getInventory().setItem(8, CrystalQuest.compass);
     }
 }
