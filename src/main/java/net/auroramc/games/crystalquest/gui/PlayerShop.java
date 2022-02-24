@@ -23,15 +23,15 @@ public class PlayerShop extends GUI {
         GUIItem item;
         switch (player.getPlayer().getInventory().getHelmet().getType()) {
             case LEATHER_HELMET: {
-                item = new GUIItem(Material.LEATHER_HELMET, "&3Helmet Upgrade", 1, ";&rClick here to upgrade to;&7Chain Helmet;;&rCost: &b5 &7Iron.");
+                item = new GUIItem(Material.CHAINMAIL_HELMET, "&3Helmet Upgrade", 1, ";&rClick here to upgrade to;&7Chain Helmet;;&rCost: &b5 &7Iron.");
                 break;
             }
             case CHAINMAIL_HELMET: {
-                item = new GUIItem(Material.CHAINMAIL_HELMET, "&3Helmet Upgrade", 1, ";&rClick here to upgrade to;&7Iron Helmet;;&rCost: &b10 &6Gold.");
+                item = new GUIItem(Material.IRON_HELMET, "&3Helmet Upgrade", 1, ";&rClick here to upgrade to;&7Iron Helmet;;&rCost: &b10 &6Gold.");
                 break;
             }
             case IRON_HELMET: {
-                item = new GUIItem(Material.IRON_HELMET, "&3Helmet Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Helmet;;&rCost: &b64 &6Gold.");
+                item = new GUIItem(Material.DIAMOND_HELMET, "&3Helmet Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Helmet;;&rCost: &b64 &6Gold.");
                 break;
             }
             default: {
@@ -43,15 +43,15 @@ public class PlayerShop extends GUI {
 
         switch (player.getPlayer().getInventory().getChestplate().getType()) {
             case LEATHER_CHESTPLATE: {
-                item = new GUIItem(Material.LEATHER_CHESTPLATE, "&3Chestplate Upgrade", 1, ";&rClick here to upgrade to;&7Chain Chestplate;;&rCost: &b8 &7Iron.");
+                item = new GUIItem(Material.CHAINMAIL_CHESTPLATE, "&3Chestplate Upgrade", 1, ";&rClick here to upgrade to;&7Chain Chestplate;;&rCost: &b8 &7Iron.");
                 break;
             }
             case CHAINMAIL_CHESTPLATE: {
-                item = new GUIItem(Material.CHAINMAIL_CHESTPLATE, "&3Chestplate Upgrade", 1, ";&rClick here to upgrade to;&7Iron Chestplate;;&rCost: &b16 &6Gold.");
+                item = new GUIItem(Material.IRON_CHESTPLATE, "&3Chestplate Upgrade", 1, ";&rClick here to upgrade to;&7Iron Chestplate;;&rCost: &b16 &6Gold.");
                 break;
             }
             case IRON_CHESTPLATE: {
-                item = new GUIItem(Material.IRON_CHESTPLATE, "&3Chestplate Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Chestplate;;&rCost: &b16 &aEmeralds.");
+                item = new GUIItem(Material.DIAMOND_CHESTPLATE, "&3Chestplate Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Chestplate;;&rCost: &b16 &aEmeralds.");
                 break;
             }
             default: {
@@ -63,15 +63,15 @@ public class PlayerShop extends GUI {
 
         switch (player.getPlayer().getInventory().getLeggings().getType()) {
             case LEATHER_LEGGINGS: {
-                item = new GUIItem(Material.LEATHER_LEGGINGS, "&3Leggings Upgrade", 1, ";&rClick here to upgrade to;&7Chain Leggings;;&rCost: &b7 &7Iron.");
+                item = new GUIItem(Material.CHAINMAIL_LEGGINGS, "&3Leggings Upgrade", 1, ";&rClick here to upgrade to;&7Chain Leggings;;&rCost: &b7 &7Iron.");
                 break;
             }
             case CHAINMAIL_LEGGINGS: {
-                item = new GUIItem(Material.CHAINMAIL_LEGGINGS, "&3Leggings Upgrade", 1, ";&rClick here to upgrade to;&7Iron Leggings;;&rCost: &b14 &6Gold.");
+                item = new GUIItem(Material.IRON_LEGGINGS, "&3Leggings Upgrade", 1, ";&rClick here to upgrade to;&7Iron Leggings;;&rCost: &b14 &6Gold.");
                 break;
             }
             case IRON_LEGGINGS: {
-                item = new GUIItem(Material.IRON_LEGGINGS, "&3Leggings Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Leggings;;&rCost: &b14 &aEmeralds.");
+                item = new GUIItem(Material.DIAMOND_LEGGINGS, "&3Leggings Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Leggings;;&rCost: &b14 &aEmeralds.");
                 break;
             }
             default: {
@@ -83,19 +83,19 @@ public class PlayerShop extends GUI {
 
         switch (player.getPlayer().getInventory().getBoots().getType()) {
             case LEATHER_BOOTS: {
-                item = new GUIItem(Material.LEATHER_BOOTS, "&3Boots Upgrade", 1, ";&rClick here to upgrade to;&7Chain Boots;;&rCost: &b4 &7Iron.");
+                item = new GUIItem(Material.CHAINMAIL_BOOTS, "&3Boots Upgrade", 1, ";&rClick here to upgrade to;&7Chain Boots;;&rCost: &b4 &7Iron.");
                 break;
             }
             case CHAINMAIL_BOOTS: {
-                item = new GUIItem(Material.CHAINMAIL_BOOTS, "&3Boots Upgrade", 1, ";&rClick here to upgrade to;&7Iron Boots;;&rCost: &b18 &6Gold.");
+                item = new GUIItem(Material.IRON_BOOTS, "&3Boots Upgrade", 1, ";&rClick here to upgrade to;&7Iron Boots;;&rCost: &b18 &6Gold.");
                 break;
             }
             case IRON_BOOTS: {
-                item = new GUIItem(Material.IRON_BOOTS, "&3Boots Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Boots;;&rCost: &b64 &6Gold.");
+                item = new GUIItem(Material.DIAMOND_BOOTS, "&3Boots Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Boots;;&rCost: &b64 &6Gold.");
                 break;
             }
             default: {
-                item = new GUIItem(Material.DIAMOND_CHESTPLATE, "&3Boots Upgrade", 1, ";&rYou have the max upgrade.");
+                item = new GUIItem(Material.DIAMOND_BOOTS, "&3Boots Upgrade", 1, ";&rYou have the max upgrade.");
                 break;
             }
         }
@@ -109,11 +109,11 @@ public class PlayerShop extends GUI {
 
         switch (player.getPlayer().getInventory().getItem(1).getType()) {
             case STONE_PICKAXE: {
-                item = new GUIItem(Material.STONE_PICKAXE, "&3Pickaxe Upgrade", 1, ";&rClick here to upgrade to;&7Iron Pickaxe;;&rCost: &b24 &7Iron.");
+                item = new GUIItem(Material.IRON_PICKAXE, "&3Pickaxe Upgrade", 1, ";&rClick here to upgrade to;&7Iron Pickaxe;;&rCost: &b24 &7Iron.");
                 break;
             }
             case IRON_PICKAXE: {
-                item = new GUIItem(Material.IRON_PICKAXE, "&3Pickaxe Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Pickaxe;;&rCost: &b16 &6Gold.");
+                item = new GUIItem(Material.DIAMOND_PICKAXE, "&3Pickaxe Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Pickaxe;;&rCost: &b16 &6Gold.");
                 break;
             }
             default: {
@@ -125,15 +125,15 @@ public class PlayerShop extends GUI {
 
         switch (player.getPlayer().getInventory().getItem(2).getType()) {
             case WOOD_AXE: {
-                item = new GUIItem(Material.WOOD_AXE, "&3Axe Upgrade", 1, ";&rClick here to upgrade to;&7Stone Axe;;&rCost: &b4 &7Iron.");
+                item = new GUIItem(Material.STONE_AXE, "&3Axe Upgrade", 1, ";&rClick here to upgrade to;&7Stone Axe;;&rCost: &b4 &7Iron.");
                 break;
             }
             case STONE_AXE: {
-                item = new GUIItem(Material.STONE_AXE, "&3Axe Upgrade", 1, ";&rClick here to upgrade to;&7Iron Axe;;&rCost: &b18 &6Gold.");
+                item = new GUIItem(Material.IRON_AXE, "&3Axe Upgrade", 1, ";&rClick here to upgrade to;&7Iron Axe;;&rCost: &b18 &6Gold.");
                 break;
             }
             case IRON_AXE: {
-                item = new GUIItem(Material.IRON_AXE, "&3Axe Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Axe;;&rCost: &b64 &6Gold.");
+                item = new GUIItem(Material.DIAMOND_AXE, "&3Axe Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Axe;;&rCost: &b64 &6Gold.");
                 break;
             }
             default: {
@@ -151,11 +151,11 @@ public class PlayerShop extends GUI {
 
         switch (player.getPlayer().getInventory().getItem(0).getType()) {
             case STONE_SWORD: {
-                item = new GUIItem(Material.STONE_SWORD, "&3Sword Upgrade", 1, ";&rClick here to upgrade to;&7Iron Sword;;&rCost: &b16 &7Iron.");
+                item = new GUIItem(Material.IRON_SWORD, "&3Sword Upgrade", 1, ";&rClick here to upgrade to;&7Iron Sword;;&rCost: &b16 &7Iron.");
                 break;
             }
             case IRON_SWORD: {
-                item = new GUIItem(Material.IRON_SWORD, "&3Sword Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Sword;;&rCost: &b32 &6Gold.");
+                item = new GUIItem(Material.DIAMOND_SWORD, "&3Sword Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Sword;;&rCost: &b32 &6Gold.");
                 break;
             }
             default: {
