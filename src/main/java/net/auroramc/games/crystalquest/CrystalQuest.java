@@ -19,6 +19,7 @@ import net.auroramc.games.crystalquest.entities.Crystal;
 import net.auroramc.games.crystalquest.kits.Defender;
 import net.auroramc.games.crystalquest.kits.Fighter;
 import net.auroramc.games.crystalquest.kits.Miner;
+import net.auroramc.games.crystalquest.listeners.ShopListener;
 import net.auroramc.games.crystalquest.listeners.ShowListener;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
@@ -49,6 +50,7 @@ public class CrystalQuest extends Game {
     public static final ItemStack compass;
 
     private final ShowListener showListener;
+    private final ShopListener shopListener;
 
     static {
         compass = new GUIItem(Material.COMPASS, "&3Crystal Compass", 1, ";&rThe compass will display the distance;&rfrom the closest crystal currently captured.").getItem();
@@ -58,6 +60,7 @@ public class CrystalQuest extends Game {
     public CrystalQuest(GameVariation gameVariation) {
         super(gameVariation);
         showListener = new ShowListener();
+        shopListener = new ShopListener();
         this.teams.put("Blue", new CQBlue());
         this.teams.put("Red", new CQRed());
         this.kits.add(new Miner());
@@ -206,6 +209,7 @@ public class CrystalQuest extends Game {
         super.start();
         DeathRespawnListener.register(200);
         Bukkit.getPluginManager().registerEvents(showListener, EngineAPI.getGameEngine());
+        Bukkit.getPluginManager().registerEvents(shopListener, EngineAPI.getGameEngine());
         int redSpawnIndex = 0;
         int blueSpawnIndex = 0;
         JSONArray redSpawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("RED");
@@ -265,6 +269,7 @@ public class CrystalQuest extends Game {
 
     private void onEnd() {
         PlayerShowEvent.getHandlerList().unregister(showListener);
+        PlayerShowEvent.getHandlerList().unregister(shopListener);
         DeathRespawnListener.unregister();
     }
 
