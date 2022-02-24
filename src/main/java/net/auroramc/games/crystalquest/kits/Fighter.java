@@ -26,7 +26,7 @@ public class Fighter extends Kit {
     }
 
     public Fighter() {
-        super(2, 1, "&3&lFighter", "Some description for Fighter", Material.DIAMOND_SWORD, -1);
+        super(2, 1, "&3&lFighter", "Some description for Fighter", Material.DIAMOND_SWORD, 4000);
     }
 
     @Override

@@ -314,6 +314,6 @@ public class CrystalQuest extends Game {
 
     @Override
     public List<Kit> getKits() {
-        return new ArrayList<>();
+        return this.kits;
     }
 }
