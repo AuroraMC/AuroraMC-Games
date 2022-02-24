@@ -203,6 +203,7 @@ public class CrystalQuest extends Game {
 
     @Override
     public void start() {
+        super.start();
         DeathRespawnListener.register(200);
         Bukkit.getPluginManager().registerEvents(showListener, EngineAPI.getGameEngine());
         int redSpawnIndex = 0;
@@ -248,7 +249,6 @@ public class CrystalQuest extends Game {
                 gp.getKit().onGameStart(player);
             }
         }
-        super.start();
     }
 
     @Override
