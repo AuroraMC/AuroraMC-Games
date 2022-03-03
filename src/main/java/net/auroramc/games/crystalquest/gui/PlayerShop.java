@@ -150,7 +150,7 @@ public class PlayerShop extends GUI {
         if (!player.getPlayer().getInventory().contains(Material.SHEARS)) {
             this.setItem(3, 5, new GUIItem(Material.SHEARS, "&3Shears", 1, ";&rClick here to buy;&7Shears.;;&rCost: &b32 &7Iron."));
         } else {
-            this.setItem(3, 5, new GUIItem(Material.SHEARS, "&3Shears", 1, ";&rYou already have Shears."));
+            this.setItem(3, 5, new GUIItem(Material.BARRIER, "&3Shears", 1, ";&rYou already have Shears."));
         }
 
         switch (player.getPlayer().getInventory().getItem(0).getType()) {
@@ -172,7 +172,7 @@ public class PlayerShop extends GUI {
         if (!player.getPlayer().getInventory().contains(Material.BOW)) {
             this.setItem(2, 7, new GUIItem(Material.BOW, "&3Bow", 1, ";&rClick here to buy;&7Bow.;;&rCost: &b16 &7Iron."));
         } else {
-            this.setItem(2, 7, new GUIItem(Material.BOW, "&3Bow", 1, ";&rYou already have a Bow."));
+            this.setItem(2, 7, new GUIItem(Material.BARRIER, "&3Bow", 1, ";&rYou already have a Bow."));
         }
 
         this.setItem(3, 7, new GUIItem(Material.ARROW, "&316 Arrows", 16, ";&rClick here to buy;&716 Arrows.;;&rCost: &b16 &7Iron."));
@@ -235,7 +235,7 @@ public class PlayerShop extends GUI {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getPlayer().getInventory().removeItem(new ItemStack(Material.GOLD_INGOT, 14));
                     player.getPlayer().getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
-                    this.updateItem(3, 1, new GUIItem(Material.DIAMOND_LEGGINGS, "&3Leggings Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Leggings;;&rCost: &b14 &eEmeralds."));
+                    this.updateItem(3, 1, new GUIItem(Material.DIAMOND_LEGGINGS, "&3Leggings Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Leggings;;&rCost: &b14 &aEmeralds."));
                 } else {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                 }
@@ -272,7 +272,7 @@ public class PlayerShop extends GUI {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getPlayer().getInventory().removeItem(new ItemStack(Material.GOLD_INGOT, 16));
                     player.getPlayer().getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
-                    this.updateItem(2, 1, new GUIItem(Material.DIAMOND_CHESTPLATE, "&3Chestplate Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Chestplate;;&rCost: &b16 &eEmeralds."));
+                    this.updateItem(2, 1, new GUIItem(Material.DIAMOND_CHESTPLATE, "&3Chestplate Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Chestplate;;&rCost: &b16 &aEmeralds."));
                 } else {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                 }
@@ -503,7 +503,7 @@ public class PlayerShop extends GUI {
                     if (player.getPlayer().getInventory().contains(Material.GOLD_INGOT, 32)) {
                         player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                         player.getPlayer().getInventory().removeItem(new ItemStack(Material.GOLD_INGOT, 32));
-                        this.updateItem(1, 7, new GUIItem(Material.DIAMOND_SWORD, "&3Sword Upgrade", 1, ";&rYou have the max upgrade."));
+                        this.updateItem(1, 7, new GUIItem(Material.BARRIER, "&3Sword Upgrade", 1, ";&rYou have the max upgrade."));
                         player.getPlayer().getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD));
                     } else {
                         player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
