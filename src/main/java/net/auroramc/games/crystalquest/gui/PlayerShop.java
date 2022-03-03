@@ -491,7 +491,7 @@ public class PlayerShop extends GUI {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getPlayer().getInventory().removeItem(new ItemStack(Material.IRON_INGOT, 16));
                     this.updateItem(1, 7, new GUIItem(Material.DIAMOND_SWORD, "&3Sword Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Sword;;&rCost: &b32 &6Gold."));
-                    player.getPlayer().getInventory().setItem(2, new ItemStack(Material.IRON_SWORD));
+                    player.getPlayer().getInventory().setItem(0, new ItemStack(Material.IRON_SWORD));
                 } else {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                 }
