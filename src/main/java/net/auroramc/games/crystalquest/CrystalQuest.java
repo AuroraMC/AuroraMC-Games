@@ -26,6 +26,7 @@ import net.auroramc.games.crystalquest.teams.CQRed;
 import net.auroramc.games.util.listeners.DeathRespawnListener;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
@@ -47,6 +48,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class CrystalQuest extends Game {
 
@@ -318,7 +320,38 @@ public class CrystalQuest extends Game {
     }
 
     @Override
-    public void onRespawn(AuroraMCGamePlayer auroraMCGamePlayer) {
+    public void onRespawn(AuroraMCGamePlayer player) {
+        AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
+        Location location;
+        if (gp.getTeam() instanceof CQRed) {
+            JSONArray spawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("RED");
+            JSONObject spawn = spawns.getJSONObject(new Random().nextInt(spawns.length()));
+            int x, y, z;
+            x = spawn.getInt("x");
+            y = spawn.getInt("y");
+            z = spawn.getInt("z");
+            float yaw = spawn.getFloat("yaw");
+            location = new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0);
 
+        } else {
+            JSONArray spawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("BLUE");
+            JSONObject spawn = spawns.getJSONObject(new Random().nextInt(spawns.length()));
+            int x, y, z;
+            x = spawn.getInt("x");
+            y = spawn.getInt("y");
+            z = spawn.getInt("z");
+            float yaw = spawn.getFloat("yaw");
+            location = new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0);
+        }
+        gp.getPlayer().teleport(location);
+        gp.getKit().onGameStart(gp);
+
+        player.getPlayer().setGameMode(GameMode.SURVIVAL);
+        player.getPlayer().setHealth(20.0D);
+        player.getPlayer().setFoodLevel(30);
+        player.getPlayer().setExp(0.0F);
+        player.getPlayer().setLevel(0);
+        player.getPlayer().setFlying(false);
+        player.getPlayer().setAllowFlight(false);
     }
 }

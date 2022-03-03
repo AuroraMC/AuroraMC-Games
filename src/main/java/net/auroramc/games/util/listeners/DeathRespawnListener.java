@@ -162,7 +162,9 @@ public class DeathRespawnListener implements Listener {
                     }
                 }
 
-                String finalMessage = killMessage.onKill(player, killer, entity, killReason);
+                //Bukkit.broadcastMessage(" " + killer + "  " + player + " " + entity + " " + killReason);
+
+                String finalMessage = killMessage.onKill(killer, player, entity, killReason);
 
                 if (killer != null) {
                     killer.getRewards().addXp("Kills", 25);

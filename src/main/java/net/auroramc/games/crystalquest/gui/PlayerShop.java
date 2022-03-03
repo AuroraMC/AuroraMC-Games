@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class PlayerShop extends GUI {
 
-    private AuroraMCGamePlayer player;
+    private final AuroraMCGamePlayer player;
 
     public PlayerShop(AuroraMCGamePlayer player) {
         super("&3&lPlayer Shop", 5, true);
