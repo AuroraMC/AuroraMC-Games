@@ -483,6 +483,7 @@ public class PlayerShop extends GUI {
                     player.getPlayer().closeInventory();
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Player Shop", "You already have Shears."));
                 }
+                break;
             }
 
             //Weapons
