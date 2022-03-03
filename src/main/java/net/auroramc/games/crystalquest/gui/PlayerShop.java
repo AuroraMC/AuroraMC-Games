@@ -420,13 +420,14 @@ public class PlayerShop extends GUI {
                         player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                         player.getPlayer().getInventory().removeItem(new ItemStack(Material.GOLD_INGOT, 16));
                         this.updateItem(1, 5, new GUIItem(Material.BARRIER, "&3Pickaxe Upgrade", 1, ";&rYou have the max upgrade."));
-                        player.getPlayer().getInventory().setItem(1, new ItemStack(Material.IRON_PICKAXE));
+                        player.getPlayer().getInventory().setItem(1, new ItemStack(Material.DIAMOND_PICKAXE));
                     } else {
                         player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                     }
                 } else {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                 }
+                break;
             }
 
             //Axe
