@@ -207,6 +207,9 @@ public class CrystalQuest extends Game {
             rabbit.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1000000, 1, true, false));
             villager.setPassenger(rabbit);
         }
+
+        //Disable tile drops for explosions.
+        EngineAPI.getMapWorld().setGameRuleValue("doTileDrops", "false");
     }
 
     @Override
@@ -344,7 +347,23 @@ public class CrystalQuest extends Game {
             location = new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0);
         }
         gp.getPlayer().teleport(location);
-        gp.getKit().onGameStart(gp);
+        if (gp.getGameData().containsKey("death_inventory")) {
+            gp.getPlayer().getInventory().setContents((ItemStack[]) gp.getGameData().get("death_inventory"));
+            gp.getPlayer().getInventory().setHelmet((ItemStack) gp.getGameData().get("death_helmet"));
+            gp.getPlayer().getInventory().setChestplate((ItemStack) gp.getGameData().get("death_chestplate"));
+            gp.getPlayer().getInventory().setLeggings((ItemStack) gp.getGameData().get("death_leggings"));
+            gp.getPlayer().getInventory().setBoots((ItemStack) gp.getGameData().get("death_boots"));
+        } else {
+            gp.getPlayer().getInventory().setHelmet((ItemStack) gp.getGameData().get("death_helmet"));
+            gp.getPlayer().getInventory().setChestplate((ItemStack) gp.getGameData().get("death_chestplate"));
+            gp.getPlayer().getInventory().setLeggings((ItemStack) gp.getGameData().get("death_leggings"));
+            gp.getPlayer().getInventory().setBoots((ItemStack) gp.getGameData().get("death_boots"));
+
+            gp.getPlayer().getInventory().setItem(0, (ItemStack) gp.getGameData().get("death_sword"));
+            gp.getPlayer().getInventory().setItem(1, (ItemStack) gp.getGameData().get("death_pickaxe"));
+            gp.getPlayer().getInventory().setItem(2, (ItemStack) gp.getGameData().get("death_axe"));
+            gp.getPlayer().getInventory().setItem(8, compass);
+        }
 
         player.getPlayer().setGameMode(GameMode.SURVIVAL);
         player.getPlayer().setHealth(20.0D);

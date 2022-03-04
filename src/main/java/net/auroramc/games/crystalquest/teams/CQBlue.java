@@ -17,9 +17,11 @@ public class CQBlue implements Team {
     private Crystal bossCrystal;
     private Crystal towerACrystal;
     private Crystal towerBCrystal;
+    private int lives;
 
     public CQBlue() {
         players = new ArrayList<>();
+        lives = 0;
     }
 
 
@@ -65,5 +67,17 @@ public class CQBlue implements Team {
 
     public void setTowerBCrystal(Crystal towerBCrystal) {
         this.towerBCrystal = towerBCrystal;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public void lostLife() {
+        lives--;
+    }
+
+    public void lifeBrought() {
+        lives++;
     }
 }

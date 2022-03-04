@@ -10,8 +10,13 @@ import net.auroramc.core.api.cosmetics.KillMessage;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.games.crystalquest.kits.Fighter;
+import net.auroramc.games.crystalquest.kits.Miner;
+import net.auroramc.games.crystalquest.teams.CQBlue;
+import net.auroramc.games.crystalquest.teams.CQRed;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -23,6 +28,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONObject;
 
@@ -44,6 +50,187 @@ public class DeathRespawnListener implements Listener {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(pl);
             if (e.getFinalDamage() >= player.getPlayer().getHealth() && !player.isSpectator()) {
                 e.setCancelled(true);
+                boolean life;
+                if (player.getTeam() instanceof CQBlue) {
+                    life = ((CQBlue) player.getTeam()).getLives() > 0;
+                    if (life) {
+                        ((CQBlue) player.getTeam()).lostLife();
+                    }
+                } else {
+                    life = ((CQRed) player.getTeam()).getLives() > 0;
+                    if (life) {
+                        ((CQRed) player.getTeam()).lostLife();
+                    }
+                }
+
+                if (life) {
+                    player.getGameData().put("death_helmet", player.getPlayer().getInventory().getHelmet());
+                    player.getGameData().put("death_chestplate", player.getPlayer().getInventory().getChestplate());
+                    player.getGameData().put("death_leggings", player.getPlayer().getInventory().getLeggings());
+                    player.getGameData().put("death_boots", player.getPlayer().getInventory().getBoots());
+                    player.getGameData().put("death_inventory", player.getPlayer().getInventory().getContents());
+                } else {
+                    switch (player.getPlayer().getInventory().getHelmet().getType()) {
+                        case LEATHER_HELMET: {
+                            player.getGameData().put("death_helmet", player.getPlayer().getInventory().getHelmet());
+                            break;
+                        }
+                        case CHAINMAIL_HELMET: {
+                            ItemStack stack = player.getPlayer().getInventory().getHelmet();
+                            stack.setType(Material.LEATHER_HELMET);
+                            break;
+                        }
+                        case IRON_HELMET: {
+                            ItemStack stack = player.getPlayer().getInventory().getHelmet();
+                            stack.setType(Material.CHAINMAIL_HELMET);
+                            player.getGameData().put("death_helmet", stack);
+                            break;
+                        }
+                        case DIAMOND_HELMET: {
+                            ItemStack stack = player.getPlayer().getInventory().getHelmet();
+                            stack.setType(Material.IRON_HELMET);
+                            player.getGameData().put("death_helmet", stack);
+                            break;
+                        }
+                    }
+                    switch (player.getPlayer().getInventory().getChestplate().getType()) {
+                        case LEATHER_CHESTPLATE: {
+                            player.getGameData().put("death_chestplate", player.getPlayer().getInventory().getChestplate());
+                            break;
+                        }
+                        case CHAINMAIL_CHESTPLATE: {
+                            ItemStack stack = player.getPlayer().getInventory().getChestplate();
+                            if (!(player.getKit() instanceof Fighter)) {
+                                stack.setType(Material.LEATHER_HELMET);
+                            }
+                            player.getGameData().put("death_chestplate", stack);
+                            break;
+                        }
+                        case IRON_CHESTPLATE: {
+                            ItemStack stack = player.getPlayer().getInventory().getChestplate();
+                            stack.setType(Material.CHAINMAIL_HELMET);
+                            player.getGameData().put("death_chestplate", stack);
+                            break;
+                        }
+                        case DIAMOND_CHESTPLATE: {
+                            ItemStack stack = player.getPlayer().getInventory().getChestplate();
+                            stack.setType(Material.IRON_HELMET);
+                            player.getGameData().put("death_chestplate", stack);
+                            break;
+                        }
+                    }
+                    switch (player.getPlayer().getInventory().getLeggings().getType()) {
+                        case LEATHER_LEGGINGS: {
+                            player.getGameData().put("death_leggings", player.getPlayer().getInventory().getLeggings());
+                            break;
+                        }
+                        case CHAINMAIL_LEGGINGS: {
+                            ItemStack stack = player.getPlayer().getInventory().getLeggings();
+                            stack.setType(Material.LEATHER_LEGGINGS);
+                            player.getGameData().put("death_leggings", stack);
+                            break;
+                        }
+                        case IRON_LEGGINGS: {
+                            ItemStack stack = player.getPlayer().getInventory().getLeggings();
+                            stack.setType(Material.CHAINMAIL_LEGGINGS);
+                            player.getGameData().put("death_leggings", stack);
+                            break;
+                        }
+                        case DIAMOND_LEGGINGS: {
+                            ItemStack stack = player.getPlayer().getInventory().getLeggings();
+                            stack.setType(Material.IRON_LEGGINGS);
+                            player.getGameData().put("death_leggings", stack);
+                            break;
+                        }
+                    }
+                    switch (player.getPlayer().getInventory().getBoots().getType()) {
+                        case LEATHER_BOOTS: {
+                            player.getGameData().put("death_boots", player.getPlayer().getInventory().getBoots());
+                            break;
+                        }
+                        case CHAINMAIL_BOOTS: {
+                            ItemStack stack = player.getPlayer().getInventory().getBoots();
+                            stack.setType(Material.LEATHER_BOOTS);
+                            player.getGameData().put("death_boots", stack);
+                            break;
+                        }
+                        case IRON_HELMET: {
+                            ItemStack stack = player.getPlayer().getInventory().getBoots();
+                            stack.setType(Material.CHAINMAIL_BOOTS);
+                            player.getGameData().put("death_boots", stack);
+                            break;
+                        }
+                        case DIAMOND_BOOTS: {
+                            ItemStack stack = player.getPlayer().getInventory().getBoots();
+                            stack.setType(Material.IRON_BOOTS);
+                            player.getGameData().put("death_boots", stack);
+                            break;
+                        }
+                    }
+
+                    switch (player.getPlayer().getInventory().getItem(0).getType()) {
+                        case STONE_SWORD: {
+                            player.getGameData().put("death_sword", player.getPlayer().getInventory().getItem(0));
+                            break;
+                        }
+                        case IRON_SWORD: {
+                            ItemStack stack = player.getPlayer().getInventory().getItem(0);
+                            stack.setType(Material.STONE_SWORD);
+                            player.getGameData().put("death_sword", stack);
+                            break;
+                        }
+                        case DIAMOND_SWORD: {
+                            ItemStack stack = player.getPlayer().getInventory().getItem(0);
+                            stack.setType(Material.IRON_SWORD);
+                            player.getGameData().put("death_sword", stack);
+                            break;
+                        }
+                    }
+
+                    switch (player.getPlayer().getInventory().getItem(1).getType()) {
+                        case STONE_PICKAXE: {
+                            player.getGameData().put("death_pickaxe", player.getPlayer().getInventory().getItem(1));
+                            break;
+                        }
+                        case IRON_PICKAXE: {
+                            ItemStack stack = player.getPlayer().getInventory().getItem(1);
+                            stack.setType(Material.STONE_PICKAXE);
+                            player.getGameData().put("death_pickaxe", stack);
+                            break;
+                        }
+                        case DIAMOND_PICKAXE: {
+                            ItemStack stack = player.getPlayer().getInventory().getItem(1);
+                            if (((player.getTeam() instanceof Miner))) {
+                                stack.setType(Material.IRON_PICKAXE);
+                            }
+                            player.getGameData().put("death_pickaxe", stack);
+                            break;
+                        }
+                    }
+
+                    switch (player.getPlayer().getInventory().getItem(2).getType()) {
+                        case WOOD_AXE:
+                        case STONE_AXE: {
+                            ItemStack stack = player.getPlayer().getInventory().getItem(2);
+                            stack.setType(Material.WOOD_AXE);
+                            player.getGameData().put("death_axe", stack);
+                            break;
+                        }
+                        case IRON_PICKAXE: {
+                            ItemStack stack = player.getPlayer().getInventory().getItem(2);
+                            stack.setType(Material.STONE_AXE);
+                            player.getGameData().put("death_pickaxe", stack);
+                            break;
+                        }
+                        case DIAMOND_PICKAXE: {
+                            ItemStack stack = player.getPlayer().getInventory().getItem(2);
+                            stack.setType(Material.IRON_AXE);
+                            player.getGameData().put("death_pickaxe", stack);
+                            break;
+                        }
+                    }
+                }
+
                 player.setSpectator(true, false);
                 player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You died."));
                 JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
