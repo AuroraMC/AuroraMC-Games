@@ -192,6 +192,11 @@ public class DeathRespawnListener implements Listener {
                 player.setLastHitAt(-1);
                 player.setLastHitBy(null);
                 player.getLatestHits().clear();
+                player.getPlayer().getInventory().clear();
+                player.getPlayer().getInventory().setHelmet(new ItemStack(Material.AIR));
+                player.getPlayer().getInventory().setChestplate(new ItemStack(Material.AIR));
+                player.getPlayer().getInventory().setLeggings(new ItemStack(Material.AIR));
+                player.getPlayer().getInventory().setBoots(new ItemStack(Material.AIR));
 
                 for (Player player2 : Bukkit.getOnlinePlayers()) {
                     player2.hidePlayer(player.getPlayer());

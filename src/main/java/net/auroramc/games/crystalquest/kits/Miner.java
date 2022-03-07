@@ -10,6 +10,7 @@ import net.auroramc.engine.api.games.Kit;
 import net.auroramc.games.crystalquest.CrystalQuest;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -22,6 +23,7 @@ public class Miner extends Kit {
         is.addEnchantment(Enchantment.DIG_SPEED, 5);
         ItemMeta im = is.getItemMeta();
         im.spigot().setUnbreakable(true);
+        im.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
         is.setItemMeta(im);
     }
 
