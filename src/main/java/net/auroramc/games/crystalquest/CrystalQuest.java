@@ -47,6 +47,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -63,6 +64,7 @@ public class CrystalQuest extends Game {
     private final ShopListener shopListener;
     private final InventoryListener inventoryListener;
     private final MiningListener miningListener;
+    private BukkitTask mineTask;
 
     static {
         compass = new GUIItem(Material.COMPASS, "&3Crystal Compass", 1, ";&rThe compass will display the distance;&rfrom the closest crystal currently captured.").getItem();
@@ -91,37 +93,7 @@ public class CrystalQuest extends Game {
         this.map = gameMap;
 
         //Generate the mine.
-        JSONArray dataLocations = map.getMapData().getJSONArray("data_locations");
-        float emerald = 0.005f;
-        float iron = 0.145f;
-        float gold = 0.1f;
-
-        int emeralds = Math.round(emerald * dataLocations.length());
-        int ironOres = Math.round(iron * dataLocations.length());
-        int goldOres = Math.round(gold * dataLocations.length());
-
-        List<Location> locations = new ArrayList<>();
-        for (int i = 0;i < dataLocations.length();i++) {
-            JSONObject object = dataLocations.getJSONObject(i);
-            Location location = new Location(EngineAPI.getMapWorld(), object.getInt("x") + 0.5, object.getInt("y"), object.getInt("z") + 0.5);
-            locations.add(location);
-        }
-        Collections.shuffle(locations);
-
-        for (Location location : locations) {
-            if (emeralds > 0) {
-                location.getBlock().setType(Material.EMERALD_ORE);
-                emeralds--;
-            } else if (ironOres > 0) {
-                location.getBlock().setType(Material.IRON_ORE);
-                ironOres--;
-            } else if (goldOres > 0) {
-                location.getBlock().setType(Material.GOLD_ORE);
-                goldOres--;
-            } else {
-                location.getBlock().setType(Material.STONE);
-            }
-        }
+        generateMine(0.145f, 0.1f, 0.005f);
 
         //Now spawn the crystals.
         CQRed red = (CQRed) this.teams.get("Red");
@@ -274,6 +246,36 @@ public class CrystalQuest extends Game {
         }
     }
 
+    private void generateMine(float iron, float gold, float emerald) {
+        JSONArray dataLocations = map.getMapData().getJSONArray("data_locations");
+        int emeralds = Math.round(emerald * dataLocations.length());
+        int ironOres = Math.round(iron * dataLocations.length());
+        int goldOres = Math.round(gold * dataLocations.length());
+
+        List<Location> locations = new ArrayList<>();
+        for (int i = 0;i < dataLocations.length();i++) {
+            JSONObject object = dataLocations.getJSONObject(i);
+            Location location = new Location(EngineAPI.getMapWorld(), object.getInt("x") + 0.5, object.getInt("y"), object.getInt("z") + 0.5);
+            locations.add(location);
+        }
+        Collections.shuffle(locations);
+
+        for (Location location : locations) {
+            if (emeralds > 0) {
+                location.getBlock().setType(Material.EMERALD_ORE);
+                emeralds--;
+            } else if (ironOres > 0) {
+                location.getBlock().setType(Material.IRON_ORE);
+                ironOres--;
+            } else if (goldOres > 0) {
+                location.getBlock().setType(Material.GOLD_ORE);
+                goldOres--;
+            } else {
+                location.getBlock().setType(Material.STONE);
+            }
+        }
+    }
+
     @Override
     public void end(AuroraMCPlayer winner) {
         onEnd();
@@ -287,6 +289,8 @@ public class CrystalQuest extends Game {
     }
 
     private void onEnd() {
+        this.mineTask.cancel();
+        this.mineTask = null;
         PlayerShowEvent.getHandlerList().unregister(showListener);
         PlayerInteractAtEntityEvent.getHandlerList().unregister(shopListener);
         InventoryOpenEvent.getHandlerList().unregister(shopListener);
@@ -295,6 +299,29 @@ public class CrystalQuest extends Game {
         PlayerDropItemEvent.getHandlerList().unregister(inventoryListener);
         BlockBreakEvent.getHandlerList().unregister(miningListener);
         DeathRespawnListener.unregister();
+    }
+
+    @Override
+    public void inProgress() {
+        super.inProgress();
+        mineTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                generateMine(0.1415f, 0.1010f, 0.0075f);
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    player.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The mine has been reset! The next reset is in **5** minutes."));
+                }
+                mineTask = new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        generateMine(0.12f, 0.12f, 0.01f);
+                        for (Player player : Bukkit.getOnlinePlayers()) {
+                            player.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The mine has been reset! The next reset is in **5** minutes."));
+                        }
+                    }
+                }.runTaskTimer(AuroraMCAPI.getCore(), 6000, 6000);
+            }
+        }.runTaskLater(AuroraMCAPI.getCore(), 3600);
     }
 
     @Override
