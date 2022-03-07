@@ -537,7 +537,7 @@ public class CrystalQuest extends Game {
                 }
                 case DIAMOND_PICKAXE: {
                     ItemStack stack = player.getPlayer().getInventory().getItem(1);
-                    if (((player.getTeam() instanceof Miner))) {
+                    if (!((player.getTeam() instanceof Miner))) {
                         stack.setType(Material.IRON_PICKAXE);
                     }
                     player.getGameData().put("death_pickaxe", stack);
