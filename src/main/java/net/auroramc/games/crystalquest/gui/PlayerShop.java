@@ -114,6 +114,9 @@ public class PlayerShop extends GUI {
         int swordSlot = 0, pickSlot = 1, axeSlot = 2;
 
         for (int i = 0; i < 36; i++) {
+            if (player.getPlayer().getInventory().getItem(i) == null) {
+                continue;
+            }
             if (player.getPlayer().getInventory().getItem(i).getType().name().endsWith("_SWORD")) {
                 swordSlot = i;
             } else if (player.getPlayer().getInventory().getItem(i).getType().name().endsWith("_AXE")) {
