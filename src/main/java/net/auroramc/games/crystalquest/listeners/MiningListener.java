@@ -5,6 +5,8 @@
 package net.auroramc.games.crystalquest.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.engine.listeners.LobbyListener;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,25 +21,101 @@ public class MiningListener implements Listener {
         switch (e.getBlock().getType()) {
             case EMERALD_ORE: {
                 e.setCancelled(true);
-                e.getBlock().getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), new ItemStack(Material.EMERALD));
+                Location location = e.getBlock().getLocation().clone();
+                location.setY(location.getY() + 1);
+                if (!location.getBlock().isEmpty()) {
+                    location.setY(location.getY() - 1);
+                    location.setX(location.getX() + 1);
+                    if (!location.getBlock().isEmpty()) {
+                        location.setX(location.getX() - 2);
+                        if (!location.getBlock().isEmpty()) {
+                            location.setX(location.getX() + 1);
+                            location.setZ(location.getZ() + 1);
+                            if (!location.getBlock().isEmpty()) {
+                                location.setZ(location.getZ() - 2);
+                                if (!location.getBlock().isEmpty()) {
+                                    location.setZ(location.getZ() + 1);
+                                }
+                            }
+                        }
+                    }
+                }
+                e.getBlock().getLocation().getWorld().dropItemNaturally(location, new ItemStack(Material.EMERALD));
                 e.getBlock().setType(Material.STONE);
                 break;
             }
             case IRON_ORE: {
                 e.setCancelled(true);
-                e.getBlock().getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), new ItemStack(Material.IRON_INGOT));
+                Location location = e.getBlock().getLocation().clone();
+                location.setY(location.getY() + 1);
+                if (!location.getBlock().isEmpty()) {
+                    location.setY(location.getY() - 1);
+                    location.setX(location.getX() + 1);
+                    if (!location.getBlock().isEmpty()) {
+                        location.setX(location.getX() - 2);
+                        if (!location.getBlock().isEmpty()) {
+                            location.setX(location.getX() + 1);
+                            location.setZ(location.getZ() + 1);
+                            if (!location.getBlock().isEmpty()) {
+                                location.setZ(location.getZ() - 2);
+                                if (!location.getBlock().isEmpty()) {
+                                    location.setZ(location.getZ() + 1);
+                                }
+                            }
+                        }
+                    }
+                }
+                e.getBlock().getLocation().getWorld().dropItemNaturally(location, new ItemStack(Material.IRON_INGOT));
                 e.getBlock().setType(Material.STONE);
                 break;
             }
             case GOLD_ORE: {
                 e.setCancelled(true);
-                e.getBlock().getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), new ItemStack(Material.GOLD_INGOT));
+                Location location = e.getBlock().getLocation().clone();
+                location.setY(location.getY() + 1);
+                if (!location.getBlock().isEmpty()) {
+                    location.setY(location.getY() - 1);
+                    location.setX(location.getX() + 1);
+                    if (!location.getBlock().isEmpty()) {
+                        location.setX(location.getX() - 2);
+                        if (!location.getBlock().isEmpty()) {
+                            location.setX(location.getX() + 1);
+                            location.setZ(location.getZ() + 1);
+                            if (!location.getBlock().isEmpty()) {
+                                location.setZ(location.getZ() - 2);
+                                if (!location.getBlock().isEmpty()) {
+                                    location.setZ(location.getZ() + 1);
+                                }
+                            }
+                        }
+                    }
+                }
+                e.getBlock().getLocation().getWorld().dropItemNaturally(location, new ItemStack(Material.GOLD_INGOT));
                 e.getBlock().setType(Material.STONE);
                 break;
             }
             case STONE: {
                 e.setCancelled(true);
-                e.getBlock().getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), new ItemStack(Material.COBBLESTONE));
+                Location location = e.getBlock().getLocation().clone();
+                location.setY(location.getY() + 1);
+                if (!location.getBlock().isEmpty()) {
+                    location.setY(location.getY() - 1);
+                    location.setX(location.getX() + 1);
+                    if (!location.getBlock().isEmpty()) {
+                        location.setX(location.getX() - 2);
+                        if (!location.getBlock().isEmpty()) {
+                            location.setX(location.getX() + 1);
+                            location.setZ(location.getZ() + 1);
+                            if (!location.getBlock().isEmpty()) {
+                                location.setZ(location.getZ() - 2);
+                                if (!location.getBlock().isEmpty()) {
+                                    location.setZ(location.getZ() + 1);
+                                }
+                            }
+                        }
+                    }
+                }
+                e.getBlock().getLocation().getWorld().dropItemNaturally(location, new ItemStack(Material.COBBLESTONE));
                 e.getBlock().setType(Material.BEDROCK);
                 new BukkitRunnable() {
                     @Override
