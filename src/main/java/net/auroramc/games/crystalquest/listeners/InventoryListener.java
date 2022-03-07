@@ -22,7 +22,7 @@ public class InventoryListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
         if (EngineAPI.getServerState() == ServerState.IN_GAME) {
-            if ((e.getSlot() < 3 || e.getSlot() == 8) && e.getClickedInventory() instanceof PlayerInventory) {
+            if (e.getSlot() == 8 && e.getClickedInventory() instanceof PlayerInventory) {
                 e.setCancelled(true);
                 e.getWhoClicked().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot move this item!"));
                 new BukkitRunnable(){
