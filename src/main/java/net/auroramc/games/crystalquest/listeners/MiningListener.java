@@ -5,6 +5,7 @@
 package net.auroramc.games.crystalquest.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.listeners.LobbyListener;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -126,8 +127,12 @@ public class MiningListener implements Listener {
                 break;
             }
             case STAINED_CLAY:
-            case WOOL:
+            case WOOL: {
+                e.getBlock().getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), new GUIItem(e.getBlock().getType(), null, 1, null, (short)((AuroraMCAPI.getPlayer(e.getPlayer()).getTeam().getName().equalsIgnoreCase("Red"))?14:11)).getItem());
+                break;
+            }
             case WOOD:
+                e.getBlock().getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), new GUIItem(e.getBlock().getType()).getItem());
             case STAINED_GLASS: {
                 break;
             }
