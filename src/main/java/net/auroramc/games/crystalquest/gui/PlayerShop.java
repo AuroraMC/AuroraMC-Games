@@ -493,9 +493,9 @@ public class PlayerShop extends GUI {
             //Shears
             case SHEARS: {
                 if (!player.getPlayer().getInventory().contains(Material.SHEARS)) {
-                    if (player.getPlayer().getInventory().contains(Material.GOLD_INGOT, 16)) {
+                    if (player.getPlayer().getInventory().contains(Material.IRON_INGOT, 32)) {
                         player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
-                        player.getPlayer().getInventory().removeItem(new ItemStack(Material.GOLD_INGOT, 16));
+                        player.getPlayer().getInventory().removeItem(new ItemStack(Material.IRON_INGOT, 32));
                         player.getPlayer().getInventory().addItem(new GUIItem(Material.SHEARS).getItem());
                         this.updateItem(3, 5, new GUIItem(Material.BARRIER, "&3Shears", 1, ";&rYou already have Shears."));
                     } else {
