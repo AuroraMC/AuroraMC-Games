@@ -365,6 +365,8 @@ public class CrystalQuest extends Game {
             gp.getPlayer().getInventory().setItem(8, compass);
         }
 
+        gp.getGameData().clear();
+
         player.getPlayer().setGameMode(GameMode.SURVIVAL);
         player.getPlayer().setHealth(20.0D);
         player.getPlayer().setFoodLevel(30);
@@ -404,6 +406,7 @@ public class CrystalQuest extends Game {
                 case CHAINMAIL_HELMET: {
                     ItemStack stack = player.getPlayer().getInventory().getHelmet();
                     stack.setType(Material.LEATHER_HELMET);
+                    player.getGameData().put("death_helmet", stack);
                     break;
                 }
                 case IRON_HELMET: {
@@ -480,7 +483,7 @@ public class CrystalQuest extends Game {
                     player.getGameData().put("death_boots", stack);
                     break;
                 }
-                case IRON_HELMET: {
+                case IRON_BOOTS: {
                     ItemStack stack = player.getPlayer().getInventory().getBoots();
                     stack.setType(Material.CHAINMAIL_BOOTS);
                     player.getGameData().put("death_boots", stack);
