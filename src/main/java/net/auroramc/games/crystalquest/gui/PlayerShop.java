@@ -444,7 +444,7 @@ public class PlayerShop extends GUI {
                 break;
             }
             case DIAMOND_PICKAXE: {
-                if (player.getPlayer().getInventory().getItem(1).getType() != Material.DIAMOND_PICKAXE) {
+                if (player.getPlayer().getInventory().getItem(pickSlot).getType() != Material.DIAMOND_PICKAXE) {
                     if (player.getPlayer().getInventory().contains(Material.GOLD_INGOT, 16)) {
                         player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                         player.getPlayer().getInventory().removeItem(new ItemStack(Material.GOLD_INGOT, 16));
@@ -483,7 +483,7 @@ public class PlayerShop extends GUI {
                 break;
             }
             case DIAMOND_AXE: {
-                if (player.getPlayer().getInventory().getItem(2).getType() != Material.DIAMOND_AXE) {
+                if (player.getPlayer().getInventory().getItem(axeSlot).getType() != Material.DIAMOND_AXE) {
                     if (player.getPlayer().getInventory().contains(Material.GOLD_INGOT, 64)) {
                         player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                         player.getPlayer().getInventory().removeItem(new ItemStack(Material.GOLD_INGOT, 64));
@@ -529,7 +529,7 @@ public class PlayerShop extends GUI {
                 break;
             }
             case DIAMOND_SWORD: {
-                if (player.getPlayer().getInventory().getItem(0).getType() != Material.DIAMOND_SWORD) {
+                if (player.getPlayer().getInventory().getItem(swordSlot).getType() != Material.DIAMOND_SWORD) {
                     if (player.getPlayer().getInventory().contains(Material.GOLD_INGOT, 32)) {
                         player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                         player.getPlayer().getInventory().removeItem(new ItemStack(Material.GOLD_INGOT, 32));

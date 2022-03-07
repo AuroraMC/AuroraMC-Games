@@ -20,6 +20,7 @@ import net.auroramc.games.crystalquest.kits.Defender;
 import net.auroramc.games.crystalquest.kits.Fighter;
 import net.auroramc.games.crystalquest.kits.Miner;
 import net.auroramc.games.crystalquest.listeners.InventoryListener;
+import net.auroramc.games.crystalquest.listeners.MiningListener;
 import net.auroramc.games.crystalquest.listeners.ShopListener;
 import net.auroramc.games.crystalquest.listeners.ShowListener;
 import net.auroramc.games.crystalquest.teams.CQBlue;
@@ -35,6 +36,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Villager;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -60,6 +62,7 @@ public class CrystalQuest extends Game {
     private final ShowListener showListener;
     private final ShopListener shopListener;
     private final InventoryListener inventoryListener;
+    private final MiningListener miningListener;
 
     static {
         compass = new GUIItem(Material.COMPASS, "&3Crystal Compass", 1, ";&rThe compass will display the distance;&rfrom the closest crystal currently captured.").getItem();
@@ -70,6 +73,7 @@ public class CrystalQuest extends Game {
         super(gameVariation);
         showListener = new ShowListener();
         shopListener = new ShopListener();
+        miningListener = new MiningListener();
         inventoryListener = new InventoryListener();
         this.teams.put("Blue", new CQBlue());
         this.teams.put("Red", new CQRed());
@@ -224,6 +228,7 @@ public class CrystalQuest extends Game {
         Bukkit.getPluginManager().registerEvents(showListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(shopListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(inventoryListener, EngineAPI.getGameEngine());
+        Bukkit.getPluginManager().registerEvents(miningListener, EngineAPI.getGameEngine());
         int redSpawnIndex = 0;
         int blueSpawnIndex = 0;
         JSONArray redSpawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("RED");
@@ -288,6 +293,7 @@ public class CrystalQuest extends Game {
         EntityDamageByEntityEvent.getHandlerList().unregister(shopListener);
         InventoryClickEvent.getHandlerList().unregister(inventoryListener);
         PlayerDropItemEvent.getHandlerList().unregister(inventoryListener);
+        BlockBreakEvent.getHandlerList().unregister(miningListener);
         DeathRespawnListener.unregister();
     }
 
