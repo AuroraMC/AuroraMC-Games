@@ -101,20 +101,20 @@ public class DeathRespawnListener implements Listener {
                         case CHAINMAIL_CHESTPLATE: {
                             ItemStack stack = player.getPlayer().getInventory().getChestplate();
                             if (!(player.getKit() instanceof Fighter)) {
-                                stack.setType(Material.LEATHER_HELMET);
+                                stack.setType(Material.LEATHER_CHESTPLATE);
                             }
                             player.getGameData().put("death_chestplate", stack);
                             break;
                         }
                         case IRON_CHESTPLATE: {
                             ItemStack stack = player.getPlayer().getInventory().getChestplate();
-                            stack.setType(Material.CHAINMAIL_HELMET);
+                            stack.setType(Material.CHAINMAIL_CHESTPLATE);
                             player.getGameData().put("death_chestplate", stack);
                             break;
                         }
                         case DIAMOND_CHESTPLATE: {
                             ItemStack stack = player.getPlayer().getInventory().getChestplate();
-                            stack.setType(Material.IRON_HELMET);
+                            stack.setType(Material.IRON_CHESTPLATE);
                             player.getGameData().put("death_chestplate", stack);
                             break;
                         }
