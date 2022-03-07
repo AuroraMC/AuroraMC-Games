@@ -542,13 +542,13 @@ public class CrystalQuest extends Game {
                     player.getGameData().put("death_axe", stack);
                     break;
                 }
-                case IRON_PICKAXE: {
+                case IRON_AXE: {
                     ItemStack stack = player.getPlayer().getInventory().getItem(2);
                     stack.setType(Material.STONE_AXE);
                     player.getGameData().put("death_axe", stack);
                     break;
                 }
-                case DIAMOND_PICKAXE: {
+                case DIAMOND_AXE: {
                     ItemStack stack = player.getPlayer().getInventory().getItem(2);
                     stack.setType(Material.IRON_AXE);
                     player.getGameData().put("death_axe", stack);
