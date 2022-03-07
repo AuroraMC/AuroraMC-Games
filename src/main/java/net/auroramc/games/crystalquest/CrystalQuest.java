@@ -38,6 +38,7 @@ import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -286,6 +287,7 @@ public class CrystalQuest extends Game {
         InventoryOpenEvent.getHandlerList().unregister(shopListener);
         EntityDamageByEntityEvent.getHandlerList().unregister(shopListener);
         InventoryClickEvent.getHandlerList().unregister(inventoryListener);
+        PlayerDropItemEvent.getHandlerList().unregister(inventoryListener);
         DeathRespawnListener.unregister();
     }
 
