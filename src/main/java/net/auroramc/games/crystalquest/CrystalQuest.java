@@ -443,6 +443,18 @@ public class CrystalQuest extends Game {
                 ((CQBlue) player.getTeam()).lostLife();
             }
         } else {
+            if (player.getGameData().containsKey("crystal_possession")) {
+                CQBlue red = (CQBlue) this.getTeams().get("Blue");
+                player.getPlayer().getInventory().setContents((ItemStack[]) player.getGameData().remove("crystal_inventory"));
+                String crystal = (String) player.getGameData().remove("crystal_possession");
+                if (crystal.equals("BOSS")) {
+                    red.getBossCrystal().crystalReturned();
+                } else if (crystal.equals("A")) {
+                    red.getTowerACrystal().crystalReturned();
+                } else {
+                    red.getTowerBCrystal().crystalReturned();
+                }
+            }
             life = ((CQRed) player.getTeam()).getLives() > 0;
             if (life) {
                 ((CQRed) player.getTeam()).lostLife();

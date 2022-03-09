@@ -58,10 +58,10 @@ public class Crystal {
         if (homeTeam instanceof CQBlue) {
             team = "&c&l";
         }
-        String finalMessage = team + holder.getPlayer().getName() + "collected " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!");
+        String finalMessage = team + holder.getPlayer().getName() + " collected " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!");
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             player.sendTitle(AuroraMCAPI.getFormatter().convert(finalMessage), ((player.getTeam().equals(homeTeam)?"Kill them to return it to the " + ((isBoss())?"base":"tower") + "!":"Protect them at all costs!")), 20, 100, 20, ChatColor.BLUE, ChatColor.RESET, true, false);
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", finalMessage + " &r" + ((player.getTeam().equals(homeTeam)?"Kill them to return it to the base!":"Protect **" + holder.getPlayer().getName() + "** at all costs."))));
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", finalMessage + " &r" + ((player.getTeam().equals(homeTeam)?"Kill them to return it to the base!":"Protect them at all costs."))));
         }
 
         for (int i = 0;i < 36;i++) {
@@ -79,7 +79,7 @@ public class Crystal {
         if (homeTeam instanceof CQBlue) {
             team = "&c&l";
         }
-        String finalMessage = team + holder.getPlayer().getName() + "captured " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!");
+        String finalMessage = team + holder.getPlayer().getName() + " captured " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!");
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             player.sendTitle(AuroraMCAPI.getFormatter().convert(finalMessage), ((isBoss())?homeTeam.getName() + " can no longer respawn!":""), 20, 100, 20, ChatColor.BLUE, ChatColor.RESET, true, false);
             player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", finalMessage + " &r" + ((isBoss())?homeTeam.getName() + " can no longer respawn!":"")));
