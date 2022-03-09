@@ -208,7 +208,7 @@ public class CrystalQuest extends Game {
         Bukkit.getPluginManager().registerEvents(miningListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(crystalListener, EngineAPI.getGameEngine());
 
-        scoreboardTask = new ScoreboardRunnable((CQBlue) this.teams.get("Blue"), (CQRed) this.teams.get("Red")).runTaskTimer(EngineAPI.getGameEngine(), 0, 40);
+        scoreboardTask = new ScoreboardRunnable((CQBlue) this.teams.get("Blue"), (CQRed) this.teams.get("Red")).runTaskTimer(EngineAPI.getGameEngine(), 0, 100);
 
         int redSpawnIndex = 0;
         int blueSpawnIndex = 0;
