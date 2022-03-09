@@ -41,10 +41,10 @@ public class ScoreboardRunnable extends BukkitRunnable {
             scoreboard.setLine(11, " ");
             if (red.getBossCrystal().getState() == Crystal.CrystalState.DEAD) {
                 scoreboard.setLine(10, "&c&l«RED ALIVE»");
-                scoreboard.setLine(9, "" + AuroraMCAPI.getPlayers().stream().filter(auroraMCPlayer -> !player.isDead() && player.getTeam() instanceof CQRed).count());
+                scoreboard.setLine(9, "" + AuroraMCAPI.getPlayers().stream().filter(auroraMCPlayer -> !player.isDead() && player.getTeam() instanceof CQRed).count() + " ");
             } else {
                 scoreboard.setLine(10, "&c&l«RED CRYSTALS»");
-                scoreboard.setLine(9, "&" + ((red.getBossCrystal().getState() == Crystal.CrystalState.AT_HOME)?'a':(red.getBossCrystal().getState() == Crystal.CrystalState.CAPTURED)?'e':'c') + "✰ &" + ((red.getTowerACrystal().getState() == Crystal.CrystalState.AT_HOME)?'a':(red.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED)?'e':'c') + "✰ &" + ((red.getTowerBCrystal().getState() == Crystal.CrystalState.AT_HOME)?'a':(red.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED)?'e':'c') + "✰");
+                scoreboard.setLine(9, "&" + ((red.getBossCrystal().getState() == Crystal.CrystalState.AT_HOME)?'a':(red.getBossCrystal().getState() == Crystal.CrystalState.CAPTURED)?'e':'c') + "✰ &" + ((red.getTowerACrystal().getState() == Crystal.CrystalState.AT_HOME)?'a':(red.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED)?'e':'c') + "✰ &" + ((red.getTowerBCrystal().getState() == Crystal.CrystalState.AT_HOME)?'a':(red.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED)?'e':'c') + "✰ ");
             }
 
             long gametime = (System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp()) - 10000;
@@ -55,7 +55,7 @@ public class ScoreboardRunnable extends BukkitRunnable {
                 finalValue = 0;
             }
 
-            double timeTillReset = ((gametime < 180000L)?(180000 - gametime):(300000 - ((gametime - 180000) % 300000)));
+            double timeTillReset = ((gametime < 180000L)?(180000 - gametime):(300000 - ((gametime - 180000) % 300000))) / 1000d / 60d;
             double finalTimeTillReset = (double)Math.round(timeTillReset * 10.0D) / 10.0D;
             if (gametime < 0) {
                 finalTimeTillReset = 3;
@@ -63,8 +63,8 @@ public class ScoreboardRunnable extends BukkitRunnable {
 
             scoreboard.setLine(8, "  ");
             scoreboard.setLine(7, "&b&l«MINE RESET»");
-            scoreboard.setLine(6,  finalTimeTillReset + " minutes");
-            scoreboard.setLine(5, "    ");
+            scoreboard.setLine(6,  finalTimeTillReset + " minutes ");
+            scoreboard.setLine(5, "   ");
             scoreboard.setLine(4, "&b&l«GAME TIME»");
             scoreboard.setLine(3,  finalValue + " minutes");
             scoreboard.setLine(2, "    ");
