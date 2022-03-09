@@ -121,7 +121,9 @@ public class MiningListener implements Listener {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        e.getBlock().setType(Material.STONE);
+                        if (e.getBlock().getType() == Material.BEDROCK) {
+                            e.getBlock().setType(Material.STONE);
+                        }
                     }
                 }.runTaskLater(AuroraMCAPI.getCore(), 100);
                 break;

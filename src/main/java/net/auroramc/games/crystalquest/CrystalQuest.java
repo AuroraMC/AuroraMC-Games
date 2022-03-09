@@ -102,11 +102,11 @@ public class CrystalQuest extends Game {
         JSONArray tower = object.getJSONArray("TOWER RED");
         JSONObject boss = object.getJSONArray("BOSS RED").getJSONObject(0);
 
-        Crystal bossCrystal = new Crystal(new Location(EngineAPI.getMapWorld(), boss.getInt("x") + 0.5, boss.getInt("y"), boss.getInt("z") + 0.5), true);
+        Crystal bossCrystal = new Crystal(new Location(EngineAPI.getMapWorld(), boss.getInt("x") + 0.5, boss.getInt("y"), boss.getInt("z") + 0.5), red, true);
         red.setBossCrystal(bossCrystal);
-        Crystal towerA = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(0).getInt("x") + 0.5, tower.getJSONObject(0).getInt("y"), tower.getJSONObject(0).getInt("z") + 0.5), false);
+        Crystal towerA = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(0).getInt("x") + 0.5, tower.getJSONObject(0).getInt("y"), tower.getJSONObject(0).getInt("z") + 0.5), red, false);
         red.setTowerACrystal(towerA);
-        Crystal towerB = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(1).getInt("x") + 0.5, tower.getJSONObject(1).getInt("y"), tower.getJSONObject(1).getInt("z") + 0.5), false);
+        Crystal towerB = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(1).getInt("x") + 0.5, tower.getJSONObject(1).getInt("y"), tower.getJSONObject(1).getInt("z") + 0.5), red, false);
         red.setTowerBCrystal(towerB);
 
 
@@ -114,11 +114,11 @@ public class CrystalQuest extends Game {
         tower = object.getJSONArray("TOWER BLUE");
         boss = object.getJSONArray("BOSS BLUE").getJSONObject(0);
 
-        bossCrystal = new Crystal(new Location(EngineAPI.getMapWorld(), boss.getInt("x") + 0.5, boss.getInt("y"), boss.getInt("z") + 0.5), true);
+        bossCrystal = new Crystal(new Location(EngineAPI.getMapWorld(), boss.getInt("x") + 0.5, boss.getInt("y"), boss.getInt("z") + 0.5), blue, true);
         blue.setBossCrystal(bossCrystal);
-        towerA = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(0).getInt("x") + 0.5, tower.getJSONObject(0).getInt("y"), tower.getJSONObject(0).getInt("z") + 0.5), false);
+        towerA = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(0).getInt("x") + 0.5, tower.getJSONObject(0).getInt("y"), tower.getJSONObject(0).getInt("z") + 0.5), blue, false);
         blue.setTowerACrystal(towerA);
-        towerB = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(1).getInt("x") + 0.5, tower.getJSONObject(1).getInt("y"), tower.getJSONObject(1).getInt("z") + 0.5), false);
+        towerB = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(1).getInt("x") + 0.5, tower.getJSONObject(1).getInt("y"), tower.getJSONObject(1).getInt("z") + 0.5), blue, false);
         blue.setTowerBCrystal(towerB);
 
         //Now spawn shops.
@@ -289,8 +289,10 @@ public class CrystalQuest extends Game {
     }
 
     private void onEnd() {
-        this.mineTask.cancel();
-        this.mineTask = null;
+        if (mineTask != null) {
+            this.mineTask.cancel();
+            this.mineTask = null;
+        }
         PlayerShowEvent.getHandlerList().unregister(showListener);
         PlayerInteractAtEntityEvent.getHandlerList().unregister(shopListener);
         InventoryOpenEvent.getHandlerList().unregister(shopListener);
@@ -570,7 +572,7 @@ public class CrystalQuest extends Game {
                 }
                 case DIAMOND_PICKAXE: {
                     ItemStack stack = player.getPlayer().getInventory().getItem(1);
-                    if (!((player.getTeam() instanceof Miner))) {
+                    if (!((player.getKit() instanceof Miner))) {
                         stack.setType(Material.IRON_PICKAXE);
                     }
                     player.getGameData().put("death_pickaxe", stack);

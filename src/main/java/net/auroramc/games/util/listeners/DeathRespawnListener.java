@@ -18,10 +18,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -30,6 +27,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -74,9 +72,6 @@ public class DeathRespawnListener implements Listener {
                     if (((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
                         Player damager = (Player) ((EntityDamageByEntityEvent) e).getDamager();
                         killer = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(damager);
-                        if (killer.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.KILL_MESSAGE)) {
-                            killMessage = (KillMessage) killer.getActiveCosmetics().get(Cosmetic.CosmeticType.KILL_MESSAGE);
-                        }
                         switch (e.getCause()) {
                             case PROJECTILE: {
                                 killReason = KillMessage.KillReason.BOW;
@@ -100,19 +95,13 @@ public class DeathRespawnListener implements Listener {
                         if (primed.getSource() instanceof Player) {
                             Player damager = (Player) primed.getSource();
                             killer = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(damager);
-                            if (killer.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.KILL_MESSAGE)) {
-                                killMessage = (KillMessage) killer.getActiveCosmetics().get(Cosmetic.CosmeticType.KILL_MESSAGE);
-                            }
                             killReason = KillMessage.KillReason.TNT;
                         }
-                    } else if (((EntityDamageByEntityEvent) e).getDamager() instanceof Projectile) {
+                    } else if (((EntityDamageByEntityEvent) e).getDamager() instanceof Arrow) {
                         Projectile projectile = (Projectile) ((EntityDamageByEntityEvent) e).getDamager();
                         if (projectile.getShooter() instanceof Player) {
                             Player damager = (Player) projectile.getShooter();
                             killer = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(damager);
-                            if (killer.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.KILL_MESSAGE)) {
-                                killMessage = (KillMessage) killer.getActiveCosmetics().get(Cosmetic.CosmeticType.KILL_MESSAGE);
-                            }
                             killReason = KillMessage.KillReason.BOW;
                         } else {
                             if (projectile.getShooter() instanceof Entity) {
@@ -171,9 +160,10 @@ public class DeathRespawnListener implements Listener {
 
                 //Bukkit.broadcastMessage(" " + killer + "  " + player + " " + entity + " " + killReason);
 
-                String finalMessage = killMessage.onKill(killer, player, entity, killReason);
-
                 if (killer != null) {
+                    if (killer.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.KILL_MESSAGE)) {
+                        killMessage = (KillMessage) killer.getActiveCosmetics().get(Cosmetic.CosmeticType.KILL_MESSAGE);
+                    }
                     killer.getRewards().addXp("Kills", 25);
                     killer.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills", 1, true);
 
@@ -187,6 +177,8 @@ public class DeathRespawnListener implements Listener {
                     }
                 }
 
+                String finalMessage = killMessage.onKill(killer, player, entity, killReason);
+
                 player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
 
                 player.setLastHitAt(-1);
@@ -197,6 +189,7 @@ public class DeathRespawnListener implements Listener {
                 player.getPlayer().getInventory().setChestplate(new ItemStack(Material.AIR));
                 player.getPlayer().getInventory().setLeggings(new ItemStack(Material.AIR));
                 player.getPlayer().getInventory().setBoots(new ItemStack(Material.AIR));
+                player.getPlayer().setFireTicks(0);
 
                 for (Player player2 : Bukkit.getOnlinePlayers()) {
                     player2.hidePlayer(player.getPlayer());
@@ -208,6 +201,9 @@ public class DeathRespawnListener implements Listener {
                     public void run() {
                         //Check if they are still connected.
                         if (player.getPlayer().isOnline()) {
+                            player.getPlayer().setFallDistance(0);
+                            player.getPlayer().setFireTicks(0);
+                            player.getPlayer().setVelocity(new Vector(0, 0, 0));
                             EngineAPI.getActiveGame().onRespawn(player);
                             for (Player player2 : Bukkit.getOnlinePlayers()) {
                                 player2.showPlayer(player.getPlayer());

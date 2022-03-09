@@ -51,12 +51,14 @@ public class ShopListener implements Listener {
             } else if (e.getEntity() instanceof ArmorStand) {
                 e.setCancelled(true);
 
-                if (ChatColor.stripColor(e.getEntity().getCustomName()).startsWith("Player")) {
-                    gui = new PlayerShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager()));
-                } else if (ChatColor.stripColor(e.getEntity().getCustomName()).startsWith("Team")) {
-                    gui = new TeamShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager()));
-                } else {
-                    return;
+                if (e.getEntity().getCustomName() != null) {
+                    if (ChatColor.stripColor(e.getEntity().getCustomName()).startsWith("Player")) {
+                        gui = new PlayerShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager()));
+                    } else if (ChatColor.stripColor(e.getEntity().getCustomName()).startsWith("Team")) {
+                        gui = new TeamShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager()));
+                    } else {
+                        return;
+                    }
                 }
             }
         }
