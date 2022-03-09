@@ -23,6 +23,7 @@ import net.auroramc.games.crystalquest.listeners.*;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
 import net.auroramc.games.util.listeners.DeathRespawnListener;
+import net.auroramc.games.util.listeners.PregameMoveListener;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -197,6 +198,7 @@ public class CrystalQuest extends Game {
     public void start() {
         super.start();
         DeathRespawnListener.register(200, false);
+        PregameMoveListener.register();
         Bukkit.getPluginManager().registerEvents(showListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(shopListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(inventoryListener, EngineAPI.getGameEngine());
@@ -310,6 +312,7 @@ public class CrystalQuest extends Game {
     @Override
     public void inProgress() {
         super.inProgress();
+        PregameMoveListener.unregister();
         mineTask = new BukkitRunnable() {
             @Override
             public void run() {

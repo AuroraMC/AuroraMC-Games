@@ -31,7 +31,9 @@ public class CrystalListener implements Listener {
         if (e.getRightClicked().getType() == EntityType.ENDER_CRYSTAL) {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
             EnderCrystal crystal = (EnderCrystal) e.getRightClicked();
-            crystalCapture(player, crystal);
+            if (!player.isSpectator()) {
+                crystalCapture(player, crystal);
+            }
         }
     }
 
@@ -122,7 +124,9 @@ public class CrystalListener implements Listener {
             if (e.getDamager() instanceof Player) {
                 AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager());
                 EnderCrystal crystal = (EnderCrystal) e.getEntity();
-                crystalCapture(player, crystal);
+                if (!player.isSpectator()) {
+                    crystalCapture(player, crystal);
+                }
             }
         }
     }
