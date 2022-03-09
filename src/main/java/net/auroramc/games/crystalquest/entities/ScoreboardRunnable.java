@@ -6,7 +6,7 @@ package net.auroramc.games.crystalquest.entities;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.players.PlayerScoreboard;
+import net.auroramc.core.api.players.scoreboard.PlayerScoreboard;
 import net.auroramc.core.api.punishments.PunishmentLength;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
