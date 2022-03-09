@@ -50,7 +50,6 @@ public class DeathRespawnListener implements Listener {
                 e.setCancelled(true);
                 EngineAPI.getActiveGame().onDeath(player);
                 player.setSpectator(true, false);
-                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You died."));
                 JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
                 int x, y, z;
                 x = specSpawn.getInt("x");
@@ -193,7 +192,7 @@ public class DeathRespawnListener implements Listener {
 
                 for (Player player2 : Bukkit.getOnlinePlayers()) {
                     player2.hidePlayer(player.getPlayer());
-                    player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", finalMessage));
+                    player2.sendMessage(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(finalMessage)));
                 }
 
                 new BukkitRunnable(){

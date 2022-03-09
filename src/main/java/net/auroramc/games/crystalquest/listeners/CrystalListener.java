@@ -61,8 +61,18 @@ public class CrystalListener implements Listener {
                             }
                         } else if (blue.getTowerACrystal().getCrystal().equals(crystal)) {
                             Crystal crystal1 = blue.getTowerACrystal();
+                            if (blue.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You can only capture one crystal at any one time! Wait till your currently captured crystal has been returned!"));
+                                return;
+                            }
+                            crystal1.crystalCaptured(player);
                         } else if (blue.getTowerBCrystal().getCrystal().equals(crystal)) {
-
+                            Crystal crystal1 = blue.getTowerBCrystal();
+                            if (blue.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You can only capture one crystal at any one time! Wait till your currently captured crystal has been returned!"));
+                                return;
+                            }
+                            crystal1.crystalCaptured(player);
                         } else {
                             //This is theoretically impossible. Ignore the event.
                         }
@@ -71,6 +81,40 @@ public class CrystalListener implements Listener {
                     }
                 } else {
                     //Blue
+                    if (blue.getBossCrystal().getCrystal().equals(crystal) || blue.getTowerACrystal().getCrystal().equals(crystal) || blue.getTowerBCrystal().getCrystal().equals(crystal)) {
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You can't capture your own crystal!"));
+                        return;
+                    }
+
+                    if (!player.getGameData().containsKey("crystal_possession")) {
+                        if (red.getBossCrystal().getCrystal().equals(crystal)) {
+                            if (red.getTowerBCrystal().getState() == Crystal.CrystalState.DEAD && red.getTowerACrystal().getState() == Crystal.CrystalState.DEAD) {
+                                //Only capture if they're both dead.
+                                Crystal crystal1 = red.getBossCrystal();
+                                crystal1.crystalCaptured(player);
+                            } else {
+                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You can only capture a boss crystal if both tower crystals have been captured!"));
+                            }
+                        } else if (red.getTowerACrystal().getCrystal().equals(crystal)) {
+                            Crystal crystal1 = red.getTowerACrystal();
+                            if (red.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You can only capture one crystal at any one time! Wait till your currently captured crystal has been returned!"));
+                                return;
+                            }
+                            crystal1.crystalCaptured(player);
+                        } else if (red.getTowerBCrystal().getCrystal().equals(crystal)) {
+                            Crystal crystal1 = red.getTowerBCrystal();
+                            if (red.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You can only capture one crystal at any one time! Wait till your currently captured crystal has been returned!"));
+                                return;
+                            }
+                            crystal1.crystalCaptured(player);
+                        } else {
+                            //This is theoretically impossible. Ignore the event.
+                        }
+                    } else {
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You already have a crystal, return it first before capturing another!"));
+                    }
                 }
             }
         }
