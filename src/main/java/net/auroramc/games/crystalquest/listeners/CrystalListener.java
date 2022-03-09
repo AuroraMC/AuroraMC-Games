@@ -9,6 +9,7 @@ import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.entities.Crystal;
+import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.EntityType;
@@ -40,7 +41,7 @@ public class CrystalListener implements Listener {
                 AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager());
                 EnderCrystal crystal = (EnderCrystal) e.getEntity();
                 CQRed red = (CQRed) EngineAPI.getActiveGame().getTeams().get("Red");
-                CQRed blue = (CQRed) EngineAPI.getActiveGame().getTeams().get("Blue");
+                CQBlue blue = (CQBlue) EngineAPI.getActiveGame().getTeams().get("Blue");
 
                 if (player.getTeam().getName().equalsIgnoreCase("Red")) {
                     //Red
