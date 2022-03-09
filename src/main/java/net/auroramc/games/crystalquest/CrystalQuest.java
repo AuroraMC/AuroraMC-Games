@@ -196,7 +196,7 @@ public class CrystalQuest extends Game {
     @Override
     public void start() {
         super.start();
-        DeathRespawnListener.register(200);
+        DeathRespawnListener.register(200, false);
         Bukkit.getPluginManager().registerEvents(showListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(shopListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(inventoryListener, EngineAPI.getGameEngine());

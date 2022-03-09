@@ -36,6 +36,7 @@ public class DeathRespawnListener implements Listener {
 
     private final static DeathRespawnListener instance;
     private static long timeout;
+    private static boolean friendlyFire;
 
     static {
         instance = new DeathRespawnListener();
@@ -46,6 +47,18 @@ public class DeathRespawnListener implements Listener {
         if (e.getEntity() instanceof Player) {
             Player pl = (Player) e.getEntity();
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(pl);
+            if (!friendlyFire) {
+                if (e instanceof EntityDamageByEntityEvent) {
+                    if (((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
+                        Player damager = (Player) ((EntityDamageByEntityEvent) e).getDamager();
+                        AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(damager);
+                        if (player1.getTeam().equals(player.getTeam())) {
+                            e.setCancelled(true);
+                            return;
+                        }
+                    }
+                }
+            }
             if (e.getFinalDamage() >= player.getPlayer().getHealth() && !player.isSpectator()) {
                 e.setCancelled(true);
                 EngineAPI.getActiveGame().onDeath(player);
@@ -225,9 +238,10 @@ public class DeathRespawnListener implements Listener {
     }
 
 
-    public static void register(int timeout) {
+    public static void register(int timeout, boolean friendlyFire) {
         Bukkit.getPluginManager().registerEvents(instance, EngineAPI.getGameEngine());
         DeathRespawnListener.timeout = timeout;
+        DeathRespawnListener.friendlyFire = friendlyFire;
     }
 
     public static void unregister() {
