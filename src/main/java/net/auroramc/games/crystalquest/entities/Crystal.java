@@ -54,6 +54,10 @@ public class Crystal {
         holder.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 1000000, 0, true, false));
         holder.getPlayer().getInventory().clear();
 
+        for (int i = 0;i < 36;i++) {
+            holder.getPlayer().getInventory().setItem(i, new GUIItem(Material.NETHER_STAR, "&3&lCollected Crystal", 1, ";&rReturn this to your base!").getItem());
+        }
+
         String team = "&9&l";
         if (homeTeam instanceof CQBlue) {
             team = "&c&l";
@@ -62,10 +66,6 @@ public class Crystal {
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             player.sendTitle(AuroraMCAPI.getFormatter().convert(team + homeTeam.getName() + ((isBoss())?" Boss Crystal Collected!":" Tower Crystal Collected!")), holder.getPlayer().getName() + " collected " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!"), 20, 100, 20, ChatColor.BLUE, ChatColor.RESET, true, false);
             player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", finalMessage + " &r" + ((player.getTeam().equals(homeTeam)?"Kill them to return it to the base!":"Protect them at all costs."))));
-        }
-
-        for (int i = 0;i < 36;i++) {
-            holder.getPlayer().getInventory().setItem(i, new GUIItem(Material.NETHER_STAR, "&3&lCollected Crystal", 1, ";&rReturn this to your base!").getItem());
         }
     }
 
