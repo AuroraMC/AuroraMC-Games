@@ -19,10 +19,7 @@ import net.auroramc.games.crystalquest.entities.Crystal;
 import net.auroramc.games.crystalquest.kits.Defender;
 import net.auroramc.games.crystalquest.kits.Fighter;
 import net.auroramc.games.crystalquest.kits.Miner;
-import net.auroramc.games.crystalquest.listeners.InventoryListener;
-import net.auroramc.games.crystalquest.listeners.MiningListener;
-import net.auroramc.games.crystalquest.listeners.ShopListener;
-import net.auroramc.games.crystalquest.listeners.ShowListener;
+import net.auroramc.games.crystalquest.listeners.*;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
 import net.auroramc.games.util.listeners.DeathRespawnListener;
@@ -64,6 +61,7 @@ public class CrystalQuest extends Game {
     private final ShopListener shopListener;
     private final InventoryListener inventoryListener;
     private final MiningListener miningListener;
+    private final CrystalListener crystalListener;
     private BukkitTask mineTask;
 
     static {
@@ -77,6 +75,7 @@ public class CrystalQuest extends Game {
         shopListener = new ShopListener();
         miningListener = new MiningListener();
         inventoryListener = new InventoryListener();
+        crystalListener = new CrystalListener();
         this.teams.put("Blue", new CQBlue());
         this.teams.put("Red", new CQRed());
         this.kits.add(new Miner());
@@ -201,6 +200,7 @@ public class CrystalQuest extends Game {
         Bukkit.getPluginManager().registerEvents(shopListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(inventoryListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(miningListener, EngineAPI.getGameEngine());
+        Bukkit.getPluginManager().registerEvents(crystalListener, EngineAPI.getGameEngine());
         int redSpawnIndex = 0;
         int blueSpawnIndex = 0;
         JSONArray redSpawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("RED");
@@ -300,6 +300,8 @@ public class CrystalQuest extends Game {
         InventoryClickEvent.getHandlerList().unregister(inventoryListener);
         PlayerDropItemEvent.getHandlerList().unregister(inventoryListener);
         BlockBreakEvent.getHandlerList().unregister(miningListener);
+        EntityDamageByEntityEvent.getHandlerList().unregister(crystalListener);
+        PlayerInteractAtEntityEvent.getHandlerList().unregister(crystalListener);
         DeathRespawnListener.unregister();
     }
 
@@ -367,9 +369,8 @@ public class CrystalQuest extends Game {
 
     @Override
     public void onRespawn(AuroraMCGamePlayer player) {
-        AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
         Location location;
-        if (gp.getTeam() instanceof CQRed) {
+        if (player.getTeam() instanceof CQRed) {
             JSONArray spawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("RED");
             JSONObject spawn = spawns.getJSONObject(new Random().nextInt(spawns.length()));
             int x, y, z;
@@ -389,26 +390,26 @@ public class CrystalQuest extends Game {
             float yaw = spawn.getFloat("yaw");
             location = new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0);
         }
-        gp.getPlayer().teleport(location);
-        if (gp.getGameData().containsKey("death_inventory")) {
-            gp.getPlayer().getInventory().setContents((ItemStack[]) gp.getGameData().get("death_inventory"));
-            gp.getPlayer().getInventory().setHelmet((ItemStack) gp.getGameData().get("death_helmet"));
-            gp.getPlayer().getInventory().setChestplate((ItemStack) gp.getGameData().get("death_chestplate"));
-            gp.getPlayer().getInventory().setLeggings((ItemStack) gp.getGameData().get("death_leggings"));
-            gp.getPlayer().getInventory().setBoots((ItemStack) gp.getGameData().get("death_boots"));
+        player.getPlayer().teleport(location);
+        if (player.getGameData().containsKey("death_inventory")) {
+            player.getPlayer().getInventory().setContents((ItemStack[]) player.getGameData().get("death_inventory"));
+            player.getPlayer().getInventory().setHelmet((ItemStack) player.getGameData().get("death_helmet"));
+            player.getPlayer().getInventory().setChestplate((ItemStack) player.getGameData().get("death_chestplate"));
+            player.getPlayer().getInventory().setLeggings((ItemStack) player.getGameData().get("death_leggings"));
+            player.getPlayer().getInventory().setBoots((ItemStack) player.getGameData().get("death_boots"));
         } else {
-            gp.getPlayer().getInventory().setHelmet((ItemStack) gp.getGameData().get("death_helmet"));
-            gp.getPlayer().getInventory().setChestplate((ItemStack) gp.getGameData().get("death_chestplate"));
-            gp.getPlayer().getInventory().setLeggings((ItemStack) gp.getGameData().get("death_leggings"));
-            gp.getPlayer().getInventory().setBoots((ItemStack) gp.getGameData().get("death_boots"));
+            player.getPlayer().getInventory().setHelmet((ItemStack) player.getGameData().get("death_helmet"));
+            player.getPlayer().getInventory().setChestplate((ItemStack) player.getGameData().get("death_chestplate"));
+            player.getPlayer().getInventory().setLeggings((ItemStack) player.getGameData().get("death_leggings"));
+            player.getPlayer().getInventory().setBoots((ItemStack) player.getGameData().get("death_boots"));
 
-            gp.getPlayer().getInventory().setItem(0, (ItemStack) gp.getGameData().get("death_sword"));
-            gp.getPlayer().getInventory().setItem(1, (ItemStack) gp.getGameData().get("death_pickaxe"));
-            gp.getPlayer().getInventory().setItem(2, (ItemStack) gp.getGameData().get("death_axe"));
-            gp.getPlayer().getInventory().setItem(8, compass);
+            player.getPlayer().getInventory().setItem(0, (ItemStack) player.getGameData().get("death_sword"));
+            player.getPlayer().getInventory().setItem(1, (ItemStack) player.getGameData().get("death_pickaxe"));
+            player.getPlayer().getInventory().setItem(2, (ItemStack) player.getGameData().get("death_axe"));
+            player.getPlayer().getInventory().setItem(8, compass);
         }
 
-        gp.getGameData().clear();
+        player.getGameData().clear();
 
         player.getPlayer().setGameMode(GameMode.SURVIVAL);
         player.getPlayer().setHealth(20.0D);
