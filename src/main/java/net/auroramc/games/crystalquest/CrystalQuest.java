@@ -426,6 +426,18 @@ public class CrystalQuest extends Game {
     public void onDeath(AuroraMCGamePlayer player) {
         boolean life;
         if (player.getTeam() instanceof CQBlue) {
+            if (player.getGameData().containsKey("crystal_possession")) {
+                    CQRed red = (CQRed) this.getTeams().get("Red");
+                    player.getPlayer().getInventory().setContents((ItemStack[]) player.getGameData().remove("crystal_inventory"));
+                    String crystal = (String) player.getGameData().remove("crystal_possession");
+                    if (crystal.equals("BOSS")) {
+                        red.getBossCrystal().crystalReturned();
+                    } else if (crystal.equals("A")) {
+                        red.getTowerACrystal().crystalReturned();
+                    } else {
+                        red.getTowerBCrystal().crystalReturned();
+                    }
+            }
             life = ((CQBlue) player.getTeam()).getLives() > 0;
             if (life) {
                 ((CQBlue) player.getTeam()).lostLife();
