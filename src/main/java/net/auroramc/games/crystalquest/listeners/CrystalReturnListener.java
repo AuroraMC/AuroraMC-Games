@@ -40,22 +40,25 @@ public class CrystalReturnListener implements Listener {
                 if (e.getTo().distanceSquared(a) < 25 || e.getTo().distanceSquared(b) < 25 || e.getTo().distanceSquared(c) < 25) {
                     if (crystal.isBoss()) {
                         //Boss Crystal. Use point C.
+                        crystal.crystalDead(c);
                     } else {
                         if (crystal.getHomeTeam() instanceof CQRed) {
                             CQRed red = (CQRed) crystal.getHomeTeam();
                             if (red.getTowerACrystal().equals(crystal)) {
                                 //Tower A Crystal. Use point A.
-
+                                crystal.crystalDead(a);
                             } else {
                                 //Tower B Crystal. Use point B.
+                                crystal.crystalDead(b);
                             }
                         } else {
                             CQBlue blue = (CQBlue) crystal.getHomeTeam();
                             if (blue.getTowerACrystal().equals(crystal)) {
                                 //Tower A Crystal. Use point A.
-
+                                crystal.crystalDead(a);
                             } else {
                                 //Tower B Crystal. Use point B.
+                                crystal.crystalDead(b);
                             }
                         }
                     }
