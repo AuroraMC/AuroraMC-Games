@@ -16,6 +16,7 @@ import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.games.Kit;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.entities.Crystal;
+import net.auroramc.games.crystalquest.entities.ScoreboardRunnable;
 import net.auroramc.games.crystalquest.kits.Defender;
 import net.auroramc.games.crystalquest.kits.Fighter;
 import net.auroramc.games.crystalquest.kits.Miner;
@@ -65,6 +66,8 @@ public class CrystalQuest extends Game {
     private final MiningListener miningListener;
     private final CrystalListener crystalListener;
     private BukkitTask mineTask;
+
+    private BukkitTask scoreboardTask;
 
     static {
         compass = new GUIItem(Material.COMPASS, "&3Crystal Compass", 1, ";&rThe compass will display the distance;&rfrom the closest crystal currently captured.").getItem();
@@ -204,6 +207,9 @@ public class CrystalQuest extends Game {
         Bukkit.getPluginManager().registerEvents(inventoryListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(miningListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(crystalListener, EngineAPI.getGameEngine());
+
+        scoreboardTask = new ScoreboardRunnable((CQBlue) this.teams.get("Blue"), (CQRed) this.teams.get("Red")).runTaskTimer(EngineAPI.getGameEngine(), 0, 40);
+
         int redSpawnIndex = 0;
         int blueSpawnIndex = 0;
         JSONArray redSpawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("RED");
@@ -296,6 +302,7 @@ public class CrystalQuest extends Game {
             this.mineTask.cancel();
             this.mineTask = null;
         }
+        scoreboardTask.cancel();
         PlayerShowEvent.getHandlerList().unregister(showListener);
         PlayerInteractAtEntityEvent.getHandlerList().unregister(shopListener);
         InventoryOpenEvent.getHandlerList().unregister(shopListener);
@@ -307,6 +314,16 @@ public class CrystalQuest extends Game {
         PlayerInteractAtEntityEvent.getHandlerList().unregister(crystalListener);
         FoodLevelChangeEvent.getHandlerList().unregister(miningListener);
         DeathRespawnListener.unregister();
+
+        CQRed red = (CQRed) getTeams().get("Red");
+        red.getTowerBCrystal().unregisterListener();
+        red.getTowerACrystal().unregisterListener();
+        red.getBossCrystal().unregisterListener();
+
+        CQBlue blue = (CQBlue) getTeams().get("Blue");
+        blue.getTowerBCrystal().unregisterListener();
+        blue.getTowerACrystal().unregisterListener();
+        blue.getBossCrystal().unregisterListener();
     }
 
     @Override
@@ -634,3 +651,4 @@ public class CrystalQuest extends Game {
         }
     }
 }
+
