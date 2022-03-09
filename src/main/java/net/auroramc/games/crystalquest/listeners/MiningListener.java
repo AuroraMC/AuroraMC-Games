@@ -6,12 +6,16 @@ package net.auroramc.games.crystalquest.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.utils.gui.GUIItem;
+import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.listeners.LobbyListener;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -141,6 +145,16 @@ public class MiningListener implements Listener {
             }
             default: {
                 e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onHunger(FoodLevelChangeEvent e) {
+        if (EngineAPI.getServerState() == ServerState.IN_GAME) {
+            if (e.getEntity() instanceof Player && e.getFoodLevel() < 25) {
+                e.setCancelled(true);
+                e.setFoodLevel(30);
             }
         }
     }

@@ -4,17 +4,22 @@
 
 package net.auroramc.games.crystalquest.entities;
 
+import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Team;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.listeners.CrystalReturnListener;
+import net.auroramc.games.crystalquest.teams.CQBlue;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -48,6 +53,17 @@ public class Crystal {
         holder.getGameData().put("crystal_inventory", holder.getPlayer().getInventory().getContents());
         holder.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 1000000, 0, true, false));
         holder.getPlayer().getInventory().clear();
+
+        String team = "&9&lBlue ";
+        if (homeTeam instanceof CQBlue) {
+            team = "&c&lRed ";
+        }
+        String finalMessage = team + " captured " + ((isBoss())?" the Boss Crystal!":" a Crystal!");
+        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+            player.sendTitle(AuroraMCAPI.getFormatter().convert(finalMessage), ((player.getTeam().equals(homeTeam)?"Kill them to return it to the base!":"Protect &b" + holder.getPlayer().getName() + "&r at all costs!")), 20, 100, 20, ChatColor.BLUE, ChatColor.RESET, true, false);
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", finalMessage + " &r" + ((player.getTeam().equals(homeTeam)?"Kill them to return it to the base!":"Protect **" + holder.getPlayer().getName() + "** at all costs."))));
+        }
+
         for (int i = 0;i < 36;i++) {
             holder.getPlayer().getInventory().setItem(i, new GUIItem(Material.NETHER_STAR, "&3&lCaptured Crystal", 1, ";&rReturn this to your base!").getItem());
         }
@@ -55,7 +71,21 @@ public class Crystal {
 
     public void crystalDead(Location location) {
         this.state = CrystalState.DEAD;
+        this.holder.getPlayer().getInventory().setContents((ItemStack[]) this.holder.getGameData().remove("crystal_inventory"));
+        this.holder.getGameData().remove("crystal_possession");
+        this.holder.getPlayer().removePotionEffect(PotionEffectType.SLOW);
         this.holder = null;
+
+        String team = "&9&lBlue ";
+        if (homeTeam instanceof CQBlue) {
+            team = "&c&lRed ";
+        }
+        String finalMessage = team + " returned " + ((isBoss())?" the Boss Crystal!":" a Crystal!");
+        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+            player.sendTitle(AuroraMCAPI.getFormatter().convert(finalMessage), ((isBoss())?homeTeam.getName() + " can no longer respawn!":""), 20, 100, 20, ChatColor.BLUE, ChatColor.RESET, true, false);
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", finalMessage + " &r" + ((isBoss())?homeTeam.getName() + " can no longer respawn!":"")));
+        }
+
         unregisterListener();
         crystal = EngineAPI.getMapWorld().spawn(location, EnderCrystal.class);
     }
