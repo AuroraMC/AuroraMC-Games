@@ -99,10 +99,10 @@ public class Crystal {
         if (homeTeam instanceof CQBlue) {
             team = "&9&l";
         }
-        String finalMessage = team + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal was returned to base!":"Tower Crystal was returned to the tower!");
+        String finalMessage = team + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal was returned!":"Tower Crystal was returned!");
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             player.sendTitle(AuroraMCAPI.getFormatter().convert(finalMessage), "", 20, 100, 20, ChatColor.BLUE, ChatColor.RESET, true, false);
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", finalMessage + "."));
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", finalMessage + ""));
         }
         unregisterListener();
     }
