@@ -42,6 +42,7 @@ public class Crystal {
         crystal.remove();
         crystal = null;
         state = CrystalState.CAPTURED;
+        listener = new CrystalReturnListener(this);
         Bukkit.getPluginManager().registerEvents(listener, EngineAPI.getGameEngine());
         holder.getGameData().put("crystal_possession", type);
         holder.getGameData().put("crystal_inventory", holder.getPlayer().getInventory().getContents());
