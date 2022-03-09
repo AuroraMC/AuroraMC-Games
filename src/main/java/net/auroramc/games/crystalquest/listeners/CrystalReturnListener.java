@@ -34,10 +34,10 @@ public class CrystalReturnListener implements Listener {
                 JSONObject pointA = returnPoints.getJSONObject(0);
                 JSONObject pointB = returnPoints.getJSONObject(1);
                 JSONObject pointC = returnPoints.getJSONObject(2);
-                Location a = new Location(EngineAPI.getMapWorld(), pointA.getInt("x") + 0.5, pointA.getInt("y"), pointA.getInt("z") + 0.5);
-                Location b = new Location(EngineAPI.getMapWorld(), pointB.getInt("x") + 0.5, pointB.getInt("y"), pointB.getInt("z") + 0.5);
-                Location c = new Location(EngineAPI.getMapWorld(), pointC.getInt("x") + 0.5, pointC.getInt("y"), pointC.getInt("z") + 0.5);
-                if (e.getTo().distanceSquared(a) < 25 || e.getTo().distanceSquared(b) < 25 || e.getTo().distanceSquared(c) < 25) {
+                Location a = new Location(EngineAPI.getMapWorld(), pointA.getInt("x") + 0.5, pointA.getInt("y") - 0.5, pointA.getInt("z") + 0.5);
+                Location b = new Location(EngineAPI.getMapWorld(), pointB.getInt("x") + 0.5, pointB.getInt("y") - 0.5, pointB.getInt("z") + 0.5);
+                Location c = new Location(EngineAPI.getMapWorld(), pointC.getInt("x") + 0.5, pointC.getInt("y") - 0.5, pointC.getInt("z") + 0.5);
+                if (e.getTo().distanceSquared(a) < 50 || e.getTo().distanceSquared(b) < 50 || e.getTo().distanceSquared(c) < 50) {
                     if (crystal.isBoss()) {
                         //Boss Crystal. Use point C.
                         crystal.crystalDead(c);
