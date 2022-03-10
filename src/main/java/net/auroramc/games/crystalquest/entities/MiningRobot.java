@@ -22,10 +22,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.EulerAngle;
 
 import java.lang.reflect.Field;
-import java.util.Base64;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class MiningRobot {
 
@@ -68,6 +65,7 @@ public class MiningRobot {
         this.team = team;
         this.location = location;
         this.level = 0;
+        this.inventories = new HashMap<>();
     }
 
     public void spawn() {
