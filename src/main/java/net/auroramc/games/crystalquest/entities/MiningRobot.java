@@ -19,15 +19,18 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.EulerAngle;
 
 import java.lang.reflect.Field;
 import java.util.Base64;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 public class MiningRobot {
 
-    private static ItemStack head;
+    private final static String[] names = {"Craig","Michael","Sean","David","Barbra","Elliot","Josh","Martha","Susan","Marcus","Alex","Oliver","Sam","Ben","Dom","Richard","Harry","Ant","Dec","Steven","Susy","Margret","Kate","Kieron","Marc","Sie","Peter","Zorp","Zeep","Blorp","WALLE","Dave","Nathan"};
+    private final static ItemStack head;
 
     static {
         GameProfile profile = new GameProfile(UUID.randomUUID(), null);
@@ -78,6 +81,8 @@ public class MiningRobot {
         this.entity.setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
         this.entity.setBoots(new ItemStack(Material.DIAMOND_BOOTS));
         this.entity.setLeggings(new ItemStack(Material.DIAMOND_LEGGINGS));
+        this.entity.setCustomName("§3§l" + names[new Random().nextInt(names.length)]);
+        this.entity.setCustomNameVisible(true);
 
         for (AuroraMCPlayer player : team.getPlayers()) {
             this.inventories.put(player, new RobotInventory((AuroraMCGamePlayer) player, this));
@@ -182,5 +187,9 @@ public class MiningRobot {
         int oldEmeralds = emeralds;
         this.emeralds = 0;
         return oldEmeralds;
+    }
+
+    public void openGUI(AuroraMCPlayer player) {
+
     }
 }

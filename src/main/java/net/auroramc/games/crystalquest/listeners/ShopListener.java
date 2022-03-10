@@ -6,9 +6,12 @@ package net.auroramc.games.crystalquest.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.utils.gui.GUI;
+import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.gui.PlayerShop;
 import net.auroramc.games.crystalquest.gui.TeamShop;
+import net.auroramc.games.crystalquest.teams.CQBlue;
+import net.auroramc.games.crystalquest.teams.CQRed;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -72,10 +75,30 @@ public class ShopListener implements Listener {
             e.setCancelled(true);
             GUI gui = null;
             if (e.getRightClicked() instanceof ArmorStand) {
-                if (ChatColor.stripColor(e.getRightClicked().getCustomName()).startsWith("Player")) {
-                    gui = new PlayerShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer()));
-                } else if (ChatColor.stripColor(e.getRightClicked().getCustomName()).startsWith("Team")) {
-                    gui = new TeamShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer()));
+                if (e.getRightClicked().getCustomName() != null) {
+                    if (ChatColor.stripColor(e.getRightClicked().getCustomName()).startsWith("Player")) {
+                        gui = new PlayerShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer()));
+                    } else if (ChatColor.stripColor(e.getRightClicked().getCustomName()).startsWith("Team")) {
+                        gui = new TeamShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer()));
+                    } else {
+                        CQRed red = (CQRed) EngineAPI.getActiveGame().getTeams().get("Red");
+                        CQBlue blue = (CQBlue) EngineAPI.getActiveGame().getTeams().get("Blue");
+                        if (e.getRightClicked().equals(red.getRobotSlotA().getEntity())) {
+                            red.getRobotSlotA().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
+                        } else if (e.getRightClicked().equals(red.getRobotSlotB().getEntity())) {
+                            red.getRobotSlotB().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
+                        } else if (e.getRightClicked().equals(red.getRobotSlotC().getEntity())) {
+                            red.getRobotSlotC().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
+                        } else if (e.getRightClicked().equals(blue.getRobotSlotA().getEntity())) {
+                            blue.getRobotSlotA().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
+                        } else if (e.getRightClicked().equals(blue.getRobotSlotB().getEntity())) {
+                            blue.getRobotSlotB().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
+                        } else if (e.getRightClicked().equals(blue.getRobotSlotC().getEntity())) {
+                            blue.getRobotSlotC().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
+                        }
+                        return;
+
+                    }
                 } else {
                     return;
                 }
