@@ -335,8 +335,13 @@ public class CrystalQuest extends Game {
     public void inProgress() {
         super.inProgress();
         PregameMoveListener.unregister();
-        ((CQRed)this.teams.get("Red")).getRobotSlotA().spawn();
-        ((CQBlue)this.teams.get("Blue")).getRobotSlotA().spawn();
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                ((CQRed)teams.get("Red")).getRobotSlotA().spawn();
+                ((CQBlue)teams.get("Blue")).getRobotSlotA().spawn();
+            }
+        }.runTask(AuroraMCAPI.getCore());
         mineTask = new BukkitRunnable() {
             @Override
             public void run() {
