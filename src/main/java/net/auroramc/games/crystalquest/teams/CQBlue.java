@@ -6,7 +6,16 @@ package net.auroramc.games.crystalquest.teams;
 
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Team;
+import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.entities.Crystal;
+import net.auroramc.games.crystalquest.entities.MiningRobot;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +28,30 @@ public class CQBlue implements Team {
     private Crystal towerBCrystal;
     private int lives;
 
+    private int protUpgrade;
+    private int powerUpgrade;
+    private int sharpUpgrade;
+
+    private final MiningRobot robotSlotA;
+    private final MiningRobot robotSlotB;
+    private final MiningRobot robotSlotC;
+
     public CQBlue() {
         players = new ArrayList<>();
         lives = 0;
+
+        JSONArray locations = EngineAPI.getActiveMap().getMapData().getJSONObject("GAME").getJSONObject("MININGROBOT").getJSONArray("BLUE");
+        JSONObject jsonA = locations.getJSONObject(0);
+        JSONObject jsonB = locations.getJSONObject(1);
+        JSONObject jsonC = locations.getJSONObject(2);
+        Location a = new Location(EngineAPI.getMapWorld(), jsonA.getInt("x"), jsonA.getInt("y"), jsonA.getInt("z"), jsonA.getFloat("yaw"), 0);
+        Location b = new Location(EngineAPI.getMapWorld(), jsonB.getInt("x"), jsonB.getInt("y"), jsonB.getInt("z"), jsonB.getFloat("yaw"), 0);
+        Location c = new Location(EngineAPI.getMapWorld(), jsonC.getInt("x"), jsonC.getInt("y"), jsonC.getInt("z"), jsonC.getFloat("yaw"), 0);
+
+        protUpgrade = powerUpgrade = sharpUpgrade = 0;
+        robotSlotA = new MiningRobot(this, a);
+        robotSlotB = new MiningRobot(this, b);
+        robotSlotC = new MiningRobot(this, c);
     }
 
 
@@ -80,4 +110,87 @@ public class CQBlue implements Team {
     public void lifeBrought() {
         lives++;
     }
+
+    public int getPowerUpgrade() {
+        return powerUpgrade;
+    }
+
+    public void upgradePower() {
+        powerUpgrade++;
+        for (AuroraMCPlayer player : players) {
+            if (!((AuroraMCGamePlayer) player).isSpectator()) {
+                int i = player.getPlayer().getInventory().first(Material.BOW);
+                if (i > -1) {
+                    ItemStack stack = player.getPlayer().getInventory().getItem(i);
+                    stack.addEnchantment(Enchantment.ARROW_DAMAGE, powerUpgrade);
+                }
+            }
+        }
+    }
+
+    public int getProtUpgrade() {
+        return protUpgrade;
+    }
+
+    public void upgradeProt() {
+        protUpgrade++;
+        for (AuroraMCPlayer player : players) {
+            if (!((AuroraMCGamePlayer) player).isSpectator()) {
+                player.getPlayer().getInventory().getBoots().addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protUpgrade);
+                player.getPlayer().getInventory().getHelmet().addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protUpgrade);
+                player.getPlayer().getInventory().getChestplate().addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protUpgrade);
+                player.getPlayer().getInventory().getLeggings().addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protUpgrade);
+            }
+        }
+    }
+
+    public int getSharpUpgrade() {
+        return sharpUpgrade;
+    }
+
+    public void upgradeSharp() {
+        sharpUpgrade++;
+        for (AuroraMCPlayer player : players) {
+            if (!((AuroraMCGamePlayer) player).isSpectator()) {
+                int slot = -1;
+                for (int i = 0; i < 36; i++) {
+                    if (player.getPlayer().getInventory().getItem(i) == null) {
+                        continue;
+                    }
+                    if (player.getPlayer().getInventory().getItem(i).getType().name().endsWith("_SWORD")) {
+                        slot = i;
+                        break;
+                    }
+                }
+                if (slot > -1) {
+                    ItemStack stack = player.getPlayer().getInventory().getItem(slot);
+                    stack.addEnchantment(Enchantment.DAMAGE_ALL, sharpUpgrade);
+                }
+            }
+        }
+    }
+
+    public MiningRobot getRobotSlotA() {
+        return robotSlotA;
+    }
+
+    public MiningRobot getRobotSlotB() {
+        return robotSlotB;
+    }
+
+    public MiningRobot getRobotSlotC() {
+        return robotSlotC;
+    }
+
+    public MiningRobot newRobot() {
+        if (robotSlotB.getLevel() == 0) {
+
+            return robotSlotB;
+        } else if (robotSlotC.getLevel() == 0) {
+            return robotSlotC;
+        } else {
+            return null;
+        }
+    }
+
 }

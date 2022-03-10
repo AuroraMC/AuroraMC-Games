@@ -333,6 +333,8 @@ public class CrystalQuest extends Game {
     public void inProgress() {
         super.inProgress();
         PregameMoveListener.unregister();
+        ((CQRed)this.teams.get("Red")).getRobotSlotA().spawn();
+        ((CQBlue)this.teams.get("Blue")).getRobotSlotA().spawn();
         mineTask = new BukkitRunnable() {
             @Override
             public void run() {

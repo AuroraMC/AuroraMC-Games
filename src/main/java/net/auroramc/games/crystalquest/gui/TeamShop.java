@@ -15,6 +15,9 @@ public class TeamShop extends GUI {
 
     public TeamShop(AuroraMCGamePlayer player) {
         super("&3&lTeam Shop", 5, true);
+        fill("&3&lTeam Shop", null);
+
+
 
         this.player = player;
     }

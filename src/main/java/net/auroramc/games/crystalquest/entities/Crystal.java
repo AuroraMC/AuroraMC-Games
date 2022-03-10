@@ -51,7 +51,7 @@ public class Crystal {
         Bukkit.getPluginManager().registerEvents(listener, EngineAPI.getGameEngine());
         holder.getGameData().put("crystal_possession", type);
         holder.getGameData().put("crystal_inventory", holder.getPlayer().getInventory().getContents());
-        holder.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 1000000, 0, true, false));
+        holder.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 1000000, 1, true, false));
         holder.getPlayer().getInventory().clear();
 
         for (int i = 0;i < 36;i++) {
