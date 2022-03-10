@@ -8,6 +8,7 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.events.player.PlayerShowEvent;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Team;
+import net.auroramc.core.api.players.scoreboard.PlayerScoreboard;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.Game;
@@ -226,38 +227,24 @@ public class CrystalQuest extends Game {
             }
         }
 
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                //Now spawn the crystals.
-                CQRed red = (CQRed) teams.get("Red");
+        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+            PlayerScoreboard scoreboard = player.getScoreboard();
+            scoreboard.setTitle("&3&l-= &b&lCRYSTAL QUEST &3&l=-");
+            scoreboard.setLine(13, "&9&l«BLUE CRYSTALS»");
+            scoreboard.setLine(12, "&a✰ &a✰ &a✰");
+            scoreboard.setLine(11, " ");
+            scoreboard.setLine(10, "&c&l«RED CRYSTALS»");
+            scoreboard.setLine(9, "&a✰ &a✰ &a✰");
+            scoreboard.setLine(8, "  ");
+            scoreboard.setLine(7, "&b&l«MINE RESET»");
+            scoreboard.setLine(6, "3.0 minutes ");
+            scoreboard.setLine(5, "   ");
+            scoreboard.setLine(4, "&b&l«GAME TIME»");
+            scoreboard.setLine(3, "0.0 minutes");
+            scoreboard.setLine(2, "    ");
 
-                JSONObject object = map.getMapData().getJSONObject("game").getJSONObject("CRYSTAL");
-                JSONArray tower = object.getJSONArray("TOWER RED");
-                JSONObject boss = object.getJSONArray("BOSS RED").getJSONObject(0);
+        }
 
-                Crystal bossCrystal = new Crystal(new Location(EngineAPI.getMapWorld(), boss.getInt("x") + 0.5, boss.getInt("y"), boss.getInt("z") + 0.5), red, true, "Boss");
-                red.setBossCrystal(bossCrystal);
-                Crystal towerA = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(0).getInt("x") + 0.5, tower.getJSONObject(0).getInt("y"), tower.getJSONObject(0).getInt("z") + 0.5), red, false, "A");
-                red.setTowerACrystal(towerA);
-                Crystal towerB = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(1).getInt("x") + 0.5, tower.getJSONObject(1).getInt("y"), tower.getJSONObject(1).getInt("z") + 0.5), red, false, "B");
-                red.setTowerBCrystal(towerB);
-
-
-                CQBlue blue = (CQBlue) teams.get("Blue");
-                tower = object.getJSONArray("TOWER BLUE");
-                boss = object.getJSONArray("BOSS BLUE").getJSONObject(0);
-
-                bossCrystal = new Crystal(new Location(EngineAPI.getMapWorld(), boss.getInt("x") + 0.5, boss.getInt("y"), boss.getInt("z") + 0.5), blue, true, "Boss");
-                blue.setBossCrystal(bossCrystal);
-                towerA = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(0).getInt("x") + 0.5, tower.getJSONObject(0).getInt("y"), tower.getJSONObject(0).getInt("z") + 0.5), blue, false, "A");
-                blue.setTowerACrystal(towerA);
-                towerB = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(1).getInt("x") + 0.5, tower.getJSONObject(1).getInt("y"), tower.getJSONObject(1).getInt("z") + 0.5), blue, false, "B");
-                blue.setTowerBCrystal(towerB);
-
-                scoreboardTask = new ScoreboardRunnable((CQBlue) teams.get("Blue"), (CQRed) teams.get("Red")).runTaskTimer(EngineAPI.getGameEngine(), 0, 20);
-            }
-        }.runTaskLater(AuroraMCAPI.getCore(), 20);
     }
 
     private void generateMine(float iron, float gold, float emerald) {
@@ -340,6 +327,33 @@ public class CrystalQuest extends Game {
             public void run() {
                 ((CQRed)teams.get("Red")).getRobotSlotA().spawn();
                 ((CQBlue)teams.get("Blue")).getRobotSlotA().spawn();
+                //Now spawn the crystals.
+                CQRed red = (CQRed) teams.get("Red");
+
+                JSONObject object = map.getMapData().getJSONObject("game").getJSONObject("CRYSTAL");
+                JSONArray tower = object.getJSONArray("TOWER RED");
+                JSONObject boss = object.getJSONArray("BOSS RED").getJSONObject(0);
+
+                Crystal bossCrystal = new Crystal(new Location(EngineAPI.getMapWorld(), boss.getInt("x") + 0.5, boss.getInt("y"), boss.getInt("z") + 0.5), red, true, "Boss");
+                red.setBossCrystal(bossCrystal);
+                Crystal towerA = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(0).getInt("x") + 0.5, tower.getJSONObject(0).getInt("y"), tower.getJSONObject(0).getInt("z") + 0.5), red, false, "A");
+                red.setTowerACrystal(towerA);
+                Crystal towerB = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(1).getInt("x") + 0.5, tower.getJSONObject(1).getInt("y"), tower.getJSONObject(1).getInt("z") + 0.5), red, false, "B");
+                red.setTowerBCrystal(towerB);
+
+
+                CQBlue blue = (CQBlue) teams.get("Blue");
+                tower = object.getJSONArray("TOWER BLUE");
+                boss = object.getJSONArray("BOSS BLUE").getJSONObject(0);
+
+                bossCrystal = new Crystal(new Location(EngineAPI.getMapWorld(), boss.getInt("x") + 0.5, boss.getInt("y"), boss.getInt("z") + 0.5), blue, true, "Boss");
+                blue.setBossCrystal(bossCrystal);
+                towerA = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(0).getInt("x") + 0.5, tower.getJSONObject(0).getInt("y"), tower.getJSONObject(0).getInt("z") + 0.5), blue, false, "A");
+                blue.setTowerACrystal(towerA);
+                towerB = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(1).getInt("x") + 0.5, tower.getJSONObject(1).getInt("y"), tower.getJSONObject(1).getInt("z") + 0.5), blue, false, "B");
+                blue.setTowerBCrystal(towerB);
+
+                scoreboardTask = new ScoreboardRunnable((CQBlue) teams.get("Blue"), (CQRed) teams.get("Red")).runTaskTimer(EngineAPI.getGameEngine(), 0, 20);
             }
         }.runTask(AuroraMCAPI.getCore());
         mineTask = new BukkitRunnable() {

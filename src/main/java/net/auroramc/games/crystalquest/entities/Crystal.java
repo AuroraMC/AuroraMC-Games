@@ -58,9 +58,9 @@ public class Crystal {
             holder.getPlayer().getInventory().setItem(i, new GUIItem(Material.NETHER_STAR, "&3&lCollected Crystal", 1, ";&rReturn this to your base!").getItem());
         }
 
-        String team = "&9&l";
+        String team = "&c&l";
         if (homeTeam instanceof CQBlue) {
-            team = "&c&l";
+            team = "&9&l";
         }
         String finalMessage = team + holder.getPlayer().getName() + " collected " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!");
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
@@ -77,9 +77,9 @@ public class Crystal {
 
         home.getWorld().createExplosion(home, 6 * (isBoss()?2:1));
 
-        String team = "&9&l";
+        String team = "&c&l";
         if (homeTeam instanceof CQBlue) {
-            team = "&c&l";
+            team = "&9&l";
         }
         String finalMessage = team + holder.getPlayer().getName() + " captured " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!");
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {

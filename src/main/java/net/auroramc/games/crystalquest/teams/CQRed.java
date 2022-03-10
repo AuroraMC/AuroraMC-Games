@@ -48,9 +48,9 @@ public class CQRed implements Team {
         JSONObject jsonA = locations.getJSONObject(0);
         JSONObject jsonB = locations.getJSONObject(1);
         JSONObject jsonC = locations.getJSONObject(2);
-        Location a = new Location(EngineAPI.getMapWorld(), jsonA.getInt("x"), jsonA.getInt("y"), jsonA.getInt("z"), jsonA.getFloat("yaw"), 0);
-        Location b = new Location(EngineAPI.getMapWorld(), jsonB.getInt("x"), jsonB.getInt("y"), jsonB.getInt("z"), jsonB.getFloat("yaw"), 0);
-        Location c = new Location(EngineAPI.getMapWorld(), jsonC.getInt("x"), jsonC.getInt("y"), jsonC.getInt("z"), jsonC.getFloat("yaw"), 0);
+        Location a = new Location(EngineAPI.getMapWorld(), jsonA.getInt("x") + 0.5, jsonA.getInt("y"), jsonA.getInt("z") + 0.5, jsonA.getFloat("yaw"), 0);
+        Location b = new Location(EngineAPI.getMapWorld(), jsonB.getInt("x") + 0.5, jsonB.getInt("y"), jsonB.getInt("z") + 0.5, jsonB.getFloat("yaw"), 0);
+        Location c = new Location(EngineAPI.getMapWorld(), jsonC.getInt("x") + 0.5, jsonC.getInt("y"), jsonC.getInt("z") + 0.5, jsonC.getFloat("yaw"), 0);
 
         protUpgrade = powerUpgrade = sharpUpgrade = 0;
         robotSlotA = new MiningRobot(this, a);

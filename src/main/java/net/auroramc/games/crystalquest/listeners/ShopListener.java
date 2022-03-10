@@ -5,6 +5,7 @@
 package net.auroramc.games.crystalquest.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.utils.gui.GUI;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -76,25 +77,50 @@ public class ShopListener implements Listener {
             GUI gui = null;
             if (e.getRightClicked() instanceof ArmorStand) {
                 if (e.getRightClicked().getCustomName() != null) {
+                    AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
                     if (ChatColor.stripColor(e.getRightClicked().getCustomName()).startsWith("Player")) {
-                        gui = new PlayerShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer()));
+                        gui = new PlayerShop((AuroraMCGamePlayer) player);
                     } else if (ChatColor.stripColor(e.getRightClicked().getCustomName()).startsWith("Team")) {
-                        gui = new TeamShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer()));
+                        gui = new TeamShop((AuroraMCGamePlayer) player);
                     } else {
                         CQRed red = (CQRed) EngineAPI.getActiveGame().getTeams().get("Red");
                         CQBlue blue = (CQBlue) EngineAPI.getActiveGame().getTeams().get("Blue");
                         if (e.getRightClicked().equals(red.getRobotSlotA().getEntity())) {
-                            red.getRobotSlotA().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
+                            if (player.getTeam().equals(red)) {
+                                red.getRobotSlotA().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
+                            } else {
+                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "This is not your mining robot!"));
+                            }
                         } else if (e.getRightClicked().equals(red.getRobotSlotB().getEntity())) {
-                            red.getRobotSlotB().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
+                            if (player.getTeam().equals(red)) {
+                                red.getRobotSlotB().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
+                            } else {
+                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "This is not your mining robot!"));
+                            }
                         } else if (e.getRightClicked().equals(red.getRobotSlotC().getEntity())) {
-                            red.getRobotSlotC().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
+                            if (player.getTeam().equals(red)) {
+                                red.getRobotSlotC().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
+                            } else {
+                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "This is not your mining robot!"));
+                            }
                         } else if (e.getRightClicked().equals(blue.getRobotSlotA().getEntity())) {
-                            blue.getRobotSlotA().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
+                            if (player.getTeam().equals(blue)) {
+                                blue.getRobotSlotA().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
+                            } else {
+                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "This is not your mining robot!"));
+                            }
                         } else if (e.getRightClicked().equals(blue.getRobotSlotB().getEntity())) {
-                            blue.getRobotSlotB().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
+                            if (player.getTeam().equals(blue)) {
+                                blue.getRobotSlotB().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
+                            } else {
+                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "This is not your mining robot!"));
+                            }
                         } else if (e.getRightClicked().equals(blue.getRobotSlotC().getEntity())) {
-                            blue.getRobotSlotC().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
+                            if (player.getTeam().equals(blue)) {
+                                blue.getRobotSlotC().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
+                            } else {
+                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "This is not your mining robot!"));
+                            }
                         }
                         return;
 
