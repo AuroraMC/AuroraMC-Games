@@ -61,8 +61,8 @@ public class DeathRespawnListener implements Listener {
             }
             if (e.getFinalDamage() >= player.getPlayer().getHealth() && !player.isSpectator()) {
                 e.setCancelled(true);
-                EngineAPI.getActiveGame().onDeath(player);
-                player.setSpectator(true, false);
+                boolean finalKill = EngineAPI.getActiveGame().onDeath(player);
+                player.setSpectator(true, finalKill);
                 JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
                 int x, y, z;
                 x = specSpawn.getInt("x");
@@ -189,7 +189,7 @@ public class DeathRespawnListener implements Listener {
                     }
                 }
 
-                String finalMessage = killMessage.onKill(killer, player, entity, killReason);
+                String finalMessage = killMessage.onKill(killer, player, entity, killReason) + ((finalKill)?" &3&lFINAL KILL!":"");
 
                 player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
 
@@ -205,25 +205,29 @@ public class DeathRespawnListener implements Listener {
 
                 for (Player player2 : Bukkit.getOnlinePlayers()) {
                     player2.hidePlayer(player.getPlayer());
-                    player2.sendMessage(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(finalMessage)));
+                    player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", finalMessage));
                 }
 
-                new BukkitRunnable(){
-                    @Override
-                    public void run() {
-                        //Check if they are still connected.
-                        if (player.getPlayer().isOnline()) {
-                            player.getPlayer().setFallDistance(0);
-                            player.getPlayer().setFireTicks(0);
-                            player.getPlayer().setVelocity(new Vector(0, 0, 0));
-                            EngineAPI.getActiveGame().onRespawn(player);
-                            for (Player player2 : Bukkit.getOnlinePlayers()) {
-                                player2.showPlayer(player.getPlayer());
+                if (!finalKill) {
+                    new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            //Check if they are still connected.
+                            if (player.getPlayer().isOnline()) {
+                                player.getPlayer().setFallDistance(0);
+                                player.getPlayer().setFireTicks(0);
+                                player.getPlayer().setVelocity(new Vector(0, 0, 0));
+                                EngineAPI.getActiveGame().onRespawn(player);
+                                for (Player player2 : Bukkit.getOnlinePlayers()) {
+                                    player2.showPlayer(player.getPlayer());
+                                }
+                                player.setSpectator(false, false);
                             }
-                            player.setSpectator(false, false);
                         }
-                    }
-                }.runTaskLater(AuroraMCAPI.getCore(), timeout);
+                    }.runTaskLater(AuroraMCAPI.getCore(), timeout);
+                } else {
+                    EngineAPI.getActiveGame().onFinalKill(player);
+                }
 
             } else if (e instanceof EntityDamageByEntityEvent) {
                 if (e.getFinalDamage() > 0 && ((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {

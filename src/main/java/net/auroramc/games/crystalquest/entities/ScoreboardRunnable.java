@@ -4,6 +4,7 @@
 
 package net.auroramc.games.crystalquest.entities;
 
+import com.sun.xml.internal.ws.api.pipe.Engine;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.scoreboard.PlayerScoreboard;
@@ -40,8 +41,8 @@ public class ScoreboardRunnable extends BukkitRunnable {
             finalTimeTillReset = 3;
         }
 
-        long blueAlive = AuroraMCAPI.getPlayers().stream().filter(auroraMCPlayer -> (!auroraMCPlayer.isDead()) && auroraMCPlayer.getTeam() instanceof CQBlue).count();
-        long redAlive = AuroraMCAPI.getPlayers().stream().filter(auroraMCPlayer -> (!auroraMCPlayer.isDead()) && auroraMCPlayer.getTeam() instanceof CQRed).count();
+        long blueAlive = EngineAPI.getActiveGame().getTeams().get("Blue").getPlayers().stream().filter(auroraMCPlayer -> (!auroraMCPlayer.isDead())).count();
+        long redAlive = EngineAPI.getActiveGame().getTeams().get("Red").getPlayers().stream().filter(auroraMCPlayer -> (!auroraMCPlayer.isDead())).count();
 
 
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {

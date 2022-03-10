@@ -171,7 +171,12 @@ public class Spleef extends Game {
     }
 
     @Override
-    public void onDeath(AuroraMCGamePlayer auroraMCGamePlayer) {
+    public boolean onDeath(AuroraMCGamePlayer auroraMCGamePlayer) {
+        return false;
+    }
+
+    @Override
+    public void onFinalKill(AuroraMCGamePlayer auroraMCGamePlayer) {
 
     }
 }
