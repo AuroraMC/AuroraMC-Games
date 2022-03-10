@@ -12,10 +12,8 @@ import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.listeners.CrystalReturnListener;
 import net.auroramc.games.crystalquest.teams.CQBlue;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEnderCrystal;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -33,10 +31,11 @@ public class Crystal {
     private final Team homeTeam;
     private CrystalReturnListener listener;
 
-    public Crystal(Location location, Team homeTeam, boolean boss) {
+    public Crystal(Location location, Team homeTeam, boolean boss, String type) {
         this.home = location;
         this.state = CrystalState.AT_HOME;
         crystal = EngineAPI.getMapWorld().spawn(location, EnderCrystal.class);
+        crystal.setCustomName(homeTeam.getName() + type);
         this.boss = boss;
         this.homeTeam = homeTeam;
         listener = new CrystalReturnListener(this);
@@ -74,6 +73,8 @@ public class Crystal {
         this.holder.getPlayer().getInventory().setContents((ItemStack[]) this.holder.getGameData().remove("crystal_inventory"));
         this.holder.getGameData().remove("crystal_possession");
         this.holder.getPlayer().removePotionEffect(PotionEffectType.SLOW);
+
+        home.getWorld().createExplosion(home, 6 * (isBoss()?2:1));
 
         String team = "&9&l";
         if (homeTeam instanceof CQBlue) {
