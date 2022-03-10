@@ -41,7 +41,7 @@ public class MiningRobot {
             field = meta.getClass().getDeclaredField("profile");
             field.setAccessible(true);
             try {
-                field.set(meta, "");
+                field.set(meta, profile);
             } catch (IllegalAccessException | IllegalArgumentException e) {
                 e.printStackTrace();
             }
