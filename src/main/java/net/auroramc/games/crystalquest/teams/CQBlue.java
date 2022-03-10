@@ -7,6 +7,7 @@ package net.auroramc.games.crystalquest.teams;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Team;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.entities.Crystal;
 import net.auroramc.games.crystalquest.entities.MiningRobot;
@@ -32,15 +33,17 @@ public class CQBlue implements Team {
     private int powerUpgrade;
     private int sharpUpgrade;
 
-    private final MiningRobot robotSlotA;
-    private final MiningRobot robotSlotB;
-    private final MiningRobot robotSlotC;
+    private MiningRobot robotSlotA;
+    private MiningRobot robotSlotB;
+    private MiningRobot robotSlotC;
 
     public CQBlue() {
         players = new ArrayList<>();
         lives = 0;
+    }
 
-        JSONArray locations = EngineAPI.getActiveMap().getMapData().getJSONObject("GAME").getJSONObject("MININGROBOT").getJSONArray("BLUE");
+    public void loadRobots(GameMap map) {
+        JSONArray locations = map.getMapData().getJSONObject("GAME").getJSONObject("MININGROBOT").getJSONArray("BLUE");
         JSONObject jsonA = locations.getJSONObject(0);
         JSONObject jsonB = locations.getJSONObject(1);
         JSONObject jsonC = locations.getJSONObject(2);

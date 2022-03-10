@@ -125,35 +125,35 @@ public class DeathRespawnListener implements Listener {
                     switch (e.getCause()) {
                         case FALL: {
                             killReason = KillMessage.KillReason.FALL;
-                            if (player.getLastHitBy() != null) {
+                            if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
                                 killer = player.getLastHitBy();
                             }
                             break;
                         }
                         case VOID: {
                             killReason = KillMessage.KillReason.VOID;
-                            if (player.getLastHitBy() != null) {
+                            if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
                                 killer = player.getLastHitBy();
                             }
                             break;
                         }
                         case LAVA: {
                             killReason = KillMessage.KillReason.LAVA;
-                            if (player.getLastHitBy() != null) {
+                            if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
                                 killer = player.getLastHitBy();
                             }
                             break;
                         }
                         case FIRE_TICK: {
                             killReason = KillMessage.KillReason.FIRE;
-                            if (player.getLastHitBy() != null) {
+                            if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
                                 killer = player.getLastHitBy();
                             }
                             break;
                         }
                         case DROWNING: {
                             killReason = KillMessage.KillReason.DROWNING;
-                            if (player.getLastHitBy() != null) {
+                            if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
                                 killer = player.getLastHitBy();
                             }
                             break;

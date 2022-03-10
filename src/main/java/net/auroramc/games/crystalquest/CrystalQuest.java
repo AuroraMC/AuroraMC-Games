@@ -93,6 +93,8 @@ public class CrystalQuest extends Game {
     @Override
     public void load(GameMap gameMap) {
         this.map = gameMap;
+        ((CQBlue)this.teams.get("Blue")).loadRobots(map);
+        ((CQRed)this.teams.get("Red")).loadRobots(map);
 
         //Generate the mine.
         generateMine(0.145f, 0.1f, 0.005f);
