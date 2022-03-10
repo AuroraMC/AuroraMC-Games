@@ -5,7 +5,6 @@
 package net.auroramc.games.crystalquest.listeners;
 
 import net.auroramc.engine.api.EngineAPI;
-import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.entities.Crystal;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
@@ -15,8 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.awt.image.LookupOp;
 
 public class CrystalReturnListener implements Listener {
 

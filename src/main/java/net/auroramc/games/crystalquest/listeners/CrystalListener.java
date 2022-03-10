@@ -5,25 +5,18 @@
 package net.auroramc.games.crystalquest.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.entities.Crystal;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
-import javax.persistence.Entity;
 
 public class CrystalListener implements Listener {
 

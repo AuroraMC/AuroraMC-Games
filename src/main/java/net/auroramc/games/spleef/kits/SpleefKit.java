@@ -8,7 +8,6 @@ import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.games.Kit;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 public class SpleefKit extends Kit {
 

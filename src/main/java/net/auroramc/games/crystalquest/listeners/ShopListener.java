@@ -13,11 +13,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MerchantInventory;
 
 public class ShopListener implements Listener {

@@ -4,10 +4,8 @@
 
 package net.auroramc.games.spleef.listeners;
 
-import net.auroramc.engine.api.EngineAPI;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 
 public class HungerListener implements Listener {

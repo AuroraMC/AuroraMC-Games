@@ -12,7 +12,6 @@ import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
-import net.auroramc.engine.api.games.Kit;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.spleef.kits.AnotherSpleefKit;
 import net.auroramc.games.spleef.kits.MoreSpleefKit;
@@ -34,7 +33,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

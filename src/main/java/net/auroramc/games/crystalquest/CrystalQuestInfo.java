@@ -4,7 +4,6 @@
 
 package net.auroramc.games.crystalquest;
 
-import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameInfo;
 
 public class CrystalQuestInfo extends GameInfo {

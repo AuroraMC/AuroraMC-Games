@@ -8,7 +8,6 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.server.ServerState;
-import net.auroramc.engine.listeners.LobbyListener;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
