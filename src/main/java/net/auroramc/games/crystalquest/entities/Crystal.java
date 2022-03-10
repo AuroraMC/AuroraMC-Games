@@ -43,6 +43,9 @@ public class Crystal {
     }
 
     public void crystalCaptured(AuroraMCGamePlayer holder, String type) {
+        if (this.holder != null) {
+            return;
+        }
         this.holder = holder;
         crystal.remove();
         crystal = null;
