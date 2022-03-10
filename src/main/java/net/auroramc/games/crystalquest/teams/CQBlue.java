@@ -43,7 +43,7 @@ public class CQBlue implements Team {
     }
 
     public void loadRobots(GameMap map) {
-        JSONArray locations = map.getMapData().getJSONObject("GAME").getJSONObject("MININGROBOT").getJSONArray("BLUE");
+        JSONArray locations = map.getMapData().getJSONObject("game").getJSONObject("MININGROBOT").getJSONArray("BLUE");
         JSONObject jsonA = locations.getJSONObject(0);
         JSONObject jsonB = locations.getJSONObject(1);
         JSONObject jsonC = locations.getJSONObject(2);
