@@ -183,7 +183,7 @@ public class DeathRespawnListener implements Listener {
                     }
                 }
 
-                String finalMessage = killMessage.onKill(killer, player, entity, killReason) + ((finalKill)?" &3&lFINAL KILL!":"");
+                String finalMessage = killMessage.onKill(killer, player, entity, killReason) + ((finalKill)?" &c&lFINAL KILL!":"");
 
                 player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
 
