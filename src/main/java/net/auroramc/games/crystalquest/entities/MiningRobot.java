@@ -9,9 +9,11 @@ import com.mojang.authlib.properties.Property;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Team;
+import net.auroramc.core.api.utils.gui.GUI;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.games.crystalquest.gui.RobotMenu;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
@@ -181,13 +183,32 @@ public class MiningRobot {
         return emeralds;
     }
 
+    public void addEmeralds(int emeralds) {
+        this.emeralds += emeralds;
+    }
+
     public int withdrawEmeralds() {
         int oldEmeralds = emeralds;
         this.emeralds = 0;
         return oldEmeralds;
     }
 
-    public void openGUI(AuroraMCPlayer player) {
+    public Map<AuroraMCPlayer, RobotInventory> getInventories() {
+        return inventories;
+    }
 
+    public void openGUI(AuroraMCPlayer player) {
+        for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+            if (AuroraMCAPI.getGUI(player1) != null && AuroraMCAPI.getGUI(player1) instanceof RobotMenu) {
+                RobotMenu menu = (RobotMenu) AuroraMCAPI.getGUI(player1);
+                if (menu.getRobot().equals(this)) {
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Someone is already in the Robot's menu!"));
+                    return;
+                }
+            }
+        }
+        RobotMenu menu = new RobotMenu(player, this);
+        menu.open(player);
+        AuroraMCAPI.openGUI(player, menu);
     }
 }

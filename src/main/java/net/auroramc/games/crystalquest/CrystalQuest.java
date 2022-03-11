@@ -294,7 +294,9 @@ public class CrystalQuest extends Game {
             this.mineTask.cancel();
             this.mineTask = null;
         }
-        scoreboardTask.cancel();
+        if (scoreboardTask != null) {
+            scoreboardTask.cancel();
+        }
         PlayerShowEvent.getHandlerList().unregister(showListener);
         PlayerInteractAtEntityEvent.getHandlerList().unregister(shopListener);
         InventoryOpenEvent.getHandlerList().unregister(shopListener);
@@ -307,15 +309,17 @@ public class CrystalQuest extends Game {
         FoodLevelChangeEvent.getHandlerList().unregister(miningListener);
         DeathRespawnListener.unregister();
 
-        CQRed red = (CQRed) getTeams().get("Red");
-        red.getTowerBCrystal().unregisterListener();
-        red.getTowerACrystal().unregisterListener();
-        red.getBossCrystal().unregisterListener();
+        if (!starting) {
+            CQRed red = (CQRed) getTeams().get("Red");
+            red.getTowerBCrystal().unregisterListener();
+            red.getTowerACrystal().unregisterListener();
+            red.getBossCrystal().unregisterListener();
 
-        CQBlue blue = (CQBlue) getTeams().get("Blue");
-        blue.getTowerBCrystal().unregisterListener();
-        blue.getTowerACrystal().unregisterListener();
-        blue.getBossCrystal().unregisterListener();
+            CQBlue blue = (CQBlue) getTeams().get("Blue");
+            blue.getTowerBCrystal().unregisterListener();
+            blue.getTowerACrystal().unregisterListener();
+            blue.getBossCrystal().unregisterListener();
+        }
     }
 
     @Override

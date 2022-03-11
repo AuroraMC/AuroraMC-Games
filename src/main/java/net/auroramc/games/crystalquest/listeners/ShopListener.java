@@ -16,8 +16,10 @@ import net.auroramc.games.crystalquest.teams.CQRed;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.MerchantInventory;
@@ -67,6 +69,21 @@ public class ShopListener implements Listener {
         if (e.isCancelled() && gui != null) {
             gui.open(AuroraMCAPI.getPlayer((Player) e.getDamager()));
             AuroraMCAPI.openGUI(AuroraMCAPI.getPlayer((Player) e.getDamager()), gui);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onDamage(EntityDamageEvent e) {
+        if (e.getEntity() instanceof Villager) {
+            e.setCancelled(true);
+        } else if (e.getEntity() instanceof Rabbit && !((Rabbit)e.getEntity()).isAdult()) {
+            if (e.getEntity().isInsideVehicle()) {
+                if (e.getEntity().getVehicle() instanceof Damageable) {
+                    e.setCancelled(true);
+                }
+            }
+        } else if (e.getEntity() instanceof ArmorStand) {
+            e.setCancelled(true);
         }
     }
 
