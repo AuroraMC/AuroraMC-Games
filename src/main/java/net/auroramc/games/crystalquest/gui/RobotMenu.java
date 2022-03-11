@@ -41,11 +41,11 @@ public class RobotMenu extends GUI {
         this.setItem(0, 4, new GUIItem(Material.SKULL_ITEM, robot.getEntity().getCustomName() + " (Level " + robot.getLevel() + ")", 1, "&rThis mines:;" + descs.get(robot.getLevel())));
 
         this.setItem(1, 2, new GUIItem(Material.SKULL_ITEM, "&3&lPersonal Resources", 1, "&rYou have:;;&b" + robot.getInventories().get(player).getIron() + " &7Iron;&b" + robot.getInventories().get(player).getGold() + " &6Gold;;&aClick to collect!", (short)3, false, player.getPlayer().getName()));
-        this.setItem(1, 4, new GUIItem(Material.SKULL_ITEM, "&3&lTeam Resources", 1, "&rYou have:;;&b" + robot.getEmeralds() + " &Emeralds;;&aClick to collect!", (short)3));
+        this.setItem(1, 4, new GUIItem(Material.SKULL_ITEM, "&3&lTeam Resources", 1, "&rYou have:;;&b" + robot.getEmeralds() + " &aEmeralds;;&aClick to collect!", (short)3));
         if (robot.getLevel() == 3) {
             this.setItem(1, 6, new GUIItem(Material.BARRIER, "&3&lUpgrade Robot", 1, ";&rYou already have the max upgrade for this robot."));
         } else {
-            this.setItem(1, 6, new GUIItem(Material.EXP_BOTTLE, "&3&lUpgrade Robot", 1, ";&rUpgrade to:;&bLevel " + (robot.getLevel() + 1) + ";;Cost:;&b" + ((robot.getLevel() == 1)?24:32) + " &aEmeralds;;&rThis mines:;" + descs.get(robot.getLevel() + 1)));
+            this.setItem(1, 6, new GUIItem(Material.EXP_BOTTLE, "&3&lUpgrade Robot", 1, ";&rUpgrade to:;&bLevel " + (robot.getLevel() + 1) + ";;&rCost:;&b" + ((robot.getLevel() == 1)?24:32) + " &aEmeralds;;&rThis mines:;" + descs.get(robot.getLevel() + 1)));
         }
 
     }
@@ -83,7 +83,7 @@ public class RobotMenu extends GUI {
                     }
                 }
                 player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
-                this.setItem(1, 4, new GUIItem(Material.SKULL_ITEM, "&3&lTeam Resources", 1, "&rYou have:;;&b" + robot.getEmeralds() + " &Emeralds;;&aClick to collect!", (short)3));
+                this.updateItem(1, 4, new GUIItem(Material.SKULL_ITEM, "&3&lTeam Resources", 1, "&rYou have:;;&b" + robot.getEmeralds() + " &aEmeralds;;&aClick to collect!", (short)3));
                 break;
             }
             case 6: {
