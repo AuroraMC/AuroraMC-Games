@@ -107,7 +107,6 @@ public class CrystalQuest extends Game {
             JSONObject playerShop = (JSONObject) obj;
             Location location = new Location(EngineAPI.getMapWorld(), playerShop.getInt("x") + 0.5, playerShop.getInt("y"), playerShop.getInt("z") + 0.5, playerShop.getFloat("yaw"), 0);
             Villager villager = EngineAPI.getMapWorld().spawn(location, Villager.class);
-            ((CraftVillager)villager).getHandle().setInvisible(true);
             CraftEntity craftEntity = ((CraftEntity)villager);
             NBTTagCompound tag = craftEntity.getHandle().getNBTTag();
             if (tag == null) {
@@ -115,6 +114,7 @@ public class CrystalQuest extends Game {
             }
             craftEntity.getHandle().c(tag);
             tag.setInt("NoAI", 1);
+            tag.setInt("Invulnerable", 1);
             craftEntity.getHandle().f(tag);
             ArmorStand stand = location.getWorld().spawn(location, ArmorStand.class);
             stand.setVisible(false);
