@@ -132,6 +132,7 @@ public class CrystalQuest extends Game {
             }
             craftEntity.getHandle().c(tag);
             tag.setInt("NoAI", 1);
+            tag.setInt("Invulnerable", 1);
             craftEntity.getHandle().f(tag);
             rabbit.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1000000, 1, true, false));
             villager.setPassenger(rabbit);
@@ -148,6 +149,7 @@ public class CrystalQuest extends Game {
             }
             craftEntity.getHandle().c(tag);
             tag.setInt("NoAI", 1);
+            tag.setInt("Invulnerable", 1);
             craftEntity.getHandle().f(tag);
             ArmorStand stand = location.getWorld().spawn(location, ArmorStand.class);
             stand.setVisible(false);
@@ -165,6 +167,7 @@ public class CrystalQuest extends Game {
             }
             craftEntity.getHandle().c(tag);
             tag.setInt("NoAI", 1);
+            tag.setInt("Invulnerable", 1);
             craftEntity.getHandle().f(tag);
             rabbit.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1000000, 1, true, false));
             villager.setPassenger(rabbit);
