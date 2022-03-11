@@ -74,6 +74,10 @@ public class ShopListener implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent e) {
+        if (e.getCause() == EntityDamageEvent.DamageCause.SUFFOCATION) {
+            e.setCancelled(true);
+            return;
+        }
         if (e.getEntity() instanceof Villager) {
             if (e instanceof EntityDamageByEntityEvent) {
                 return;
