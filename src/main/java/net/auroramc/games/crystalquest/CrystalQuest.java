@@ -31,6 +31,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftVillager;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Rabbit;
@@ -106,6 +107,7 @@ public class CrystalQuest extends Game {
             JSONObject playerShop = (JSONObject) obj;
             Location location = new Location(EngineAPI.getMapWorld(), playerShop.getInt("x") + 0.5, playerShop.getInt("y"), playerShop.getInt("z") + 0.5, playerShop.getFloat("yaw"), 0);
             Villager villager = EngineAPI.getMapWorld().spawn(location, Villager.class);
+            ((CraftVillager)villager).getHandle().setInvisible(true);
             CraftEntity craftEntity = ((CraftEntity)villager);
             NBTTagCompound tag = craftEntity.getHandle().getNBTTag();
             if (tag == null) {
