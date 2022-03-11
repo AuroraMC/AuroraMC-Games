@@ -72,17 +72,26 @@ public class ShopListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onDamage(EntityDamageEvent e) {
+    @EventHandler
+    public void onEntityDamage(EntityDamageEvent e) {
         if (e.getEntity() instanceof Villager) {
+            if (e instanceof EntityDamageByEntityEvent) {
+                return;
+            }
             e.setCancelled(true);
         } else if (e.getEntity() instanceof Rabbit && !((Rabbit)e.getEntity()).isAdult()) {
             if (e.getEntity().isInsideVehicle()) {
                 if (e.getEntity().getVehicle() instanceof Damageable) {
+                    if (e instanceof EntityDamageByEntityEvent) {
+                        return;
+                    }
                     e.setCancelled(true);
                 }
             }
         } else if (e.getEntity() instanceof ArmorStand) {
+            if (e instanceof EntityDamageByEntityEvent) {
+                return;
+            }
             e.setCancelled(true);
         }
     }
