@@ -72,7 +72,7 @@ public class ShopListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onDamage(EntityDamageEvent e) {
         if (e.getEntity() instanceof Villager) {
             e.setCancelled(true);
