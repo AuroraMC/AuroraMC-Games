@@ -561,7 +561,7 @@ public class PlayerShop extends GUI {
                                 stack.addEnchantment(Enchantment.ARROW_DAMAGE, ((CQRed) player.getTeam()).getPowerUpgrade());
                             }
                         }
-                        player.getPlayer().getInventory().addItem();
+                        player.getPlayer().getInventory().addItem(stack);
                         this.updateItem(2, 7, new GUIItem(Material.BARRIER, "&3Bow", 1, ";&rYou already have a Bow."));
                     } else {
                         player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
