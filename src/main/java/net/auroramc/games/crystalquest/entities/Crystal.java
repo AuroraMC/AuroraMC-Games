@@ -78,6 +78,9 @@ public class Crystal {
         this.holder.getGameData().remove("crystal_possession");
         this.holder.getPlayer().removePotionEffect(PotionEffectType.SLOW);
 
+        this.holder.getRewards().addXp("Crystal Capture", 50);
+        this.holder.getStats().incrementStatistic(1, "crystalsCaptured", 1, true);
+
         home.getWorld().createExplosion(home, 6 * (isBoss()?2:1));
 
         String team = "&c&l";
