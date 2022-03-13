@@ -4,6 +4,7 @@
 
 package net.auroramc.games.crystalquest.teams;
 
+import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Team;
 import net.auroramc.engine.api.EngineAPI;
@@ -110,8 +111,15 @@ public class CQBlue implements Team {
         lives--;
     }
 
-    public void lifeBrought() {
+    public boolean lifeBrought() {
+        if (lives >= 5) {
+            return false;
+        }
         lives++;
+        for (AuroraMCPlayer player : players) {
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You now have an additional life! You now have **" + lives + "** lives!"));
+        }
+        return true;
     }
 
     public int getPowerUpgrade() {
@@ -121,11 +129,19 @@ public class CQBlue implements Team {
     public void upgradePower() {
         powerUpgrade++;
         for (AuroraMCPlayer player : players) {
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Your **Power Upgrade** was upgraded to **Level " + powerUpgrade + "**!"));
             if (!((AuroraMCGamePlayer) player).isSpectator()) {
                 int i = player.getPlayer().getInventory().first(Material.BOW);
                 if (i > -1) {
                     ItemStack stack = player.getPlayer().getInventory().getItem(i);
                     stack.addEnchantment(Enchantment.ARROW_DAMAGE, powerUpgrade);
+                }
+            } else if (((AuroraMCGamePlayer) player).getGameData().containsKey("death_inventory")) {
+                ItemStack[] stack = (ItemStack[]) ((AuroraMCGamePlayer) player).getGameData().get("death_inventory");
+                for (ItemStack item : stack) {
+                    if (item.getType() == Material.BOW) {
+                        item.addEnchantment(Enchantment.ARROW_DAMAGE, powerUpgrade);
+                    }
                 }
             }
         }
@@ -138,11 +154,19 @@ public class CQBlue implements Team {
     public void upgradeProt() {
         protUpgrade++;
         for (AuroraMCPlayer player : players) {
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Your **Protection Upgrade** was upgraded to **Level " + protUpgrade + "**!"));
             if (!((AuroraMCGamePlayer) player).isSpectator()) {
                 player.getPlayer().getInventory().getBoots().addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protUpgrade);
                 player.getPlayer().getInventory().getHelmet().addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protUpgrade);
                 player.getPlayer().getInventory().getChestplate().addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protUpgrade);
                 player.getPlayer().getInventory().getLeggings().addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protUpgrade);
+            } else {
+                if (!player.isDead()) {
+                    ((ItemStack)((AuroraMCGamePlayer) player).getGameData().get("death_helmet")).addEnchantment(Enchantment.DAMAGE_ALL, protUpgrade);
+                    ((ItemStack)((AuroraMCGamePlayer) player).getGameData().get("death_chestplate")).addEnchantment(Enchantment.DAMAGE_ALL, protUpgrade);
+                    ((ItemStack)((AuroraMCGamePlayer) player).getGameData().get("death_leggings")).addEnchantment(Enchantment.DAMAGE_ALL, protUpgrade);
+                    ((ItemStack)((AuroraMCGamePlayer) player).getGameData().get("death_boots")).addEnchantment(Enchantment.DAMAGE_ALL, protUpgrade);
+                }
             }
         }
     }
@@ -154,6 +178,7 @@ public class CQBlue implements Team {
     public void upgradeSharp() {
         sharpUpgrade++;
         for (AuroraMCPlayer player : players) {
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Your **Sharpness Upgrade** was upgraded to **Level " + sharpUpgrade + "**!"));
             if (!((AuroraMCGamePlayer) player).isSpectator()) {
                 int slot = -1;
                 for (int i = 0; i < 36; i++) {
@@ -168,6 +193,17 @@ public class CQBlue implements Team {
                 if (slot > -1) {
                     ItemStack stack = player.getPlayer().getInventory().getItem(slot);
                     stack.addEnchantment(Enchantment.DAMAGE_ALL, sharpUpgrade);
+                }
+            } else {
+                if (((AuroraMCGamePlayer) player).getGameData().containsKey("death_inventory")) {
+                    ItemStack[] stack = (ItemStack[]) ((AuroraMCGamePlayer) player).getGameData().get("death_inventory");
+                    for (ItemStack item : stack) {
+                        if (item.getType().name().endsWith("_SWORD")) {
+                            item.addEnchantment(Enchantment.DAMAGE_ALL, sharpUpgrade);
+                        }
+                    }
+                } else if (((AuroraMCGamePlayer) player).getGameData().containsKey("death_sword")) {
+                    ((ItemStack)((AuroraMCGamePlayer) player).getGameData().get("death_sword")).addEnchantment(Enchantment.DAMAGE_ALL, sharpUpgrade);
                 }
             }
         }

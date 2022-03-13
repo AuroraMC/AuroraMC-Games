@@ -53,12 +53,12 @@ public class MiningRobot {
         }
     }
 
-    private Team team;
+    private final Team team;
     private int level;
     private ArmorStand entity;
-    private Location location;
+    private final Location location;
     private int emeralds;
-    private Map<AuroraMCPlayer, RobotInventory> inventories;
+    private final Map<AuroraMCPlayer, RobotInventory> inventories;
     private BukkitTask ironTask;
     private BukkitTask goldTask;
     private BukkitTask emeraldTask;

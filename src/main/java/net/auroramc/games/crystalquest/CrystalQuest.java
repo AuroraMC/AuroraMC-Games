@@ -582,112 +582,6 @@ public class CrystalQuest extends Game {
                 }
             }
         }
-
-        Map<Integer, ? extends ItemStack> gold = player.getPlayer().getInventory().all(Material.GOLD_INGOT);
-        Map<Integer, ? extends ItemStack> iron = player.getPlayer().getInventory().all(Material.IRON_INGOT);
-        Map<Integer, ? extends ItemStack> emeralds = player.getPlayer().getInventory().all(Material.EMERALD);
-
-        int amountOfGold = 0, amountOfIron = 0, amountOfEmeralds = 0;
-
-        for (Map.Entry<Integer, ? extends ItemStack> entry : gold.entrySet()) {
-            amountOfGold += entry.getValue().getAmount();
-        }
-        for (Map.Entry<Integer, ? extends ItemStack> entry : iron.entrySet()) {
-            amountOfIron += entry.getValue().getAmount();
-        }
-        for (Map.Entry<Integer, ? extends ItemStack> entry : emeralds.entrySet()) {
-            amountOfEmeralds += entry.getValue().getAmount();
-        }
-
-        amountOfGold = amountOfGold / 2;
-        amountOfIron = amountOfIron / 2;
-        amountOfEmeralds = amountOfEmeralds / 2;
-
-        while (amountOfGold > 0) {
-            if (amountOfGold > 64) {
-                if (killer != null) {
-                    Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.GOLD_INGOT, 64));
-                    if (items.size() > 0) {
-                        for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
-                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
-                        }
-                    }
-                } else {
-                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.GOLD_INGOT, 64));
-                }
-                amountOfGold -= 64;
-            } else {
-                if (killer != null) {
-                    Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.GOLD_INGOT, amountOfGold));
-                    if (items.size() > 0) {
-                        for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
-                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
-                        }
-                    }
-                } else {
-                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.GOLD_INGOT, amountOfGold));
-                }
-                amountOfGold = 0;
-            }
-        }
-
-        while (amountOfIron > 0) {
-            if (amountOfIron > 64) {
-                if (killer != null) {
-                    Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT, 64));
-                    if (items.size() > 0) {
-                        for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
-                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
-                        }
-                    }
-                } else {
-                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.IRON_INGOT, 64));
-                }
-                amountOfIron -= 64;
-            } else {
-                if (killer != null) {
-                    Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT, amountOfIron));
-                    if (items.size() > 0) {
-                        for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
-                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
-                        }
-                    }
-                } else {
-                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.IRON_INGOT, amountOfIron));
-                }
-                amountOfIron = 0;
-            }
-        }
-
-        while (amountOfEmeralds > 0) {
-            if (amountOfEmeralds > 64) {
-                if (killer != null) {
-                    Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.EMERALD, 64));
-                    if (items.size() > 0) {
-                        for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
-                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
-                        }
-                    }
-                } else {
-                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.EMERALD, 64));
-                }
-                amountOfEmeralds -= 64;
-            } else {
-                if (killer != null) {
-                    Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.EMERALD, amountOfEmeralds));
-                    if (items.size() > 0) {
-                        for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
-                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
-                        }
-                    }
-                } else {
-                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.EMERALD, amountOfEmeralds));
-                }
-                amountOfEmeralds = 0;
-            }
-        }
-
-
         if (!finalKill) {
             if (life) {
                 player.getGameData().put("death_helmet", player.getPlayer().getInventory().getHelmet());
@@ -696,6 +590,109 @@ public class CrystalQuest extends Game {
                 player.getGameData().put("death_boots", player.getPlayer().getInventory().getBoots());
                 player.getGameData().put("death_inventory", player.getPlayer().getInventory().getContents());
             } else {
+                Map<Integer, ? extends ItemStack> gold = player.getPlayer().getInventory().all(Material.GOLD_INGOT);
+                Map<Integer, ? extends ItemStack> iron = player.getPlayer().getInventory().all(Material.IRON_INGOT);
+                Map<Integer, ? extends ItemStack> emeralds = player.getPlayer().getInventory().all(Material.EMERALD);
+
+                int amountOfGold = 0, amountOfIron = 0, amountOfEmeralds = 0;
+
+                for (Map.Entry<Integer, ? extends ItemStack> entry : gold.entrySet()) {
+                    amountOfGold += entry.getValue().getAmount();
+                }
+                for (Map.Entry<Integer, ? extends ItemStack> entry : iron.entrySet()) {
+                    amountOfIron += entry.getValue().getAmount();
+                }
+                for (Map.Entry<Integer, ? extends ItemStack> entry : emeralds.entrySet()) {
+                    amountOfEmeralds += entry.getValue().getAmount();
+                }
+
+                amountOfGold = amountOfGold / 2;
+                amountOfIron = amountOfIron / 2;
+                amountOfEmeralds = amountOfEmeralds / 2;
+
+                while (amountOfGold > 0) {
+                    if (amountOfGold > 64) {
+                        if (killer != null) {
+                            Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.GOLD_INGOT, 64));
+                            if (items.size() > 0) {
+                                for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
+                                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
+                                }
+                            }
+                        } else {
+                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.GOLD_INGOT, 64));
+                        }
+                        amountOfGold -= 64;
+                    } else {
+                        if (killer != null) {
+                            Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.GOLD_INGOT, amountOfGold));
+                            if (items.size() > 0) {
+                                for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
+                                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
+                                }
+                            }
+                        } else {
+                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.GOLD_INGOT, amountOfGold));
+                        }
+                        amountOfGold = 0;
+                    }
+                }
+
+                while (amountOfIron > 0) {
+                    if (amountOfIron > 64) {
+                        if (killer != null) {
+                            Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT, 64));
+                            if (items.size() > 0) {
+                                for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
+                                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
+                                }
+                            }
+                        } else {
+                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.IRON_INGOT, 64));
+                        }
+                        amountOfIron -= 64;
+                    } else {
+                        if (killer != null) {
+                            Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT, amountOfIron));
+                            if (items.size() > 0) {
+                                for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
+                                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
+                                }
+                            }
+                        } else {
+                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.IRON_INGOT, amountOfIron));
+                        }
+                        amountOfIron = 0;
+                    }
+                }
+
+                while (amountOfEmeralds > 0) {
+                    if (amountOfEmeralds > 64) {
+                        if (killer != null) {
+                            Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.EMERALD, 64));
+                            if (items.size() > 0) {
+                                for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
+                                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
+                                }
+                            }
+                        } else {
+                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.EMERALD, 64));
+                        }
+                        amountOfEmeralds -= 64;
+                    } else {
+                        if (killer != null) {
+                            Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.EMERALD, amountOfEmeralds));
+                            if (items.size() > 0) {
+                                for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
+                                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
+                                }
+                            }
+                        } else {
+                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.EMERALD, amountOfEmeralds));
+                        }
+                        amountOfEmeralds = 0;
+                    }
+                }
                 switch (player.getPlayer().getInventory().getHelmet().getType()) {
                     case LEATHER_HELMET: {
                         player.getGameData().put("death_helmet", player.getPlayer().getInventory().getHelmet());
