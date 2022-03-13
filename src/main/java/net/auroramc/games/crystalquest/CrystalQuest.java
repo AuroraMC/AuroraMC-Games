@@ -580,6 +580,57 @@ public class CrystalQuest extends Game {
             }
         }
 
+        Map<Integer, ? extends ItemStack> gold = player.getPlayer().getInventory().all(Material.GOLD_INGOT);
+        Map<Integer, ? extends ItemStack> iron = player.getPlayer().getInventory().all(Material.IRON_INGOT);
+        Map<Integer, ? extends ItemStack> emeralds = player.getPlayer().getInventory().all(Material.EMERALD);
+
+        int amountOfGold = 0, amountOfIron = 0, amountOfEmeralds = 0;
+
+        for (Map.Entry<Integer, ? extends ItemStack> entry : gold.entrySet()) {
+            amountOfGold += entry.getValue().getAmount();
+        }
+        for (Map.Entry<Integer, ? extends ItemStack> entry : iron.entrySet()) {
+            amountOfIron += entry.getValue().getAmount();
+        }
+        for (Map.Entry<Integer, ? extends ItemStack> entry : emeralds.entrySet()) {
+            amountOfEmeralds += entry.getValue().getAmount();
+        }
+
+        amountOfGold = amountOfGold / 2;
+        amountOfIron = amountOfIron / 2;
+        amountOfEmeralds = amountOfEmeralds / 2;
+
+        while (amountOfGold > 0) {
+            if (amountOfGold > 64) {
+                player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.GOLD_INGOT, 64));
+                amountOfGold -= 64;
+            } else {
+                player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.GOLD_INGOT, amountOfGold));
+                amountOfGold = 0;
+            }
+        }
+
+        while (amountOfIron > 0) {
+            if (amountOfIron > 64) {
+                player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.IRON_INGOT, 64));
+                amountOfIron -= 64;
+            } else {
+                player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.IRON_INGOT, amountOfIron));
+                amountOfIron = 0;
+            }
+        }
+
+        while (amountOfEmeralds > 0) {
+            if (amountOfEmeralds > 64) {
+                player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.EMERALD, 64));
+                amountOfEmeralds -= 64;
+            } else {
+                player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.EMERALD, amountOfEmeralds));
+                amountOfEmeralds = 0;
+            }
+        }
+
+
         if (!finalKill) {
             if (life) {
                 player.getGameData().put("death_helmet", player.getPlayer().getInventory().getHelmet());
