@@ -237,13 +237,14 @@ public class CrystalQuest extends Game {
             scoreboard.setLine(11, " ");
             scoreboard.setLine(10, "&c&l«RED CRYSTALS»");
             scoreboard.setLine(9, "&a✰ &a✰ &a✰");
-            scoreboard.setLine(8, "  ");
-            scoreboard.setLine(7, "&b&l«MINE RESET»");
-            scoreboard.setLine(6, "3.0 minutes ");
-            scoreboard.setLine(5, "   ");
-            scoreboard.setLine(4, "&b&l«GAME TIME»");
-            scoreboard.setLine(3, "0.0 minutes");
-            scoreboard.setLine(2, "    ");
+            scoreboard.setLine(8, "&b&l«TEAM LIVES»");
+            scoreboard.setLine(7, "0");
+            scoreboard.setLine(6, "  ");
+            scoreboard.setLine(5, "&b&l«MINE RESET»");
+            scoreboard.setLine(4, "3.0 minutes ");
+            scoreboard.setLine(3, "   ");
+            scoreboard.setLine(2, "&b&l«GAME TIME»");
+            scoreboard.setLine(1, "0.0 minutes");
 
         }
 

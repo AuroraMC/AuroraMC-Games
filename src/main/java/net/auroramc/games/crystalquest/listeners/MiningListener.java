@@ -177,7 +177,7 @@ public class MiningListener implements Listener {
         CQBlue blue = (CQBlue) EngineAPI.getActiveGame().getTeams().get("Blue");
 
         int protectionRadius = 25;
-        if (e.getBlock().getLocation().distanceSquared(red.getRobotSlotA().getLocation()) > protectionRadius || e.getBlock().getLocation().distanceSquared(red.getRobotSlotB().getLocation()) > protectionRadius || e.getBlock().getLocation().distanceSquared(red.getRobotSlotC().getLocation()) > protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotA().getLocation()) > protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotB().getLocation()) > protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotB().getLocation()) > protectionRadius) {
+        if (e.getBlock().getLocation().distanceSquared(red.getRobotSlotA().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getRobotSlotB().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getRobotSlotC().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotA().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotB().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotB().getLocation()) < protectionRadius) {
             e.setCancelled(true);
             e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot place blocks here!"));
         }

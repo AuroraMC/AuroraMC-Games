@@ -48,28 +48,29 @@ public class ScoreboardRunnable extends BukkitRunnable {
 
 
             if (blue.getBossCrystal().getState() == Crystal.CrystalState.DEAD) {
-                scoreboard.setLine(13, "&9&l«BLUE ALIVE»");
-                scoreboard.setLine(12, "" + blueAlive);
+                scoreboard.setLine(14, "&9&l«BLUE ALIVE»");
+                scoreboard.setLine(13, "" + blueAlive);
             } else {
-                scoreboard.setLine(13, "&9&l«BLUE CRYSTALS»");
-                scoreboard.setLine(12, "&" + ((blue.getBossCrystal().getState() == Crystal.CrystalState.AT_HOME)?'a':(blue.getBossCrystal().getState() == Crystal.CrystalState.CAPTURED)?'e':'c') + "✰ &" + ((blue.getTowerACrystal().getState() == Crystal.CrystalState.AT_HOME)?'a':(blue.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED)?'e':'c') + "✰ &" + ((blue.getTowerBCrystal().getState() == Crystal.CrystalState.AT_HOME)?'a':(blue.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED)?'e':'c') + "✰");
+                scoreboard.setLine(14, "&9&l«BLUE CRYSTALS»");
+                scoreboard.setLine(13, "&" + ((blue.getBossCrystal().getState() == Crystal.CrystalState.AT_HOME)?'a':(blue.getBossCrystal().getState() == Crystal.CrystalState.CAPTURED)?'e':'c') + "✰ &" + ((blue.getTowerACrystal().getState() == Crystal.CrystalState.AT_HOME)?'a':(blue.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED)?'e':'c') + "✰ &" + ((blue.getTowerBCrystal().getState() == Crystal.CrystalState.AT_HOME)?'a':(blue.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED)?'e':'c') + "✰");
             }
-            scoreboard.setLine(11, " ");
+            scoreboard.setLine(12, " ");
             if (red.getBossCrystal().getState() == Crystal.CrystalState.DEAD) {
-                scoreboard.setLine(10, "&c&l«RED ALIVE»");
-                scoreboard.setLine(9, "" + redAlive + " ");
+                scoreboard.setLine(11, "&c&l«RED ALIVE»");
+                scoreboard.setLine(10, "" + redAlive + " ");
             } else {
-                scoreboard.setLine(10, "&c&l«RED CRYSTALS»");
-                scoreboard.setLine(9, "&" + ((red.getBossCrystal().getState() == Crystal.CrystalState.AT_HOME)?'a':(red.getBossCrystal().getState() == Crystal.CrystalState.CAPTURED)?'e':'c') + "✰ &" + ((red.getTowerACrystal().getState() == Crystal.CrystalState.AT_HOME)?'a':(red.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED)?'e':'c') + "✰ &" + ((red.getTowerBCrystal().getState() == Crystal.CrystalState.AT_HOME)?'a':(red.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED)?'e':'c') + "✰ ");
+                scoreboard.setLine(11, "&c&l«RED CRYSTALS»");
+                scoreboard.setLine(10, "&" + ((red.getBossCrystal().getState() == Crystal.CrystalState.AT_HOME)?'a':(red.getBossCrystal().getState() == Crystal.CrystalState.CAPTURED)?'e':'c') + "✰ &" + ((red.getTowerACrystal().getState() == Crystal.CrystalState.AT_HOME)?'a':(red.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED)?'e':'c') + "✰ &" + ((red.getTowerBCrystal().getState() == Crystal.CrystalState.AT_HOME)?'a':(red.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED)?'e':'c') + "✰ ");
             }
-
-            scoreboard.setLine(8, "  ");
-            scoreboard.setLine(7, "&b&l«MINE RESET»");
-            scoreboard.setLine(6,  finalTimeTillReset + " minutes ");
-            scoreboard.setLine(5, "   ");
-            scoreboard.setLine(4, "&b&l«GAME TIME»");
-            scoreboard.setLine(3,  finalValue + " minutes");
-            scoreboard.setLine(2, "    ");
+            scoreboard.setLine(9, "    ");
+            scoreboard.setLine(8, "&b&l«TEAM LIVES»");
+            scoreboard.setLine(7,  ((player.getTeam() instanceof CQBlue)?((CQBlue) player.getTeam()).getLives():((CQRed)player.getTeam()).getLives())  + "");
+            scoreboard.setLine(6, "  ");
+            scoreboard.setLine(5, "&b&l«MINE RESET»");
+            scoreboard.setLine(4,  finalTimeTillReset + " minutes ");
+            scoreboard.setLine(3, "   ");
+            scoreboard.setLine(2, "&b&l«GAME TIME»");
+            scoreboard.setLine(1,  finalValue + " minutes");
 
         }
     }

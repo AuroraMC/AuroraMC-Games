@@ -199,14 +199,15 @@ public class TeamShop extends GUI {
                         this.updateItem(4, 4, new GUIItem(Material.SKULL_ITEM, robotB.getEntity().getCustomName() + " (Level " + robotB.getLevel() + ")", 1, ";&rThis mines:;" + descs.get(robotB.getLevel())));
                     } else {
                         robotC.spawn();
-                        this.setItem(4, 5, new GUIItem(Material.SKULL_ITEM, robotC.getEntity().getCustomName() + " (Level " + robotC.getLevel() + ")", 1, ";&rThis mines:;" + descs.get(robotC.getLevel())));
+                        this.updateItem(4, 5, new GUIItem(Material.SKULL_ITEM, robotC.getEntity().getCustomName() + " (Level " + robotC.getLevel() + ")", 1, ";&rThis mines:;" + descs.get(robotC.getLevel())));
+                        this.setItem(2, 4, new GUIItem(Material.BARRIER, "&3&lLevel 1 Mining Robot", 1, ";&rAll of your Mining Robot slots are full!"));
                     }
                 }
                 break;
             }
             case 5: {
                 if (sharp == 2) {
-                    this.setItem(1, 5, new GUIItem(Material.BARRIER, "&3&lSharpness Upgrade", 1, ";&rYou already have the max upgrade."));
+                    this.updateItem(1, 5, new GUIItem(Material.BARRIER, "&3&lSharpness Upgrade", 1, ";&rYou already have the max upgrade."));
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                     return;
                 } else {
@@ -225,9 +226,9 @@ public class TeamShop extends GUI {
                         sharp = red.getSharpUpgrade();
                     }
                     if (sharp == 2) {
-                        this.setItem(1, 5, new GUIItem(Material.BARRIER, "&3&lSharpness Upgrade", 1, ";&rYou already have the max upgrade."));
+                        this.updateItem(1, 5, new GUIItem(Material.BARRIER, "&3&lSharpness Upgrade", 1, ";&rYou already have the max upgrade."));
                     } else {
-                        this.setItem(1, 5, new GUIItem(Material.NETHER_STAR, "&3&lSharpness Upgrade", 1, ";&rCurrent: **" + ((sharp == 0)?"None":"Level " + sharp) + "**;;&rClick to upgrade to:;**Sharpness " + (sharp + 1) + "**;&rCost: &b" + ((sharp == 0)?13:17) + " &aEmeralds"));
+                        this.updateItem(1, 5, new GUIItem(Material.NETHER_STAR, "&3&lSharpness Upgrade", 1, ";&rCurrent: **" + ((sharp == 0)?"None":"Level " + sharp) + "**;;&rClick to upgrade to:;**Sharpness " + (sharp + 1) + "**;&rCost: &b" + ((sharp == 0)?13:17) + " &aEmeralds"));
                     }
                 }
                 break;

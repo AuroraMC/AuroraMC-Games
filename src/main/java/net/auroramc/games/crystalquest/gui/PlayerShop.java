@@ -8,8 +8,11 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.utils.gui.GUI;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.games.crystalquest.teams.CQBlue;
+import net.auroramc.games.crystalquest.teams.CQRed;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
@@ -548,7 +551,17 @@ public class PlayerShop extends GUI {
                     if (player.getPlayer().getInventory().contains(Material.IRON_INGOT, 16)) {
                         player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                         player.getPlayer().getInventory().removeItem(new ItemStack(Material.IRON_INGOT, 16));
-                        player.getPlayer().getInventory().addItem(new GUIItem(Material.BOW).getItem());
+                        ItemStack stack = new GUIItem(Material.BOW).getItem();
+                        if (player.getTeam() instanceof CQBlue) {
+                            if (((CQBlue) player.getTeam()).getPowerUpgrade() > 0) {
+                                stack.addEnchantment(Enchantment.ARROW_DAMAGE, ((CQBlue) player.getTeam()).getPowerUpgrade());
+                            }
+                        } else {
+                            if (((CQRed) player.getTeam()).getPowerUpgrade() > 0) {
+                                stack.addEnchantment(Enchantment.ARROW_DAMAGE, ((CQBlue) player.getTeam()).getPowerUpgrade());
+                            }
+                        }
+                        player.getPlayer().getInventory().addItem();
                         this.updateItem(2, 7, new GUIItem(Material.BARRIER, "&3Bow", 1, ";&rYou already have a Bow."));
                     } else {
                         player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
