@@ -5,6 +5,8 @@
 package net.auroramc.games.crystalquest;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.cosmetics.Cosmetic;
+import net.auroramc.core.api.cosmetics.KillMessage;
 import net.auroramc.core.api.events.player.PlayerShowEvent;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Team;
@@ -26,10 +28,7 @@ import net.auroramc.games.crystalquest.teams.CQRed;
 import net.auroramc.games.util.listeners.DeathRespawnListener;
 import net.auroramc.games.util.listeners.PregameMoveListener;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftVillager;
 import org.bukkit.entity.ArmorStand;
@@ -51,10 +50,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class CrystalQuest extends Game {
 
@@ -420,8 +416,61 @@ public class CrystalQuest extends Game {
     }
 
     @Override
-    public void onPlayerLeave(AuroraMCGamePlayer auroraMCGamePlayer) {
+    public void onPlayerLeave(AuroraMCGamePlayer player) {
+        if (player.getTeam() != null) {
+            if (player.getTeam() instanceof CQRed) {
+                CQRed red = (CQRed) player.getTeam();
+                red.getPlayers().remove(player);
+                if (red.getPlayers().size() == 0) {
+                    this.end(teams.get("Blue"), null);
+                    return;
+                }
+            } else if (player.getTeam() instanceof CQBlue) {
+                CQBlue blue = (CQBlue) player.getTeam();
+                blue.getPlayers().remove(player);
+                if (blue.getPlayers().size() == 0) {
+                    this.end(teams.get("Red"), null);
+                    return;
+                }
+            }
 
+            AuroraMCGamePlayer killer = null;
+            KillMessage killMessage;
+            KillMessage.KillReason killReason = KillMessage.KillReason.MELEE;
+            if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.KILL_MESSAGE)) {
+                killMessage = (KillMessage) player.getActiveCosmetics().get(Cosmetic.CosmeticType.KILL_MESSAGE);
+            } else {
+                killMessage = (KillMessage) AuroraMCAPI.getCosmetics().get(500);
+            }
+
+            if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
+                killer = player.getLastHitBy();
+            }
+
+            if (killer != null) {
+                if (killer.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.KILL_MESSAGE)) {
+                    killMessage = (KillMessage) killer.getActiveCosmetics().get(Cosmetic.CosmeticType.KILL_MESSAGE);
+                }
+                killer.getRewards().addXp("Kills", 25);
+                killer.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills", 1, true);
+
+                //If there is a killer, give out assists.
+                for (Map.Entry<AuroraMCGamePlayer, Long> entry : player.getLatestHits().entrySet()) {
+                    if (System.currentTimeMillis() - entry.getValue() < 60000 && entry.getKey().getId() != killer.getId()) {
+                        entry.getKey().getRewards().addXp("Assists", 10);
+                        entry.getKey().getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", "You got an assist on player **" + player.getPlayer().getName() + "**!"));
+                        entry.getKey().getPlayer().playSound(entry.getKey().getPlayer().getLocation(), Sound.ARROW_HIT, 100, 1);
+                    }
+                }
+
+                String finalMessage = killMessage.onKill(killer, player, null, killReason);
+                player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
+
+                for (Player player2 : Bukkit.getOnlinePlayers()) {
+                    player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", finalMessage));
+                }
+            }
+        }
     }
 
     @Override

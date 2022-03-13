@@ -96,6 +96,7 @@ public class Crystal {
     }
 
     public void crystalReturned() {
+        this.holder.getPlayer().removePotionEffect(PotionEffectType.SLOW);
         this.holder = null;
         crystal = EngineAPI.getMapWorld().spawn(home, EnderCrystal.class);
         state = CrystalState.AT_HOME;
