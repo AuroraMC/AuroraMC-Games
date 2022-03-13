@@ -46,7 +46,7 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent e) {
-        if (e.getItemDrop().getItemStack().getType().name().endsWith("_SWORD") || e.getItemDrop().getItemStack().getType().name().endsWith("_PICKAXE") || e.getItemDrop().getItemStack().getType().name().endsWith("_AXE") || e.getItemDrop().getItemStack().getType() == Material.COMPASS || e.getItemDrop().getItemStack().getType().name().endsWith("_HELMET") || e.getItemDrop().getItemStack().getType().name().endsWith("_CHESTPLATE") || e.getItemDrop().getItemStack().getType().name().endsWith("_LEGGINGS") || e.getItemDrop().getItemStack().getType().name().endsWith("_BOOTS")) {
+        if (e.getItemDrop().getItemStack().getType().name().endsWith("_SWORD") || e.getItemDrop().getItemStack().getType().name().endsWith("_PICKAXE") || e.getItemDrop().getItemStack().getType().name().endsWith("_AXE") || e.getItemDrop().getItemStack().getType() == Material.COMPASS || e.getItemDrop().getItemStack().getType().name().endsWith("_HELMET") || e.getItemDrop().getItemStack().getType().name().endsWith("_CHESTPLATE") || e.getItemDrop().getItemStack().getType().name().endsWith("_LEGGINGS") || e.getItemDrop().getItemStack().getType().name().endsWith("_BOOTS") || e.getItemDrop().getItemStack().getType() == Material.NETHER_STAR) {
             e.setCancelled(true);
             e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot drop this item!"));
         }
