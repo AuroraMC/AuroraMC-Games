@@ -232,11 +232,12 @@ public class CrystalQuest extends Game {
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             PlayerScoreboard scoreboard = player.getScoreboard();
             scoreboard.setTitle("&3&l-= &b&lCRYSTAL QUEST &3&l=-");
-            scoreboard.setLine(13, "&9&l«BLUE CRYSTALS»");
-            scoreboard.setLine(12, "&a✰ &a✰ &a✰");
-            scoreboard.setLine(11, " ");
-            scoreboard.setLine(10, "&c&l«RED CRYSTALS»");
-            scoreboard.setLine(9, "&a✰ &a✰ &a✰");
+            scoreboard.setLine(14, "&9&l«BLUE CRYSTALS»");
+            scoreboard.setLine(13, "&a✰ &a✰ &a✰");
+            scoreboard.setLine(12, " ");
+            scoreboard.setLine(11, "&c&l«RED CRYSTALS»");
+            scoreboard.setLine(10, "&a✰ &a✰ &a✰");
+            scoreboard.setLine(9, "    ");
             scoreboard.setLine(8, "&b&l«TEAM LIVES»");
             scoreboard.setLine(7, "0");
             scoreboard.setLine(6, "  ");

@@ -558,7 +558,7 @@ public class PlayerShop extends GUI {
                             }
                         } else {
                             if (((CQRed) player.getTeam()).getPowerUpgrade() > 0) {
-                                stack.addEnchantment(Enchantment.ARROW_DAMAGE, ((CQBlue) player.getTeam()).getPowerUpgrade());
+                                stack.addEnchantment(Enchantment.ARROW_DAMAGE, ((CQRed) player.getTeam()).getPowerUpgrade());
                             }
                         }
                         player.getPlayer().getInventory().addItem();

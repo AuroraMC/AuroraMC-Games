@@ -200,7 +200,7 @@ public class TeamShop extends GUI {
                     } else {
                         robotC.spawn();
                         this.updateItem(4, 5, new GUIItem(Material.SKULL_ITEM, robotC.getEntity().getCustomName() + " (Level " + robotC.getLevel() + ")", 1, ";&rThis mines:;" + descs.get(robotC.getLevel())));
-                        this.setItem(2, 4, new GUIItem(Material.BARRIER, "&3&lLevel 1 Mining Robot", 1, ";&rAll of your Mining Robot slots are full!"));
+                        this.updateItem(2, 4, new GUIItem(Material.BARRIER, "&3&lLevel 1 Mining Robot", 1, ";&rAll of your Mining Robot slots are full!"));
                     }
                 }
                 break;
