@@ -13,7 +13,7 @@ import org.bukkit.Material;
 public class Defender extends Kit {
 
     public Defender() {
-        super(1, 1, "&3&lDefender", "Some description for Defender", Material.STAINED_GLASS, 8000);
+        super(1, 1, "&3&lDefender", "The ability to protect your crystals is one of the most important ones in the game, these players receive blocks that make capturing crystals a nuisance.", Material.STAINED_GLASS, 8000);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class Defender extends Kit {
 
         player.getPlayer().getInventory().setItem(1, new GUIItem(Material.STONE_PICKAXE).getItem());
         player.getPlayer().getInventory().setItem(2, new GUIItem(Material.WOOD_AXE).getItem());
-        player.getPlayer().getInventory().setItem(3, new GUIItem(Material.STAINED_GLASS, "&rStained Glass", 1, "", (short)((player.getTeam().getId() == 0)?14:3)).getItem());
+        player.getPlayer().getInventory().setItem(3, new GUIItem(Material.STAINED_GLASS, "&rStained Glass", 12, "", (short)((player.getTeam().getId() == 0)?14:3)).getItem());
 
         player.getPlayer().getInventory().setItem(8, CrystalQuest.compass);
     }

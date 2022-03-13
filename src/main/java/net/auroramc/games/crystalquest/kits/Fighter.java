@@ -13,7 +13,7 @@ import org.bukkit.Material;
 public class Fighter extends Kit {
 
     public Fighter() {
-        super(2, 1, "&3&lFighter", "Some description for Fighter", Material.DIAMOND_SWORD, 4000);
+        super(2, 1, "&3&lFighter", "These players have mastered the art of aggression, they are capable of winning fights that most would deem unwinnable.", Material.DIAMOND_SWORD, 4000);
     }
 
     @Override

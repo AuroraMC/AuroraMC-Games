@@ -4,6 +4,7 @@
 
 package net.auroramc.games.crystalquest.teams;
 
+import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Team;
 import net.auroramc.engine.api.EngineAPI;
@@ -119,8 +120,15 @@ public class CQRed implements Team {
         lives--;
     }
 
-    public void lifeBrought() {
+    public boolean lifeBrought() {
+        if (lives >= 5) {
+            return false;
+        }
         lives++;
+        for (AuroraMCPlayer player : players) {
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You now have an additional life! You now have **" + lives + "** lives!"));
+        }
+        return true;
     }
 
     public int getPowerUpgrade() {

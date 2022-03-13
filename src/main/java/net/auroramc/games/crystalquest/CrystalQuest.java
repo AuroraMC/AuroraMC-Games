@@ -465,13 +465,12 @@ public class CrystalQuest extends Game {
                         entry.getKey().getPlayer().playSound(entry.getKey().getPlayer().getLocation(), Sound.ARROW_HIT, 100, 1);
                     }
                 }
+            }
 
-                String finalMessage = killMessage.onKill(killer, player, null, killReason);
-                player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
-
-                for (Player player2 : Bukkit.getOnlinePlayers()) {
-                    player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", finalMessage));
-                }
+            String finalMessage = killMessage.onKill(killer, player, null, killReason);
+            player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
+            for (Player player2 : Bukkit.getOnlinePlayers()) {
+                player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", finalMessage));
             }
         }
     }

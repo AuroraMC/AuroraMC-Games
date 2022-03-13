@@ -27,6 +27,8 @@ public class CrystalListener implements Listener {
             EnderCrystal crystal = (EnderCrystal) e.getRightClicked();
             if (!player.isSpectator() && crystal.getCustomName() != null) {
                 crystalCapture(player, crystal);
+            } else if (crystal.getCustomName() == null) {
+                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You can't collect a crystal that's already been captured!"));
             }
         }
     }
@@ -120,6 +122,8 @@ public class CrystalListener implements Listener {
                 EnderCrystal crystal = (EnderCrystal) e.getEntity();
                 if (!player.isSpectator() && crystal.getCustomName() != null) {
                     crystalCapture(player, crystal);
+                } else if (crystal.getCustomName() == null) {
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You can't collect a crystal that's already been captured!"));
                 }
             }
         }

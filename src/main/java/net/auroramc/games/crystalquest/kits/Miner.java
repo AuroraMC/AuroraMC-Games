@@ -28,7 +28,7 @@ public class Miner extends Kit {
     }
 
     public Miner() {
-        super(0, 1, "&3&lMiner", "Some description for Miner", Material.DIAMOND_PICKAXE, -1);
+        super(0, 1, "&3&lMiner", "The heart of the team, a Miner will be the ones that every player aims to protect, with the ability to mine ores quicker for everyone.", Material.DIAMOND_PICKAXE, -1);
     }
 
     @Override
