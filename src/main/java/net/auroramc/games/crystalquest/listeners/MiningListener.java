@@ -8,12 +8,15 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.server.ServerState;
+import net.auroramc.games.crystalquest.teams.CQBlue;
+import net.auroramc.games.crystalquest.teams.CQRed;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -22,6 +25,16 @@ public class MiningListener implements Listener {
 
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
+        CQRed red = (CQRed) EngineAPI.getActiveGame().getTeams().get("Red");
+        CQBlue blue = (CQBlue) EngineAPI.getActiveGame().getTeams().get("Blue");
+
+        int protectionRadius = 25;
+
+        if (e.getBlock().getLocation().distanceSquared(red.getRobotSlotA().getLocation()) > protectionRadius || e.getBlock().getLocation().distanceSquared(red.getRobotSlotB().getLocation()) > protectionRadius || e.getBlock().getLocation().distanceSquared(red.getRobotSlotC().getLocation()) > protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotA().getLocation()) > protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotB().getLocation()) > protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotB().getLocation()) > protectionRadius) {
+            e.setCancelled(true);
+            e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot break blocks here!"));
+            return;
+        }
         switch (e.getBlock().getType()) {
             case EMERALD_ORE: {
                 e.setCancelled(true);
@@ -155,6 +168,18 @@ public class MiningListener implements Listener {
                 e.setCancelled(true);
                 e.setFoodLevel(30);
             }
+        }
+    }
+
+    @EventHandler
+    public void onPlace(BlockPlaceEvent e) {
+        CQRed red = (CQRed) EngineAPI.getActiveGame().getTeams().get("Red");
+        CQBlue blue = (CQBlue) EngineAPI.getActiveGame().getTeams().get("Blue");
+
+        int protectionRadius = 25;
+        if (e.getBlock().getLocation().distanceSquared(red.getRobotSlotA().getLocation()) > protectionRadius || e.getBlock().getLocation().distanceSquared(red.getRobotSlotB().getLocation()) > protectionRadius || e.getBlock().getLocation().distanceSquared(red.getRobotSlotC().getLocation()) > protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotA().getLocation()) > protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotB().getLocation()) > protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotB().getLocation()) > protectionRadius) {
+            e.setCancelled(true);
+            e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot place blocks here!"));
         }
     }
 

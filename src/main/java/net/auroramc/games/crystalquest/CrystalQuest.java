@@ -36,6 +36,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -308,7 +309,9 @@ public class CrystalQuest extends Game {
         EntityDamageByEntityEvent.getHandlerList().unregister(crystalListener);
         PlayerInteractAtEntityEvent.getHandlerList().unregister(crystalListener);
         FoodLevelChangeEvent.getHandlerList().unregister(miningListener);
+        BlockPlaceEvent.getHandlerList().unregister(miningListener);
         DeathRespawnListener.unregister();
+        PregameMoveListener.unregister();
 
         if (!starting) {
             CQRed red = (CQRed) getTeams().get("Red");
