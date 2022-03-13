@@ -527,7 +527,7 @@ public class CrystalQuest extends Game {
     }
 
     @Override
-    public boolean onDeath(AuroraMCGamePlayer player) {
+    public boolean onDeath(AuroraMCGamePlayer player, AuroraMCGamePlayer killer) {
         boolean life;
         boolean finalKill;
         if (player.getTeam() instanceof CQBlue) {
@@ -602,30 +602,84 @@ public class CrystalQuest extends Game {
 
         while (amountOfGold > 0) {
             if (amountOfGold > 64) {
-                player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.GOLD_INGOT, 64));
+                if (killer != null) {
+                    Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.GOLD_INGOT, 64));
+                    if (items.size() > 0) {
+                        for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
+                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
+                        }
+                    }
+                } else {
+                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.GOLD_INGOT, 64));
+                }
                 amountOfGold -= 64;
             } else {
-                player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.GOLD_INGOT, amountOfGold));
+                if (killer != null) {
+                    Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.GOLD_INGOT, amountOfGold));
+                    if (items.size() > 0) {
+                        for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
+                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
+                        }
+                    }
+                } else {
+                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.GOLD_INGOT, amountOfGold));
+                }
                 amountOfGold = 0;
             }
         }
 
         while (amountOfIron > 0) {
             if (amountOfIron > 64) {
-                player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.IRON_INGOT, 64));
+                if (killer != null) {
+                    Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT, 64));
+                    if (items.size() > 0) {
+                        for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
+                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
+                        }
+                    }
+                } else {
+                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.IRON_INGOT, 64));
+                }
                 amountOfIron -= 64;
             } else {
-                player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.IRON_INGOT, amountOfIron));
+                if (killer != null) {
+                    Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT, amountOfIron));
+                    if (items.size() > 0) {
+                        for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
+                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
+                        }
+                    }
+                } else {
+                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.IRON_INGOT, amountOfIron));
+                }
                 amountOfIron = 0;
             }
         }
 
         while (amountOfEmeralds > 0) {
             if (amountOfEmeralds > 64) {
-                player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.EMERALD, 64));
+                if (killer != null) {
+                    Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.EMERALD, 64));
+                    if (items.size() > 0) {
+                        for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
+                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
+                        }
+                    }
+                } else {
+                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.EMERALD, 64));
+                }
                 amountOfEmeralds -= 64;
             } else {
-                player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.EMERALD, amountOfEmeralds));
+                if (killer != null) {
+                    Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.EMERALD, amountOfEmeralds));
+                    if (items.size() > 0) {
+                        for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
+                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
+                        }
+                    }
+                } else {
+                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.EMERALD, amountOfEmeralds));
+                }
                 amountOfEmeralds = 0;
             }
         }

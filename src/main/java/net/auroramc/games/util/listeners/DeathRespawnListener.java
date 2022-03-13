@@ -55,16 +55,7 @@ public class DeathRespawnListener implements Listener {
             }
             if (e.getFinalDamage() >= player.getPlayer().getHealth() && !player.isSpectator()) {
                 e.setCancelled(true);
-                boolean finalKill = EngineAPI.getActiveGame().onDeath(player);
-                player.setSpectator(true, finalKill);
-                JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
-                int x, y, z;
-                x = specSpawn.getInt("x");
-                y = specSpawn.getInt("y");
-                z = specSpawn.getInt("z");
-                float yaw = specSpawn.getFloat("yaw");
-                player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
-                String message;
+
                 Entity entity = null;
                 AuroraMCGamePlayer killer = null;
                 KillMessage killMessage;
@@ -163,9 +154,6 @@ public class DeathRespawnListener implements Listener {
                         }
                     }
                 }
-
-                //Bukkit.broadcastMessage(" " + killer + "  " + player + " " + entity + " " + killReason);
-
                 if (killer != null) {
                     if (killer.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.KILL_MESSAGE)) {
                         killMessage = (KillMessage) killer.getActiveCosmetics().get(Cosmetic.CosmeticType.KILL_MESSAGE);
@@ -183,7 +171,17 @@ public class DeathRespawnListener implements Listener {
                     }
                 }
 
+                boolean finalKill = EngineAPI.getActiveGame().onDeath(player, killer);
+
                 String finalMessage = killMessage.onKill(killer, player, entity, killReason) + ((finalKill)?" &c&lFINAL KILL!":"");
+                player.setSpectator(true, finalKill);
+                JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
+                int x, y, z;
+                x = specSpawn.getInt("x");
+                y = specSpawn.getInt("y");
+                z = specSpawn.getInt("z");
+                float yaw = specSpawn.getFloat("yaw");
+                player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
 
                 player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
 
