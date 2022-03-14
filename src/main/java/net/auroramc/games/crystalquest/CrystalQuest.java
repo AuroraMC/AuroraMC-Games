@@ -487,12 +487,12 @@ public class CrystalQuest extends Game {
                                 if (red.getBossCrystal().getState() == Crystal.CrystalState.AT_HOME) {
                                     closest = red.getBossCrystal().getHome();
                                 }
-                                if (red.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                if (red.getTowerACrystal().getState() == Crystal.CrystalState.AT_HOME) {
                                     if (closest == null || closest.distanceSquared(player.getPlayer().getLocation()) > red.getTowerACrystal().getHome().distanceSquared(player.getPlayer().getLocation())) {
                                         closest = red.getTowerACrystal().getHome();
                                     }
                                 }
-                                if (red.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                if (red.getTowerBCrystal().getState() == Crystal.CrystalState.AT_HOME) {
                                     if (closest == null || closest.distanceSquared(player.getPlayer().getLocation()) > red.getTowerBCrystal().getHome().distanceSquared(player.getPlayer().getLocation())) {
                                         closest = red.getTowerBCrystal().getHome();
                                     }
@@ -529,12 +529,12 @@ public class CrystalQuest extends Game {
                                 if (blue.getBossCrystal().getState() == Crystal.CrystalState.AT_HOME) {
                                     closest = blue.getBossCrystal().getHome();
                                 }
-                                if (blue.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                if (blue.getTowerACrystal().getState() == Crystal.CrystalState.AT_HOME) {
                                     if (closest == null || closest.distanceSquared(player.getPlayer().getLocation()) > blue.getTowerACrystal().getHome().distanceSquared(player.getPlayer().getLocation())) {
                                         closest = blue.getTowerACrystal().getHome();
                                     }
                                 }
-                                if (blue.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                if (blue.getTowerBCrystal().getState() == Crystal.CrystalState.AT_HOME) {
                                     if (closest == null || closest.distanceSquared(player.getPlayer().getLocation()) > blue.getTowerBCrystal().getHome().distanceSquared(player.getPlayer().getLocation())) {
                                         closest = blue.getTowerBCrystal().getHome();
                                     }
