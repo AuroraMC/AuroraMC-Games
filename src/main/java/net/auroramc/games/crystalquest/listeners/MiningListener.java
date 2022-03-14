@@ -301,7 +301,7 @@ public class MiningListener implements Listener {
             }
             case COBBLESTONE:
             case WOOD:
-                e.getBlock().getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), new GUIItem(e.getBlock().getType()).getItem());
+                e.getBlock().getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), new ItemStack(e.getBlock().getType()));
                 break;
             case STAINED_GLASS: {
                 if (e.getBlock().getData() != 14 && e.getBlock().getData() != 11) {

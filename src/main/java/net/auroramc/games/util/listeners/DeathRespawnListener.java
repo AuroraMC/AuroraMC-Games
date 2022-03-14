@@ -107,6 +107,7 @@ public class DeathRespawnListener implements Listener {
                                 killReason = KillMessage.KillReason.ENTITY;
                             }
                         }
+                        projectile.remove();
                     } else {
                         //Damage by entity.
                         entity = ((EntityDamageByEntityEvent) e).getDamager();

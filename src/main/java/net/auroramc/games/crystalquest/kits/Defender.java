@@ -27,7 +27,7 @@ public class Defender extends Kit {
 
         player.getPlayer().getInventory().setItem(1, new GUIItem(Material.STONE_PICKAXE).getItem());
         player.getPlayer().getInventory().setItem(2, new GUIItem(Material.WOOD_AXE).getItem());
-        player.getPlayer().getInventory().setItem(3, new GUIItem(Material.STAINED_GLASS, "&rStained Glass", 12, "", (short)((player.getTeam().getId() == 0)?14:3)).getItem());
+        player.getPlayer().getInventory().setItem(3, new GUIItem(Material.STAINED_GLASS, null, 12, null, (short)((player.getTeam().getId() == 0)?14:3)).getItem());
 
         player.getPlayer().getInventory().setItem(8, CrystalQuest.compass);
     }
