@@ -95,7 +95,7 @@ public class Crystal {
             this.holder = null;
         }
 
-        home.getWorld().createExplosion(home, 6 * (isBoss()?2:1));
+        home.getWorld().createExplosion(home, 6 + (isBoss()?3:0));
 
 
 

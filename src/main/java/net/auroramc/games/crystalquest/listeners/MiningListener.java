@@ -7,7 +7,10 @@ package net.auroramc.games.crystalquest.listeners;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.engine.api.players.PlayerKitLevel;
 import net.auroramc.engine.api.server.ServerState;
+import net.auroramc.games.crystalquest.kits.Miner;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
 import org.bukkit.Location;
@@ -20,6 +23,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Random;
 
 public class MiningListener implements Listener {
 
@@ -57,7 +62,53 @@ public class MiningListener implements Listener {
                         }
                     }
                 }
-                e.getBlock().getLocation().getWorld().dropItemNaturally(location, new ItemStack(Material.EMERALD));
+                AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
+                int amount = 1;
+                if (player.getKit() instanceof Miner) {
+                    PlayerKitLevel level = player.getKitLevel();
+                    int rand = new Random().nextInt(100);
+                    switch (level.getLatestUpgrade()) {
+                        case 1: {
+                            if (rand < 3) {
+                                amount = 2;
+                            }
+                            break;
+                        }
+                        case 2: {
+                            if (rand < 2) {
+                                amount = 3;
+                            } else if (rand < 6) {
+                                amount = 2;
+                            }
+                            break;
+                        }
+                        case 3: {
+                            if (rand < 2) {
+                                amount = 3;
+                            } else if (rand < 9) {
+                                amount = 2;
+                            }
+                            break;
+                        }
+                        case 4: {
+                            if (rand < 4) {
+                                amount = 3;
+                            } else if (rand < 12) {
+                                amount = 2;
+                            }
+                            break;
+                        }
+                        case 5:{
+                            if (rand < 6) {
+                                amount = 3;
+                            } else if (rand < 15) {
+                                amount = 2;
+                            }
+                            break;
+                        }
+                    }
+                }
+                e.getBlock().getLocation().getWorld().dropItemNaturally(location, new ItemStack(Material.EMERALD, amount));
                 e.getBlock().setType(Material.STONE);
                 break;
             }
@@ -82,7 +133,53 @@ public class MiningListener implements Listener {
                         }
                     }
                 }
-                e.getBlock().getLocation().getWorld().dropItemNaturally(location, new ItemStack(Material.IRON_INGOT));
+                AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
+                int amount = 1;
+                if (player.getKit() instanceof Miner) {
+                    PlayerKitLevel level = player.getKitLevel();
+                    int rand = new Random().nextInt(100);
+                    switch (level.getLatestUpgrade()) {
+                        case 1: {
+                            if (rand < 3) {
+                                amount = 2;
+                            }
+                            break;
+                        }
+                        case 2: {
+                            if (rand < 2) {
+                                amount = 3;
+                            } else if (rand < 6) {
+                                amount = 2;
+                            }
+                            break;
+                        }
+                        case 3: {
+                            if (rand < 2) {
+                                amount = 3;
+                            } else if (rand < 9) {
+                                amount = 2;
+                            }
+                            break;
+                        }
+                        case 4: {
+                            if (rand < 4) {
+                                amount = 3;
+                            } else if (rand < 12) {
+                                amount = 2;
+                            }
+                            break;
+                        }
+                        case 5:{
+                            if (rand < 6) {
+                                amount = 3;
+                            } else if (rand < 15) {
+                                amount = 2;
+                            }
+                            break;
+                        }
+                    }
+                }
+                e.getBlock().getLocation().getWorld().dropItemNaturally(location, new ItemStack(Material.IRON_INGOT, amount));
                 e.getBlock().setType(Material.STONE);
                 break;
             }
@@ -107,7 +204,53 @@ public class MiningListener implements Listener {
                         }
                     }
                 }
-                e.getBlock().getLocation().getWorld().dropItemNaturally(location, new ItemStack(Material.GOLD_INGOT));
+                AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
+                int amount = 1;
+                if (player.getKit() instanceof Miner) {
+                    PlayerKitLevel level = player.getKitLevel();
+                    int rand = new Random().nextInt(100);
+                    switch (level.getLatestUpgrade()) {
+                        case 1: {
+                            if (rand < 3) {
+                                amount = 2;
+                            }
+                            break;
+                        }
+                        case 2: {
+                            if (rand < 2) {
+                                amount = 3;
+                            } else if (rand < 6) {
+                                amount = 2;
+                            }
+                            break;
+                        }
+                        case 3: {
+                            if (rand < 2) {
+                                amount = 3;
+                            } else if (rand < 9) {
+                                amount = 2;
+                            }
+                            break;
+                        }
+                        case 4: {
+                            if (rand < 4) {
+                                amount = 3;
+                            } else if (rand < 12) {
+                                amount = 2;
+                            }
+                            break;
+                        }
+                        case 5:{
+                            if (rand < 6) {
+                                amount = 3;
+                            } else if (rand < 15) {
+                                amount = 2;
+                            }
+                            break;
+                        }
+                    }
+                }
+                e.getBlock().getLocation().getWorld().dropItemNaturally(location, new ItemStack(Material.GOLD_INGOT, amount));
                 e.getBlock().setType(Material.STONE);
                 break;
             }
