@@ -113,7 +113,6 @@ public class TeamShop extends GUI {
         CQBlue blue = (CQBlue) EngineAPI.getActiveGame().getTeams().get("Blue");
         CQRed red = (CQRed) EngineAPI.getActiveGame().getTeams().get("Red");
         int prot, power, sharp;
-        MiningRobot robotA;
         MiningRobot robotB;
         MiningRobot robotC;
 
@@ -121,14 +120,12 @@ public class TeamShop extends GUI {
             prot = blue.getProtUpgrade();
             power = blue.getPowerUpgrade();
             sharp = blue.getSharpUpgrade();
-            robotA = blue.getRobotSlotA();
             robotB = blue.getRobotSlotB();
             robotC = blue.getRobotSlotC();
         } else {
             prot = red.getProtUpgrade();
             power = red.getPowerUpgrade();
             sharp = red.getSharpUpgrade();
-            robotA = red.getRobotSlotA();
             robotB = red.getRobotSlotB();
             robotC = red.getRobotSlotC();
         }
@@ -191,9 +188,9 @@ public class TeamShop extends GUI {
                 break;
             }
             case 4: {
-                if (player.getPlayer().getInventory().contains(Material.EMERALD, 8) && (robotB.getEntity() == null || robotC.getEntity() == null)) {
+                if (player.getPlayer().getInventory().contains(Material.EMERALD, 16) && (robotB.getEntity() == null || robotC.getEntity() == null)) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
-                    player.getPlayer().getInventory().removeItem(new ItemStack(Material.EMERALD, 8));
+                    player.getPlayer().getInventory().removeItem(new ItemStack(Material.EMERALD, 16));
                     if (robotB.getEntity() == null) {
                         robotB.spawn();
                         this.updateItem(4, 4, new GUIItem(Material.SKULL_ITEM, robotB.getEntity().getCustomName() + " (Level " + robotB.getLevel() + ")", 1, ";&rThis mines:;" + descs.get(robotB.getLevel())));
@@ -202,6 +199,9 @@ public class TeamShop extends GUI {
                         this.updateItem(4, 5, new GUIItem(Material.SKULL_ITEM, robotC.getEntity().getCustomName() + " (Level " + robotC.getLevel() + ")", 1, ";&rThis mines:;" + descs.get(robotC.getLevel())));
                         this.updateItem(2, 4, new GUIItem(Material.BARRIER, "&3&lLevel 1 Mining Robot", 1, ";&rAll of your Mining Robot slots are full!"));
                     }
+                } else {
+                    this.setItem(2, 4, new GUIItem(Material.BARRIER, "&3&lLevel 1 Mining Robot", 1, ";&rAll of your Mining Robot slots are full!"));
+                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                 }
                 break;
             }

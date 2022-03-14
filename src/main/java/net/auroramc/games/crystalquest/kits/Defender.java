@@ -32,4 +32,28 @@ public class Defender extends Kit {
         player.getPlayer().getInventory().setItem(8, CrystalQuest.compass);
     }
 
+    @Override
+    public String getUpgradeReward(int i) {
+        switch (i) {
+            case 1: {
+                return "Reduce ‘Receive Block’ cooldown by;&b1.0 seconds (becomes 11.0 seconds)";
+            }
+            case 2: {
+                return "Reduce ‘Receive Block’ cooldown by;&b1.0 seconds (becomes 10.0 seconds)";
+            }
+            case 3: {
+                return "Reduce ‘Receive Block’ cooldown by;&b1.0 seconds (becomes 9.0 seconds);" +
+                        "&r - &bIncreases the amount of blocks;&byou can receive to 14.";
+            }
+            case 4: {
+                return "Reduce ‘Receive Block’ cooldown by;&b1.0 seconds (becomes 8.0 seconds);" +
+                        "&r - Increases the amount of blocks;&byou can receive to 16.";
+            }
+            case 5: {
+                return "Reduce ‘Receive Block’ cooldown by;&b2.0 seconds (becomes 6.0 seconds)";
+            }
+        }
+        return "None";
+    }
+
 }

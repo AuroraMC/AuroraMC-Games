@@ -118,6 +118,9 @@ public class CQRed implements Team {
 
     public void lostLife() {
         lives--;
+        for (AuroraMCPlayer player : players) {
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "One of your players died, so you lost a life! You now have **" + lives + "** lives!"));
+        }
     }
 
     public boolean lifeBrought() {
@@ -138,6 +141,7 @@ public class CQRed implements Team {
     public void upgradePower() {
         powerUpgrade++;
         for (AuroraMCPlayer player : players) {
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Your **Power Upgrade** was upgraded to **Level " + powerUpgrade + "**!"));
             if (!((AuroraMCGamePlayer) player).isSpectator()) {
                 int i = player.getPlayer().getInventory().first(Material.BOW);
                 if (i > -1) {
@@ -162,6 +166,7 @@ public class CQRed implements Team {
     public void upgradeProt() {
         protUpgrade++;
         for (AuroraMCPlayer player : players) {
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Your **Protection Upgrade** was upgraded to **Level " + protUpgrade + "**!"));
             if (!((AuroraMCGamePlayer) player).isSpectator()) {
                 player.getPlayer().getInventory().getBoots().addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protUpgrade);
                 player.getPlayer().getInventory().getHelmet().addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protUpgrade);
@@ -185,6 +190,7 @@ public class CQRed implements Team {
     public void upgradeSharp() {
         sharpUpgrade++;
         for (AuroraMCPlayer player : players) {
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Your **Sharpness Upgrade** was upgraded to **Level " + sharpUpgrade + "**!"));
             if (!((AuroraMCGamePlayer) player).isSpectator()) {
                 int slot = -1;
                 for (int i = 0; i < 36; i++) {

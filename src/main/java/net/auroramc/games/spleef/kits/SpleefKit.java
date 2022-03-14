@@ -21,4 +21,9 @@ public class SpleefKit extends Kit {
         player.getPlayer().getInventory().clear();
         player.getPlayer().getInventory().setItem(0, new GUIItem(Material.IRON_SPADE, "&3&lSpade of doom").getItem());
     }
+
+    @Override
+    public String getUpgradeReward(int i) {
+        return "None";
+    }
 }

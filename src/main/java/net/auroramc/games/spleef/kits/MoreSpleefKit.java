@@ -20,4 +20,9 @@ public class MoreSpleefKit extends Kit {
         player.getPlayer().getInventory().clear();
         player.getPlayer().getInventory().setItem(0, new GUIItem(Material.DIAMOND_SPADE, "&3&lBlock is very very very bad.").getItem());
     }
+
+    @Override
+    public String getUpgradeReward(int i) {
+        return "None";
+    }
 }

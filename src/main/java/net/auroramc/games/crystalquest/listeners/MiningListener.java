@@ -113,6 +113,9 @@ public class MiningListener implements Listener {
             }
             case STONE: {
                 e.setCancelled(true);
+                if (e.getBlock().getData() != 0) {
+                    return;
+                }
                 Location location = e.getBlock().getLocation().clone();
                 location.setY(location.getY() + 1);
                 if (!location.getBlock().isEmpty()) {
@@ -146,13 +149,22 @@ public class MiningListener implements Listener {
             }
             case STAINED_CLAY:
             case WOOL: {
+                if (e.getBlock().getData() != 14 && e.getBlock().getData() != 11) {
+                    e.setCancelled(true);
+                    return;
+                }
                 e.getBlock().getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), new GUIItem(e.getBlock().getType(), null, 1, null, (short)((AuroraMCAPI.getPlayer(e.getPlayer()).getTeam().getName().equalsIgnoreCase("Red"))?14:11)).getItem());
                 break;
             }
             case COBBLESTONE:
             case WOOD:
                 e.getBlock().getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), new GUIItem(e.getBlock().getType()).getItem());
+                break;
             case STAINED_GLASS: {
+                if (e.getBlock().getData() != 14 && e.getBlock().getData() != 11) {
+                    e.setCancelled(true);
+                    return;
+                }
                 break;
             }
             default: {

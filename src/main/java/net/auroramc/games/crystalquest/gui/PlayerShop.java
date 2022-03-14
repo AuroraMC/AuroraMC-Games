@@ -109,8 +109,8 @@ public class PlayerShop extends GUI {
         this.setItem(4, 1, item);
 
 
-        this.setItem(1, 3, new GUIItem(Material.STAINED_CLAY, "&3&l16 Clay Blocks", 16, ";&rClick to purchase **16** Clay Blocks.;;&rCost: &b20&7 Iron Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
-        this.setItem(2, 3, new GUIItem(Material.WOOL, "&3&l16 Wool Blocks", 16, ";&rClick to purchase **16** Wool Blocks.;;&rCost: &b24&7 Iron Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
+        this.setItem(1, 3, new GUIItem(Material.STAINED_CLAY, "&3&l16 Clay Blocks", 16, ";&rClick to purchase **16** Clay Blocks.;;&rCost: &b24&7 Iron Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
+        this.setItem(2, 3, new GUIItem(Material.WOOL, "&3&l16 Wool Blocks", 16, ";&rClick to purchase **16** Wool Blocks.;;&rCost: &b20&7 Iron Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
         this.setItem(3, 3, new GUIItem(Material.WOOD, "&3&l16 Wood Blocks", 16, ";&rClick to purchase **16** Wood Blocks.;;&rCost: &b8&6 Gold Ingots"));
         this.setItem(4, 3, new GUIItem(Material.STAINED_GLASS, "&3&l16 Glass Blocks", 16, ";&rClick to purchase **16** Glass Blocks.;;&rCost: &b32&6 Gold Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
 
@@ -365,9 +365,9 @@ public class PlayerShop extends GUI {
 
             //Blocks
             case STAINED_CLAY: {
-                if (player.getPlayer().getInventory().contains(Material.IRON_INGOT, 24)) {
+                if (player.getPlayer().getInventory().contains(Material.IRON_INGOT, 20)) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
-                    player.getPlayer().getInventory().removeItem(new ItemStack(Material.IRON_INGOT, 24));
+                    player.getPlayer().getInventory().removeItem(new ItemStack(Material.IRON_INGOT, 20));
                     Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(new GUIItem(Material.STAINED_CLAY, null, 16, null, (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)).getItem());
                     if (couldntPlace.size() > 0) {
                         player.getPlayer().closeInventory();
@@ -382,9 +382,9 @@ public class PlayerShop extends GUI {
                 break;
             }
             case WOOL: {
-                if (player.getPlayer().getInventory().contains(Material.IRON_INGOT, 20)) {
+                if (player.getPlayer().getInventory().contains(Material.IRON_INGOT, 24)) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
-                    player.getPlayer().getInventory().removeItem(new ItemStack(Material.IRON_INGOT, 20));
+                    player.getPlayer().getInventory().removeItem(new ItemStack(Material.IRON_INGOT, 24));
                     Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(new GUIItem(Material.WOOL, null, 16, null, (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)).getItem());
                     if (couldntPlace.size() > 0) {
                         player.getPlayer().closeInventory();

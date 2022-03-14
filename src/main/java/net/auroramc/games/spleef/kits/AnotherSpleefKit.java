@@ -22,4 +22,9 @@ public class AnotherSpleefKit extends Kit {
         player.getPlayer().getInventory().setItem(0, new GUIItem(Material.IRON_SPADE, "&3&lBrandon Stinks").getItem());
 
     }
+
+    @Override
+    public String getUpgradeReward(int i) {
+        return "None";
+    }
 }

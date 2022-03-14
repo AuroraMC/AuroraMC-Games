@@ -6,6 +6,7 @@ package net.auroramc.games.crystalquest.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,6 +23,7 @@ public class InventoryListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
         if (EngineAPI.getServerState() == ServerState.IN_GAME) {
+            AuroraMCGamePlayer gamePlayer = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getWhoClicked());
             if (e.getSlot() == 8 && e.getClickedInventory() instanceof PlayerInventory) {
                 e.setCancelled(true);
                 e.getWhoClicked().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot move this item!"));
@@ -32,6 +34,15 @@ public class InventoryListener implements Listener {
                     }
                 }.runTaskLater(AuroraMCAPI.getCore(), 3);
             } else if (e.getSlotType() == InventoryType.SlotType.ARMOR) {
+                e.setCancelled(true);
+                e.getWhoClicked().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot move this item!"));
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        ((Player)e.getWhoClicked()).updateInventory();
+                    }
+                }.runTaskLater(AuroraMCAPI.getCore(), 3);
+            } else if (gamePlayer.getGameData().containsKey("crystal_possession")) {
                 e.setCancelled(true);
                 e.getWhoClicked().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot move this item!"));
                 new BukkitRunnable(){

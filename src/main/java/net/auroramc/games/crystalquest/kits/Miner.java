@@ -45,4 +45,21 @@ public class Miner extends Kit {
         player.getPlayer().getInventory().setItem(8, CrystalQuest.compass);
     }
 
+    @Override
+    public String getUpgradeReward(int i) {
+        switch (i) {
+            case 1:
+            case 3: {
+                return "Receive +3% chance to drop double;&bores when mining.";
+            }
+            case 4:
+            case 5:
+            case 2: {
+                return "Receive +3% chance to drop double;&bores when mining.;" +
+                        "&r - &bReceive +2% chance to drop triple;&bores when mining.";
+            }
+        }
+        return "None";
+    }
+
 }

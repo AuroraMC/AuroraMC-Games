@@ -439,6 +439,36 @@ public class CrystalQuest extends Game {
                 }
             }
 
+            if (player.getTeam() instanceof CQBlue) {
+                CQBlue blue = (CQBlue) player.getTeam();
+                if (player.getGameData().containsKey("crystal_possession")) {
+                    CQRed red = (CQRed) this.getTeams().get("Red");
+                    player.getPlayer().getInventory().setContents((ItemStack[]) player.getGameData().remove("crystal_inventory"));
+                    String crystal = (String) player.getGameData().remove("crystal_possession");
+                    if (crystal.equals("BOSS")) {
+                        red.getBossCrystal().crystalReturned();
+                    } else if (crystal.equals("A")) {
+                        red.getTowerACrystal().crystalReturned();
+                    } else {
+                        red.getTowerBCrystal().crystalReturned();
+                    }
+                }
+            } else {
+                CQRed red = (CQRed) player.getTeam();
+                if (player.getGameData().containsKey("crystal_possession")) {
+                    CQBlue blue = (CQBlue) this.getTeams().get("Blue");
+                    player.getPlayer().getInventory().setContents((ItemStack[]) player.getGameData().remove("crystal_inventory"));
+                    String crystal = (String) player.getGameData().remove("crystal_possession");
+                    if (crystal.equals("BOSS")) {
+                        blue.getBossCrystal().crystalReturned();
+                    } else if (crystal.equals("A")) {
+                        blue.getTowerACrystal().crystalReturned();
+                    } else {
+                        blue.getTowerBCrystal().crystalReturned();
+                    }
+                }
+            }
+
             AuroraMCGamePlayer killer = null;
             KillMessage killMessage;
             KillMessage.KillReason killReason = KillMessage.KillReason.MELEE;
@@ -610,6 +640,8 @@ public class CrystalQuest extends Game {
                 amountOfGold = amountOfGold / 2;
                 amountOfIron = amountOfIron / 2;
                 amountOfEmeralds = amountOfEmeralds / 2;
+
+                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().convert("&7+" + amountOfIron + " Iron\n&6+" + amountOfGold + " Gold\n&a+" + amountOfEmeralds + " Emeralds"));
 
                 while (amountOfGold > 0) {
                     if (amountOfGold > 64) {

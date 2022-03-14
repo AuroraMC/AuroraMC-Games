@@ -29,4 +29,24 @@ public class Fighter extends Kit {
 
         player.getPlayer().getInventory().setItem(8, CrystalQuest.compass);
     }
+
+    @Override
+    public String getUpgradeReward(int i) {
+        switch (i) {
+            case 1:
+            case 2:
+            case 4: {
+                return "Receive +1% Damage Reduction.";
+            }
+            case 3: {
+                return "Receive +1% Damage Reduction.;" +
+                        "Receive +1 Damage towards passive ability.";
+            }
+            case 5: {
+                return "Receive +1% Damage Reduction.;" +
+                        "Receive +1 Damage towards passive ability.";
+            }
+        }
+        return "None";
+    }
 }
