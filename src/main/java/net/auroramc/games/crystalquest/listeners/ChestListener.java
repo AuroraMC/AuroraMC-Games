@@ -1,0 +1,42 @@
+/*
+ * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ */
+
+package net.auroramc.games.crystalquest.listeners;
+
+import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.games.crystalquest.entities.Crystal;
+import net.auroramc.games.crystalquest.teams.CQBlue;
+import net.auroramc.games.crystalquest.teams.CQRed;
+import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
+
+public class ChestListener implements Listener {
+
+    @EventHandler
+    public void onChestOpen(PlayerInteractEvent e) {
+        AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
+        if (e.getClickedBlock() != null && !player.isSpectator()) {
+            if (e.getClickedBlock().getType() == Material.CHEST) {
+                if (player.getTeam() instanceof CQBlue) {
+                    CQRed red = (CQRed) EngineAPI.getActiveGame().getTeams().get("Red");
+                    if (!((CQBlue) player.getTeam()).getChest().equals(e.getClickedBlock()) && red.getBossCrystal().getState() != Crystal.CrystalState.DEAD) {
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "This is not your teams chest!"));
+                        e.setCancelled(true);
+                    }
+                } else {
+                    CQBlue blue = (CQBlue) EngineAPI.getActiveGame().getTeams().get("Blue");
+                    if (!((CQRed) player.getTeam()).getChest().equals(e.getClickedBlock()) && blue.getBossCrystal().getState() != Crystal.CrystalState.DEAD) {
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "This is not your teams chest!"));
+                        e.setCancelled(true);
+                    }
+                }
+            }
+        }
+    }
+
+}

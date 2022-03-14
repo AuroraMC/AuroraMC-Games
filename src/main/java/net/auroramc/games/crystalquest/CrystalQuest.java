@@ -43,6 +43,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -62,6 +63,7 @@ public class CrystalQuest extends Game {
     private final InventoryListener inventoryListener;
     private final MiningListener miningListener;
     private final CrystalListener crystalListener;
+    private final ChestListener chestListener;
     private BukkitTask mineTask;
 
     private BukkitTask scoreboardTask;
@@ -78,6 +80,7 @@ public class CrystalQuest extends Game {
         miningListener = new MiningListener();
         inventoryListener = new InventoryListener();
         crystalListener = new CrystalListener();
+        chestListener = new ChestListener();
         this.teams.put("Blue", new CQBlue());
         this.teams.put("Red", new CQRed());
         this.kits.add(new Miner());
@@ -184,6 +187,7 @@ public class CrystalQuest extends Game {
         Bukkit.getPluginManager().registerEvents(inventoryListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(miningListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(crystalListener, EngineAPI.getGameEngine());
+        Bukkit.getPluginManager().registerEvents(chestListener, EngineAPI.getGameEngine());
 
         int redSpawnIndex = 0;
         int blueSpawnIndex = 0;
@@ -312,6 +316,7 @@ public class CrystalQuest extends Game {
         PlayerInteractAtEntityEvent.getHandlerList().unregister(crystalListener);
         FoodLevelChangeEvent.getHandlerList().unregister(miningListener);
         BlockPlaceEvent.getHandlerList().unregister(miningListener);
+        PlayerInteractEvent.getHandlerList().unregister(chestListener);
         DeathRespawnListener.unregister();
         PregameMoveListener.unregister();
 
@@ -362,6 +367,11 @@ public class CrystalQuest extends Game {
                 blue.setTowerACrystal(towerA);
                 towerB = new Crystal(new Location(EngineAPI.getMapWorld(), tower.getJSONObject(1).getInt("x") + 0.5, tower.getJSONObject(1).getInt("y"), tower.getJSONObject(1).getInt("z") + 0.5), blue, false, "B");
                 blue.setTowerBCrystal(towerB);
+
+                object = map.getMapData().getJSONObject("game").getJSONObject("CHEST");
+
+                blue.setChest(new Location(EngineAPI.getMapWorld(), object.getJSONArray("BLUE").getJSONObject(0).getInt("x"), object.getJSONArray("BLUE").getJSONObject(0).getInt("y"), object.getJSONArray("BLUE").getJSONObject(0).getInt("z"), object.getJSONArray("BLUE").getJSONObject(0).getFloat("yaw"), 0));
+                red.setChest(new Location(EngineAPI.getMapWorld(), object.getJSONArray("RED").getJSONObject(0).getInt("x"), object.getJSONArray("RED").getJSONObject(0).getInt("y"), object.getJSONArray("RED").getJSONObject(0).getInt("z"), object.getJSONArray("RED").getJSONObject(0).getFloat("yaw"), 0));
 
                 scoreboardTask = new ScoreboardRunnable((CQBlue) teams.get("Blue"), (CQRed) teams.get("Red")).runTaskTimer(EngineAPI.getGameEngine(), 0, 20);
             }
@@ -641,7 +651,9 @@ public class CrystalQuest extends Game {
                 amountOfIron = amountOfIron / 2;
                 amountOfEmeralds = amountOfEmeralds / 2;
 
-                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().convert("&7+" + amountOfIron + " Iron\n&6+" + amountOfGold + " Gold\n&a+" + amountOfEmeralds + " Emeralds"));
+                if (killer != null) {
+                    killer.getPlayer().sendMessage(AuroraMCAPI.getFormatter().convert("&7+" + amountOfIron + " Iron\n&6+" + amountOfGold + " Gold\n&a+" + amountOfEmeralds + " Emeralds"));
+                }
 
                 while (amountOfGold > 0) {
                     if (amountOfGold > 64) {
