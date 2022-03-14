@@ -66,6 +66,10 @@ public class CrystalQuest extends Game {
     private final ChestListener chestListener;
     private BukkitTask mineTask;
 
+    private BukkitTask destroyTask;
+    private BukkitTask endTask;
+    private BukkitTask compassTask;
+
     private BukkitTask scoreboardTask;
 
     static {
@@ -305,6 +309,15 @@ public class CrystalQuest extends Game {
         if (scoreboardTask != null) {
             scoreboardTask.cancel();
         }
+        if (compassTask != null) {
+            compassTask.cancel();
+        }
+        if (endTask != null) {
+            endTask.cancel();
+        }
+        if (destroyTask != null) {
+            destroyTask.cancel();
+        }
         PlayerShowEvent.getHandlerList().unregister(showListener);
         PlayerInteractAtEntityEvent.getHandlerList().unregister(shopListener);
         InventoryOpenEvent.getHandlerList().unregister(shopListener);
@@ -374,6 +387,7 @@ public class CrystalQuest extends Game {
                 red.setChest(new Location(EngineAPI.getMapWorld(), object.getJSONArray("RED").getJSONObject(0).getInt("x"), object.getJSONArray("RED").getJSONObject(0).getInt("y"), object.getJSONArray("RED").getJSONObject(0).getInt("z"), object.getJSONArray("RED").getJSONObject(0).getFloat("yaw"), 0));
 
                 scoreboardTask = new ScoreboardRunnable((CQBlue) teams.get("Blue"), (CQRed) teams.get("Red")).runTaskTimer(EngineAPI.getGameEngine(), 0, 20);
+
             }
         }.runTask(AuroraMCAPI.getCore());
         mineTask = new BukkitRunnable() {
@@ -394,6 +408,156 @@ public class CrystalQuest extends Game {
                 }.runTaskTimer(AuroraMCAPI.getCore(), 6000, 6000);
             }
         }.runTaskLater(AuroraMCAPI.getCore(), 3600);
+        destroyTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Crystals will be destroyed in **5 minutes**!"));
+                }
+                destroyTask = new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        CQBlue blue = (CQBlue) teams.get("Blue");
+                        CQRed red = (CQRed) teams.get("Red");
+
+                        JSONArray returnPoints = EngineAPI.getActiveMap().getMapData().getJSONObject("game").getJSONObject("CRYSTAL").getJSONArray("RETURN RED");
+                        JSONObject pointA = returnPoints.getJSONObject(0);
+                        JSONObject pointB = returnPoints.getJSONObject(1);
+                        JSONObject pointC = returnPoints.getJSONObject(2);
+                        Location a = new Location(EngineAPI.getMapWorld(), pointA.getInt("x") + 0.5, pointA.getInt("y") - 0.5, pointA.getInt("z") + 0.5);
+                        Location b = new Location(EngineAPI.getMapWorld(), pointB.getInt("x") + 0.5, pointB.getInt("y") - 0.5, pointB.getInt("z") + 0.5);
+                        Location c = new Location(EngineAPI.getMapWorld(), pointC.getInt("x") + 0.5, pointC.getInt("y") - 0.5, pointC.getInt("z") + 0.5);
+
+                        if (red.getTowerACrystal().getState() != Crystal.CrystalState.DEAD) {
+                            red.getTowerACrystal().crystalDead(a, false);
+                        }
+                        if (red.getTowerBCrystal().getState() != Crystal.CrystalState.DEAD) {
+                            red.getTowerACrystal().crystalDead(b, false);
+                        }
+                        if (red.getBossCrystal().getState() != Crystal.CrystalState.DEAD) {
+                            red.getTowerACrystal().crystalDead(c, false);
+                        }
+
+                        returnPoints = EngineAPI.getActiveMap().getMapData().getJSONObject("game").getJSONObject("CRYSTAL").getJSONArray("RETURN BLUE");
+                        pointA = returnPoints.getJSONObject(0);
+                        pointB = returnPoints.getJSONObject(1);
+                        pointC = returnPoints.getJSONObject(2);
+                        a = new Location(EngineAPI.getMapWorld(), pointA.getInt("x") + 0.5, pointA.getInt("y") - 0.5, pointA.getInt("z") + 0.5);
+                        b = new Location(EngineAPI.getMapWorld(), pointB.getInt("x") + 0.5, pointB.getInt("y") - 0.5, pointB.getInt("z") + 0.5);
+                        c = new Location(EngineAPI.getMapWorld(), pointC.getInt("x") + 0.5, pointC.getInt("y") - 0.5, pointC.getInt("z") + 0.5);
+
+                        if (blue.getTowerACrystal().getState() != Crystal.CrystalState.DEAD) {
+                            blue.getTowerACrystal().crystalDead(a, false);
+                        }
+                        if (blue.getTowerBCrystal().getState() != Crystal.CrystalState.DEAD) {
+                            blue.getTowerACrystal().crystalDead(b, false);
+                        }
+                        if (blue.getBossCrystal().getState() != Crystal.CrystalState.DEAD) {
+                            blue.getTowerACrystal().crystalDead(c, false);
+                        }
+
+
+                    }
+                }.runTaskLater(AuroraMCAPI.getCore(), 6000);
+            }
+        }.runTaskLater(AuroraMCAPI.getCore(), 18000);
+        compassTask = new BukkitRunnable(){
+            @Override
+            public void run() {
+                for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
+                    AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
+                    if (!player.isSpectator()) {
+                        CQBlue blue = (CQBlue) teams.get("Blue");
+                        CQRed red = (CQRed) teams.get("Red");
+                        if (player.getTeam().equals(blue)) {
+                            if (blue.getBossCrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                player.getPlayer().setCompassTarget(blue.getBossCrystal().getHolder().getPlayer().getLocation());
+                            } else if (blue.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                player.getPlayer().setCompassTarget(blue.getTowerACrystal().getHolder().getPlayer().getLocation());
+                            } else if (blue.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                player.getPlayer().setCompassTarget(blue.getTowerBCrystal().getHolder().getPlayer().getLocation());
+                            } else if (red.getBossCrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                player.getPlayer().setCompassTarget(red.getBossCrystal().getHolder().getPlayer().getLocation());
+                            } else if (red.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                player.getPlayer().setCompassTarget(red.getTowerACrystal().getHolder().getPlayer().getLocation());
+                            } else if (red.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                player.getPlayer().setCompassTarget(red.getTowerBCrystal().getHolder().getPlayer().getLocation());
+                            } else {
+                                Location closest = null;
+                                if (red.getBossCrystal().getState() == Crystal.CrystalState.AT_HOME) {
+                                    closest = red.getBossCrystal().getHome();
+                                }
+                                if (red.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                    if (closest == null || closest.distanceSquared(player.getPlayer().getLocation()) > red.getTowerACrystal().getHome().distanceSquared(player.getPlayer().getLocation())) {
+                                        closest = red.getTowerACrystal().getHome();
+                                    }
+                                }
+                                if (red.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                    if (closest == null || closest.distanceSquared(player.getPlayer().getLocation()) > red.getTowerBCrystal().getHome().distanceSquared(player.getPlayer().getLocation())) {
+                                        closest = red.getTowerBCrystal().getHome();
+                                    }
+                                }
+                                if (closest == null) {
+                                    for (AuroraMCPlayer pl1 : AuroraMCAPI.getPlayers()) {
+                                        AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) pl1;
+                                        if (!player1.isSpectator() && !player1.getTeam().equals(player.getTeam())) {
+                                            if (closest == null || closest.distanceSquared(player.getPlayer().getLocation()) > player1.getPlayer().getLocation().distanceSquared(player.getPlayer().getLocation())) {
+                                                closest = player1.getPlayer().getLocation();
+                                            }
+                                        }
+                                    }
+                                    player.getPlayer().setCompassTarget(closest);
+                                } else {
+                                    player.getPlayer().setCompassTarget(closest);
+                                }
+                            }
+                        } else {
+                            if (red.getBossCrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                player.getPlayer().setCompassTarget(red.getBossCrystal().getHolder().getPlayer().getLocation());
+                            } else if (red.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                player.getPlayer().setCompassTarget(red.getTowerACrystal().getHolder().getPlayer().getLocation());
+                            } else if (red.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                player.getPlayer().setCompassTarget(red.getTowerBCrystal().getHolder().getPlayer().getLocation());
+                            } else if (blue.getBossCrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                player.getPlayer().setCompassTarget(blue.getBossCrystal().getHolder().getPlayer().getLocation());
+                            } else if (blue.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                player.getPlayer().setCompassTarget(blue.getTowerACrystal().getHolder().getPlayer().getLocation());
+                            } else if (blue.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                player.getPlayer().setCompassTarget(blue.getTowerBCrystal().getHolder().getPlayer().getLocation());
+                            } else {
+                                Location closest = null;
+                                if (blue.getBossCrystal().getState() == Crystal.CrystalState.AT_HOME) {
+                                    closest = blue.getBossCrystal().getHome();
+                                }
+                                if (blue.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                    if (closest == null || closest.distanceSquared(player.getPlayer().getLocation()) > blue.getTowerACrystal().getHome().distanceSquared(player.getPlayer().getLocation())) {
+                                        closest = blue.getTowerACrystal().getHome();
+                                    }
+                                }
+                                if (blue.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED) {
+                                    if (closest == null || closest.distanceSquared(player.getPlayer().getLocation()) > blue.getTowerBCrystal().getHome().distanceSquared(player.getPlayer().getLocation())) {
+                                        closest = blue.getTowerBCrystal().getHome();
+                                    }
+                                }
+                                if (closest == null) {
+                                    for (AuroraMCPlayer pl1 : AuroraMCAPI.getPlayers()) {
+                                        AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) pl1;
+                                        if (!player1.isSpectator() && !player1.getTeam().equals(player.getTeam())) {
+                                            if (closest == null || closest.distanceSquared(player.getPlayer().getLocation()) > player1.getPlayer().getLocation().distanceSquared(player.getPlayer().getLocation())) {
+                                                closest = player1.getPlayer().getLocation();
+                                            }
+                                        }
+                                    }
+                                    player.getPlayer().setCompassTarget(closest);
+                                } else {
+                                    player.getPlayer().setCompassTarget(closest);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(EngineAPI.getGameEngine(), 0, 20);
     }
 
     @Override

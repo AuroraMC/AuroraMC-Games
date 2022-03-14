@@ -72,31 +72,37 @@ public class Crystal {
         }
     }
 
-    public void crystalDead(Location location) {
+    public void crystalDead(Location location, boolean message) {
         this.state = CrystalState.DEAD;
-        this.holder.getPlayer().getInventory().setContents((ItemStack[]) this.holder.getGameData().remove("crystal_inventory"));
-        this.holder.getGameData().remove("crystal_possession");
-        this.holder.getPlayer().removePotionEffect(PotionEffectType.SLOW);
+        if (this.holder != null) {
+            this.holder.getPlayer().getInventory().setContents((ItemStack[]) this.holder.getGameData().remove("crystal_inventory"));
+            this.holder.getGameData().remove("crystal_possession");
+            this.holder.getPlayer().removePotionEffect(PotionEffectType.SLOW);
 
-        this.holder.getRewards().addXp("Crystal Capture", 50);
-        this.holder.getStats().incrementStatistic(1, "crystalsCaptured", 1, true);
+            if (message) {
+                this.holder.getRewards().addXp("Crystal Capture", 50);
+                this.holder.getStats().incrementStatistic(1, "crystalsCaptured", 1, true);
+                String team = "&c&l";
+                if (homeTeam instanceof CQBlue) {
+                    team = "&9&l";
+                }
+                String finalMessage = team + holder.getPlayer().getName() + " captured " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!");
+                for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                    player.sendTitle(AuroraMCAPI.getFormatter().convert(team + homeTeam.getName() + ((isBoss())?" Boss Crystal Captured!":" Tower Crystal Captured!")), holder.getPlayer().getName() + " captured " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!"), 20, 100, 20, ChatColor.BLUE, ChatColor.RESET, true, false);
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", finalMessage + " &r" + ((isBoss())?homeTeam.getName() + " can no longer respawn!":"")));
+                }
+            }
+            this.holder = null;
+        }
 
         home.getWorld().createExplosion(home, 6 * (isBoss()?2:1));
 
-        String team = "&c&l";
-        if (homeTeam instanceof CQBlue) {
-            team = "&9&l";
-        }
-        String finalMessage = team + holder.getPlayer().getName() + " captured " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!");
-        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-            player.sendTitle(AuroraMCAPI.getFormatter().convert(team + homeTeam.getName() + ((isBoss())?" Boss Crystal Captured!":" Tower Crystal Captured!")), holder.getPlayer().getName() + " captured " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!"), 20, 100, 20, ChatColor.BLUE, ChatColor.RESET, true, false);
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", finalMessage + " &r" + ((isBoss())?homeTeam.getName() + " can no longer respawn!":"")));
-        }
-        this.holder = null;
+
 
         unregisterListener();
         crystal = EngineAPI.getMapWorld().spawn(location, EnderCrystal.class);
     }
+
 
     public void crystalReturned() {
         this.holder.getPlayer().removePotionEffect(PotionEffectType.SLOW);
