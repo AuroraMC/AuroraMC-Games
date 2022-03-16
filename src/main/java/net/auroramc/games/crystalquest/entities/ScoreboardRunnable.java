@@ -64,7 +64,7 @@ public class ScoreboardRunnable extends BukkitRunnable {
             }
             scoreboard.setLine(9, "    ");
             scoreboard.setLine(8, "&b&l«TEAM LIVES»");
-            scoreboard.setLine(7,  ((player.getTeam() instanceof CQBlue)?((CQBlue) player.getTeam()).getLives():((CQRed)player.getTeam()).getLives())  + "");
+            scoreboard.setLine(7,  ((player.getTeam() != null)?((player.getTeam() instanceof CQBlue)?((CQBlue) player.getTeam()).getLives():((CQRed)player.getTeam()).getLives()):"N/A")  + "");
             scoreboard.setLine(6, "  ");
             scoreboard.setLine(5, "&b&l«MINE RESET»");
             scoreboard.setLine(4,  finalTimeTillReset + " minutes ");
