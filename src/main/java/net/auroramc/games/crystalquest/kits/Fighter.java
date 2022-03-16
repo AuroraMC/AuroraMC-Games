@@ -40,11 +40,11 @@ public class Fighter extends Kit {
             }
             case 3: {
                 return "Receive +1% Damage Reduction.;" +
-                        "Receive +1 Damage towards passive ability.";
+                        "&r - &bReceive +1 Damage towards passive ability.";
             }
             case 5: {
                 return "Receive +1% Damage Reduction.;" +
-                        "Receive +1 Damage towards passive ability.";
+                        "&r - &bReceive +1 Damage towards passive ability.";
             }
         }
         return "None";
