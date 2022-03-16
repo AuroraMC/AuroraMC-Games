@@ -31,11 +31,13 @@ public class Crystal {
     private final boolean boss;
     private final Team homeTeam;
     private CrystalReturnListener listener;
+    private final String type;
 
     public Crystal(Location location, Team homeTeam, boolean boss, String type) {
         this.home = location;
         this.state = CrystalState.AT_HOME;
         crystal = EngineAPI.getMapWorld().spawn(location, EnderCrystal.class);
+        this.type = type;
         crystal.setCustomName(homeTeam.getName() + type);
         this.boss = boss;
         this.homeTeam = homeTeam;
@@ -108,6 +110,7 @@ public class Crystal {
         this.holder.getPlayer().removePotionEffect(PotionEffectType.SLOW);
         this.holder = null;
         crystal = EngineAPI.getMapWorld().spawn(home, EnderCrystal.class);
+        crystal.setCustomName(homeTeam.getName() + type);
         state = CrystalState.AT_HOME;
 
         String team = "&c&l";
