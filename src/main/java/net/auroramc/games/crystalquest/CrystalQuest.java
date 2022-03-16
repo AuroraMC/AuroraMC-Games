@@ -471,7 +471,7 @@ public class CrystalQuest extends Game {
                     }
                 }.runTaskLater(AuroraMCAPI.getCore(), 6000);
             }
-        }.runTaskLater(AuroraMCAPI.getCore(), 18000);
+        }.runTaskLater(AuroraMCAPI.getCore(), 6000);
         compassTask = new BukkitRunnable(){
             @Override
             public void run() {
