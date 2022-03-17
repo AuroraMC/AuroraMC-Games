@@ -15,6 +15,7 @@ import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Map;
 
@@ -113,8 +114,8 @@ public class PlayerShop extends GUI {
         this.setItem(0, 1, new GUIItem(Material.WOOL, "&3&l16 Wool Blocks", 16, ";&rClick to purchase **16** Wool Blocks.;;&rCost: &b12&7 Iron Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
         this.setItem(3, 1, new GUIItem(Material.WOOD, "&3&l16 Wood Blocks", 16, ";&rClick to purchase **16** Wood Blocks.;;&rCost: &b8&6 Gold Ingots"));
         this.setItem(2, 1, new GUIItem(Material.STAINED_GLASS, "&3&l16 Glass Blocks", 16, ";&rClick to purchase **16** Glass Blocks.;;&rCost: &b16&6 Gold Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
-        this.setItem(4, 1, new GUIItem(Material.ENDER_STONE, "&3&l8 End Stone", 16, ";&rClick to purchase **8** End Stone.;;&rCost: &b24&6 Gold Ingots"));
-        this.setItem(5, 1, new GUIItem(Material.OBSIDIAN, "&3&l1 Obsidian", 16, ";&rClick to purchase **1** Obsidian.;;&rCost: &b4&a Emeralds"));
+        this.setItem(4, 1, new GUIItem(Material.ENDER_STONE, "&3&l8 End Stone", 8, ";&rClick to purchase **8** End Stone.;;&rCost: &b24&6 Gold Ingots"));
+        this.setItem(5, 1, new GUIItem(Material.OBSIDIAN, "&3&l1 Obsidian", 1, ";&rClick to purchase **1** Obsidian.;;&rCost: &b4&a Emeralds"));
 
         int swordSlot = 0, pickSlot = 1, axeSlot = 2;
 
@@ -209,8 +210,8 @@ public class PlayerShop extends GUI {
         this.setItem(1, 7, new GUIItem(Material.GOLDEN_APPLE, "&3&lGolden Apple", 1, ";&rClick to purchase **Golden Apple**.;;&rCost: &b8&6 Gold"));
         this.setItem(2, 7, new GUIItem(Material.COOKIE, "&3&lInstant Cookie", 1, ";&rClick to purchase **Instant Cookie**.;;&rCost: &b1&a Emerald"));
         this.setItem(3, 7, new GUIItem(Material.FLINT_AND_STEEL, "&3&lFlint and Steel", 1, ";&rClick to purchase **Flint and Steel**.;;&rCost: &b2&a Emeralds"));
-        this.setItem(4, 7, new GUIItem(Material.ENDER_PEARL, "&3&lEthereal Pearl", 16, ";&rClick to purchase **Ethereal Pearl**.;;&rCost: &b8&6 Emeralds"));
-        this.setItem(5, 7, new GUIItem(Material.LADDER, "&3&l8 Ladders", 16, ";&rClick to purchase **8** Ladders.;;&rCost: &b16&6 Iron"));
+        this.setItem(4, 7, new GUIItem(Material.ENDER_PEARL, "&3&lEthereal Pearl", 1, ";&rClick to purchase **Ethereal Pearl**.;;&rCost: &b8&a Emeralds"));
+        this.setItem(5, 7, new GUIItem(Material.LADDER, "&3&l8 Ladders", 8, ";&rClick to purchase **8** Ladders.;;&rCost: &b16&7 Iron"));
     }
 
     @Override
@@ -502,7 +503,8 @@ public class PlayerShop extends GUI {
                     if (player.getPlayer().getInventory().contains(Material.GOLD_INGOT, 12)) {
                         player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                         player.getPlayer().getInventory().removeItem(new ItemStack(Material.GOLD_INGOT, 12));
-                        this.updateItem(2, 5, new GUIItem(Material.BARRIER, "&3Pickaxe Upgrade", 1, ";&rYou have the max upgrade."));
+
+                        this.updateItem(2, 5, new GUIItem(Material.DIAMOND_PICKAXE, "&3Pickaxe Upgrade", 1, ";&rClick here to upgrade to;&7Diamond Pickaxe Efficiency II;;&rCost: &b32 &6Gold."));
                         player.getPlayer().getInventory().getItem(pickSlot).setType(Material.DIAMOND_PICKAXE);
                     } else {
                         player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
@@ -676,7 +678,7 @@ public class PlayerShop extends GUI {
                 if (player.getPlayer().getInventory().contains(Material.GOLD_INGOT, 8)) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getPlayer().getInventory().removeItem(new ItemStack(Material.GOLD_INGOT, 8));
-                    Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(new GUIItem(Material.ENDER_PEARL, null, 1).getItem());
+                    Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(new GUIItem(Material.GOLDEN_APPLE, null, 1).getItem());
                     if (couldntPlace.size() > 0) {
                         player.getPlayer().closeInventory();
                         for (Map.Entry<Integer, ItemStack> entry : couldntPlace.entrySet()) {
@@ -711,7 +713,7 @@ public class PlayerShop extends GUI {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getPlayer().getInventory().removeItem(new ItemStack(Material.EMERALD, 2));
                     ItemStack stack = new GUIItem(Material.FLINT_AND_STEEL, null, 1).getItem();
-                    stack.setDurability((short)4);
+                    stack.setDurability((short)60);
                     Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(stack);
                     if (couldntPlace.size() > 0) {
                         player.getPlayer().closeInventory();
