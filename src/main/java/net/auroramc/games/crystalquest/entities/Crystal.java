@@ -72,7 +72,7 @@ public class Crystal {
         String finalMessage = team + holder.getPlayer().getName() + " collected " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!");
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             player.sendTitle(AuroraMCAPI.getFormatter().convert(team + homeTeam.getName() + ((isBoss())?" Boss Crystal Collected!":" Tower Crystal Collected!")), holder.getPlayer().getName() + " collected " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!"), 20, 100, 20, ChatColor.BLUE, ChatColor.RESET, true, false);
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", finalMessage + " &r" + ((player.getTeam().equals(homeTeam)?"Kill them to return it to the base!":"Protect them at all costs."))));
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", finalMessage + " &r" + ((player.getTeam() != null)?((player.getTeam().equals(homeTeam)?"Kill them to return it to the base!":"Protect them at all costs.")):"")));
         }
     }
 

@@ -39,6 +39,10 @@ public class DeathRespawnListener implements Listener {
         if (e.getEntity() instanceof Player) {
             Player pl = (Player) e.getEntity();
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(pl);
+            if (player.isSpectator() || player.isVanished()) {
+                e.setCancelled(true);
+                return;
+            }
             if (!friendlyFire) {
                 if (e instanceof EntityDamageByEntityEvent) {
                     if (((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {

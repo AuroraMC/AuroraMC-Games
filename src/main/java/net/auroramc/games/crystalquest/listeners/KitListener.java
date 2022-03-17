@@ -20,6 +20,10 @@ public class KitListener implements Listener {
         if (e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
             AuroraMCGamePlayer killed = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity());
             AuroraMCGamePlayer killer = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager());
+            if (killer.isVanished() || killer.isSpectator()) {
+                e.setCancelled(true);
+                return;
+            }
             if (killer.getKit() instanceof Fighter) {
                 switch (killer.getKitLevel().getLatestUpgrade()) {
                     case 1: {
