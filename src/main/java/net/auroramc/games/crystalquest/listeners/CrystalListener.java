@@ -148,7 +148,7 @@ public class CrystalListener implements Listener {
                 e.setCancelled(true);
                 e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot use ender pearls while you have a crystal!"));
             } else {
-                player.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 5, 0));
+                player.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 0));
             }
         }
     }
