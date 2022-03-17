@@ -84,8 +84,13 @@ public class InventoryListener implements Listener {
     public void onConsume(PlayerItemConsumeEvent e) {
         if (e.getItem() != null && e.getItem().getType() == Material.GOLDEN_APPLE) {
             e.setCancelled(true);
-            e.getItem().setAmount(e.getItem().getAmount() - 1);
-            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 5, 1));
+            if (e.getItem().getAmount() == 1) {
+                e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
+            } else {
+                e.getItem().setAmount(e.getItem().getAmount() - 1);
+                e.getPlayer().setItemInHand(e.getItem());
+            }
+            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 1));
         }
     }
 
@@ -93,9 +98,13 @@ public class InventoryListener implements Listener {
     public void onEat(PlayerInteractEvent e) {
         if (e.getItem() != null && e.getItem().getType() == Material.COOKIE) {
             e.setCancelled(true);
-            e.getItem().setAmount(e.getItem().getAmount() - 1);
-            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 5, 0));
-            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 5, 0));
+            if (e.getItem().getAmount() == 1) {
+                e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
+            } else {
+                e.getItem().setAmount(e.getItem().getAmount() - 1);
+            }
+            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 0));
+            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 0));
         } else if (e.getItem() != null && e.getItem().getType() == Material.ENDER_PEARL) {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
             if (player.getGameData().containsKey("crystal_possession")) {

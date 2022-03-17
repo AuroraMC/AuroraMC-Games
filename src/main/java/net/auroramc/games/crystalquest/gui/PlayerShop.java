@@ -16,6 +16,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.MaterialData;
 
 import java.util.Map;
 
@@ -712,8 +713,7 @@ public class PlayerShop extends GUI {
                 if (player.getPlayer().getInventory().contains(Material.EMERALD, 2)) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getPlayer().getInventory().removeItem(new ItemStack(Material.EMERALD, 2));
-                    ItemStack stack = new GUIItem(Material.FLINT_AND_STEEL, null, 1).getItem();
-                    stack.setDurability((short)60);
+                    ItemStack stack = new ItemStack(Material.FLINT_AND_STEEL, 1, (byte)60);
                     Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(stack);
                     if (couldntPlace.size() > 0) {
                         player.getPlayer().closeInventory();
@@ -748,7 +748,7 @@ public class PlayerShop extends GUI {
                 if (player.getPlayer().getInventory().contains(Material.IRON_INGOT, 16)) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getPlayer().getInventory().removeItem(new ItemStack(Material.IRON_INGOT, 16));
-                    Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(new GUIItem(Material.LADDER, null, 16).getItem());
+                    Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(new GUIItem(Material.LADDER, null, 8).getItem());
                     if (couldntPlace.size() > 0) {
                         player.getPlayer().closeInventory();
                         for (Map.Entry<Integer, ItemStack> entry : couldntPlace.entrySet()) {
