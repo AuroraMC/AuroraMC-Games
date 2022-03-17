@@ -19,9 +19,7 @@ import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.entities.Crystal;
 import net.auroramc.games.crystalquest.entities.ScoreboardRunnable;
-import net.auroramc.games.crystalquest.kits.Defender;
-import net.auroramc.games.crystalquest.kits.Fighter;
-import net.auroramc.games.crystalquest.kits.Miner;
+import net.auroramc.games.crystalquest.kits.*;
 import net.auroramc.games.crystalquest.listeners.*;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
@@ -44,6 +42,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -94,6 +93,8 @@ public class CrystalQuest extends Game {
         this.kits.add(new Miner());
         this.kits.add(new Defender());
         this.kits.add(new Fighter());
+        this.kits.add(new Healer());
+        this.kits.add(new Ecologist());
         this.tasks = new ArrayList<>();
     }
 
@@ -335,6 +336,7 @@ public class CrystalQuest extends Game {
         PlayerInteractAtEntityEvent.getHandlerList().unregister(crystalListener);
         FoodLevelChangeEvent.getHandlerList().unregister(miningListener);
         BlockPlaceEvent.getHandlerList().unregister(miningListener);
+        PlayerPickupItemEvent.getHandlerList().unregister(miningListener);
         PlayerInteractEvent.getHandlerList().unregister(chestListener);
         EntityDamageByEntityEvent.getHandlerList().unregister(kitListener);
         DeathRespawnListener.unregister();
@@ -922,7 +924,20 @@ public class CrystalQuest extends Game {
                 amountOfEmeralds = amountOfEmeralds / 2;
 
                 if (killer != null) {
-                    killer.getPlayer().sendMessage(AuroraMCAPI.getFormatter().convert("&7+" + amountOfIron + " Iron\n&6+" + amountOfGold + " Gold\n&a+" + amountOfEmeralds + " Emeralds"));
+                    List<String> builder = new ArrayList<>();
+                    if (amountOfIron > 0) {
+                        builder.add("&7+" + amountOfIron + " Iron");
+                    }
+                    if (amountOfGold > 0) {
+                        builder.add("&6+" + amountOfGold + " Gold");
+                    }
+                    if (amountOfEmeralds > 0) {
+                        builder.add("&a+" + amountOfEmeralds + " Emeralds");
+                    }
+
+                    if (builder.size() > 0) {
+                        killer.getPlayer().sendMessage(AuroraMCAPI.getFormatter().convert(String.join("\n", builder)));
+                    }
                 }
 
                 while (amountOfGold > 0) {

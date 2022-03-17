@@ -21,9 +21,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Map;
 import java.util.Random;
 
 public class MiningListener implements Listener {
@@ -108,7 +110,10 @@ public class MiningListener implements Listener {
                         }
                     }
                 }
-                e.getBlock().getLocation().getWorld().dropItemNaturally(location, new ItemStack(Material.EMERALD, amount));
+                Map<Integer, ItemStack> stacks = e.getPlayer().getInventory().addItem(new ItemStack(Material.EMERALD, amount));
+                if (stacks.size() > 0) {
+                    e.getBlock().getLocation().getWorld().dropItemNaturally(location, new ItemStack(Material.EMERALD, stacks.get(0).getAmount()));
+                }
                 e.getBlock().setType(Material.STONE);
                 break;
             }
@@ -179,7 +184,10 @@ public class MiningListener implements Listener {
                         }
                     }
                 }
-                e.getBlock().getLocation().getWorld().dropItemNaturally(location, new ItemStack(Material.IRON_INGOT, amount));
+                Map<Integer, ItemStack> stacks = e.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT, amount));
+                if (stacks.size() > 0) {
+                    e.getBlock().getLocation().getWorld().dropItemNaturally(location, new ItemStack(Material.IRON_INGOT, stacks.get(0).getAmount()));
+                }
                 e.getBlock().setType(Material.STONE);
                 break;
             }
@@ -250,7 +258,10 @@ public class MiningListener implements Listener {
                         }
                     }
                 }
-                e.getBlock().getLocation().getWorld().dropItemNaturally(location, new ItemStack(Material.GOLD_INGOT, amount));
+                Map<Integer, ItemStack> stacks = e.getPlayer().getInventory().addItem(new ItemStack(Material.GOLD_INGOT, amount));
+                if (stacks.size() > 0) {
+                    e.getBlock().getLocation().getWorld().dropItemNaturally(location, new ItemStack(Material.GOLD_INGOT, stacks.get(0).getAmount()));
+                }
                 e.getBlock().setType(Material.STONE);
                 break;
             }
@@ -335,6 +346,13 @@ public class MiningListener implements Listener {
         if (e.getBlock().getLocation().distanceSquared(red.getRobotSlotA().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getRobotSlotB().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getRobotSlotC().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotA().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotB().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotB().getLocation()) < protectionRadius) {
             e.setCancelled(true);
             e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot place blocks here!"));
+        }
+    }
+
+    @EventHandler
+    public void onItemPickup(PlayerPickupItemEvent e) {
+        if (e.getItem().getItemStack().getType() == Material.ARROW) {
+            e.getItem().setItemStack(new ItemStack(Material.ARROW, e.getItem().getItemStack().getAmount()));
         }
     }
 
