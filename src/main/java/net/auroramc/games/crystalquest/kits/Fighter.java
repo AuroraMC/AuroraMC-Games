@@ -9,6 +9,8 @@ import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.games.Kit;
 import net.auroramc.games.crystalquest.CrystalQuest;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
 
 public class Fighter extends Kit {
 
@@ -19,13 +21,17 @@ public class Fighter extends Kit {
     @Override
     public void onGameStart(AuroraMCPlayer player) {
         player.getPlayer().getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET).getItem());
-        player.getPlayer().getInventory().setBoots(new GUIItem(Material.LEATHER_BOOTS).getItem());
+        ItemStack stack = new GUIItem(Material.LEATHER_BOOTS).getItem();
+        stack.addEnchantment(Enchantment.PROTECTION_FALL, 1);
+        player.getPlayer().getInventory().setBoots(stack);
         player.getPlayer().getInventory().setChestplate(new GUIItem(Material.CHAINMAIL_CHESTPLATE).getItem());
         player.getPlayer().getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS).getItem());
 
         player.getPlayer().getInventory().setItem(0, new GUIItem(Material.STONE_SWORD).getItem());
         player.getPlayer().getInventory().setItem(1, new GUIItem(Material.STONE_PICKAXE).getItem());
-        player.getPlayer().getInventory().setItem(2, new GUIItem(Material.WOOD_AXE).getItem());
+        ItemStack axe = new GUIItem(Material.WOOD_AXE).getItem();
+        axe.addEnchantment(Enchantment.DAMAGE_ALL, 1);
+        player.getPlayer().getInventory().setItem(2, axe);
 
         player.getPlayer().getInventory().setItem(8, CrystalQuest.compass);
     }

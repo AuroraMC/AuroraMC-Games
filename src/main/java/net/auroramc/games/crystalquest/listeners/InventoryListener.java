@@ -12,9 +12,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -61,6 +64,16 @@ public class InventoryListener implements Listener {
             e.setCancelled(true);
             e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot drop this item!"));
         }
+    }
+
+    @EventHandler
+    public void onCraft(PrepareItemCraftEvent e) {
+        e.getInventory().setResult(new ItemStack(Material.AIR));
+    }
+
+    @EventHandler
+    public void onCraft(CraftItemEvent e) {
+        e.setCancelled(true);
     }
 
 }

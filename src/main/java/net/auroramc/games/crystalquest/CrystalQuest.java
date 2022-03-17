@@ -19,9 +19,7 @@ import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.entities.Crystal;
 import net.auroramc.games.crystalquest.entities.ScoreboardRunnable;
-import net.auroramc.games.crystalquest.kits.Defender;
-import net.auroramc.games.crystalquest.kits.Fighter;
-import net.auroramc.games.crystalquest.kits.Miner;
+import net.auroramc.games.crystalquest.kits.*;
 import net.auroramc.games.crystalquest.listeners.*;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
@@ -44,6 +42,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -94,6 +93,8 @@ public class CrystalQuest extends Game {
         this.kits.add(new Miner());
         this.kits.add(new Defender());
         this.kits.add(new Fighter());
+        this.kits.add(new Healer());
+        this.kits.add(new Ecologist());
         this.tasks = new ArrayList<>();
     }
 
@@ -335,6 +336,7 @@ public class CrystalQuest extends Game {
         PlayerInteractAtEntityEvent.getHandlerList().unregister(crystalListener);
         FoodLevelChangeEvent.getHandlerList().unregister(miningListener);
         BlockPlaceEvent.getHandlerList().unregister(miningListener);
+        PlayerPickupItemEvent.getHandlerList().unregister(miningListener);
         PlayerInteractEvent.getHandlerList().unregister(chestListener);
         EntityDamageByEntityEvent.getHandlerList().unregister(kitListener);
         DeathRespawnListener.unregister();
@@ -467,11 +469,28 @@ public class CrystalQuest extends Game {
                             blue.getBossCrystal().crystalDead(c, false);
                         }
 
+                        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "&c&lAll Crystals have been destroyed! Last team alive wins!"));
+                        }
 
                     }
                 }.runTaskLater(AuroraMCAPI.getCore(), 6000);
             }
-        }.runTaskLater(AuroraMCAPI.getCore(), 18000);
+        }.runTaskLater(AuroraMCAPI.getCore(), 6000);
+        endTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The game will be end in **5 minutes**!"));
+                }
+                endTask = new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        end(null);
+                    }
+                }.runTaskLater(AuroraMCAPI.getCore(), 6000);
+            }
+        }.runTaskLater(AuroraMCAPI.getCore(), 30000);
         compassTask = new BukkitRunnable(){
             @Override
             public void run() {
@@ -580,8 +599,12 @@ public class CrystalQuest extends Game {
 
                             @Override
                             public void run() {
-                                if (!player.getPlayer().getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
-                                    player.getPlayer().getInventory().addItem(new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItem());
+                                if (player.getPlayer().isOnline()) {
+                                    if (!player.getPlayer().getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
+                                        player.getPlayer().getInventory().addItem(new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItem());
+                                    }
+                                } else {
+                                    this.cancel();
                                 }
                             }
                         }.runTaskTimer(EngineAPI.getGameEngine(), 240, 240));
@@ -594,8 +617,12 @@ public class CrystalQuest extends Game {
 
                             @Override
                             public void run() {
-                                if (!player.getPlayer().getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
-                                    player.getPlayer().getInventory().addItem(stack);
+                                if (player.getPlayer().isOnline()) {
+                                    if (!player.getPlayer().getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
+                                        player.getPlayer().getInventory().addItem(stack);
+                                    }
+                                } else {
+                                    this.cancel();
                                 }
                             }
                         }.runTaskTimer(EngineAPI.getGameEngine(), 220, 220));
@@ -608,8 +635,12 @@ public class CrystalQuest extends Game {
 
                             @Override
                             public void run() {
-                                if (!player.getPlayer().getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
-                                    player.getPlayer().getInventory().addItem(stack);
+                                if (player.getPlayer().isOnline()) {
+                                    if (!player.getPlayer().getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
+                                        player.getPlayer().getInventory().addItem(stack);
+                                    }
+                                } else {
+                                    this.cancel();
                                 }
                             }
                         }.runTaskTimer(EngineAPI.getGameEngine(), 200, 200));
@@ -622,8 +653,12 @@ public class CrystalQuest extends Game {
 
                             @Override
                             public void run() {
-                                if (!player.getPlayer().getInventory().contains(Material.STAINED_GLASS, 14) && !player.isSpectator()) {
-                                    player.getPlayer().getInventory().addItem(stack);
+                                if (player.getPlayer().isOnline()) {
+                                    if (!player.getPlayer().getInventory().contains(Material.STAINED_GLASS, 14) && !player.isSpectator()) {
+                                        player.getPlayer().getInventory().addItem(stack);
+                                    }
+                                } else {
+                                    this.cancel();
                                 }
                             }
                         }.runTaskTimer(EngineAPI.getGameEngine(), 180, 180));
@@ -636,8 +671,12 @@ public class CrystalQuest extends Game {
 
                             @Override
                             public void run() {
-                                if (!player.getPlayer().getInventory().contains(Material.STAINED_GLASS, 16) && !player.isSpectator()) {
-                                    player.getPlayer().getInventory().addItem(stack);
+                                if (player.getPlayer().isOnline()) {
+                                    if (!player.getPlayer().getInventory().contains(Material.STAINED_GLASS, 16) && !player.isSpectator()) {
+                                        player.getPlayer().getInventory().addItem(stack);
+                                    }
+                                } else {
+                                    this.cancel();
                                 }
                             }
                         }.runTaskTimer(EngineAPI.getGameEngine(), 160, 160));
@@ -650,9 +689,14 @@ public class CrystalQuest extends Game {
 
                             @Override
                             public void run() {
-                                if (!player.getPlayer().getInventory().contains(Material.STAINED_GLASS, 16) && !player.isSpectator()) {
-                                    player.getPlayer().getInventory().addItem(stack);
+                                if (player.getPlayer().isOnline()) {
+                                    if (!player.getPlayer().getInventory().contains(Material.STAINED_GLASS, 16) && !player.isSpectator()) {
+                                        player.getPlayer().getInventory().addItem(stack);
+                                    }
+                                } else {
+                                    this.cancel();
                                 }
+
                             }
                         }.runTaskTimer(EngineAPI.getGameEngine(), 120, 120));
                         break;
@@ -713,10 +757,6 @@ public class CrystalQuest extends Game {
                     this.end(teams.get("Red"), null);
                     return;
                 }
-            }
-
-            if (player.getGameData().containsKey("defender")) {
-                ((BukkitTask) player.getGameData().get("defender")).cancel();
             }
 
             if (player.getTeam() instanceof CQBlue) {
@@ -922,7 +962,20 @@ public class CrystalQuest extends Game {
                 amountOfEmeralds = amountOfEmeralds / 2;
 
                 if (killer != null) {
-                    killer.getPlayer().sendMessage(AuroraMCAPI.getFormatter().convert("&7+" + amountOfIron + " Iron\n&6+" + amountOfGold + " Gold\n&a+" + amountOfEmeralds + " Emeralds"));
+                    List<String> builder = new ArrayList<>();
+                    if (amountOfIron > 0) {
+                        builder.add("&7+" + amountOfIron + " Iron");
+                    }
+                    if (amountOfGold > 0) {
+                        builder.add("&6+" + amountOfGold + " Gold");
+                    }
+                    if (amountOfEmeralds > 0) {
+                        builder.add("&a+" + amountOfEmeralds + " Emeralds");
+                    }
+
+                    if (builder.size() > 0) {
+                        killer.getPlayer().sendMessage(AuroraMCAPI.getFormatter().convert(String.join("\n", builder)));
+                    }
                 }
 
                 while (amountOfGold > 0) {
@@ -1107,38 +1160,52 @@ public class CrystalQuest extends Game {
                     }
                 }
 
-                switch (player.getPlayer().getInventory().getItem(0).getType()) {
+                int swordSlot = 0, pickSlot = 1, axeSlot = 2;
+
+                for (int i = 0; i < 36; i++) {
+                    if (player.getPlayer().getInventory().getItem(i) == null) {
+                        continue;
+                    }
+                    if (player.getPlayer().getInventory().getItem(i).getType().name().endsWith("_SWORD")) {
+                        swordSlot = i;
+                    } else if (player.getPlayer().getInventory().getItem(i).getType().name().endsWith("_AXE")) {
+                        axeSlot = i;
+                    } else if (player.getPlayer().getInventory().getItem(i).getType().name().endsWith("_PICKAXE")) {
+                        pickSlot = i;
+                    }
+                }
+                switch (player.getPlayer().getInventory().getItem(swordSlot).getType()) {
                     case STONE_SWORD: {
-                        player.getGameData().put("death_sword", player.getPlayer().getInventory().getItem(0));
+                        player.getGameData().put("death_sword", player.getPlayer().getInventory().getItem(swordSlot));
                         break;
                     }
                     case IRON_SWORD: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(0);
+                        ItemStack stack = player.getPlayer().getInventory().getItem(swordSlot);
                         stack.setType(Material.STONE_SWORD);
                         player.getGameData().put("death_sword", stack);
                         break;
                     }
                     case DIAMOND_SWORD: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(0);
+                        ItemStack stack = player.getPlayer().getInventory().getItem(swordSlot);
                         stack.setType(Material.IRON_SWORD);
                         player.getGameData().put("death_sword", stack);
                         break;
                     }
                 }
 
-                switch (player.getPlayer().getInventory().getItem(1).getType()) {
+                switch (player.getPlayer().getInventory().getItem(pickSlot).getType()) {
                     case STONE_PICKAXE: {
-                        player.getGameData().put("death_pickaxe", player.getPlayer().getInventory().getItem(1));
+                        player.getGameData().put("death_pickaxe", player.getPlayer().getInventory().getItem(pickSlot));
                         break;
                     }
                     case IRON_PICKAXE: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(1);
+                        ItemStack stack = player.getPlayer().getInventory().getItem(pickSlot);
                         stack.setType(Material.STONE_PICKAXE);
                         player.getGameData().put("death_pickaxe", stack);
                         break;
                     }
                     case DIAMOND_PICKAXE: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(1);
+                        ItemStack stack = player.getPlayer().getInventory().getItem(pickSlot);
                         if (!((player.getKit() instanceof Miner))) {
                             stack.setType(Material.IRON_PICKAXE);
                         }
@@ -1147,22 +1214,22 @@ public class CrystalQuest extends Game {
                     }
                 }
 
-                switch (player.getPlayer().getInventory().getItem(2).getType()) {
+                switch (player.getPlayer().getInventory().getItem(axeSlot).getType()) {
                     case WOOD_AXE:
                     case STONE_AXE: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(2);
+                        ItemStack stack = player.getPlayer().getInventory().getItem(axeSlot);
                         stack.setType(Material.WOOD_AXE);
                         player.getGameData().put("death_axe", stack);
                         break;
                     }
                     case IRON_AXE: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(2);
+                        ItemStack stack = player.getPlayer().getInventory().getItem(axeSlot);
                         stack.setType(Material.STONE_AXE);
                         player.getGameData().put("death_axe", stack);
                         break;
                     }
                     case DIAMOND_AXE: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(2);
+                        ItemStack stack = player.getPlayer().getInventory().getItem(axeSlot);
                         stack.setType(Material.IRON_AXE);
                         player.getGameData().put("death_axe", stack);
                         break;

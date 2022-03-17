@@ -7,12 +7,10 @@ package net.auroramc.games.util.listeners;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.cosmetics.Cosmetic;
 import net.auroramc.core.api.cosmetics.KillMessage;
+import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -41,6 +39,10 @@ public class DeathRespawnListener implements Listener {
         if (e.getEntity() instanceof Player) {
             Player pl = (Player) e.getEntity();
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(pl);
+            if (player.isSpectator() || player.isVanished()) {
+                e.setCancelled(true);
+                return;
+            }
             if (!friendlyFire) {
                 if (e instanceof EntityDamageByEntityEvent) {
                     if (((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
@@ -49,6 +51,16 @@ public class DeathRespawnListener implements Listener {
                         if (player1.getTeam().equals(player.getTeam())) {
                             e.setCancelled(true);
                             return;
+                        }
+                    } else if (((EntityDamageByEntityEvent) e).getDamager() instanceof Projectile) {
+                        Projectile projectile = (Projectile) ((EntityDamageByEntityEvent) e).getDamager();
+                        if (projectile.getShooter() instanceof Player) {
+                            Player damager = (Player) projectile.getShooter();
+                            AuroraMCPlayer auroraMCPlayer = AuroraMCAPI.getPlayer(damager);
+                            if (auroraMCPlayer.getTeam().equals(player.getTeam())) {
+                                e.setCancelled(true);
+                                return;
+                            }
                         }
                     }
                 }
@@ -158,6 +170,8 @@ public class DeathRespawnListener implements Listener {
                 if (killer != null) {
                     if (killer.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.KILL_MESSAGE)) {
                         killMessage = (KillMessage) killer.getActiveCosmetics().get(Cosmetic.CosmeticType.KILL_MESSAGE);
+                    } else {
+                        killMessage = (KillMessage) AuroraMCAPI.getCosmetics().get(500);
                     }
                     killer.getRewards().addXp("Kills", 25);
                     killer.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills", 1, true);
@@ -202,6 +216,7 @@ public class DeathRespawnListener implements Listener {
                 }
 
                 if (!finalKill) {
+                    player.sendTitle(AuroraMCAPI.getFormatter().convert("&c&lYou Died!"), AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight("You will respawn in **" + (timeout / 20) + "** seconds!")), 20, 100, 20, ChatColor.RED, ChatColor.RESET, true, false);
                     new BukkitRunnable(){
                         @Override
                         public void run() {
@@ -215,6 +230,8 @@ public class DeathRespawnListener implements Listener {
                                     player2.showPlayer(player.getPlayer());
                                 }
                                 player.setSpectator(false, false);
+                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You respawned!"));
+                                player.sendTitle(AuroraMCAPI.getFormatter().convert("&3&lYou respawned!"), "", 20, 100, 20, ChatColor.DARK_AQUA, ChatColor.RESET, true, false);
                             }
                         }
                     }.runTaskLater(AuroraMCAPI.getCore(), timeout);
