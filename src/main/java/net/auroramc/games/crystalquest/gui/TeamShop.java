@@ -65,7 +65,7 @@ public class TeamShop extends GUI {
         if (prot == 2) {
             this.setItem(1, 1, new GUIItem(Material.BARRIER, "&3&lProtection Upgrade", 1, ";&rYou already have the max upgrade."));
         } else {
-            this.setItem(1, 1, new GUIItem(Material.NETHER_STAR, "&3&lProtection Upgrade", 1, ";&rCurrent: **" + ((prot == 0)?"None":"Level " + prot) + "**;;&rClick to upgrade to:;**Protection " + (prot + 1) + "**;&rCost: &b" + ((prot == 0)?16:20) + " &aEmeralds"));
+            this.setItem(1, 1, new GUIItem(Material.NETHER_STAR, "&3&lProtection Upgrade", 1, ";&rCurrent: **" + ((prot == 0)?"None":"Level " + prot) + "**;;&rClick to upgrade to:;**Protection " + (prot + 1) + "**;&rCost: &b" + ((prot == 0)?13:17) + " &aEmeralds"));
         }
 
         if (power == 2) {
@@ -77,7 +77,7 @@ public class TeamShop extends GUI {
         if (sharp == 2) {
             this.setItem(1, 5, new GUIItem(Material.BARRIER, "&3&lSharpness Upgrade", 1, ";&rYou already have the max upgrade."));
         } else {
-            this.setItem(1, 5, new GUIItem(Material.NETHER_STAR, "&3&lSharpness Upgrade", 1, ";&rCurrent: **" + ((sharp == 0)?"None":"Level " + sharp) + "**;;&rClick to upgrade to:;**Sharpness " + (sharp + 1) + "**;&rCost: &b" + ((sharp == 0)?13:17) + " &aEmeralds"));
+            this.setItem(1, 5, new GUIItem(Material.NETHER_STAR, "&3&lSharpness Upgrade", 1, ";&rCurrent: **" + ((sharp == 0)?"None":"Level " + sharp) + "**;;&rClick to upgrade to:;**Sharpness " + (sharp + 1) + "**;&rCost: &b" + ((sharp == 0)?16:20) + " &aEmeralds"));
         }
 
         this.setItem(1, 7, new GUIItem(Material.SKULL_ITEM, "&3&lAdditional Life", 1, ";&rA person on your team can;&rrespawn with all of their items.;;&rCost:;&b48 &7Iron;&b32 &6Gold;&b8 &aEmeralds;;&rPlease note: you can only have 5;&radditional lives at a time."));
@@ -137,9 +137,9 @@ public class TeamShop extends GUI {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                     return;
                 } else {
-                    if (player.getPlayer().getInventory().contains(Material.EMERALD, ((prot == 0)?16:20))) {
+                    if (player.getPlayer().getInventory().contains(Material.EMERALD, ((prot == 0)?13:17))) {
                         player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
-                        player.getPlayer().getInventory().removeItem(new ItemStack(Material.EMERALD, ((prot == 0)?16:20)));
+                        player.getPlayer().getInventory().removeItem(new ItemStack(Material.EMERALD, ((prot == 0)?13:17)));
                         if (player.getTeam() instanceof CQBlue) {
                             blue.upgradeProt();
                         } else {
@@ -211,9 +211,9 @@ public class TeamShop extends GUI {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                     return;
                 } else {
-                    if (player.getPlayer().getInventory().contains(Material.EMERALD, ((sharp == 0)?13:17))) {
+                    if (player.getPlayer().getInventory().contains(Material.EMERALD, ((sharp == 0)?16:20))) {
                         player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
-                        player.getPlayer().getInventory().removeItem(new ItemStack(Material.EMERALD, ((sharp == 0)?13:17)));
+                        player.getPlayer().getInventory().removeItem(new ItemStack(Material.EMERALD, ((sharp == 0)?16:20)));
                         if (player.getTeam() instanceof CQBlue) {
                             blue.upgradeSharp();
                         } else {
