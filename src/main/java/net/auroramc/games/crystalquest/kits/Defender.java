@@ -22,7 +22,7 @@ public class Defender extends Kit {
     public void onGameStart(AuroraMCPlayer player) {
         player.getPlayer().getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET).getItem());
         ItemStack stack = new GUIItem(Material.LEATHER_BOOTS).getItem();
-        stack.addEnchantment(Enchantment.PROTECTION_FALL, 1);
+        stack.addEnchantment(Enchantment.PROTECTION_FALL, 4);
         player.getPlayer().getInventory().setBoots(stack);
         player.getPlayer().getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE).getItem());
         player.getPlayer().getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS).getItem());

@@ -87,8 +87,7 @@ public class InventoryListener implements Listener {
             if (e.getItem().getAmount() == 1) {
                 e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
             } else {
-                e.getItem().setAmount(e.getItem().getAmount() - 1);
-                e.getPlayer().setItemInHand(e.getItem());
+                e.getPlayer().setItemInHand(new ItemStack(Material.GOLDEN_APPLE, e.getItem().getAmount() - 1));
             }
             e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 1));
         }

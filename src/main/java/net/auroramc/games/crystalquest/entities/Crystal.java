@@ -56,7 +56,6 @@ public class Crystal {
         Bukkit.getPluginManager().registerEvents(listener, EngineAPI.getGameEngine());
         holder.getGameData().put("crystal_possession", type);
         holder.getGameData().put("crystal_inventory", holder.getPlayer().getInventory().getContents());
-        holder.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 1000000, 0, true, false));
         holder.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 1000000, 0, true, false));
         holder.getPlayer().getInventory().clear();
         this.holder.getPlayer().setFoodLevel(3);
@@ -81,7 +80,6 @@ public class Crystal {
         if (this.holder != null) {
             this.holder.getPlayer().getInventory().setContents((ItemStack[]) this.holder.getGameData().remove("crystal_inventory"));
             this.holder.getGameData().remove("crystal_possession");
-            this.holder.getPlayer().removePotionEffect(PotionEffectType.SLOW);
             this.holder.getPlayer().removePotionEffect(PotionEffectType.REGENERATION);
             this.holder.getPlayer().setFoodLevel(25);
 
@@ -101,7 +99,7 @@ public class Crystal {
             this.holder = null;
         }
 
-        home.getWorld().createExplosion(home, 6 + (isBoss()?3:0));
+        home.getWorld().createExplosion(home, 6);
 
 
 
@@ -111,7 +109,6 @@ public class Crystal {
 
 
     public void crystalReturned() {
-        this.holder.getPlayer().removePotionEffect(PotionEffectType.SLOW);
         this.holder.getPlayer().removePotionEffect(PotionEffectType.REGENERATION);
         this.holder.getPlayer().setFoodLevel(25);
         this.holder = null;

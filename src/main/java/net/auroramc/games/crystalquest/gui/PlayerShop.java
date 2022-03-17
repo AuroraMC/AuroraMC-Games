@@ -205,14 +205,14 @@ public class PlayerShop extends GUI {
             this.setItem(3, 3, new GUIItem(Material.BARRIER, "&3Bow", 1, ";&rYou already have a Bow."));
         }
 
-        this.setItem(4, 3, new GUIItem(Material.ARROW, "&316 Arrows", 4, ";&rClick here to buy;&716 Arrows.;;&rCost: &b16 &7Iron."));
+        this.setItem(4, 3, new GUIItem(Material.ARROW, "&32 Arrows", 2, ";&rClick here to buy;&72 Arrows.;;&rCost: &b8 &7Iron."));
 
         this.setItem(0, 7, new GUIItem(Material.WATER_BUCKET, "&3&lWater Bucket", 1, ";&rClick to purchase **Water Bucket**.;;&rCost: &b48&7 Iron"));
         this.setItem(1, 7, new GUIItem(Material.GOLDEN_APPLE, "&3&lGolden Apple", 1, ";&rClick to purchase **Golden Apple**.;;&rCost: &b8&6 Gold"));
         this.setItem(2, 7, new GUIItem(Material.COOKIE, "&3&lInstant Cookie", 1, ";&rClick to purchase **Instant Cookie**.;;&rCost: &b1&a Emerald"));
         this.setItem(3, 7, new GUIItem(Material.FLINT_AND_STEEL, "&3&lFlint and Steel", 1, ";&rClick to purchase **Flint and Steel**.;;&rCost: &b2&a Emeralds"));
         this.setItem(4, 7, new GUIItem(Material.ENDER_PEARL, "&3&lEthereal Pearl", 1, ";&rClick to purchase **Ethereal Pearl**.;;&rCost: &b8&a Emeralds"));
-        this.setItem(5, 7, new GUIItem(Material.LADDER, "&3&l8 Ladders", 8, ";&rClick to purchase **8** Ladders.;;&rCost: &b16&7 Iron"));
+        this.setItem(5, 7, new GUIItem(Material.LADDER, "&3&l8 Ladders", 8, ";&rClick to purchase **8** Ladders.;;&rCost: &b10&7 Iron"));
     }
 
     @Override
@@ -640,10 +640,10 @@ public class PlayerShop extends GUI {
                 break;
             }
             case ARROW: {
-                if (player.getPlayer().getInventory().contains(Material.IRON_INGOT, 16)) {
+                if (player.getPlayer().getInventory().contains(Material.IRON_INGOT, 8)) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
-                    player.getPlayer().getInventory().removeItem(new ItemStack(Material.IRON_INGOT, 16));
-                    Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(new GUIItem(Material.ARROW, null, 4).getItem());
+                    player.getPlayer().getInventory().removeItem(new ItemStack(Material.IRON_INGOT, 8));
+                    Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(new GUIItem(Material.ARROW, null, 2).getItem());
                     if (couldntPlace.size() > 0) {
                         player.getPlayer().closeInventory();
                         for (Map.Entry<Integer, ItemStack> entry : couldntPlace.entrySet()) {
@@ -745,9 +745,9 @@ public class PlayerShop extends GUI {
                 break;
             }
             case LADDER: {
-                if (player.getPlayer().getInventory().contains(Material.IRON_INGOT, 16)) {
+                if (player.getPlayer().getInventory().contains(Material.IRON_INGOT, 10)) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
-                    player.getPlayer().getInventory().removeItem(new ItemStack(Material.IRON_INGOT, 16));
+                    player.getPlayer().getInventory().removeItem(new ItemStack(Material.IRON_INGOT, 10));
                     Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(new GUIItem(Material.LADDER, null, 8).getItem());
                     if (couldntPlace.size() > 0) {
                         player.getPlayer().closeInventory();
