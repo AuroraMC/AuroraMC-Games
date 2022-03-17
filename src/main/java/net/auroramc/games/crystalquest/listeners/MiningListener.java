@@ -383,7 +383,7 @@ public class MiningListener implements Listener {
             z = spawn.getInt("z");
             float yaw = spawn.getFloat("yaw");
             Location location = new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0);
-            if (location.distanceSquared(e.getBlock().getLocation()) > 64) {
+            if (location.distanceSquared(e.getBlock().getLocation()) < 64) {
                 e.setCancelled(true);
                 return true;
             }
