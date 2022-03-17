@@ -13,7 +13,7 @@ import org.bukkit.Material;
 public class Ecologist extends Kit {
 
     public Ecologist() {
-        super(4, 1, "&3&lEcologist", "Some healer kit description", Material.EMERALD, 15000);
+        super(4, 1, "&3&lEcologist", "&4&lDO NOT SET THIS KIT, IT IS NOT DONE", Material.EMERALD, 15000);
     }
 
     @Override
