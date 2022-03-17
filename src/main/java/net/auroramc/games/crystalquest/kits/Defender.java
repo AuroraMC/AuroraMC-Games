@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 public class Defender extends Kit {
 
     public Defender() {
-        super(1, 1, "&3&lDefender", "&4&lDO NOT SET THIS KIT, IT IS NOT DONE", Material.STAINED_GLASS, 8000);
+        super(1, 1, "&3&lDefender", "The ability to protect your crystals is one of the most important ones in the game, these players receive blocks that make capturing crystals a nuisance.", Material.STAINED_GLASS, 8000);
     }
 
     @Override
