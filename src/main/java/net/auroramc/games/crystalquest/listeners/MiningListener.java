@@ -5,6 +5,7 @@
 package net.auroramc.games.crystalquest.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -24,6 +25,8 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.Map;
 import java.util.Random;
@@ -330,9 +333,20 @@ public class MiningListener implements Listener {
     @EventHandler
     public void onHunger(FoodLevelChangeEvent e) {
         if (EngineAPI.getServerState() == ServerState.IN_GAME) {
-            if (e.getEntity() instanceof Player && e.getFoodLevel() < 25) {
-                e.setCancelled(true);
-                e.setFoodLevel(30);
+            if (e.getEntity() instanceof Player) {
+                Player player = (Player) e.getEntity();
+                AuroraMCGamePlayer gp = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(player);
+                if (!gp.getGameData().containsKey("crystal_possession")) {
+                    if (e.getFoodLevel() < 25) {
+                        e.setCancelled(true);
+                        e.setFoodLevel(30);
+                    }
+                } else {
+                    if (e.getFoodLevel() < 3) {
+                        e.setCancelled(true);
+                        e.setFoodLevel(3);
+                    }
+                }
             }
         }
     }
@@ -348,11 +362,33 @@ public class MiningListener implements Listener {
             e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot place blocks here!"));
         }
 
+        JSONArray redSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("RED");
+        JSONArray blueSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("BLUE");
+        if (spawnCheck(e, redSpawns)) return;
+        if (spawnCheck(e, blueSpawns)) return;
+
         if (!e.isCancelled()) {
             if (e.getBlockAgainst().getType() == Material.BARRIER) {
                 e.setCancelled(true);
             }
         }
+    }
+
+    private boolean spawnCheck(BlockPlaceEvent e, JSONArray blueSpawns) {
+        for (Object obj : blueSpawns) {
+            JSONObject spawn = (JSONObject) obj;
+            int x, y, z;
+            x = spawn.getInt("x");
+            y = spawn.getInt("y");
+            z = spawn.getInt("z");
+            float yaw = spawn.getFloat("yaw");
+            Location location = new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0);
+            if (location.distanceSquared(e.getBlock().getLocation()) > 64) {
+                e.setCancelled(true);
+                return true;
+            }
+        }
+        return false;
     }
 
     @EventHandler

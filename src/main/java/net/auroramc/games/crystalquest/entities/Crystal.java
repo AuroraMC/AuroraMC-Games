@@ -57,7 +57,9 @@ public class Crystal {
         holder.getGameData().put("crystal_possession", type);
         holder.getGameData().put("crystal_inventory", holder.getPlayer().getInventory().getContents());
         holder.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 1000000, 1, true, false));
+        holder.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 1000000, 0, true, false));
         holder.getPlayer().getInventory().clear();
+        this.holder.getPlayer().setFoodLevel(3);
 
         for (int i = 0;i < 36;i++) {
             holder.getPlayer().getInventory().setItem(i, new GUIItem(Material.NETHER_STAR, "&3&lCollected Crystal", 1, ";&rReturn this to your base!").getItem());
@@ -80,6 +82,8 @@ public class Crystal {
             this.holder.getPlayer().getInventory().setContents((ItemStack[]) this.holder.getGameData().remove("crystal_inventory"));
             this.holder.getGameData().remove("crystal_possession");
             this.holder.getPlayer().removePotionEffect(PotionEffectType.SLOW);
+            this.holder.getPlayer().removePotionEffect(PotionEffectType.REGENERATION);
+            this.holder.getPlayer().setFoodLevel(25);
 
             if (message) {
                 this.holder.getRewards().addXp("Crystal Capture", 50);
@@ -108,6 +112,8 @@ public class Crystal {
 
     public void crystalReturned() {
         this.holder.getPlayer().removePotionEffect(PotionEffectType.SLOW);
+        this.holder.getPlayer().removePotionEffect(PotionEffectType.REGENERATION);
+        this.holder.getPlayer().setFoodLevel(25);
         this.holder = null;
         crystal = EngineAPI.getMapWorld().spawn(home, EnderCrystal.class);
         crystal.setCustomName(homeTeam.getName() + type);
