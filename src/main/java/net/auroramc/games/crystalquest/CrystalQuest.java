@@ -1107,7 +1107,21 @@ public class CrystalQuest extends Game {
                     }
                 }
 
-                switch (player.getPlayer().getInventory().getItem(0).getType()) {
+                int swordSlot = 0, pickSlot = 1, axeSlot = 2;
+
+                for (int i = 0; i < 36; i++) {
+                    if (player.getPlayer().getInventory().getItem(i) == null) {
+                        continue;
+                    }
+                    if (player.getPlayer().getInventory().getItem(i).getType().name().endsWith("_SWORD")) {
+                        swordSlot = i;
+                    } else if (player.getPlayer().getInventory().getItem(i).getType().name().endsWith("_AXE")) {
+                        axeSlot = i;
+                    } else if (player.getPlayer().getInventory().getItem(i).getType().name().endsWith("_PICKAXE")) {
+                        pickSlot = i;
+                    }
+                }
+                switch (player.getPlayer().getInventory().getItem(swordSlot).getType()) {
                     case STONE_SWORD: {
                         player.getGameData().put("death_sword", player.getPlayer().getInventory().getItem(0));
                         break;
@@ -1126,7 +1140,7 @@ public class CrystalQuest extends Game {
                     }
                 }
 
-                switch (player.getPlayer().getInventory().getItem(1).getType()) {
+                switch (player.getPlayer().getInventory().getItem(pickSlot).getType()) {
                     case STONE_PICKAXE: {
                         player.getGameData().put("death_pickaxe", player.getPlayer().getInventory().getItem(1));
                         break;
@@ -1147,7 +1161,7 @@ public class CrystalQuest extends Game {
                     }
                 }
 
-                switch (player.getPlayer().getInventory().getItem(2).getType()) {
+                switch (player.getPlayer().getInventory().getItem(axeSlot).getType()) {
                     case WOOD_AXE:
                     case STONE_AXE: {
                         ItemStack stack = player.getPlayer().getInventory().getItem(2);
