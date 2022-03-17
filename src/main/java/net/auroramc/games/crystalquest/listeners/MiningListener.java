@@ -347,6 +347,12 @@ public class MiningListener implements Listener {
             e.setCancelled(true);
             e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot place blocks here!"));
         }
+
+        if (!e.isCancelled()) {
+            if (e.getBlockAgainst().getType() == Material.BARRIER) {
+                e.setCancelled(true);
+            }
+        }
     }
 
     @EventHandler
