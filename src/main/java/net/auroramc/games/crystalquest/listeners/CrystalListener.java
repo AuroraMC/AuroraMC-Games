@@ -17,6 +17,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class CrystalListener implements Listener {
 
@@ -26,7 +29,11 @@ public class CrystalListener implements Listener {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
             EnderCrystal crystal = (EnderCrystal) e.getRightClicked();
             if (!player.isSpectator() && crystal.getCustomName() != null) {
-                crystalCapture(player, crystal);
+                if (System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp() >= 120000L) {
+                    crystalCapture(player, crystal);
+                } else {
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot collect crystals within the first 2 minutes!"));
+                }
             } else if (crystal.getCustomName() == null) {
                 player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You can't collect a crystal that's already been captured!"));
             }
@@ -121,10 +128,27 @@ public class CrystalListener implements Listener {
                 AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager());
                 EnderCrystal crystal = (EnderCrystal) e.getEntity();
                 if (!player.isSpectator() && crystal.getCustomName() != null) {
-                    crystalCapture(player, crystal);
+                    if (System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp() >= 120000L) {
+                        crystalCapture(player, crystal);
+                    } else {
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot collect crystals within the first 2 minutes!"));
+                    }
                 } else if (crystal.getCustomName() == null) {
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You can't collect a crystal that's already been captured!"));
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onTeleport(PlayerTeleportEvent e) {
+        if (e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
+            AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
+            if (player.getGameData().containsKey("crystal_possession")) {
+                e.setCancelled(true);
+                e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot use ender pearls while you have a crystal!"));
+            } else {
+                player.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 5, 0));
             }
         }
     }

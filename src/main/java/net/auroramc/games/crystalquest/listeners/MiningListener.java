@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -40,7 +41,7 @@ public class MiningListener implements Listener {
 
         int protectionRadius = 25;
 
-        if (e.getBlock().getLocation().distanceSquared(red.getRobotSlotA().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getRobotSlotB().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getRobotSlotC().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotA().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotB().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotB().getLocation()) < protectionRadius) {
+        if (e.getBlock().getLocation().distanceSquared(red.getRobotSlotA().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getRobotSlotB().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getRobotSlotC().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotA().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotB().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotB().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getTowerACrystal().getHome()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getTowerBCrystal().getHome()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getBossCrystal().getHome()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getTowerACrystal().getHome()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getTowerBCrystal().getHome()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getBossCrystal().getHome()) < protectionRadius) {
             e.setCancelled(true);
             e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot break blocks here!"));
             return;
@@ -315,6 +316,9 @@ public class MiningListener implements Listener {
             }
             case COBBLESTONE:
             case WOOD:
+            case ENDER_STONE:
+            case OBSIDIAN:
+            case LADDER:
                 e.getBlock().getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), new ItemStack(e.getBlock().getType()));
                 break;
             case STAINED_GLASS: {
@@ -395,6 +399,13 @@ public class MiningListener implements Listener {
     public void onItemPickup(PlayerPickupItemEvent e) {
         if (e.getItem().getItemStack().getType() == Material.ARROW) {
             e.getItem().setItemStack(new ItemStack(Material.ARROW, e.getItem().getItemStack().getAmount()));
+        }
+    }
+
+    @EventHandler
+    public void onWaterFlow(BlockFromToEvent e) {
+        if (e.getBlock().isLiquid()) {
+            e.setCancelled(true);
         }
     }
 

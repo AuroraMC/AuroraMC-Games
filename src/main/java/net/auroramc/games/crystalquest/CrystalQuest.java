@@ -29,20 +29,19 @@ import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftVillager;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -190,7 +189,7 @@ public class CrystalQuest extends Game {
     @Override
     public void start() {
         super.start();
-        DeathRespawnListener.register(200, false);
+        DeathRespawnListener.register(100, false);
         PregameMoveListener.register();
         Bukkit.getPluginManager().registerEvents(showListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(shopListener, EngineAPI.getGameEngine());
@@ -331,12 +330,15 @@ public class CrystalQuest extends Game {
         EntityDamageByEntityEvent.getHandlerList().unregister(shopListener);
         InventoryClickEvent.getHandlerList().unregister(inventoryListener);
         PlayerDropItemEvent.getHandlerList().unregister(inventoryListener);
+        PlayerItemConsumeEvent.getHandlerList().unregister(inventoryListener);
+        PlayerInteractEvent.getHandlerList().unregister(inventoryListener);
         BlockBreakEvent.getHandlerList().unregister(miningListener);
         EntityDamageByEntityEvent.getHandlerList().unregister(crystalListener);
         PlayerInteractAtEntityEvent.getHandlerList().unregister(crystalListener);
         FoodLevelChangeEvent.getHandlerList().unregister(miningListener);
         BlockPlaceEvent.getHandlerList().unregister(miningListener);
         PlayerPickupItemEvent.getHandlerList().unregister(miningListener);
+        BlockFromToEvent.getHandlerList().unregister(miningListener);
         PlayerInteractEvent.getHandlerList().unregister(chestListener);
         EntityDamageByEntityEvent.getHandlerList().unregister(kitListener);
         DeathRespawnListener.unregister();
@@ -1206,9 +1208,13 @@ public class CrystalQuest extends Game {
                     }
                     case DIAMOND_PICKAXE: {
                         ItemStack stack = player.getPlayer().getInventory().getItem(pickSlot);
-                        if (!((player.getKit() instanceof Miner))) {
-                            stack.setType(Material.IRON_PICKAXE);
-                        }
+                            if (stack.getEnchantmentLevel(Enchantment.DIG_SPEED) < 2) {
+                                stack.setType(Material.IRON_PICKAXE);
+                            } else {
+                                if (!(player.getKit() instanceof Miner)) {
+                                    stack.removeEnchantment(Enchantment.DIG_SPEED);
+                                }
+                            }
                         player.getGameData().put("death_pickaxe", stack);
                         break;
                     }
@@ -1231,6 +1237,7 @@ public class CrystalQuest extends Game {
                     case DIAMOND_AXE: {
                         ItemStack stack = player.getPlayer().getInventory().getItem(axeSlot);
                         stack.setType(Material.IRON_AXE);
+                        stack.removeEnchantment(Enchantment.DIG_SPEED);
                         player.getGameData().put("death_axe", stack);
                         break;
                     }

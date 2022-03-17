@@ -111,10 +111,10 @@ public class PlayerShop extends GUI {
 
         this.setItem(1, 1, new GUIItem(Material.STAINED_CLAY, "&3&l16 Clay Blocks", 16, ";&rClick to purchase **16** Clay Blocks.;;&rCost: &b16&7 Iron Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
         this.setItem(0, 1, new GUIItem(Material.WOOL, "&3&l16 Wool Blocks", 16, ";&rClick to purchase **16** Wool Blocks.;;&rCost: &b12&7 Iron Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
-        this.setItem(4, 1, new GUIItem(Material.WOOD, "&3&l16 Wood Blocks", 16, ";&rClick to purchase **16** Wood Blocks.;;&rCost: &b8&6 Gold Ingots"));
-        this.setItem(3, 1, new GUIItem(Material.STAINED_GLASS, "&3&l16 Glass Blocks", 16, ";&rClick to purchase **16** Glass Blocks.;;&rCost: &b16&6 Gold Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
-        this.setItem(5, 1, new GUIItem(Material.ENDER_STONE, "&3&l8 End Stone", 16, ";&rClick to purchase **8** End Stone.;;&rCost: &b24&6 Gold Ingots"));
-        this.setItem(6, 1, new GUIItem(Material.OBSIDIAN, "&3&l1 Obsidian", 16, ";&rClick to purchase **1** Obsidian.;;&rCost: &b4&a Emeralds"));
+        this.setItem(3, 1, new GUIItem(Material.WOOD, "&3&l16 Wood Blocks", 16, ";&rClick to purchase **16** Wood Blocks.;;&rCost: &b8&6 Gold Ingots"));
+        this.setItem(2, 1, new GUIItem(Material.STAINED_GLASS, "&3&l16 Glass Blocks", 16, ";&rClick to purchase **16** Glass Blocks.;;&rCost: &b16&6 Gold Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
+        this.setItem(4, 1, new GUIItem(Material.ENDER_STONE, "&3&l8 End Stone", 16, ";&rClick to purchase **8** End Stone.;;&rCost: &b24&6 Gold Ingots"));
+        this.setItem(5, 1, new GUIItem(Material.OBSIDIAN, "&3&l1 Obsidian", 16, ";&rClick to purchase **1** Obsidian.;;&rCost: &b4&a Emeralds"));
 
         int swordSlot = 0, pickSlot = 1, axeSlot = 2;
 
@@ -554,6 +554,7 @@ public class PlayerShop extends GUI {
                         player.getPlayer().getInventory().removeItem(new ItemStack(Material.GOLD_INGOT, 32));
                         this.updateItem(3, 5, new GUIItem(Material.BARRIER, "&3Axe Upgrade", 1, ";&rYou have the max upgrade."));
                         player.getPlayer().getInventory().getItem(axeSlot).setType(Material.DIAMOND_AXE);
+                        player.getPlayer().getInventory().getItem(axeSlot).addEnchantment(Enchantment.DIG_SPEED, 2);
                     } else {
                         player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                     }
@@ -709,7 +710,9 @@ public class PlayerShop extends GUI {
                 if (player.getPlayer().getInventory().contains(Material.EMERALD, 2)) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getPlayer().getInventory().removeItem(new ItemStack(Material.EMERALD, 2));
-                    Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(new GUIItem(Material.FLINT_AND_STEEL, null, 1).getItem());
+                    ItemStack stack = new GUIItem(Material.FLINT_AND_STEEL, null, 1).getItem();
+                    stack.setDurability((short)4);
+                    Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(stack);
                     if (couldntPlace.size() > 0) {
                         player.getPlayer().closeInventory();
                         for (Map.Entry<Integer, ItemStack> entry : couldntPlace.entrySet()) {
