@@ -469,6 +469,9 @@ public class CrystalQuest extends Game {
                             blue.getBossCrystal().crystalDead(c, false);
                         }
 
+                        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "&c&lAll Crystals have been destroyed! Last team alive wins!"));
+                        }
 
                     }
                 }.runTaskLater(AuroraMCAPI.getCore(), 6000);
