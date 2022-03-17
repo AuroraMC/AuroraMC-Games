@@ -1123,17 +1123,17 @@ public class CrystalQuest extends Game {
                 }
                 switch (player.getPlayer().getInventory().getItem(swordSlot).getType()) {
                     case STONE_SWORD: {
-                        player.getGameData().put("death_sword", player.getPlayer().getInventory().getItem(0));
+                        player.getGameData().put("death_sword", player.getPlayer().getInventory().getItem(swordSlot));
                         break;
                     }
                     case IRON_SWORD: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(0);
+                        ItemStack stack = player.getPlayer().getInventory().getItem(swordSlot);
                         stack.setType(Material.STONE_SWORD);
                         player.getGameData().put("death_sword", stack);
                         break;
                     }
                     case DIAMOND_SWORD: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(0);
+                        ItemStack stack = player.getPlayer().getInventory().getItem(swordSlot);
                         stack.setType(Material.IRON_SWORD);
                         player.getGameData().put("death_sword", stack);
                         break;
@@ -1142,17 +1142,17 @@ public class CrystalQuest extends Game {
 
                 switch (player.getPlayer().getInventory().getItem(pickSlot).getType()) {
                     case STONE_PICKAXE: {
-                        player.getGameData().put("death_pickaxe", player.getPlayer().getInventory().getItem(1));
+                        player.getGameData().put("death_pickaxe", player.getPlayer().getInventory().getItem(pickSlot));
                         break;
                     }
                     case IRON_PICKAXE: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(1);
+                        ItemStack stack = player.getPlayer().getInventory().getItem(pickSlot);
                         stack.setType(Material.STONE_PICKAXE);
                         player.getGameData().put("death_pickaxe", stack);
                         break;
                     }
                     case DIAMOND_PICKAXE: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(1);
+                        ItemStack stack = player.getPlayer().getInventory().getItem(pickSlot);
                         if (!((player.getKit() instanceof Miner))) {
                             stack.setType(Material.IRON_PICKAXE);
                         }
@@ -1164,19 +1164,19 @@ public class CrystalQuest extends Game {
                 switch (player.getPlayer().getInventory().getItem(axeSlot).getType()) {
                     case WOOD_AXE:
                     case STONE_AXE: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(2);
+                        ItemStack stack = player.getPlayer().getInventory().getItem(axeSlot);
                         stack.setType(Material.WOOD_AXE);
                         player.getGameData().put("death_axe", stack);
                         break;
                     }
                     case IRON_AXE: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(2);
+                        ItemStack stack = player.getPlayer().getInventory().getItem(axeSlot);
                         stack.setType(Material.STONE_AXE);
                         player.getGameData().put("death_axe", stack);
                         break;
                     }
                     case DIAMOND_AXE: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(2);
+                        ItemStack stack = player.getPlayer().getInventory().getItem(axeSlot);
                         stack.setType(Material.IRON_AXE);
                         player.getGameData().put("death_axe", stack);
                         break;
