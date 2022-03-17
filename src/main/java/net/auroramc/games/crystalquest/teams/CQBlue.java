@@ -129,7 +129,7 @@ public class CQBlue implements Team {
 
     @Override
     public int getId() {
-        return 0;
+        return 1;
     }
 
     @Override
