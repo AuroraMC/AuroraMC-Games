@@ -170,6 +170,8 @@ public class DeathRespawnListener implements Listener {
                 if (killer != null) {
                     if (killer.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.KILL_MESSAGE)) {
                         killMessage = (KillMessage) killer.getActiveCosmetics().get(Cosmetic.CosmeticType.KILL_MESSAGE);
+                    } else {
+                        killMessage = (KillMessage) AuroraMCAPI.getCosmetics().get(500);
                     }
                     killer.getRewards().addXp("Kills", 25);
                     killer.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills", 1, true);
