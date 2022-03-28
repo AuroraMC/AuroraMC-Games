@@ -13,8 +13,6 @@ import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
-import net.auroramc.games.spleef.kits.AnotherSpleefKit;
-import net.auroramc.games.spleef.kits.MoreSpleefKit;
 import net.auroramc.games.spleef.kits.SpleefKit;
 import net.auroramc.games.spleef.listeners.BreakListener;
 import net.auroramc.games.spleef.listeners.DeathListener;
@@ -52,8 +50,6 @@ public class Spleef extends Game {
     public void preLoad() {
         this.teams.put("players", new PlayersTeam());
         this.kits.add(new SpleefKit());
-        this.kits.add(new AnotherSpleefKit());
-        this.kits.add(new MoreSpleefKit());
     }
 
     @Override

@@ -16,6 +16,8 @@ public class BreakListener implements Listener {
     public void onBreak(BlockBreakEvent e) {
         if (EngineAPI.getActiveGame().isStarting()) {
             e.setCancelled(true);
+        } else {
+
         }
     }
 
