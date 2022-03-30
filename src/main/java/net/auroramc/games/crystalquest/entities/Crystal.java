@@ -49,6 +49,7 @@ public class Crystal {
             return;
         }
         this.holder = holder;
+        this.holder.getStats().incrementStatistic(1, "crystalsCollected", 1, true);
         crystal.remove();
         crystal = null;
         state = CrystalState.CAPTURED;
