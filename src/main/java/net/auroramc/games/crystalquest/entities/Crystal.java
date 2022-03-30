@@ -64,7 +64,7 @@ public class Crystal {
         this.holder.getPlayer().setFoodLevel(3);
 
         ItemStack stack = new GUIItem(Material.NETHER_STAR, "&3&lCollected Crystal", 1, ";&rReturn this to your base!").getItem();
-        stack.addEnchantment(Enchantment.DAMAGE_ALL, 3);
+        stack.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 3);
 
         for (int i = 0;i < 36;i++) {
             holder.getPlayer().getInventory().setItem(i, stack);
