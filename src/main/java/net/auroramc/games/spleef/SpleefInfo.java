@@ -9,6 +9,6 @@ import net.auroramc.engine.api.games.GameInfo;
 public class SpleefInfo extends GameInfo {
 
     public SpleefInfo() {
-        super(2, "Spleef", Spleef.class, "A game description", "SPLEEF", false, "v0.0.1-ALPHA");
+        super(100, "Spleef", Spleef.class, "A game description", "SPLEEF", false, "v0.0.1-ALPHA");
     }
 }
