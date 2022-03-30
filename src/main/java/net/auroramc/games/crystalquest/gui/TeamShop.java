@@ -85,7 +85,7 @@ public class TeamShop extends GUI {
         if (robotB.getEntity() != null && robotC.getEntity() != null) {
             this.setItem(2, 4, new GUIItem(Material.BARRIER, "&3&lLevel 1 Mining Robot", 1, ";&rAll of your Mining Robot slots are full!"));
         } else {
-            this.setItem(2, 4, new GUIItem(Material.SKULL_ITEM, "&3&lLevel 1 Mining Robot", 1, ";&rThis mines:;" + descs.get(1) + ";;&rCost:;&b16 &aEmeralds"));
+            this.setItem(2, 4, new GUIItem(Material.SKULL_ITEM, "&3&lLevel 1 Mining Robot", 1, ";&rThis mines:;" + descs.get(1) + ";;&rCost:;&b12 &aEmeralds"));
         }
 
         this.setItem(4, 3, new GUIItem(Material.SKULL_ITEM, robotA.getEntity().getCustomName() + " (Level " + robotA.getLevel() + ")", 1, ";&rThis mines:;" + descs.get(robotA.getLevel())));
@@ -188,9 +188,9 @@ public class TeamShop extends GUI {
                 break;
             }
             case 4: {
-                if (player.getPlayer().getInventory().contains(Material.EMERALD, 16) && (robotB.getEntity() == null || robotC.getEntity() == null)) {
+                if (player.getPlayer().getInventory().contains(Material.EMERALD, 12) && (robotB.getEntity() == null || robotC.getEntity() == null)) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
-                    player.getPlayer().getInventory().removeItem(new ItemStack(Material.EMERALD, 16));
+                    player.getPlayer().getInventory().removeItem(new ItemStack(Material.EMERALD, 12));
                     if (robotB.getEntity() == null) {
                         robotB.spawn();
                         this.updateItem(4, 4, new GUIItem(Material.SKULL_ITEM, robotB.getEntity().getCustomName() + " (Level " + robotB.getLevel() + ")", 1, ";&rThis mines:;" + descs.get(robotB.getLevel())));

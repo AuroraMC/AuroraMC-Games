@@ -16,9 +16,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -61,8 +63,11 @@ public class Crystal {
         holder.getPlayer().getInventory().clear();
         this.holder.getPlayer().setFoodLevel(3);
 
+        ItemStack stack = new GUIItem(Material.NETHER_STAR, "&3&lCollected Crystal", 1, ";&rReturn this to your base!").getItem();
+        stack.addEnchantment(Enchantment.DAMAGE_ALL, 3);
+
         for (int i = 0;i < 36;i++) {
-            holder.getPlayer().getInventory().setItem(i, new GUIItem(Material.NETHER_STAR, "&3&lCollected Crystal", 1, ";&rReturn this to your base!").getItem());
+            holder.getPlayer().getInventory().setItem(i, stack);
         }
 
         String team = "&c&l";
