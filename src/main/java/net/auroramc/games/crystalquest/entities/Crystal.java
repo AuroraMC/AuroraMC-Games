@@ -84,6 +84,7 @@ public class Crystal {
     public void crystalDead(Location location, boolean message) {
         this.state = CrystalState.DEAD;
         if (this.holder != null) {
+            this.holder.getStats().addProgress(AuroraMCAPI.getAchievement(62), 1, this.holder.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(62), 0), true);
             this.holder.getPlayer().getInventory().setContents((ItemStack[]) this.holder.getGameData().remove("crystal_inventory"));
             this.holder.getGameData().remove("crystal_possession");
             this.holder.getPlayer().removePotionEffect(PotionEffectType.REGENERATION);
@@ -117,6 +118,9 @@ public class Crystal {
     public void crystalReturned() {
         this.holder.getPlayer().removePotionEffect(PotionEffectType.REGENERATION);
         this.holder.getPlayer().setFoodLevel(25);
+        if (!this.holder.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(64))) {
+            this.holder.getStats().achievementGained(AuroraMCAPI.getAchievement(64), 1, true);
+        }
         this.holder = null;
         crystal = EngineAPI.getMapWorld().spawn(home, EnderCrystal.class);
         crystal.setCustomName(homeTeam.getName() + type);

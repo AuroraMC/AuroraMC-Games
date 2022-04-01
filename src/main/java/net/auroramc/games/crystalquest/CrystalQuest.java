@@ -304,7 +304,26 @@ public class CrystalQuest extends Game {
     @Override
     public void end(Team winner, String winnerName) {
         onEnd();
+        if (winner instanceof CQBlue) {
+            CQRed red = (CQRed) teams.get("Red");
+            CQBlue blue = (CQBlue) winner;
+            checkForUnlucky(blue.getBossCrystal(), blue.getTowerBCrystal(), blue.getTowerACrystal(), red.getPlayers(), blue, red);
+        } else {
+            CQBlue blue = (CQBlue) teams.get("Blue");
+            CQRed red = (CQRed) winner;
+            checkForUnlucky(red.getBossCrystal(), red.getTowerBCrystal(), red.getTowerACrystal(), blue.getPlayers(), blue, red);
+        }
         super.end(winner, winnerName);
+    }
+
+    private void checkForUnlucky(Crystal bossCrystal, Crystal towerBCrystal, Crystal towerACrystal, List<AuroraMCPlayer> players, CQBlue blue, CQRed red) {
+        if (bossCrystal.getState() == Crystal.CrystalState.DEAD && towerBCrystal.getState() == Crystal.CrystalState.DEAD && towerACrystal.getState() == Crystal.CrystalState.DEAD) {
+            for (AuroraMCPlayer player : players) {
+                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(63))) {
+                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(63), 1, true);
+                }
+            }
+        }
     }
 
     private void onEnd() {
@@ -934,6 +953,9 @@ public class CrystalQuest extends Game {
                     ((CQRed) player.getTeam()).lostLife();
                 }
             }
+        }
+        if (killer != null) {
+            killer.getStats().addProgress(AuroraMCAPI.getAchievement(65), 1, player.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(65), 0), true);
         }
         if (!finalKill) {
             if (life) {

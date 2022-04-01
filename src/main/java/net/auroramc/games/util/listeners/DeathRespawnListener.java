@@ -176,6 +176,10 @@ public class DeathRespawnListener implements Listener {
                     killer.getRewards().addXp("Kills", 25);
                     killer.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills", 1, true);
 
+                    if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(22))) {
+                        killer.getStats().achievementGained(AuroraMCAPI.getAchievement(22), 1, true);
+                    }
+
                     //If there is a killer, give out assists.
                     for (Map.Entry<AuroraMCGamePlayer, Long> entry : player.getLatestHits().entrySet()) {
                         if (System.currentTimeMillis() - entry.getValue() < 60000 && entry.getKey().getId() != killer.getId()) {
