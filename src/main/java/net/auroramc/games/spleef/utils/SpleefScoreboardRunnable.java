@@ -38,26 +38,25 @@ public class SpleefScoreboardRunnable extends BukkitRunnable {
                     for (AuroraMCPlayer player1 : playersAlive) {
                         if (player1.equals(player)) {
                             if (player1.isDisguised() && player1.getPreferences().isHideDisguiseNameEnabled()) {
-                                scoreboard.setLine(i, "&e" + player.getName());
+                                scoreboard.setLine(i, "&e" + player1.getName());
                                 continue;
                             }
                         }
                         if (player1.isDisguised()) {
-                            scoreboard.setLine(i, "&e" + player.getActiveDisguise().getName());
+                            scoreboard.setLine(i, "&e" + player1.getActiveDisguise().getName());
                         } else {
-                            scoreboard.setLine(i, "&e" + player.getName());
+                            scoreboard.setLine(i, "&e" + player1.getName());
                         }
                         i++;
                     }
                     scoreboard.setLine(i, " ");
-                    while (i < 15) {
-                        if (scoreboard.getLine(i) != null) {
-                            scoreboard.getLine(i).remove();
-                        }
+                    scoreboard.setLine(14, "&b&l«PLAYERS»");
+                    scoreboard.setLine(13, playersAlive.size() + " Alive");
+                    while (i < 13) {
+                        scoreboard.clearLine(i);
                         i++;
                     }
                 } else {
-                    scoreboard.setLine(6, " ");
                     scoreboard.setLine(5, "&b&l«PLAYERS»");
                     scoreboard.setLine(4, playersAlive.size() + " Alive");
                     scoreboard.setLine(3, "   ");
