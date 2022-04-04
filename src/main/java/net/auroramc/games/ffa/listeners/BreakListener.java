@@ -31,17 +31,18 @@ public class BreakListener implements Listener {
         if (EngineAPI.getActiveGame().isStarting()) {
             e.setCancelled(true);
         } else {
+            AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
             if (e.getClickedBlock() != null && e.getClickedBlock().getType() != Material.AIR && e.getClickedBlock().getType() != Material.BEDROCK && e.getAction() == Action.LEFT_CLICK_BLOCK) {
                 e.setCancelled(true);
                 e.getClickedBlock().setType(Material.AIR);
+                player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "blocksBroken", 1, true);
             }
-            AuroraMCGamePlayer gamePlayer = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
             if (e.getItem() != null && e.getItem().getType() == Material.DIAMOND_AXE) {
                 e.setCancelled(true);
-                if (gamePlayer.getGameData().containsKey("leapLastUsed")) {
-                    double amount = (System.currentTimeMillis() - (long)gamePlayer.getGameData().get("leapLastUsed")) / 100d;
+                if (player.getGameData().containsKey("leapLastUsed")) {
+                    double amount = (System.currentTimeMillis() - (long)player.getGameData().get("leapLastUsed")) / 100d;
                     long amount1 = Math.round(amount);
-                    if ((System.currentTimeMillis() - (long)gamePlayer.getGameData().get("leapLastUsed")) <= 7000) {
+                    if ((System.currentTimeMillis() - (long)player.getGameData().get("leapLastUsed")) <= 7000) {
                         e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot use your leap for **" + (amount1 / 10f) + " seconds**"));
                         return;
                     }
@@ -49,7 +50,9 @@ public class BreakListener implements Listener {
                 e.getPlayer().setVelocity(e.getPlayer().getLocation().getDirection().normalize().multiply(2).setY(2).normalize());
                 e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENDERDRAGON_WINGS, 1, 100);
                 e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You used **Leap**."));
-                gamePlayer.getGameData().put("leapLastUsed", System.currentTimeMillis());
+                player.getGameData().put("leapLastUsed", System.currentTimeMillis());
+                player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "leapsUsed", 1, true);
+
             }
         }
     }

@@ -80,6 +80,7 @@ public class DeathListener implements Listener {
                     if (((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
                         Player damager = (Player) ((EntityDamageByEntityEvent) e).getDamager();
                         killer = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(damager);
+                        killer.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "damageDealt", Math.round(e.getFinalDamage() * 100), true);
                         switch (e.getCause()) {
                             case PROJECTILE: {
                                 killReason = KillMessage.KillReason.BOW;
@@ -220,6 +221,7 @@ public class DeathListener implements Listener {
                     player.setLastHitBy(player1);
                     player.setLastHitAt(time);
                     player.getLatestHits().put(player1, time);
+                    player1.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "damageDealt", Math.round(e.getFinalDamage() * 100), true);
                 }
             }
         }
