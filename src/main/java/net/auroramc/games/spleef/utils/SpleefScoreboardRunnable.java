@@ -30,7 +30,7 @@ public class SpleefScoreboardRunnable extends BukkitRunnable {
             }
             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                 PlayerScoreboard scoreboard = player.getScoreboard();
-                if (playersAlive.size() > 10) {
+                if (playersAlive.size() < 10) {
                     scoreboard.setLine(3, "   ");
                     scoreboard.setLine(2, "&b&l«GAME TIME»");
                     scoreboard.setLine(1,  finalValue + " minutes");
@@ -38,14 +38,14 @@ public class SpleefScoreboardRunnable extends BukkitRunnable {
                     for (AuroraMCPlayer player1 : playersAlive) {
                         if (player1.equals(player)) {
                             if (player1.isDisguised() && player1.getPreferences().isHideDisguiseNameEnabled()) {
-                                scoreboard.setLine(i, player.getName());
+                                scoreboard.setLine(i, "&e" + player.getName());
                                 continue;
                             }
                         }
                         if (player1.isDisguised()) {
-                            scoreboard.setLine(i, player.getActiveDisguise().getName());
+                            scoreboard.setLine(i, "&e" + player.getActiveDisguise().getName());
                         } else {
-                            scoreboard.setLine(i, player.getName());
+                            scoreboard.setLine(i, "&e" + player.getName());
                         }
                         i++;
                     }
