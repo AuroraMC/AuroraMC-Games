@@ -49,13 +49,13 @@ public class SpleefScoreboardRunnable extends BukkitRunnable {
                         }
                         i++;
                     }
-                    scoreboard.setLine(i, " ");
-                    scoreboard.setLine(14, "&b&l«PLAYERS»");
-                    scoreboard.setLine(13, playersAlive.size() + " Alive");
-                    while (i < 13) {
+                    scoreboard.setLine(i, "&b&l«PLAYERS»");
+                    i++;
+                    while (i < 15) {
                         scoreboard.clearLine(i);
                         i++;
                     }
+
                 } else {
                     scoreboard.setLine(5, "&b&l«PLAYERS»");
                     scoreboard.setLine(4, playersAlive.size() + " Alive");
