@@ -13,7 +13,7 @@ import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
-import net.auroramc.games.ffa.kits.FFAKit;
+import net.auroramc.games.ffa.kits.Brawler;
 import net.auroramc.games.ffa.listeners.BreakListener;
 import net.auroramc.games.ffa.listeners.HungerListener;
 import net.auroramc.games.ffa.listeners.ItemSpawnListener;
@@ -24,12 +24,9 @@ import net.auroramc.games.util.listeners.DeathListener;
 import net.auroramc.games.util.listeners.NoDamageInstaKillListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -56,7 +53,7 @@ public class FFA extends Game {
     @Override
     public void preLoad() {
         this.teams.put("players", new PlayersTeam());
-        this.kits.add(new FFAKit());
+        this.kits.add(new Brawler());
         runnable = new FFAScoreboardRunnable();
     }
 

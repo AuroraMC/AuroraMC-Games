@@ -9,10 +9,10 @@ import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.games.Kit;
 import org.bukkit.Material;
 
-public class FFAKit extends Kit {
+public class Brawler extends Kit {
 
 
-    public FFAKit() {
+    public Brawler() {
         super(0, 102, "&3&lBrawler", "A kit description", Material.DIAMOND_AXE, -1);
     }
 
@@ -24,6 +24,10 @@ public class FFAKit extends Kit {
         auroraMCPlayer.getPlayer().getInventory().setBoots(new GUIItem(Material.IRON_BOOTS).getItem());
 
         auroraMCPlayer.getPlayer().getInventory().setItem(0, new GUIItem(Material.DIAMOND_AXE).getItem());
+        auroraMCPlayer.getPlayer().getInventory().setItem(1, new GUIItem(Material.FISHING_ROD).getItem());
+        auroraMCPlayer.getPlayer().getInventory().setItem(1, new GUIItem(Material.BOW).getItem());
+        auroraMCPlayer.getPlayer().getInventory().setItem(3, new GUIItem(Material.ARROW, null, 10).getItem());
+        auroraMCPlayer.getPlayer().getInventory().setItem(3, new GUIItem(Material.GOLDEN_APPLE, null, 3).getItem());
     }
 
     @Override
