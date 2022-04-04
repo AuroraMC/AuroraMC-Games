@@ -37,7 +37,7 @@ public class BreakListener implements Listener {
                 e.getClickedBlock().setType(Material.AIR);
                 player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "blocksBroken", 1, true);
             }
-            if (e.getItem() != null && e.getItem().getType() == Material.DIAMOND_AXE) {
+            if (e.getItem() != null && e.getItem().getType() == Material.DIAMOND_AXE && e.getAction() == Action.RIGHT_CLICK_AIR) {
                 e.setCancelled(true);
                 if (player.getGameData().containsKey("leapLastUsed")) {
                     double amount = (System.currentTimeMillis() - (long)player.getGameData().get("leapLastUsed")) / 100d;
@@ -47,7 +47,7 @@ public class BreakListener implements Listener {
                         return;
                     }
                 }
-                e.getPlayer().setVelocity(e.getPlayer().getLocation().getDirection().normalize().multiply(2).setY(2).normalize());
+                e.getPlayer().setVelocity(e.getPlayer().getLocation().getDirection().normalize().multiply(3).normalize());
                 e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENDERDRAGON_WINGS, 1, 100);
                 e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You used **Leap**."));
                 player.getGameData().put("leapLastUsed", System.currentTimeMillis());
