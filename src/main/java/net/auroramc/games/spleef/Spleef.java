@@ -128,6 +128,7 @@ public class Spleef extends Game {
         BlockBreakEvent.getHandlerList().unregister(breakListener);
         PlayerShowEvent.getHandlerList().unregister(deathListener);
         PlayerDropItemEvent.getHandlerList().unregister(breakListener);
+        runnable.cancel();
     }
 
     @Override
