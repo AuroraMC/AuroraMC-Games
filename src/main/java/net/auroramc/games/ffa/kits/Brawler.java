@@ -25,9 +25,9 @@ public class Brawler extends Kit {
 
         auroraMCPlayer.getPlayer().getInventory().setItem(0, new GUIItem(Material.DIAMOND_AXE).getItem());
         auroraMCPlayer.getPlayer().getInventory().setItem(1, new GUIItem(Material.FISHING_ROD).getItem());
-        auroraMCPlayer.getPlayer().getInventory().setItem(1, new GUIItem(Material.BOW).getItem());
+        auroraMCPlayer.getPlayer().getInventory().setItem(2, new GUIItem(Material.BOW).getItem());
         auroraMCPlayer.getPlayer().getInventory().setItem(3, new GUIItem(Material.ARROW, null, 10).getItem());
-        auroraMCPlayer.getPlayer().getInventory().setItem(3, new GUIItem(Material.GOLDEN_APPLE, null, 3).getItem());
+        auroraMCPlayer.getPlayer().getInventory().setItem(4, new GUIItem(Material.GOLDEN_APPLE, null, 3).getItem());
     }
 
     @Override
