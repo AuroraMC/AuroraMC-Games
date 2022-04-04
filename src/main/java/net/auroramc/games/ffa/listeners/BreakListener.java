@@ -58,6 +58,7 @@ public class BreakListener implements Listener {
                     @Override
                     public void run() {
                         player.getGameData().remove("leapLastUsed");
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You can now use **Leap**."));
                     }
                 }.runTaskLater(AuroraMCAPI.getCore(), 139);
 
