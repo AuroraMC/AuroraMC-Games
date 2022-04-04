@@ -51,7 +51,9 @@ public class SpleefScoreboardRunnable extends BukkitRunnable {
                     }
                     scoreboard.setLine(i, " ");
                     while (i < 15) {
-                        scoreboard.getLine(i).remove();
+                        if (scoreboard.getLine(i) != null) {
+                            scoreboard.getLine(i).remove();
+                        }
                         i++;
                     }
                 } else {
