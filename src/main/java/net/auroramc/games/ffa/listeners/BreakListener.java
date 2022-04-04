@@ -9,6 +9,7 @@ import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
@@ -30,9 +31,25 @@ public class BreakListener implements Listener {
         if (EngineAPI.getActiveGame().isStarting()) {
             e.setCancelled(true);
         } else {
-            if (e.getClickedBlock() != null && e.getClickedBlock().getType() != Material.AIR && e.getClickedBlock().getType() != Material.BEDROCK && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (e.getClickedBlock() != null && e.getClickedBlock().getType() != Material.AIR && e.getClickedBlock().getType() != Material.BEDROCK && e.getAction() == Action.LEFT_CLICK_BLOCK) {
                 e.setCancelled(true);
                 e.getClickedBlock().setType(Material.AIR);
+            }
+            AuroraMCGamePlayer gamePlayer = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
+            if (e.getItem() != null && e.getItem().getType() == Material.DIAMOND_AXE) {
+                e.setCancelled(true);
+                if (gamePlayer.getGameData().containsKey("leapLastUsed")) {
+                    double amount = (System.currentTimeMillis() - (long)gamePlayer.getGameData().get("leapLastUsed")) / 100d;
+                    long amount1 = Math.round(amount);
+                    if ((System.currentTimeMillis() - (long)gamePlayer.getGameData().get("leapLastUsed")) <= 7000) {
+                        e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot use your leap for **" + (amount1 / 10f) + " seconds**"));
+                        return;
+                    }
+                }
+                e.getPlayer().setVelocity(e.getPlayer().getLocation().getDirection().normalize().multiply(2).setY(2).normalize());
+                e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENDERDRAGON_WINGS, 1, 100);
+                e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You used **Leap**."));
+                gamePlayer.getGameData().put("leapLastUsed", System.currentTimeMillis());
             }
         }
     }

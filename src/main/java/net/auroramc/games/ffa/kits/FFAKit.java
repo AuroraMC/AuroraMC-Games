@@ -23,7 +23,7 @@ public class FFAKit extends Kit {
         auroraMCPlayer.getPlayer().getInventory().setLeggings(new GUIItem(Material.IRON_LEGGINGS).getItem());
         auroraMCPlayer.getPlayer().getInventory().setBoots(new GUIItem(Material.IRON_BOOTS).getItem());
 
-        auroraMCPlayer.getPlayer().getInventory().setItem(1, new GUIItem(Material.DIAMOND_AXE).getItem());
+        auroraMCPlayer.getPlayer().getInventory().setItem(0, new GUIItem(Material.DIAMOND_AXE).getItem());
     }
 
     @Override
