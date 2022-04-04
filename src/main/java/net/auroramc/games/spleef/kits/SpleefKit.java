@@ -25,8 +25,8 @@ public class SpleefKit extends Kit {
     @Override
     public void onGameStart(AuroraMCPlayer player) {
         player.getPlayer().getInventory().clear();
-        switch (EngineAPI.getActiveMap().getMapData().getString("TOOL")) {
-            case "SPADE": {
+        switch (EngineAPI.getActiveMap().getMapData().getString("tool")) {
+            case "spade": {
                 ItemStack stack = new GUIItem(Material.DIAMOND_SPADE).getItem();
                 stack.addUnsafeEnchantment(Enchantment.DIG_SPEED, 50);
 
@@ -36,7 +36,7 @@ public class SpleefKit extends Kit {
                 player.getPlayer().getInventory().setItem(0, stack);
                 break;
             }
-            case "AXE": {
+            case "axe": {
                 ItemStack stack = new GUIItem(Material.DIAMOND_AXE).getItem();
                 stack.addUnsafeEnchantment(Enchantment.DIG_SPEED, 50);
 
@@ -46,7 +46,7 @@ public class SpleefKit extends Kit {
                 player.getPlayer().getInventory().setItem(0, stack);
                 break;
             }
-            case "PICKAXE": {
+            case "pickaxe": {
                 ItemStack stack = new GUIItem(Material.DIAMOND_PICKAXE).getItem();
                 stack.addUnsafeEnchantment(Enchantment.DIG_SPEED, 50);
 

@@ -4,7 +4,10 @@
 
 package net.auroramc.games.spleef.listeners;
 
+import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,9 +28,13 @@ public class BreakListener implements Listener {
         if (EngineAPI.getActiveGame().isStarting()) {
             e.setCancelled(true);
         } else {
+            AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
             if (e.getBlock().getType() != material) {
                 e.setCancelled(true);
-                e.getPlayer().getInventory().addItem(new ItemStack(Material.SNOW_BALL));
+                if (!player.isSpectator()) {
+                    e.getPlayer().getInventory().addItem(new ItemStack(Material.SNOW_BALL));
+                    player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "blocksBroken", 1, true);
+                }
             }
         }
     }
