@@ -22,6 +22,7 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockIterator;
 
 public class BreakListener implements Listener {
@@ -40,18 +41,25 @@ public class BreakListener implements Listener {
             if (e.getItem() != null && e.getItem().getType() == Material.DIAMOND_AXE && e.getAction() == Action.RIGHT_CLICK_AIR) {
                 e.setCancelled(true);
                 if (player.getGameData().containsKey("leapLastUsed")) {
-                    double amount = (System.currentTimeMillis() - (long)player.getGameData().get("leapLastUsed")) / 100d;
+                    double amount = ((long)player.getGameData().get("leapLastUsed") - System.currentTimeMillis()) / 100d;
                     long amount1 = Math.round(amount);
-                    if ((System.currentTimeMillis() - (long)player.getGameData().get("leapLastUsed")) <= 7000) {
-                        e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot use your leap for **" + (amount1 / 10f) + " seconds**"));
-                        return;
+                    if (amount < 0) {
+                        amount = 0;
                     }
+                    e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot use your leap for **" + (amount1 / 10f) + " seconds**"));
+                    return;
                 }
-                e.getPlayer().setVelocity(e.getPlayer().getLocation().getDirection().normalize().multiply(3).normalize());
+                e.getPlayer().setVelocity(e.getPlayer().getLocation().getDirection().normalize().multiply(4).setY(4).normalize());
                 e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENDERDRAGON_WINGS, 1, 100);
                 e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You used **Leap**."));
                 player.getGameData().put("leapLastUsed", System.currentTimeMillis());
                 player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "leapsUsed", 1, true);
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        player.getGameData().remove("leapLastUsed");
+                    }
+                }.runTaskLater(AuroraMCAPI.getCore(), 139);
 
             }
         }
