@@ -17,7 +17,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 
@@ -60,6 +62,14 @@ public class BreakListener implements Listener {
                     return;
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerThrow(ProjectileLaunchEvent e) {
+        if (e.getEntity() instanceof Snowball && e.getEntity().getShooter() instanceof Player) {
+            AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity().getShooter());
+            player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "snowballsThrown", 1, true);
         }
     }
 

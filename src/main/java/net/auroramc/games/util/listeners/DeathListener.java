@@ -189,10 +189,16 @@ public class DeathListener implements Listener {
                     }
                 }
 
+                player.setLastHitAt(-1);
+                player.setLastHitBy(null);
+                player.getLatestHits().clear();
+                player.getPlayer().setFireTicks(0);
+                player.setSpectator(true, true);
+
                 EngineAPI.getActiveGame().onDeath(player, killer);
 
                 String finalMessage = killMessage.onKill(killer, player, entity, killReason);
-                player.setSpectator(true, true);
+
                 JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
                 int x, y, z;
                 x = specSpawn.getInt("x");
@@ -202,16 +208,6 @@ public class DeathListener implements Listener {
                 player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
 
                 player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
-
-                player.setLastHitAt(-1);
-                player.setLastHitBy(null);
-                player.getLatestHits().clear();
-                player.getPlayer().getInventory().clear();
-                player.getPlayer().getInventory().setHelmet(new ItemStack(Material.AIR));
-                player.getPlayer().getInventory().setChestplate(new ItemStack(Material.AIR));
-                player.getPlayer().getInventory().setLeggings(new ItemStack(Material.AIR));
-                player.getPlayer().getInventory().setBoots(new ItemStack(Material.AIR));
-                player.getPlayer().setFireTicks(0);
 
                 for (Player player2 : Bukkit.getOnlinePlayers()) {
                     player2.hidePlayer(player.getPlayer());

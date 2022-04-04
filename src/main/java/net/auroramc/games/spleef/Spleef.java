@@ -180,6 +180,10 @@ public class Spleef extends Game {
 
     @Override
     public boolean onDeath(AuroraMCGamePlayer auroraMCGamePlayer, AuroraMCGamePlayer killer) {
+        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
+        if (playersAlive.size() == 1) {
+            this.end(playersAlive.get(0));
+        }
         return false;
     }
 
