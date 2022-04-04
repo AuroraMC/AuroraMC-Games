@@ -28,6 +28,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
@@ -129,6 +130,7 @@ public class Spleef extends Game {
         BlockBreakEvent.getHandlerList().unregister(breakListener);
         PlayerShowEvent.getHandlerList().unregister(deathListener);
         PlayerDropItemEvent.getHandlerList().unregister(breakListener);
+        ProjectileHitEvent.getHandlerList().unregister(breakListener);
         runnable.cancel();
     }
 
