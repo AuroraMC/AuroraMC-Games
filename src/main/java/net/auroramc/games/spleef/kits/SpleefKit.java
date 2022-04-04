@@ -19,7 +19,7 @@ public class SpleefKit extends Kit {
 
 
     public SpleefKit() {
-        super(0, 2, "&cSpleef Kit", "A kit for Spleef. Simple.", Material.SNOW_BALL, -1);
+        super(0, 100, "&cSpleef Kit", "A kit for Spleef. Simple.", Material.SNOW_BALL, -1);
     }
 
     @Override
