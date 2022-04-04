@@ -10,7 +10,10 @@ import net.auroramc.core.api.cosmetics.KillMessage;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,19 +21,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 import org.json.JSONObject;
 
 import java.util.Map;
 
-public class DeathListener implements Listener {
+public class NoDamageInstaKillListener implements Listener {
 
-    private final static DeathListener instance;
-    private static boolean friendlyFire;
+    private final static NoDamageInstaKillListener instance;
 
     static {
-        instance = new DeathListener();
+        instance = new NoDamageInstaKillListener();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -42,30 +42,8 @@ public class DeathListener implements Listener {
                 e.setCancelled(true);
                 return;
             }
-            if (!friendlyFire) {
-                if (e instanceof EntityDamageByEntityEvent) {
-                    if (((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
-                        Player damager = (Player) ((EntityDamageByEntityEvent) e).getDamager();
-                        AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(damager);
-                        if (player1.getTeam().equals(player.getTeam())) {
-                            e.setCancelled(true);
-                            return;
-                        }
-                    } else if (((EntityDamageByEntityEvent) e).getDamager() instanceof Projectile) {
-                        Projectile projectile = (Projectile) ((EntityDamageByEntityEvent) e).getDamager();
-                        if (projectile.getShooter() instanceof Player) {
-                            Player damager = (Player) projectile.getShooter();
-                            AuroraMCPlayer auroraMCPlayer = AuroraMCAPI.getPlayer(damager);
-                            if (auroraMCPlayer.getTeam().equals(player.getTeam())) {
-                                e.setCancelled(true);
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-            if (e.getFinalDamage() >= player.getPlayer().getHealth() && !player.isSpectator()) {
-                e.setDamage(0);
+            if ((e.getCause() == EntityDamageEvent.DamageCause.LAVA || e.getCause() == EntityDamageEvent.DamageCause.VOID) && !player.isSpectator()) {
+                e.setCancelled(true);
 
                 Entity entity = null;
                 AuroraMCGamePlayer killer = null;
@@ -230,9 +208,8 @@ public class DeathListener implements Listener {
     }
 
 
-    public static void register(boolean friendlyFire) {
+    public static void register() {
         Bukkit.getPluginManager().registerEvents(instance, EngineAPI.getGameEngine());
-        DeathListener.friendlyFire = friendlyFire;
     }
 
     public static void unregister() {

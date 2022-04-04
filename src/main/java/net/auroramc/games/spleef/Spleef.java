@@ -20,6 +20,7 @@ import net.auroramc.games.spleef.listeners.HungerListener;
 import net.auroramc.games.spleef.listeners.ItemSpawnListener;
 import net.auroramc.games.spleef.utils.SpleefScoreboardRunnable;
 import net.auroramc.games.util.PlayersTeam;
+import net.auroramc.games.util.listeners.NoDamageInstaKillListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -100,6 +101,7 @@ public class Spleef extends Game {
         itemSpawnListener = new ItemSpawnListener();
         hungerListener = new HungerListener();
         breakListener = new BreakListener(Material.valueOf(this.map.getMapData().getString("block").toUpperCase()));
+        NoDamageInstaKillListener.register();
         Bukkit.getPluginManager().registerEvents(deathListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(itemSpawnListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(hungerListener, EngineAPI.getGameEngine());
@@ -124,13 +126,13 @@ public class Spleef extends Game {
     }
 
     private void end() {
-        EntityDamageEvent.getHandlerList().unregister(deathListener);
         ItemSpawnEvent.getHandlerList().unregister(itemSpawnListener);
         FoodLevelChangeEvent.getHandlerList().unregister(hungerListener);
         BlockBreakEvent.getHandlerList().unregister(breakListener);
         PlayerShowEvent.getHandlerList().unregister(deathListener);
         PlayerDropItemEvent.getHandlerList().unregister(breakListener);
         ProjectileHitEvent.getHandlerList().unregister(breakListener);
+        NoDamageInstaKillListener.unregister();
         runnable.cancel();
     }
 
