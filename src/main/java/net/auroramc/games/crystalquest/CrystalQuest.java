@@ -18,7 +18,7 @@ import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.entities.Crystal;
-import net.auroramc.games.crystalquest.entities.ScoreboardRunnable;
+import net.auroramc.games.crystalquest.entities.CrystalQuestScoreboardRunnable;
 import net.auroramc.games.crystalquest.kits.*;
 import net.auroramc.games.crystalquest.listeners.*;
 import net.auroramc.games.crystalquest.teams.CQBlue;
@@ -28,7 +28,6 @@ import net.auroramc.games.util.listeners.PregameMoveListener;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftVillager;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -92,8 +91,8 @@ public class CrystalQuest extends Game {
         this.kits.add(new Miner());
         this.kits.add(new Defender());
         this.kits.add(new Fighter());
-        this.kits.add(new Healer());
-        this.kits.add(new Ecologist());
+        //this.kits.add(new Healer());
+        //this.kits.add(new Ecologist());
         this.tasks = new ArrayList<>();
     }
 
@@ -420,7 +419,7 @@ public class CrystalQuest extends Game {
                 blue.setChest(new Location(EngineAPI.getMapWorld(), object.getJSONArray("BLUE").getJSONObject(0).getInt("x"), object.getJSONArray("BLUE").getJSONObject(0).getInt("y"), object.getJSONArray("BLUE").getJSONObject(0).getInt("z"), object.getJSONArray("BLUE").getJSONObject(0).getFloat("yaw"), 0));
                 red.setChest(new Location(EngineAPI.getMapWorld(), object.getJSONArray("RED").getJSONObject(0).getInt("x"), object.getJSONArray("RED").getJSONObject(0).getInt("y"), object.getJSONArray("RED").getJSONObject(0).getInt("z"), object.getJSONArray("RED").getJSONObject(0).getFloat("yaw"), 0));
 
-                scoreboardTask = new ScoreboardRunnable((CQBlue) teams.get("Blue"), (CQRed) teams.get("Red")).runTaskTimer(EngineAPI.getGameEngine(), 0, 20);
+                scoreboardTask = new CrystalQuestScoreboardRunnable((CQBlue) teams.get("Blue"), (CQRed) teams.get("Red")).runTaskTimer(EngineAPI.getGameEngine(), 0, 20);
 
             }
         }.runTask(AuroraMCAPI.getCore());

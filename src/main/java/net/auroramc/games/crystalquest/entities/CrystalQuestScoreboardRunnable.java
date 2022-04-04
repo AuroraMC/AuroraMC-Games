@@ -12,12 +12,12 @@ import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class ScoreboardRunnable extends BukkitRunnable {
+public class CrystalQuestScoreboardRunnable extends BukkitRunnable {
 
     private final CQBlue blue;
     private final CQRed red;
 
-    public ScoreboardRunnable(CQBlue blue, CQRed red)  {
+    public CrystalQuestScoreboardRunnable(CQBlue blue, CQRed red)  {
         this.blue = blue;
         this.red = red;
     }

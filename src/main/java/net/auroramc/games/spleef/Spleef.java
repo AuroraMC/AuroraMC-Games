@@ -18,9 +18,11 @@ import net.auroramc.games.spleef.listeners.BreakListener;
 import net.auroramc.games.spleef.listeners.DeathListener;
 import net.auroramc.games.spleef.listeners.HungerListener;
 import net.auroramc.games.spleef.listeners.ItemSpawnListener;
+import net.auroramc.games.spleef.utils.SpleefScoreboardRunnable;
 import net.auroramc.games.util.PlayersTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -31,6 +33,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,11 +48,14 @@ public class Spleef extends Game {
     private ItemSpawnListener itemSpawnListener;
     private BreakListener breakListener;
     private HungerListener hungerListener;
+    private SpleefScoreboardRunnable runnable;
+
 
     @Override
     public void preLoad() {
         this.teams.put("players", new PlayersTeam());
         this.kits.add(new SpleefKit());
+        runnable = new SpleefScoreboardRunnable();
     }
 
     @Override
@@ -64,6 +70,7 @@ public class Spleef extends Game {
         JSONArray spawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
+            gp.getScoreboard().clear();
             if (gp.isSpectator()) {
                 JSONObject specSpawn = this.map.getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
                 int x, y, z;
@@ -90,11 +97,12 @@ public class Spleef extends Game {
         deathListener = new DeathListener();
         itemSpawnListener = new ItemSpawnListener();
         hungerListener = new HungerListener();
-        breakListener = new BreakListener();
+        breakListener = new BreakListener(Material.valueOf(this.map.getMapData().getString("BLOCK")));
         Bukkit.getPluginManager().registerEvents(deathListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(itemSpawnListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(hungerListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(breakListener, EngineAPI.getGameEngine());
+        runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
     }
 
     @Override

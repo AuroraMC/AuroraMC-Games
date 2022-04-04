@@ -24,14 +24,13 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-public class DeathRespawnListener implements Listener {
+public class DeathListener implements Listener {
 
-    private final static DeathRespawnListener instance;
-    private static long timeout;
+    private final static DeathListener instance;
     private static boolean friendlyFire;
 
     static {
-        instance = new DeathRespawnListener();
+        instance = new DeathListener();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -66,7 +65,7 @@ public class DeathRespawnListener implements Listener {
                 }
             }
             if (e.getFinalDamage() >= player.getPlayer().getHealth() && !player.isSpectator()) {
-                e.setDamage(0);
+                e.setCancelled(true);
 
                 Entity entity = null;
                 AuroraMCGamePlayer killer = null;
@@ -190,10 +189,10 @@ public class DeathRespawnListener implements Listener {
                     }
                 }
 
-                boolean finalKill = EngineAPI.getActiveGame().onDeath(player, killer);
+                EngineAPI.getActiveGame().onDeath(player, killer);
 
-                String finalMessage = killMessage.onKill(killer, player, entity, killReason) + ((finalKill)?" &c&lFINAL KILL!":"");
-                player.setSpectator(true, finalKill);
+                String finalMessage = killMessage.onKill(killer, player, entity, killReason);
+                player.setSpectator(true, true);
                 JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
                 int x, y, z;
                 x = specSpawn.getInt("x");
@@ -218,31 +217,6 @@ public class DeathRespawnListener implements Listener {
                     player2.hidePlayer(player.getPlayer());
                     player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", finalMessage));
                 }
-
-                if (!finalKill) {
-                    player.sendTitle(AuroraMCAPI.getFormatter().convert("&c&lYou Died!"), AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight("You will respawn in **" + (timeout / 20) + "** seconds!")), 20, 100, 20, ChatColor.RED, ChatColor.RESET, true, false);
-                    new BukkitRunnable(){
-                        @Override
-                        public void run() {
-                            //Check if they are still connected.
-                            if (player.getPlayer().isOnline()) {
-                                player.getPlayer().setFallDistance(0);
-                                player.getPlayer().setFireTicks(0);
-                                player.getPlayer().setVelocity(new Vector(0, 0, 0));
-                                EngineAPI.getActiveGame().onRespawn(player);
-                                for (Player player2 : Bukkit.getOnlinePlayers()) {
-                                    player2.showPlayer(player.getPlayer());
-                                }
-                                player.setSpectator(false, false);
-                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You respawned!"));
-                                player.sendTitle(AuroraMCAPI.getFormatter().convert("&3&lYou respawned!"), "", 20, 100, 20, ChatColor.DARK_AQUA, ChatColor.RESET, true, false);
-                            }
-                        }
-                    }.runTaskLater(AuroraMCAPI.getCore(), timeout);
-                } else {
-                    EngineAPI.getActiveGame().onFinalKill(player);
-                }
-
             } else if (e instanceof EntityDamageByEntityEvent) {
                 if (e.getFinalDamage() > 0 && ((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
                     AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) ((EntityDamageByEntityEvent) e).getDamager());
@@ -256,10 +230,9 @@ public class DeathRespawnListener implements Listener {
     }
 
 
-    public static void register(int timeout, boolean friendlyFire) {
+    public static void register(boolean friendlyFire) {
         Bukkit.getPluginManager().registerEvents(instance, EngineAPI.getGameEngine());
-        DeathRespawnListener.timeout = timeout;
-        DeathRespawnListener.friendlyFire = friendlyFire;
+        DeathListener.friendlyFire = friendlyFire;
     }
 
     public static void unregister() {

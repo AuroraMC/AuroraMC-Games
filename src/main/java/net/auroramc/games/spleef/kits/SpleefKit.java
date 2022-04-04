@@ -6,8 +6,14 @@ package net.auroramc.games.spleef.kits;
 
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
+import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.Kit;
+import net.minecraft.server.v1_8_R3.ItemMapEmpty;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class SpleefKit extends Kit {
 
@@ -19,7 +25,39 @@ public class SpleefKit extends Kit {
     @Override
     public void onGameStart(AuroraMCPlayer player) {
         player.getPlayer().getInventory().clear();
-        player.getPlayer().getInventory().setItem(0, new GUIItem(Material.IRON_SPADE, "&3&lSpade of doom").getItem());
+        switch (EngineAPI.getActiveMap().getMapData().getString("TOOL")) {
+            case "SPADE": {
+                ItemStack stack = new GUIItem(Material.DIAMOND_SPADE).getItem();
+                stack.addUnsafeEnchantment(Enchantment.DIG_SPEED, 50);
+
+                ItemMeta meta = stack.getItemMeta();
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                stack.setItemMeta(meta);
+                player.getPlayer().getInventory().setItem(0, stack);
+                break;
+            }
+            case "AXE": {
+                ItemStack stack = new GUIItem(Material.DIAMOND_AXE).getItem();
+                stack.addUnsafeEnchantment(Enchantment.DIG_SPEED, 50);
+
+                ItemMeta meta = stack.getItemMeta();
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                stack.setItemMeta(meta);
+                player.getPlayer().getInventory().setItem(0, stack);
+                break;
+            }
+            case "PICKAXE": {
+                ItemStack stack = new GUIItem(Material.DIAMOND_PICKAXE).getItem();
+                stack.addUnsafeEnchantment(Enchantment.DIG_SPEED, 50);
+
+                ItemMeta meta = stack.getItemMeta();
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                stack.setItemMeta(meta);
+                player.getPlayer().getInventory().setItem(0, stack);
+                break;
+            }
+        }
+
     }
 
     @Override
