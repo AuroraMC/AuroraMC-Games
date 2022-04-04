@@ -97,7 +97,7 @@ public class Spleef extends Game {
         deathListener = new DeathListener();
         itemSpawnListener = new ItemSpawnListener();
         hungerListener = new HungerListener();
-        breakListener = new BreakListener(Material.valueOf(this.map.getMapData().getString("block")));
+        breakListener = new BreakListener(Material.valueOf(this.map.getMapData().getString("block").toUpperCase()));
         Bukkit.getPluginManager().registerEvents(deathListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(itemSpawnListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(hungerListener, EngineAPI.getGameEngine());
