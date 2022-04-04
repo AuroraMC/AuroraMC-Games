@@ -49,7 +49,7 @@ public class BreakListener implements Listener {
                     e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot use your leap for **" + (amount1 / 10f) + " seconds**"));
                     return;
                 }
-                e.getPlayer().setVelocity(e.getPlayer().getLocation().getDirection().normalize().multiply(2).setY(1.5));
+                e.getPlayer().setVelocity(e.getPlayer().getLocation().getDirection().normalize().multiply(1.25).setY(0.5));
                 e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENDERDRAGON_WINGS, 1, 100);
                 e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You used **Leap**."));
                 player.getGameData().put("leapLastUsed", System.currentTimeMillis());

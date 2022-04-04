@@ -9,6 +9,7 @@ import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.scoreboard.PlayerScoreboard;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.games.ffa.FFA;
 import net.auroramc.games.spleef.Spleef;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -19,7 +20,7 @@ public class FFAScoreboardRunnable extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (EngineAPI.getActiveGame() != null && EngineAPI.getActiveGame() instanceof Spleef) {
+        if (EngineAPI.getActiveGame() != null && EngineAPI.getActiveGame() instanceof FFA) {
             List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
             long gametime = (System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp()) - 10000;
 
