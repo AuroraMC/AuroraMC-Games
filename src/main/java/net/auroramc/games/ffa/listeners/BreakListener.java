@@ -33,12 +33,12 @@ public class BreakListener implements Listener {
             e.setCancelled(true);
         } else {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
-            if (e.getClickedBlock() != null && e.getClickedBlock().getType() != Material.AIR && e.getClickedBlock().getType() != Material.BEDROCK && e.getAction() == Action.LEFT_CLICK_BLOCK) {
+            if (!player.isSpectator() && e.getClickedBlock() != null && e.getClickedBlock().getType() != Material.AIR && e.getClickedBlock().getType() != Material.BEDROCK && e.getAction() == Action.LEFT_CLICK_BLOCK) {
                 e.setCancelled(true);
                 e.getClickedBlock().setType(Material.AIR);
                 player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "blocksBroken", 1, true);
             }
-            if (e.getItem() != null && e.getItem().getType() == Material.DIAMOND_AXE && e.getAction() == Action.RIGHT_CLICK_AIR) {
+            if (!player.isSpectator() && e.getItem() != null && e.getItem().getType() == Material.DIAMOND_AXE && e.getAction() == Action.RIGHT_CLICK_AIR) {
                 e.setCancelled(true);
                 if (player.getGameData().containsKey("leapLastUsed")) {
                     double amount = (((long)player.getGameData().get("leapLastUsed") + 7000) - System.currentTimeMillis()) / 100d;
