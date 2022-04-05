@@ -29,7 +29,7 @@ public class CrystalListener implements Listener {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
             EnderCrystal crystal = (EnderCrystal) e.getRightClicked();
             if (!player.isSpectator() && crystal.getCustomName() != null) {
-                if (System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp() >= 120000L) {
+                if (System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp() - 10000 >= 120000L) {
                     crystalCapture(player, crystal);
                 } else {
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot collect crystals within the first 2 minutes!"));
@@ -128,7 +128,7 @@ public class CrystalListener implements Listener {
                 AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager());
                 EnderCrystal crystal = (EnderCrystal) e.getEntity();
                 if (!player.isSpectator() && crystal.getCustomName() != null) {
-                    if (System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp() >= 120000L) {
+                    if (System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp() - 10000 >= 120000L) {
                         crystalCapture(player, crystal);
                     } else {
                         player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot collect crystals within the first 2 minutes!"));

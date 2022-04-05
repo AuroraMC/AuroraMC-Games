@@ -43,6 +43,11 @@ public class BreakListener implements Listener {
                 if (!player.isSpectator()) {
                     e.getPlayer().getInventory().addItem(new ItemStack(Material.SNOW_BALL));
                     player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "blocksBroken", 1, true);
+                    if (e.getPlayer().getItemInHand() == null || e.getPlayer().getItemInHand().getType() == Material.AIR) {
+                        if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(126))) {
+                            player.getStats().achievementGained(AuroraMCAPI.getAchievement(126), 1, true);
+                        }
+                    }
                 }
             }
         }
@@ -59,6 +64,18 @@ public class BreakListener implements Listener {
                 if (hitBlock != null && hitBlock.getType() == material) {
                     hitBlock.setType(Material.AIR);
                     player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "blocksBroken", 1, true);
+                    if (player.getGameData().containsKey("blocksBroken")) {
+                        player.getGameData().put("blocksBroken", (int)player.getGameData().get("blocksBroken") + 1);
+                        if ((int)player.getGameData().get("blocksBroken") >= 300 && !player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(127))) {
+                            player.getStats().achievementGained(AuroraMCAPI.getAchievement(127), 1, true);
+                        }
+                    }
+                    if (material == Material.SNOW_BLOCK) {
+                        player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "snowBlocksBroken", 1, true);
+                        if (player.getStats().getStatistic(EngineAPI.getActiveGameInfo().getId(), "snowBlocksBroken") >= 50000 && !player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(123))) {
+                            player.getStats().achievementGained(AuroraMCAPI.getAchievement(123), 1, true);
+                        }
+                    }
                     return;
                 }
             }
@@ -70,6 +87,7 @@ public class BreakListener implements Listener {
         if (e.getEntity() instanceof Snowball && e.getEntity().getShooter() instanceof Player) {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity().getShooter());
             player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "snowballsThrown", 1, true);
+            player.getStats().addProgress(AuroraMCAPI.getAchievement(121), 1, player.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(121), 0), true);
         }
     }
 

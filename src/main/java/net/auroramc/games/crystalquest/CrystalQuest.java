@@ -72,6 +72,9 @@ public class CrystalQuest extends Game {
 
     private BukkitTask scoreboardTask;
 
+    private boolean redUnlucky;
+    private boolean blueUnlucky;
+
     static {
         compass = new GUIItem(Material.COMPASS, "&3Crystal Compass", 1, ";&rThe compass will display the distance;&rfrom the closest crystal currently captured.").getItem();
     }
@@ -94,6 +97,8 @@ public class CrystalQuest extends Game {
         //this.kits.add(new Healer());
         //this.kits.add(new Ecologist());
         this.tasks = new ArrayList<>();
+        blueUnlucky = true;
+        redUnlucky = true;
     }
 
     @Override
@@ -306,16 +311,20 @@ public class CrystalQuest extends Game {
         if (winner instanceof CQBlue) {
             CQRed red = (CQRed) teams.get("Red");
             CQBlue blue = (CQBlue) winner;
-            checkForUnlucky(blue.getBossCrystal(), blue.getTowerBCrystal(), blue.getTowerACrystal(), red.getPlayers(), blue, red);
+            if (redUnlucky) {
+                checkForUnlucky(blue.getBossCrystal(), blue.getTowerBCrystal(), blue.getTowerACrystal(), red.getPlayers());
+            }
         } else {
             CQBlue blue = (CQBlue) teams.get("Blue");
             CQRed red = (CQRed) winner;
-            checkForUnlucky(red.getBossCrystal(), red.getTowerBCrystal(), red.getTowerACrystal(), blue.getPlayers(), blue, red);
+            if (blueUnlucky) {
+                checkForUnlucky(red.getBossCrystal(), red.getTowerBCrystal(), red.getTowerACrystal(), blue.getPlayers());
+            }
         }
         super.end(winner, winnerName);
     }
 
-    private void checkForUnlucky(Crystal bossCrystal, Crystal towerBCrystal, Crystal towerACrystal, List<AuroraMCPlayer> players, CQBlue blue, CQRed red) {
+    private void checkForUnlucky(Crystal bossCrystal, Crystal towerBCrystal, Crystal towerACrystal, List<AuroraMCPlayer> players) {
         if (bossCrystal.getState() == Crystal.CrystalState.DEAD && towerBCrystal.getState() == Crystal.CrystalState.DEAD && towerACrystal.getState() == Crystal.CrystalState.DEAD) {
             for (AuroraMCPlayer player : players) {
                 if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(63))) {
@@ -426,14 +435,14 @@ public class CrystalQuest extends Game {
         mineTask = new BukkitRunnable() {
             @Override
             public void run() {
-                generateMine(0.1415f, 0.1010f, 0.0075f);
+                generateMine(0.14f, 0.12f, 0.01f);
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     player.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The mine has been reset! The next reset is in **5** minutes."));
                 }
                 mineTask = new BukkitRunnable(){
                     @Override
                     public void run() {
-                        generateMine(0.12f, 0.12f, 0.01f);
+                        generateMine(0.14f, 0.14f, 0.02f);
                         for (Player player : Bukkit.getOnlinePlayers()) {
                             player.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The mine has been reset! The next reset is in **5** minutes."));
                         }
@@ -462,12 +471,15 @@ public class CrystalQuest extends Game {
                         Location c = new Location(EngineAPI.getMapWorld(), pointC.getInt("x") + 0.5, pointC.getInt("y") - 0.5, pointC.getInt("z") + 0.5);
 
                         if (red.getTowerACrystal().getState() != Crystal.CrystalState.DEAD) {
+                            blueUnlucky = false;
                             red.getTowerACrystal().crystalDead(a, false);
                         }
                         if (red.getTowerBCrystal().getState() != Crystal.CrystalState.DEAD) {
+                            blueUnlucky = false;
                             red.getTowerBCrystal().crystalDead(b, false);
                         }
                         if (red.getBossCrystal().getState() != Crystal.CrystalState.DEAD) {
+                            blueUnlucky = false;
                             red.getBossCrystal().crystalDead(c, false);
                         }
 
@@ -480,12 +492,15 @@ public class CrystalQuest extends Game {
                         c = new Location(EngineAPI.getMapWorld(), pointC.getInt("x") + 0.5, pointC.getInt("y") - 0.5, pointC.getInt("z") + 0.5);
 
                         if (blue.getTowerACrystal().getState() != Crystal.CrystalState.DEAD) {
+                            redUnlucky = false;
                             blue.getTowerACrystal().crystalDead(a, false);
                         }
                         if (blue.getTowerBCrystal().getState() != Crystal.CrystalState.DEAD) {
+                            redUnlucky = false;
                             blue.getTowerBCrystal().crystalDead(b, false);
                         }
                         if (blue.getBossCrystal().getState() != Crystal.CrystalState.DEAD) {
+                            redUnlucky = false;
                             blue.getBossCrystal().crystalDead(c, false);
                         }
 
@@ -494,9 +509,9 @@ public class CrystalQuest extends Game {
                         }
 
                     }
-                }.runTaskLater(AuroraMCAPI.getCore(), 6000);
+                }.runTaskLater(AuroraMCAPI.getCore(), 5999);
             }
-        }.runTaskLater(AuroraMCAPI.getCore(), 6000);
+        }.runTaskLater(AuroraMCAPI.getCore(), 17999);
         endTask = new BukkitRunnable() {
             @Override
             public void run() {
@@ -508,9 +523,9 @@ public class CrystalQuest extends Game {
                     public void run() {
                         end(null);
                     }
-                }.runTaskLater(AuroraMCAPI.getCore(), 6000);
+                }.runTaskLater(AuroraMCAPI.getCore(), 5999);
             }
-        }.runTaskLater(AuroraMCAPI.getCore(), 30000);
+        }.runTaskLater(AuroraMCAPI.getCore(), 47999);
         compassTask = new BukkitRunnable(){
             @Override
             public void run() {

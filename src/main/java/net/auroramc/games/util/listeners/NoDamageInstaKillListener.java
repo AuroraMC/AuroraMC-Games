@@ -10,6 +10,7 @@ import net.auroramc.core.api.cosmetics.KillMessage;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.engine.api.server.ServerState;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -41,6 +42,9 @@ public class NoDamageInstaKillListener implements Listener {
             if (player.isSpectator() || player.isVanished()) {
                 e.setCancelled(true);
                 return;
+            }
+            if (EngineAPI.getServerState() != ServerState.IN_GAME) {
+                e.setCancelled(true);
             }
             if ((e.getCause() == EntityDamageEvent.DamageCause.LAVA || e.getCause() == EntityDamageEvent.DamageCause.VOID) && !player.isSpectator()) {
                 e.setDamage(0);

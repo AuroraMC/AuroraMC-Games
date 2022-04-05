@@ -112,6 +112,9 @@ public class Spleef extends Game {
     @Override
     public void end(AuroraMCPlayer winner) {
         end();
+        if (winner != null) {
+            winner.getStats().addProgress(AuroraMCAPI.getAchievement(121), 1, winner.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(121), 0), true);
+        }
         super.end(winner);
     }
 
@@ -180,6 +183,17 @@ public class Spleef extends Game {
 
     @Override
     public boolean onDeath(AuroraMCGamePlayer auroraMCGamePlayer, AuroraMCGamePlayer killer) {
+        if (killer != null) {
+            if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(124))) {
+                killer.getStats().achievementGained(AuroraMCAPI.getAchievement(124), 1, true);
+            }
+        }
+
+        if ((System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp()) - 10000 < 3000) {
+            if (!auroraMCGamePlayer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(125))) {
+                auroraMCGamePlayer.getStats().achievementGained(AuroraMCAPI.getAchievement(125), 1, true);
+            }
+        }
         List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
         if (playersAlive.size() == 1) {
             this.end(playersAlive.get(0));
