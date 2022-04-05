@@ -196,6 +196,7 @@ public class NoDamageInstaKillListener implements Listener {
                     player.setLastHitBy(player1);
                     player.setLastHitAt(time);
                     player.getLatestHits().put(player1, time);
+                    e.setCancelled(true);
                 }
             }
         }
