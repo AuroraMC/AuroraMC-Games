@@ -67,6 +67,7 @@ public class CrystalQuest extends Game {
     private BukkitTask destroyTask;
     private BukkitTask endTask;
     private BukkitTask compassTask;
+    private BukkitTask protectionTask;
 
     private List<BukkitTask> tasks;
 
@@ -351,6 +352,9 @@ public class CrystalQuest extends Game {
         if (destroyTask != null) {
             destroyTask.cancel();
         }
+        if (protectionTask != null) {
+            protectionTask.cancel();
+        }
         PlayerShowEvent.getHandlerList().unregister(showListener);
         PlayerInteractAtEntityEvent.getHandlerList().unregister(shopListener);
         InventoryOpenEvent.getHandlerList().unregister(shopListener);
@@ -623,7 +627,16 @@ public class CrystalQuest extends Game {
                 }
             }
         }.runTaskTimer(EngineAPI.getGameEngine(), 0, 20);
+        protectionTask = new BukkitRunnable(){
+            @Override
+            public void run() {
+                for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
+                    pl.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You can now capture crystals!"));
+                }
+            }
+        }.runTaskLater(AuroraMCAPI.getCore(), 2399);
         for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
+            pl.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Crystals are protected for the first 2 minutes of the game!"));
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
             if (!player.isSpectator() && player.getKit() instanceof Defender) {
                 switch (player.getKitLevel().getLatestUpgrade()) {
