@@ -38,7 +38,7 @@ public class Potato {
         this.holder.getGameData().put("potato_holder", this);
         this.holder.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 1000000, 0, false, false));
         this.holder.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You've been given the Hot Potato! Get rid of it before it explodes by punching a player!"));
-        Firework firework = this.holder.getPlayer().getLocation().getWorld().spawn(this.holder.getPlayer().getLocation(), Firework.class);
+        Firework firework = this.holder.getPlayer().getLocation().getWorld().spawn(this.holder.getPlayer().getEyeLocation(), Firework.class);
         FireworkMeta meta = firework.getFireworkMeta();
         meta.setPower(0);
         meta.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(255, 0, 0)).trail(true).flicker(true).with(FireworkEffect.Type.BALL).build());
