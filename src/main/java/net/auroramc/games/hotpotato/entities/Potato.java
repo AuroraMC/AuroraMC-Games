@@ -62,6 +62,7 @@ public class Potato {
         y = specSpawn.getInt("y");
         z = specSpawn.getInt("z");
         float yaw = specSpawn.getFloat("yaw");
+        holder.getGameData().clear();
         holder.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
         holder.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
 
