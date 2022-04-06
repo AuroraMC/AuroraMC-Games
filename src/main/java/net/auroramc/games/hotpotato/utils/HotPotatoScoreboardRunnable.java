@@ -20,7 +20,7 @@ public class HotPotatoScoreboardRunnable extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (EngineAPI.getActiveGame() != null && EngineAPI.getActiveGame() instanceof Spleef) {
+        if (EngineAPI.getActiveGame() != null && EngineAPI.getActiveGame() instanceof HotPotato) {
             List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
             long gametime = (System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp()) - 10000;
 

@@ -122,7 +122,12 @@ public class HotPotato extends Game {
     @Override
     public void inProgress() {
         super.inProgress();
-        generatePotatoes();
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                generatePotatoes();
+            }
+        }.runTask(AuroraMCAPI.getCore());
     }
 
     public void generatePotatoes() {
