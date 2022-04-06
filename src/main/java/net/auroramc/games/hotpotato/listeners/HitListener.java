@@ -22,6 +22,7 @@ public class HitListener implements Listener {
     public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
         if (EngineAPI.getServerState() != ServerState.IN_GAME) {
             e.setCancelled(true);
+            return;
         }
         if (e.getDamager() instanceof Player) {
             e.setDamage(0);
@@ -47,6 +48,10 @@ public class HitListener implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent e) {
+        if (EngineAPI.getServerState() != ServerState.IN_GAME) {
+            e.setCancelled(true);
+            return;
+        }
         if (!(e instanceof EntityDamageByEntityEvent)) {
             e.setCancelled(true);
         }

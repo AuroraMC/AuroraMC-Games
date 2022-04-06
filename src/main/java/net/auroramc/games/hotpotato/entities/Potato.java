@@ -41,14 +41,14 @@ public class Potato {
         Firework firework = this.holder.getPlayer().getLocation().getWorld().spawn(this.holder.getPlayer().getEyeLocation(), Firework.class);
         FireworkMeta meta = firework.getFireworkMeta();
         meta.setPower(0);
-        meta.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(255, 0, 0)).trail(true).flicker(true).with(FireworkEffect.Type.BALL).build());
+        meta.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(255, 0, 0)).trail(true).flicker(true).with(FireworkEffect.Type.BURST).build());
         firework.setFireworkMeta(meta);
         new BukkitRunnable(){
             @Override
             public void run() {
                 firework.detonate();
             }
-        }.runTaskLater(AuroraMCAPI.getCore(), 1);
+        }.runTaskLater(AuroraMCAPI.getCore(), 2);
         ItemStack stack = new GUIItem(Material.POTATO_ITEM, "&c&lHot Potato", 1, ";&rPunch a player to get rid of the hot potato!").getItem();
         for (int i = 0;i < 36;i++) {
             holder.getPlayer().getInventory().setItem(i, stack);
