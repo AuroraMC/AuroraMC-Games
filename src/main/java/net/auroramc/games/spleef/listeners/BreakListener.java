@@ -41,12 +41,20 @@ public class BreakListener implements Listener {
                 e.setCancelled(true);
             } else {
                 if (!player.isSpectator()) {
-                    e.getPlayer().getInventory().addItem(new ItemStack(Material.SNOW_BALL));
-                    player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "blocksBroken", 1, true);
                     if (e.getPlayer().getItemInHand() == null || e.getPlayer().getItemInHand().getType() == Material.AIR) {
                         if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(126))) {
                             player.getStats().achievementGained(AuroraMCAPI.getAchievement(126), 1, true);
                         }
+                    }
+                    e.getPlayer().getInventory().addItem(new ItemStack(Material.SNOW_BALL));
+                    player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "blocksBroken", 1, true);
+                    if (player.getGameData().containsKey("blocksBroken")) {
+                        player.getGameData().put("blocksBroken", (int) player.getGameData().get("blocksBroken") + 1);
+                        if ((int) player.getGameData().get("blocksBroken") >= 300 && !player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(127))) {
+                            player.getStats().achievementGained(AuroraMCAPI.getAchievement(127), 1, true);
+                        }
+                    } else {
+                        player.getGameData().put("blocksBroken", 1);
                     }
                 }
             }
@@ -69,6 +77,8 @@ public class BreakListener implements Listener {
                         if ((int)player.getGameData().get("blocksBroken") >= 300 && !player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(127))) {
                             player.getStats().achievementGained(AuroraMCAPI.getAchievement(127), 1, true);
                         }
+                    } else {
+                        player.getGameData().put("blocksBroken", 1);
                     }
                     if (material == Material.SNOW_BLOCK) {
                         player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "snowBlocksBroken", 1, true);
