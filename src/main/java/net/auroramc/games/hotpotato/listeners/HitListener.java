@@ -6,7 +6,9 @@ package net.auroramc.games.hotpotato.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.games.hotpotato.entities.Potato;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,6 +20,9 @@ public class HitListener implements Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
+        if (EngineAPI.getServerState() != ServerState.IN_GAME) {
+            e.setCancelled(true);
+        }
         if (e.getDamager() instanceof Player) {
             e.setDamage(0);
             AuroraMCPlayer pl = AuroraMCAPI.getPlayer((Player) e.getDamager());
