@@ -13,10 +13,9 @@ import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.hotpotato.entities.Potato;
+import net.auroramc.games.hotpotato.kits.HotPotatoKit;
 import net.auroramc.games.hotpotato.listeners.HitListener;
 import net.auroramc.games.hotpotato.utils.HotPotatoScoreboardRunnable;
-import net.auroramc.games.tag.kits.TagKit;
-import net.auroramc.games.tag.utils.TagScoreboardRunnable;
 import net.auroramc.games.util.PlayersTeam;
 import net.auroramc.games.util.listeners.settings.DisableBreakListener;
 import net.auroramc.games.util.listeners.settings.DisableHungerListener;
@@ -53,7 +52,7 @@ public class HotPotato extends Game {
     @Override
     public void preLoad() {
         this.teams.put("players", new PlayersTeam());
-        this.kits.add(new TagKit());
+        this.kits.add(new HotPotatoKit());
         runnable = new HotPotatoScoreboardRunnable();
         hitListener = new HitListener();
         potatoes = 0;
