@@ -2,10 +2,9 @@
  * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
  */
 
-package net.auroramc.games.spleef;
+package net.auroramc.games.tag;
 
 import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.events.player.PlayerShowEvent;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Team;
 import net.auroramc.engine.api.EngineAPI;
@@ -13,23 +12,12 @@ import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
-import net.auroramc.games.spleef.kits.SpleefKit;
-import net.auroramc.games.spleef.listeners.BreakListener;
-import net.auroramc.games.spleef.listeners.DeathListener;
-import net.auroramc.games.spleef.listeners.HungerListener;
-import net.auroramc.games.spleef.listeners.ItemSpawnListener;
-import net.auroramc.games.spleef.utils.SpleefScoreboardRunnable;
+import net.auroramc.games.tag.kits.TagKit;
+import net.auroramc.games.tag.utils.TagScoreboardRunnable;
 import net.auroramc.games.util.PlayersTeam;
-import net.auroramc.games.util.listeners.death.NoDamageInstaKillListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.ItemSpawnEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,25 +25,21 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Spleef extends Game {
+public class Tag extends Game {
 
 
-    public Spleef(GameVariation gameVariation) {
+    public Tag(GameVariation gameVariation) {
         super(gameVariation);
     }
 
-    private DeathListener deathListener;
-    private ItemSpawnListener itemSpawnListener;
-    private BreakListener breakListener;
-    private HungerListener hungerListener;
-    private SpleefScoreboardRunnable runnable;
+    private TagScoreboardRunnable runnable;
 
 
     @Override
     public void preLoad() {
         this.teams.put("players", new PlayersTeam());
-        this.kits.add(new SpleefKit());
-        runnable = new SpleefScoreboardRunnable();
+        this.kits.add(new TagKit());
+        runnable = new TagScoreboardRunnable();
     }
 
     @Override
@@ -71,7 +55,7 @@ public class Spleef extends Game {
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
             gp.getScoreboard().clear();
-            gp.getScoreboard().setTitle("&3&l-= &b&lSPLEEF &3&l=-");
+            gp.getScoreboard().setTitle("&3&l-= &b&lTAG &3&l=-");
             if (gp.isSpectator()) {
                 JSONObject specSpawn = this.map.getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
                 int x, y, z;
@@ -95,24 +79,13 @@ public class Spleef extends Game {
                 gp.getKit().onGameStart(player);
             }
         }
-        deathListener = new DeathListener();
-        itemSpawnListener = new ItemSpawnListener();
-        hungerListener = new HungerListener();
-        breakListener = new BreakListener(Material.valueOf(this.map.getMapData().getString("block").toUpperCase()));
-        NoDamageInstaKillListener.register();
-        Bukkit.getPluginManager().registerEvents(deathListener, EngineAPI.getGameEngine());
-        Bukkit.getPluginManager().registerEvents(itemSpawnListener, EngineAPI.getGameEngine());
-        Bukkit.getPluginManager().registerEvents(hungerListener, EngineAPI.getGameEngine());
-        Bukkit.getPluginManager().registerEvents(breakListener, EngineAPI.getGameEngine());
+
         runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
     }
 
     @Override
     public void end(AuroraMCPlayer winner) {
         end();
-        if (winner != null) {
-            winner.getStats().addProgress(AuroraMCAPI.getAchievement(121), 1, winner.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(121), 0), true);
-        }
         super.end(winner);
     }
 
@@ -126,14 +99,14 @@ public class Spleef extends Game {
     public void generateTeam(AuroraMCPlayer auroraMCPlayer) {
     }
 
+    @Override
+    public void inProgress() {
+        super.inProgress();
+
+    }
+
     private void end() {
-        ItemSpawnEvent.getHandlerList().unregister(itemSpawnListener);
-        FoodLevelChangeEvent.getHandlerList().unregister(hungerListener);
-        BlockBreakEvent.getHandlerList().unregister(breakListener);
-        PlayerShowEvent.getHandlerList().unregister(deathListener);
-        PlayerDropItemEvent.getHandlerList().unregister(breakListener);
-        ProjectileHitEvent.getHandlerList().unregister(breakListener);
-        NoDamageInstaKillListener.unregister();
+
         runnable.cancel();
     }
 
@@ -181,18 +154,7 @@ public class Spleef extends Game {
 
     @Override
     public boolean onDeath(AuroraMCGamePlayer auroraMCGamePlayer, AuroraMCGamePlayer killer) {
-        if (killer != null) {
-            if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(124))) {
-                killer.getStats().achievementGained(AuroraMCAPI.getAchievement(124), 1, true);
-            }
-        }
-
-        if ((System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp()) - 10000 < 3000) {
-            if (!auroraMCGamePlayer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(125))) {
-                auroraMCGamePlayer.getStats().achievementGained(AuroraMCAPI.getAchievement(125), 1, true);
-            }
-        }
-        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
+        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).getGameData().containsKey("tagged")).collect(Collectors.toList());
         if (playersAlive.size() == 1) {
             this.end(playersAlive.get(0));
         }
@@ -201,6 +163,5 @@ public class Spleef extends Game {
 
     @Override
     public void onFinalKill(AuroraMCGamePlayer auroraMCGamePlayer) {
-
     }
 }

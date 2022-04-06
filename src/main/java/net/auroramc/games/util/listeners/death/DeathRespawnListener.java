@@ -2,7 +2,7 @@
  * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
  */
 
-package net.auroramc.games.util.listeners;
+package net.auroramc.games.util.listeners.death;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.cosmetics.Cosmetic;
@@ -10,6 +10,7 @@ import net.auroramc.core.api.cosmetics.KillMessage;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.engine.api.server.ServerState;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -40,6 +41,10 @@ public class DeathRespawnListener implements Listener {
             Player pl = (Player) e.getEntity();
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(pl);
             if (player.isSpectator() || player.isVanished()) {
+                e.setCancelled(true);
+                return;
+            }
+            if (EngineAPI.getServerState() != ServerState.IN_GAME) {
                 e.setCancelled(true);
                 return;
             }
@@ -193,7 +198,9 @@ public class DeathRespawnListener implements Listener {
                 boolean finalKill = EngineAPI.getActiveGame().onDeath(player, killer);
 
                 String finalMessage = killMessage.onKill(killer, player, entity, killReason) + ((finalKill)?" &c&lFINAL KILL!":"");
-                player.setSpectator(true, finalKill);
+                if (timeout > 0) {
+                    player.setSpectator(true, finalKill);
+                }
                 JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
                 int x, y, z;
                 x = specSpawn.getInt("x");
@@ -215,12 +222,16 @@ public class DeathRespawnListener implements Listener {
                 player.getPlayer().setFireTicks(0);
 
                 for (Player player2 : Bukkit.getOnlinePlayers()) {
-                    player2.hidePlayer(player.getPlayer());
+                    if (timeout > 0) {
+                        player2.hidePlayer(player.getPlayer());
+                    }
                     player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", finalMessage));
                 }
 
                 if (!finalKill) {
-                    player.sendTitle(AuroraMCAPI.getFormatter().convert("&c&lYou Died!"), AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight("You will respawn in **" + (timeout / 20) + "** seconds!")), 20, 100, 20, ChatColor.RED, ChatColor.RESET, true, false);
+                    if (timeout > 0) {
+                        player.sendTitle(AuroraMCAPI.getFormatter().convert("&c&lYou Died!"), AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight("You will respawn in **" + (timeout / 20) + "** seconds!")), 20, 100, 20, ChatColor.RED, ChatColor.RESET, true, false);
+                    }
                     new BukkitRunnable(){
                         @Override
                         public void run() {
@@ -230,12 +241,14 @@ public class DeathRespawnListener implements Listener {
                                 player.getPlayer().setFireTicks(0);
                                 player.getPlayer().setVelocity(new Vector(0, 0, 0));
                                 EngineAPI.getActiveGame().onRespawn(player);
-                                for (Player player2 : Bukkit.getOnlinePlayers()) {
-                                    player2.showPlayer(player.getPlayer());
-                                }
-                                player.setSpectator(false, false);
                                 player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You respawned!"));
-                                player.sendTitle(AuroraMCAPI.getFormatter().convert("&3&lYou respawned!"), "", 20, 100, 20, ChatColor.DARK_AQUA, ChatColor.RESET, true, false);
+                                if (timeout > 0) {
+                                    for (Player player2 : Bukkit.getOnlinePlayers()) {
+                                        player2.showPlayer(player.getPlayer());
+                                    }
+                                    player.setSpectator(false, false);
+                                    player.sendTitle(AuroraMCAPI.getFormatter().convert("&3&lYou respawned!"), "", 20, 100, 20, ChatColor.DARK_AQUA, ChatColor.RESET, true, false);
+                                }
                             }
                         }
                     }.runTaskLater(AuroraMCAPI.getCore(), timeout);

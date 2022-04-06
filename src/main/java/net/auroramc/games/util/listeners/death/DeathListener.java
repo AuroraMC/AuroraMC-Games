@@ -2,7 +2,7 @@
  * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
  */
 
-package net.auroramc.games.util.listeners;
+package net.auroramc.games.util.listeners.death;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.cosmetics.Cosmetic;
@@ -11,27 +11,24 @@ import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.inventory.ItemStack;
 import org.json.JSONObject;
 
 import java.util.Map;
 
-public class NoDamageInstaKillListener implements Listener {
+public class DeathListener implements Listener {
 
-    private final static NoDamageInstaKillListener instance;
+    private final static DeathListener instance;
+    private static boolean friendlyFire;
 
     static {
-        instance = new NoDamageInstaKillListener();
+        instance = new DeathListener();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -45,8 +42,31 @@ public class NoDamageInstaKillListener implements Listener {
             }
             if (EngineAPI.getServerState() != ServerState.IN_GAME) {
                 e.setCancelled(true);
+                return;
             }
-            if ((e.getCause() == EntityDamageEvent.DamageCause.LAVA || e.getCause() == EntityDamageEvent.DamageCause.VOID) && !player.isSpectator()) {
+            if (!friendlyFire) {
+                if (e instanceof EntityDamageByEntityEvent) {
+                    if (((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
+                        Player damager = (Player) ((EntityDamageByEntityEvent) e).getDamager();
+                        AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(damager);
+                        if (player1.getTeam().equals(player.getTeam())) {
+                            e.setCancelled(true);
+                            return;
+                        }
+                    } else if (((EntityDamageByEntityEvent) e).getDamager() instanceof Projectile) {
+                        Projectile projectile = (Projectile) ((EntityDamageByEntityEvent) e).getDamager();
+                        if (projectile.getShooter() instanceof Player) {
+                            Player damager = (Player) projectile.getShooter();
+                            AuroraMCPlayer auroraMCPlayer = AuroraMCAPI.getPlayer(damager);
+                            if (auroraMCPlayer.getTeam().equals(player.getTeam())) {
+                                e.setCancelled(true);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            if (e.getFinalDamage() >= player.getPlayer().getHealth() && !player.isSpectator()) {
                 e.setDamage(0);
 
                 Entity entity = null;
@@ -62,6 +82,7 @@ public class NoDamageInstaKillListener implements Listener {
                     if (((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
                         Player damager = (Player) ((EntityDamageByEntityEvent) e).getDamager();
                         killer = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(damager);
+                        killer.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "damageDealt", Math.round(e.getFinalDamage() * 100), true);
                         switch (e.getCause()) {
                             case PROJECTILE: {
                                 killReason = KillMessage.KillReason.BOW;
@@ -180,6 +201,7 @@ public class NoDamageInstaKillListener implements Listener {
                 EngineAPI.getActiveGame().onDeath(player, killer);
 
                 String finalMessage = killMessage.onKill(killer, player, entity, killReason);
+
                 JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
                 int x, y, z;
                 x = specSpawn.getInt("x");
@@ -189,6 +211,7 @@ public class NoDamageInstaKillListener implements Listener {
                 player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
 
                 player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
+
                 for (Player player2 : Bukkit.getOnlinePlayers()) {
                     player2.hidePlayer(player.getPlayer());
                     player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", finalMessage));
@@ -200,17 +223,16 @@ public class NoDamageInstaKillListener implements Listener {
                     player.setLastHitBy(player1);
                     player.setLastHitAt(time);
                     player.getLatestHits().put(player1, time);
+                    player1.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "damageDealt", Math.round(e.getFinalDamage() * 100), true);
                 }
-                e.setDamage(0);
-            } else {
-                e.setDamage(0);
             }
         }
     }
 
 
-    public static void register() {
+    public static void register(boolean friendlyFire) {
         Bukkit.getPluginManager().registerEvents(instance, EngineAPI.getGameEngine());
+        DeathListener.friendlyFire = friendlyFire;
     }
 
     public static void unregister() {

@@ -15,13 +15,13 @@ import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.ffa.kits.Brawler;
 import net.auroramc.games.ffa.listeners.BreakListener;
-import net.auroramc.games.ffa.listeners.HungerListener;
 import net.auroramc.games.ffa.listeners.ItemSpawnListener;
 import net.auroramc.games.ffa.listeners.ShowListener;
 import net.auroramc.games.ffa.util.FFAScoreboardRunnable;
 import net.auroramc.games.util.PlayersTeam;
-import net.auroramc.games.util.listeners.DeathListener;
-import net.auroramc.games.util.listeners.NoDamageInstaKillListener;
+import net.auroramc.games.util.listeners.death.DeathListener;
+import net.auroramc.games.util.listeners.death.NoDamageInstaKillListener;
+import net.auroramc.games.util.listeners.settings.DisableHungerListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -46,7 +46,6 @@ public class FFA extends Game {
     private ShowListener showListener;
     private ItemSpawnListener itemSpawnListener;
     private BreakListener breakListener;
-    private HungerListener hungerListener;
     private FFAScoreboardRunnable runnable;
 
 
@@ -96,12 +95,11 @@ public class FFA extends Game {
         }
         showListener = new ShowListener();
         itemSpawnListener = new ItemSpawnListener();
-        hungerListener = new HungerListener();
         breakListener = new BreakListener();
         DeathListener.register(true);
         Bukkit.getPluginManager().registerEvents(showListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(itemSpawnListener, EngineAPI.getGameEngine());
-        Bukkit.getPluginManager().registerEvents(hungerListener, EngineAPI.getGameEngine());
+        DisableHungerListener.register();
         Bukkit.getPluginManager().registerEvents(breakListener, EngineAPI.getGameEngine());
         runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
     }
@@ -124,7 +122,7 @@ public class FFA extends Game {
 
     private void end() {
         ItemSpawnEvent.getHandlerList().unregister(itemSpawnListener);
-        FoodLevelChangeEvent.getHandlerList().unregister(hungerListener);
+        DisableHungerListener.unregister();
         PlayerInteractEvent.getHandlerList().unregister(breakListener);
         PlayerShowEvent.getHandlerList().unregister(showListener);
         PlayerDropItemEvent.getHandlerList().unregister(breakListener);

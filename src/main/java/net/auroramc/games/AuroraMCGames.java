@@ -7,6 +7,7 @@ package net.auroramc.games;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.games.crystalquest.CrystalQuestInfo;
 import net.auroramc.games.ffa.FFAInfo;
+import net.auroramc.games.hotpotato.HotPotatoInfo;
 import net.auroramc.games.spleef.SpleefInfo;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,6 +18,7 @@ public class AuroraMCGames extends JavaPlugin {
         EngineAPI.registerGame(new CrystalQuestInfo());
         EngineAPI.registerGame(new SpleefInfo());
         EngineAPI.registerGame(new FFAInfo());
+        EngineAPI.registerGame(new HotPotatoInfo());
         EngineAPI.loadRotation();
     }
 
