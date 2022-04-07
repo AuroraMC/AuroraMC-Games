@@ -8,7 +8,6 @@ import net.auroramc.engine.api.EngineAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 public class DisablePlaceListener implements Listener {
