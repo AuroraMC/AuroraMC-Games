@@ -42,7 +42,7 @@ public class DeathListener implements Listener {
                 e.setCancelled(true);
                 return;
             }
-            if (EngineAPI.getServerState() != ServerState.IN_GAME && !EngineAPI.getActiveGame().isStarting()) {
+            if (EngineAPI.getServerState() != ServerState.IN_GAME || EngineAPI.getActiveGame().isStarting()) {
                 e.setCancelled(true);
                 return;
             }
