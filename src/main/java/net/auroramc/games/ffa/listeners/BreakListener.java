@@ -24,7 +24,7 @@ public class BreakListener implements Listener {
             e.setCancelled(true);
         } else {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
-            if (!player.isSpectator() && e.getClickedBlock() != null && e.getClickedBlock().getType() != Material.AIR && e.getClickedBlock().getType() != Material.BEDROCK && e.getAction() == Action.LEFT_CLICK_BLOCK) {
+            if (!player.isSpectator() && e.getClickedBlock() != null && e.getClickedBlock().getType() != Material.AIR && e.getClickedBlock().getType() != Material.BEDROCK && e.getClickedBlock().getType() != Material.BARRIER && e.getAction() == Action.LEFT_CLICK_BLOCK) {
                 e.setCancelled(true);
                 e.getClickedBlock().setType(Material.AIR);
                 player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "blocksBroken", 1, true);
