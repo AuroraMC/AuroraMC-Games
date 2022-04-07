@@ -20,7 +20,7 @@ public class HitListener implements Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
-        if (EngineAPI.getServerState() != ServerState.IN_GAME) {
+        if (EngineAPI.getServerState() != ServerState.IN_GAME && !EngineAPI.getActiveGame().isStarting()) {
             e.setCancelled(true);
             return;
         }

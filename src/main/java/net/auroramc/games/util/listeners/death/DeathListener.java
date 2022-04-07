@@ -4,6 +4,7 @@
 
 package net.auroramc.games.util.listeners.death;
 
+import com.sun.xml.internal.ws.api.pipe.Engine;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.cosmetics.Cosmetic;
 import net.auroramc.core.api.cosmetics.KillMessage;
@@ -40,7 +41,7 @@ public class DeathListener implements Listener {
                 e.setCancelled(true);
                 return;
             }
-            if (EngineAPI.getServerState() != ServerState.IN_GAME) {
+            if (EngineAPI.getServerState() != ServerState.IN_GAME && !EngineAPI.getActiveGame().isStarting()) {
                 e.setCancelled(true);
                 return;
             }

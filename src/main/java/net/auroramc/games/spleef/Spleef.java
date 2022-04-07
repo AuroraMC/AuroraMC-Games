@@ -111,7 +111,7 @@ public class Spleef extends Game {
     public void end(AuroraMCPlayer winner) {
         end();
         if (winner != null) {
-            winner.getStats().addProgress(AuroraMCAPI.getAchievement(121), 1, winner.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(121), 0), true);
+            winner.getStats().addProgress(AuroraMCAPI.getAchievement(122), 1, winner.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(122), 0), true);
         }
         super.end(winner);
     }

@@ -44,7 +44,7 @@ public class DeathRespawnListener implements Listener {
                 e.setCancelled(true);
                 return;
             }
-            if (EngineAPI.getServerState() != ServerState.IN_GAME) {
+            if (EngineAPI.getServerState() != ServerState.IN_GAME && !EngineAPI.getActiveGame().isStarting()) {
                 e.setCancelled(true);
                 return;
             }
