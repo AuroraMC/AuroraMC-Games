@@ -30,9 +30,9 @@ public class HitListener implements Listener {
             if (pl instanceof AuroraMCGamePlayer) {
                 AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
                 if (!player.isSpectator() && !player.isVanished()) {
-                    if (player.getGameData().containsKey("potato_holder")) {
+                    AuroraMCGamePlayer newHolder = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity());
+                    if (player.getGameData().containsKey("potato_holder") && !newHolder.getGameData().containsKey("potato_holder")) {
                         Potato potato = (Potato) player.getGameData().get("potato_holder");
-                        AuroraMCGamePlayer newHolder = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity());
                         potato.newHolder(newHolder);
                     }
                 } else {

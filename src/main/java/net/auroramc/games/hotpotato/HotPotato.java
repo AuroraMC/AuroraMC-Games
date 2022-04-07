@@ -218,6 +218,26 @@ public class HotPotato extends Game {
         List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
         if (playersAlive.size() == 1) {
             EngineAPI.getActiveGame().end(playersAlive.get(0));
+        } else {
+            if (auroraMCGamePlayer.getGameData().containsKey("potato_holder")) {
+                if (potatoes == 1) {
+                    potatoTask.cancel();
+                    for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The player with the potato has left! The next round starts in 10 seconds!"));
+                    }
+                    potatoList.clear();
+                    potatoTask = new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            generatePotatoes();
+                        }
+                    }.runTaskLater(AuroraMCAPI.getCore(), 200);
+                } else {
+                    Potato potato = (Potato) auroraMCGamePlayer.getGameData().get("potato_holder");
+                    potatoList.remove(potato);
+                    potatoes--;
+                }
+            }
         }
     }
 
