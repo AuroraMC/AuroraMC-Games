@@ -37,7 +37,7 @@ public class HotPotatoScoreboardRunnable extends BukkitRunnable {
                     scoreboard.setLine(3, "   ");
                     scoreboard.setLine(2, "&b&l«GAME TIME»");
                     scoreboard.setLine(1,  finalValue + " minutes");
-                    int i = 4;
+                    int i = 7;
                     for (AuroraMCPlayer player1 : playersAlive) {
                         if (player1.equals(player)) {
                             if (player1.isDisguised() && player1.getPreferences().isHideDisguiseNameEnabled()) {
