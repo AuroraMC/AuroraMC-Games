@@ -311,6 +311,11 @@ public class CrystalQuest extends Game {
     @Override
     public void end(Team winner, String winnerName) {
         onEnd();
+        for (AuroraMCPlayer player : winner.getPlayers()) {
+            if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(61))) {
+                player.getStats().achievementGained(AuroraMCAPI.getAchievement(61), 1, true);
+            }
+        }
         if (winner instanceof CQBlue) {
             CQRed red = (CQRed) teams.get("Red");
             CQBlue blue = (CQBlue) winner;
