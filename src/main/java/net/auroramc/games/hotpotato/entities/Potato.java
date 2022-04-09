@@ -106,7 +106,7 @@ public class Potato {
                     this.holder.getStats().achievementGained(AuroraMCAPI.getAchievement(164), 1, true);
                 }
                 if (!this.oldHolder.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(161))) {
-                    this.holder.getStats().achievementGained(AuroraMCAPI.getAchievement(161), 1, true);
+                    this.oldHolder.getStats().achievementGained(AuroraMCAPI.getAchievement(161), 1, true);
                 }
             }
         }
