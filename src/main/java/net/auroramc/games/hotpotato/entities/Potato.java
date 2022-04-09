@@ -97,8 +97,8 @@ public class Potato {
         holder.setSpectator(true, true);
         holder.sendTitle(AuroraMCAPI.getFormatter().convert("&c&lYou Died!"), AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight("You were holding the Hot Potato when it exploded!")), 20, 100, 20, ChatColor.RED, ChatColor.RESET, true, false);
         if (lastPassed == -1) {
-            if (!this.holder.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(167))) {
-                this.holder.getStats().achievementGained(AuroraMCAPI.getAchievement(167), 1, true);
+            if (!this.holder.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(171))) {
+                this.holder.getStats().achievementGained(AuroraMCAPI.getAchievement(171), 1, true);
             }
         } else {
             if (System.currentTimeMillis() - lastPassed <= 3000) {
