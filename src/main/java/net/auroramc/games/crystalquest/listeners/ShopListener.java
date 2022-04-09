@@ -13,6 +13,7 @@ import net.auroramc.games.crystalquest.gui.PlayerShop;
 import net.auroramc.games.crystalquest.gui.TeamShop;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -53,13 +54,52 @@ public class ShopListener implements Listener {
                 }
             } else if (e.getEntity() instanceof ArmorStand) {
                 e.setCancelled(true);
-
                 if (e.getEntity().getCustomName() != null) {
                     if (ChatColor.stripColor(e.getEntity().getCustomName()).startsWith("Player")) {
                         gui = new PlayerShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager()));
                     } else if (ChatColor.stripColor(e.getEntity().getCustomName()).startsWith("Team")) {
                         gui = new TeamShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager()));
                     } else {
+                        AuroraMCPlayer player = AuroraMCAPI.getPlayer((Player) e.getDamager());
+                        CQRed red = (CQRed) EngineAPI.getActiveGame().getTeams().get("Red");
+                        CQBlue blue = (CQBlue) EngineAPI.getActiveGame().getTeams().get("Blue");
+                        if (e.getEntity().equals(red.getRobotSlotA().getEntity())) {
+                            if (player.getTeam().equals(red)) {
+                                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(67))) {
+                                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(67), 1, true);
+                                }
+                            }
+                        } else if (e.getEntity().equals(red.getRobotSlotB().getEntity())) {
+                            if (player.getTeam().equals(red)) {
+                                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(67))) {
+                                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(67), 1, true);
+                                }
+                            }
+                        } else if (e.getEntity().equals(red.getRobotSlotC().getEntity())) {
+                            if (player.getTeam().equals(red)) {
+                                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(67))) {
+                                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(67), 1, true);
+                                }
+                            }
+                        } else if (e.getEntity().equals(blue.getRobotSlotA().getEntity())) {
+                            if (player.getTeam().equals(blue)) {
+                                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(67))) {
+                                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(67), 1, true);
+                                }
+                            }
+                        } else if (e.getEntity().equals(blue.getRobotSlotB().getEntity())) {
+                            if (player.getTeam().equals(blue)) {
+                                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(67))) {
+                                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(67), 1, true);
+                                }
+                            }
+                        } else if (e.getEntity().equals(blue.getRobotSlotC().getEntity())) {
+                            if (player.getTeam().equals(blue)) {
+                                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(67))) {
+                                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(67), 1, true);
+                                }
+                            }
+                        }
                         return;
                     }
                 }

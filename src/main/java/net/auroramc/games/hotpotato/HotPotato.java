@@ -42,6 +42,7 @@ public class HotPotato extends Game {
     private HotPotatoScoreboardRunnable runnable;
     private BukkitTask potatoTask;
     private List<Potato> potatoList;
+    private int round;
 
 
     public HotPotato(GameVariation gameVariation) {
@@ -57,6 +58,7 @@ public class HotPotato extends Game {
         hitListener = new HitListener();
         potatoes = 0;
         potatoList = new ArrayList<>();
+        round = 0;
     }
 
     @Override
@@ -106,6 +108,14 @@ public class HotPotato extends Game {
     @Override
     public void end(AuroraMCPlayer winner) {
         end();
+        if (winner != null) {
+            AuroraMCGamePlayer gp = (AuroraMCGamePlayer) winner;
+            if ((int)gp.getGameData().getOrDefault("total_potato_rounds", 0) == round) {
+                if (!gp.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(163))) {
+                    gp.getStats().achievementGained(AuroraMCAPI.getAchievement(163), 1, true);
+                }
+            }
+        }
         super.end(winner);
     }
 
@@ -131,6 +141,7 @@ public class HotPotato extends Game {
     }
 
     public void generatePotatoes() {
+        round++;
         List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer) player).isSpectator()).collect(Collectors.toList());
         Collections.shuffle(playersAlive);
         potatoes = Math.round(playersAlive.size() / 4f);
@@ -150,6 +161,12 @@ public class HotPotato extends Game {
             @Override
             public void run() {
                 for (Potato potato : potatoList) {
+                    if (round == 1) {
+                        if (!potato.getHolder().getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(165))) {
+                            potato.getHolder().getStats().achievementGained(AuroraMCAPI.getAchievement(165), 1, true);
+                        }
+                    }
+                    potato.getHolder().getStats().addProgress(AuroraMCAPI.getAchievement(168), 1, potato.getHolder().getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(165), 0), true);
                     potato.explode();
                 }
                 potatoList.clear();
@@ -157,6 +174,24 @@ public class HotPotato extends Game {
                 if (playersAlive.size() == 1) {
                     end(playersAlive.get(0));
                     return;
+                }
+                for (AuroraMCPlayer player : playersAlive) {
+                    AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
+                    if (gp.getGameData().containsKey("had_potato")) {
+                        gp.getGameData().remove("had_potato");
+                        if (!gp.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(162))) {
+                            gp.getStats().achievementGained(AuroraMCAPI.getAchievement(162), 1, true);
+                        }
+                        gp.getGameData().put("total_potato_rounds", (int)gp.getGameData().getOrDefault("total_potato_rounds", 0) + 1);
+                        gp.getGameData().remove("rounds_without_potato");
+                    } else {
+                        gp.getGameData().put("rounds_without_potato",(int)gp.getGameData().getOrDefault("rounds_without_potato", 0) + 1);
+                        if ((int)gp.getGameData().get("rounds_without_potato") >= 3) {
+                            if (!gp.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(170))) {
+                                gp.getStats().achievementGained(AuroraMCAPI.getAchievement(170), 1, true);
+                            }
+                        }
+                    }
                 }
                 for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The potatoes have exploded! The next round starts in 10 seconds!"));

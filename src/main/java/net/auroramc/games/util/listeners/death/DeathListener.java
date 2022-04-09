@@ -95,6 +95,11 @@ public class DeathListener implements Listener {
                                 break;
                             }
                             case FALL: {
+                                if (EngineAPI.getActiveGameInfo().getId() == 102) {
+                                    if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(146))) {
+                                        player.getStats().achievementGained(AuroraMCAPI.getAchievement(146), 1, true);
+                                    }
+                                }
                                 killReason = KillMessage.KillReason.FALL;
                                 break;
                             }
@@ -135,6 +140,11 @@ public class DeathListener implements Listener {
                             killReason = KillMessage.KillReason.FALL;
                             if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
                                 killer = player.getLastHitBy();
+                            }
+                            if (EngineAPI.getActiveGameInfo().getId() == 102) {
+                                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(146))) {
+                                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(146), 1, true);
+                                }
                             }
                             break;
                         }

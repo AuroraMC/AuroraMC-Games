@@ -34,6 +34,14 @@ public class HitListener implements Listener {
                     if (player.getGameData().containsKey("potato_holder") && !newHolder.getGameData().containsKey("potato_holder")) {
                         Potato potato = (Potato) player.getGameData().get("potato_holder");
                         potato.newHolder(newHolder);
+                    } else if (player.getGameData().containsKey("potato_holder") && newHolder.getGameData().containsKey("potato_holder")) {
+                        if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(166))) {
+                            player.getStats().achievementGained(AuroraMCAPI.getAchievement(166), 1, true);
+                        }
+                    } else if (!player.getGameData().containsKey("potato_holder")) {
+                        if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(169))) {
+                            player.getStats().achievementGained(AuroraMCAPI.getAchievement(169), 1, true);
+                        }
                     }
                 } else {
                     e.setCancelled(true);

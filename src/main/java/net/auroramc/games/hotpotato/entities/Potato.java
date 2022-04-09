@@ -20,17 +20,31 @@ import org.json.JSONObject;
 
 public class Potato {
 
+    private AuroraMCGamePlayer oldHolder;
     private AuroraMCGamePlayer holder;
+    private long lastPassed;
 
     public Potato() {
         holder = null;
+        oldHolder = null;
+        lastPassed = -1;
     }
 
     public void newHolder(AuroraMCGamePlayer holder) {
         if (this.holder != null) {
+            if (oldHolder != null) {
+                if (oldHolder.equals(holder)) {
+                    if (!this.holder.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(167))) {
+                        this.holder.getStats().achievementGained(AuroraMCAPI.getAchievement(167), 1, true);
+                    }
+                }
+            }
+            this.oldHolder = this.holder;
+            lastPassed = System.currentTimeMillis();
             this.holder.getPlayer().getInventory().clear();
             this.holder.getPlayer().removePotionEffect(PotionEffectType.SPEED);
             this.holder.getGameData().remove("potato_holder");
+            holder.getGameData().put("had_potato", true);
         }
         this.holder = holder;
         this.holder.getGameData().put("potato_holder", this);
@@ -82,6 +96,24 @@ public class Potato {
 
         holder.setSpectator(true, true);
         holder.sendTitle(AuroraMCAPI.getFormatter().convert("&c&lYou Died!"), AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight("You were holding the Hot Potato when it exploded!")), 20, 100, 20, ChatColor.RED, ChatColor.RESET, true, false);
+        if (lastPassed == -1) {
+            if (!this.holder.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(167))) {
+                this.holder.getStats().achievementGained(AuroraMCAPI.getAchievement(167), 1, true);
+            }
+        } else {
+            if (System.currentTimeMillis() - lastPassed <= 3000) {
+                if (!this.holder.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(164))) {
+                    this.holder.getStats().achievementGained(AuroraMCAPI.getAchievement(164), 1, true);
+                }
+                if (!this.oldHolder.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(161))) {
+                    this.holder.getStats().achievementGained(AuroraMCAPI.getAchievement(161), 1, true);
+                }
+            }
+        }
     }
 
+
+    public AuroraMCGamePlayer getHolder() {
+        return holder;
+    }
 }

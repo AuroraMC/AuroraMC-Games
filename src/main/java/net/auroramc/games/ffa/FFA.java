@@ -67,6 +67,11 @@ public class FFA extends Game {
         JSONArray spawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
+            if (gp.getKitLevel().getLevel() >= 100) {
+                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(149))) {
+                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(149), 1, true);
+                }
+            }
             gp.getScoreboard().clear();
             gp.getScoreboard().setTitle("&3&l-= &b&lFFA &3&l=-");
             if (gp.isSpectator()) {
@@ -126,6 +131,13 @@ public class FFA extends Game {
         PlayerShowEvent.getHandlerList().unregister(showListener);
         PlayerDropItemEvent.getHandlerList().unregister(breakListener);
         NoDamageInstaKillListener.unregister();
+        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+            if (player.getStats().getStatistic(EngineAPI.getActiveGameInfo().getId(), "damageDealt") >= 100000) {
+                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(142))) {
+                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(142), 1, true);
+                }
+            }
+        }
         runnable.cancel();
     }
 
@@ -173,6 +185,32 @@ public class FFA extends Game {
 
     @Override
     public boolean onDeath(AuroraMCGamePlayer auroraMCGamePlayer, AuroraMCGamePlayer killer) {
+        if (auroraMCGamePlayer.hasPermission("admin") && killer != null) {
+            if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(143))) {
+                killer.getStats().achievementGained(AuroraMCAPI.getAchievement(143), 1, true);
+            }
+        } else if (auroraMCGamePlayer.hasPermission("moderation") && killer != null) {
+            if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(144))) {
+                killer.getStats().achievementGained(AuroraMCAPI.getAchievement(144), 1, true);
+            }
+        }
+        if (killer != null) {
+            long gametime = (System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp()) - 10000;
+            if (gametime <= 60000) {
+                killer.getGameData().put("killAchieve", (int)killer.getGameData().getOrDefault("killAchieve", 0) + 1);
+                if ((int)killer.getGameData().get("killAchieve") >= 3) {
+                    if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(150))) {
+                        killer.getStats().achievementGained(AuroraMCAPI.getAchievement(150), 1, true);
+                    }
+                }
+            }
+            killer.getStats().addProgress(AuroraMCAPI.getAchievement(145), 1, killer.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(145), 0),true);
+        }
+        if (auroraMCGamePlayer.getStats().getStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths") > 100) {
+            if (!auroraMCGamePlayer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(148))) {
+                auroraMCGamePlayer.getStats().achievementGained(AuroraMCAPI.getAchievement(148), 1, true);
+            }
+        }
         List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
         if (playersAlive.size() == 1) {
             this.end(playersAlive.get(0));

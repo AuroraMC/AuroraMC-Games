@@ -89,6 +89,13 @@ public class DeathRespawnListener implements Listener {
                         switch (e.getCause()) {
                             case PROJECTILE: {
                                 killReason = KillMessage.KillReason.BOW;
+                                if (EngineAPI.getActiveGameInfo().getId() == 1) {
+                                    if (killer.getPlayer().getLocation().distanceSquared(player.getPlayer().getLocation()) > 2500) {
+                                        if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(71))) {
+                                            killer.getStats().achievementGained(AuroraMCAPI.getAchievement(71), 1, true);
+                                        }
+                                    }
+                                }
                                 break;
                             }
                             case VOID: {
@@ -117,6 +124,13 @@ public class DeathRespawnListener implements Listener {
                             Player damager = (Player) projectile.getShooter();
                             killer = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(damager);
                             killReason = KillMessage.KillReason.BOW;
+                            if (EngineAPI.getActiveGameInfo().getId() == 1) {
+                                if (killer.getPlayer().getLocation().distanceSquared(player.getPlayer().getLocation()) > 2500) {
+                                    if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(71))) {
+                                        killer.getStats().achievementGained(AuroraMCAPI.getAchievement(71), 1, true);
+                                    }
+                                }
+                            }
                         } else {
                             if (projectile.getShooter() instanceof Entity) {
                                 //Damage by entity.
@@ -129,6 +143,13 @@ public class DeathRespawnListener implements Listener {
                         //Damage by entity.
                         entity = ((EntityDamageByEntityEvent) e).getDamager();
                         killReason = KillMessage.KillReason.ENTITY;
+                        if (e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION && ((EntityDamageByEntityEvent) e).getDamager() instanceof EnderCrystal) {
+                            if (EngineAPI.getActiveGameInfo().getId() == 1) {
+                                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(75))) {
+                                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(75), 1, true);
+                                }
+                            }
+                        }
                     }
                 } else {
                     switch (e.getCause()) {
@@ -189,8 +210,12 @@ public class DeathRespawnListener implements Listener {
                     for (Map.Entry<AuroraMCGamePlayer, Long> entry : player.getLatestHits().entrySet()) {
                         if (System.currentTimeMillis() - entry.getValue() < 60000 && entry.getKey().getId() != killer.getId()) {
                             entry.getKey().getRewards().addXp("Assists", 10);
+                            entry.getKey().getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "assists", 1, true);
                             entry.getKey().getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", "You got an assist on player **" + player.getPlayer().getName() + "**!"));
                             entry.getKey().getPlayer().playSound(entry.getKey().getPlayer().getLocation(), Sound.ARROW_HIT, 100, 1);
+                            if (EngineAPI.getActiveGameInfo().getId() == 1) {
+                                entry.getKey().getStats().addProgress(AuroraMCAPI.getAchievement(74), 1, entry.getKey().getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(74), 0), true);
+                            }
                         }
                     }
                 }

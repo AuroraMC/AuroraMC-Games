@@ -28,6 +28,7 @@ public class BreakListener implements Listener {
                 e.setCancelled(true);
                 e.getClickedBlock().setType(Material.AIR);
                 player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "blocksBroken", 1, true);
+                player.getStats().addProgress(AuroraMCAPI.getAchievement(141), 1, player.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(141), 0),true);
             }
             if (!player.isSpectator() && e.getItem() != null && e.getItem().getType() == Material.DIAMOND_AXE && e.getAction() == Action.RIGHT_CLICK_AIR) {
                 e.setCancelled(true);
@@ -45,6 +46,7 @@ public class BreakListener implements Listener {
                 e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You used **Leap**."));
                 player.getGameData().put("leapLastUsed", System.currentTimeMillis());
                 player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "leapsUsed", 1, true);
+                player.getStats().addProgress(AuroraMCAPI.getAchievement(147), 1, player.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(147), 0),true);
                 new BukkitRunnable(){
                     @Override
                     public void run() {

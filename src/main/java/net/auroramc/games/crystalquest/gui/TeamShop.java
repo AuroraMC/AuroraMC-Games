@@ -5,6 +5,7 @@
 package net.auroramc.games.crystalquest.gui;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.utils.gui.GUI;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
@@ -198,6 +199,13 @@ public class TeamShop extends GUI {
                         robotC.spawn();
                         this.updateItem(4, 5, new GUIItem(Material.SKULL_ITEM, robotC.getEntity().getCustomName() + " (Level " + robotC.getLevel() + ")", 1, ";&rThis mines:;" + descs.get(robotC.getLevel())));
                         this.updateItem(2, 4, new GUIItem(Material.BARRIER, "&3&lLevel 1 Mining Robot", 1, ";&rAll of your Mining Robot slots are full!"));
+                        if (power == 2 && prot == 2 && sharp == 2 && robotB.getEntity() != null && robotC.getEntity() != null) {
+                            for (AuroraMCPlayer player : this.player.getTeam().getPlayers()) {
+                                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(70))) {
+                                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(70), 1, true);
+                                }
+                            }
+                        }
                     }
                 } else {
                     this.setItem(2, 4, new GUIItem(Material.BARRIER, "&3&lLevel 1 Mining Robot", 1, ";&rAll of your Mining Robot slots are full!"));

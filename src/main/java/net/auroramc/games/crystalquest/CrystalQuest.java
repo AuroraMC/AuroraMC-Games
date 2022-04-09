@@ -630,6 +630,12 @@ public class CrystalQuest extends Game {
                                 }
                             }
                         }
+
+                        if (player.getPlayer().getInventory().contains(Material.EMERALD, 64)) {
+                            if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(68))) {
+                                player.getStats().achievementGained(AuroraMCAPI.getAchievement(68), 1, true);
+                            }
+                        }
                     }
                 }
             }
@@ -952,6 +958,11 @@ public class CrystalQuest extends Game {
                     } else {
                         red.getTowerBCrystal().crystalReturned();
                     }
+                    if (killer != null) {
+                        if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(66))) {
+                            killer.getStats().achievementGained(AuroraMCAPI.getAchievement(66), 1, true);
+                        }
+                    }
             }
             if (blue.getBossCrystal().getState() == Crystal.CrystalState.DEAD) {
                 finalKill = true;
@@ -990,6 +1001,11 @@ public class CrystalQuest extends Game {
         }
         if (killer != null) {
             killer.getStats().addProgress(AuroraMCAPI.getAchievement(65), 1, player.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(65), 0), true);
+            if (killer.getPlayer().getHealth() >= 19) {
+                if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(72))) {
+                    killer.getStats().achievementGained(AuroraMCAPI.getAchievement(72), 1, true);
+                }
+            }
         }
         if (!finalKill) {
             if (life) {

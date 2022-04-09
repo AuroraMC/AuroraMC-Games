@@ -98,6 +98,9 @@ public class RobotMenu extends GUI {
                     robot.upgrade();
                     if (robot.getLevel() == 3) {
                         this.setItem(1, 6, new GUIItem(Material.BARRIER, "&3&lUpgrade Robot", 1, ";&rYou already have the max upgrade for this robot."));
+                        if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(69))) {
+                            player.getStats().achievementGained(AuroraMCAPI.getAchievement(69), 1, true);
+                        }
                     } else {
                         this.setItem(1, 6, new GUIItem(Material.EXP_BOTTLE, "&3&lUpgrade Robot", 1, ";&rUpgrade to:;&bLevel " + (robot.getLevel() + 1) + ";;Cost:;&b" + ((robot.getLevel() == 1)?24:32) + " &aEmeralds;;&rThis mines:;" + descs.get(robot.getLevel() + 1)));
                     }

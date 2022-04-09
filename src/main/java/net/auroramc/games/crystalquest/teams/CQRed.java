@@ -207,6 +207,13 @@ public class CQRed implements Team {
 
     public void upgradePower() {
         powerUpgrade++;
+        if (powerUpgrade == 2 && protUpgrade == 2 && sharpUpgrade == 2 && robotSlotA.getEntity() != null && robotSlotB.getEntity() != null && robotSlotC.getEntity() != null) {
+            for (AuroraMCPlayer player : players) {
+                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(70))) {
+                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(70), 1, true);
+                }
+            }
+        }
         for (AuroraMCPlayer player : players) {
             player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Your **Power Upgrade** was upgraded to **Level " + powerUpgrade + "**!"));
             if (!((AuroraMCGamePlayer) player).isSpectator()) {
@@ -232,6 +239,13 @@ public class CQRed implements Team {
 
     public void upgradeProt() {
         protUpgrade++;
+        if (powerUpgrade == 2 && protUpgrade == 2 && sharpUpgrade == 2 && robotSlotA.getEntity() != null && robotSlotB.getEntity() != null && robotSlotC.getEntity() != null) {
+            for (AuroraMCPlayer player : players) {
+                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(70))) {
+                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(70), 1, true);
+                }
+            }
+        }
         for (AuroraMCPlayer player : players) {
             player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Your **Protection Upgrade** was upgraded to **Level " + protUpgrade + "**!"));
             if (!((AuroraMCGamePlayer) player).isSpectator()) {
@@ -256,6 +270,13 @@ public class CQRed implements Team {
 
     public void upgradeSharp() {
         sharpUpgrade++;
+        if (powerUpgrade == 2 && protUpgrade == 2 && sharpUpgrade == 2 && robotSlotA.getEntity() != null && robotSlotB.getEntity() != null && robotSlotC.getEntity() != null) {
+            for (AuroraMCPlayer player : players) {
+                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(70))) {
+                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(70), 1, true);
+                }
+            }
+        }
         for (AuroraMCPlayer player : players) {
             player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Your **Sharpness Upgrade** was upgraded to **Level " + sharpUpgrade + "**!"));
             if (!((AuroraMCGamePlayer) player).isSpectator()) {
@@ -302,7 +323,6 @@ public class CQRed implements Team {
 
     public MiningRobot newRobot() {
         if (robotSlotB.getLevel() == 0) {
-
             return robotSlotB;
         } else if (robotSlotC.getLevel() == 0) {
             return robotSlotC;

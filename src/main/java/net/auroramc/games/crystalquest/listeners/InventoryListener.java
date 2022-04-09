@@ -5,6 +5,7 @@
 package net.auroramc.games.crystalquest.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
@@ -112,6 +113,8 @@ public class InventoryListener implements Listener {
             }
             e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 0));
             e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 0));
+            AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
+            player.getStats().addProgress(AuroraMCAPI.getAchievement(73), 1, player.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(73), 0), true);
         } else if (e.getItem() != null && e.getItem().getType() == Material.ENDER_PEARL) {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
             if (player.getGameData().containsKey("crystal_possession")) {
