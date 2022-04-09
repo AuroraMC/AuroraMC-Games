@@ -171,10 +171,6 @@ public class HotPotato extends Game {
                 }
                 potatoList.clear();
                 List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer) player).isSpectator()).collect(Collectors.toList());
-                if (playersAlive.size() == 1) {
-                    end(playersAlive.get(0));
-                    return;
-                }
                 for (AuroraMCPlayer player : playersAlive) {
                     AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
                     if (gp.getGameData().containsKey("had_potato")) {
@@ -192,6 +188,10 @@ public class HotPotato extends Game {
                             }
                         }
                     }
+                }
+                if (playersAlive.size() == 1) {
+                    end(playersAlive.get(0));
+                    return;
                 }
                 for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The potatoes have exploded! The next round starts in 10 seconds!"));
