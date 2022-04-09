@@ -179,13 +179,13 @@ public class HotPotato extends Game {
                     AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
                     if (gp.getGameData().containsKey("had_potato")) {
                         gp.getGameData().remove("had_potato");
-                        if (!gp.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(162))) {
-                            gp.getStats().achievementGained(AuroraMCAPI.getAchievement(162), 1, true);
-                        }
                         gp.getGameData().put("total_potato_rounds", (int)gp.getGameData().getOrDefault("total_potato_rounds", 0) + 1);
                         gp.getGameData().remove("rounds_without_potato");
                     } else {
                         gp.getGameData().put("rounds_without_potato",(int)gp.getGameData().getOrDefault("rounds_without_potato", 0) + 1);
+                        if (!gp.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(162))) {
+                            gp.getStats().achievementGained(AuroraMCAPI.getAchievement(162), 1, true);
+                        }
                         if ((int)gp.getGameData().get("rounds_without_potato") >= 3) {
                             if (!gp.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(170))) {
                                 gp.getStats().achievementGained(AuroraMCAPI.getAchievement(170), 1, true);
