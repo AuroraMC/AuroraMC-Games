@@ -89,9 +89,13 @@ public class DeathRespawnListener implements Listener {
                         switch (e.getCause()) {
                             case PROJECTILE: {
                                 killReason = KillMessage.KillReason.BOW;
+                                Bukkit.broadcastMessage("test1");
                                 if (EngineAPI.getActiveGameInfo().getId() == 1) {
+                                    Bukkit.broadcastMessage("test2");
                                     if (killer.getPlayer().getLocation().distanceSquared(player.getPlayer().getLocation()) > 1600) {
+                                        Bukkit.broadcastMessage("test3");
                                         if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(71))) {
+                                            Bukkit.broadcastMessage("test4");
                                             killer.getStats().achievementGained(AuroraMCAPI.getAchievement(71), 1, true);
                                         }
                                     }
@@ -124,9 +128,13 @@ public class DeathRespawnListener implements Listener {
                             Player damager = (Player) projectile.getShooter();
                             killer = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(damager);
                             killReason = KillMessage.KillReason.BOW;
+                            Bukkit.broadcastMessage("test5");
                             if (EngineAPI.getActiveGameInfo().getId() == 1) {
+                                Bukkit.broadcastMessage("test6");
                                 if (killer.getPlayer().getLocation().distanceSquared(player.getPlayer().getLocation()) > 1600) {
+                                    Bukkit.broadcastMessage("test7");
                                     if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(71))) {
+                                        Bukkit.broadcastMessage("test8");
                                         killer.getStats().achievementGained(AuroraMCAPI.getAchievement(71), 1, true);
                                     }
                                 }
