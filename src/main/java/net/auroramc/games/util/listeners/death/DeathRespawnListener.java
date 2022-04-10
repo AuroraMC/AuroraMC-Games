@@ -143,7 +143,7 @@ public class DeathRespawnListener implements Listener {
                         //Damage by entity.
                         entity = ((EntityDamageByEntityEvent) e).getDamager();
                         killReason = KillMessage.KillReason.ENTITY;
-                        if (e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION && ((EntityDamageByEntityEvent) e).getDamager() instanceof EnderCrystal) {
+                        if (((EntityDamageByEntityEvent) e).getDamager() instanceof EnderCrystal) {
                             if (EngineAPI.getActiveGameInfo().getId() == 1) {
                                 if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(75))) {
                                     player.getStats().achievementGained(AuroraMCAPI.getAchievement(75), 1, true);
