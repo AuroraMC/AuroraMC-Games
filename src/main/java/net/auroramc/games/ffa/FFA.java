@@ -126,7 +126,7 @@ public class FFA extends Game {
 
     private void end() {
         ItemSpawnEvent.getHandlerList().unregister(itemSpawnListener);
-        DisableHungerListener.unregister();
+        DeathListener.unregister();
         PlayerInteractEvent.getHandlerList().unregister(breakListener);
         PlayerShowEvent.getHandlerList().unregister(showListener);
         PlayerDropItemEvent.getHandlerList().unregister(breakListener);
