@@ -90,7 +90,7 @@ public class DeathRespawnListener implements Listener {
                             case PROJECTILE: {
                                 killReason = KillMessage.KillReason.BOW;
                                 if (EngineAPI.getActiveGameInfo().getId() == 1) {
-                                    if (killer.getPlayer().getLocation().distanceSquared(player.getPlayer().getLocation()) > 2500) {
+                                    if (killer.getPlayer().getLocation().distanceSquared(player.getPlayer().getLocation()) > 1600) {
                                         if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(71))) {
                                             killer.getStats().achievementGained(AuroraMCAPI.getAchievement(71), 1, true);
                                         }
