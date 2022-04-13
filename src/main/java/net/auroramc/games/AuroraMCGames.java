@@ -11,6 +11,8 @@ import net.auroramc.games.hotpotato.HotPotatoInfo;
 import net.auroramc.games.run.RunInfo;
 import net.auroramc.games.spleef.SpleefInfo;
 import net.auroramc.games.tag.TagInfo;
+import net.auroramc.games.util.listeners.death.BorderListener;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AuroraMCGames extends JavaPlugin {
@@ -24,6 +26,8 @@ public class AuroraMCGames extends JavaPlugin {
         EngineAPI.registerGame(new RunInfo());
         EngineAPI.registerGame(new TagInfo());
         EngineAPI.loadRotation();
+
+        Bukkit.getPluginManager().registerEvents(new BorderListener(), this);
     }
 
 }
