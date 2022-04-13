@@ -15,7 +15,6 @@ import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.run.kits.RunKit;
 import net.auroramc.games.run.listeners.DeathListener;
-import net.auroramc.games.run.listeners.ItemSpawnListener;
 import net.auroramc.games.run.util.RunScoreboardRunnable;
 import net.auroramc.games.util.PlayersTeam;
 import net.auroramc.games.util.listeners.death.NoDamageInstaKillListener;
@@ -24,13 +23,7 @@ import net.auroramc.games.util.listeners.settings.DisableHungerListener;
 import net.auroramc.games.util.listeners.settings.DisablePlaceListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.ItemSpawnEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -104,9 +97,6 @@ public class Run extends Game {
     @Override
     public void end(AuroraMCPlayer winner) {
         end();
-        if (winner != null) {
-            winner.getStats().addProgress(AuroraMCAPI.getAchievement(122), 1, winner.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(122), 0), true);
-        }
         super.end(winner);
     }
 
@@ -173,17 +163,6 @@ public class Run extends Game {
 
     @Override
     public boolean onDeath(AuroraMCGamePlayer auroraMCGamePlayer, AuroraMCGamePlayer killer) {
-        if (killer != null) {
-            if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(124))) {
-                killer.getStats().achievementGained(AuroraMCAPI.getAchievement(124), 1, true);
-            }
-        }
-
-        if ((System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp()) - 10000 < 3000) {
-            if (!auroraMCGamePlayer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(125))) {
-                auroraMCGamePlayer.getStats().achievementGained(AuroraMCAPI.getAchievement(125), 1, true);
-            }
-        }
         List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
         if (playersAlive.size() == 1) {
             this.end(playersAlive.get(0));
