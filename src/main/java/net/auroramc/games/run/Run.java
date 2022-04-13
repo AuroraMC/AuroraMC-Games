@@ -15,6 +15,7 @@ import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.run.kits.RunKit;
 import net.auroramc.games.run.listeners.DeathListener;
+import net.auroramc.games.run.listeners.MoveListener;
 import net.auroramc.games.run.util.RunScoreboardRunnable;
 import net.auroramc.games.util.PlayersTeam;
 import net.auroramc.games.util.listeners.death.NoDamageInstaKillListener;
@@ -24,6 +25,7 @@ import net.auroramc.games.util.listeners.settings.DisablePlaceListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -38,6 +40,7 @@ public class Run extends Game {
         super(gameVariation);
     }
     private DeathListener deathListener;
+    private MoveListener moveListener;
     private RunScoreboardRunnable runnable;
 
 
@@ -86,11 +89,13 @@ public class Run extends Game {
             }
         }
         deathListener = new DeathListener();
+        moveListener = new MoveListener();
         DisableHungerListener.register();
         DisableBreakListener.register();
         DisablePlaceListener.register();
         NoDamageInstaKillListener.register();
         Bukkit.getPluginManager().registerEvents(deathListener, EngineAPI.getGameEngine());
+        Bukkit.getPluginManager().registerEvents(moveListener, EngineAPI.getGameEngine());
         runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
     }
 
@@ -112,6 +117,7 @@ public class Run extends Game {
 
     private void end() {
         PlayerShowEvent.getHandlerList().unregister(deathListener);
+        PlayerMoveEvent.getHandlerList().unregister(moveListener);
         DisableHungerListener.unregister();
         DisableBreakListener.unregister();
         DisablePlaceListener.unregister();
