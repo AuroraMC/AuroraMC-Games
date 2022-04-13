@@ -13,16 +13,25 @@ import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.tag.kits.TagKit;
+import net.auroramc.games.tag.listeners.HitListener;
+import net.auroramc.games.tag.teams.RunnersTeam;
+import net.auroramc.games.tag.teams.TaggedTeam;
 import net.auroramc.games.tag.utils.TagScoreboardRunnable;
 import net.auroramc.games.util.PlayersTeam;
+import net.auroramc.games.util.listeners.settings.DisableBreakListener;
+import net.auroramc.games.util.listeners.settings.DisableHungerListener;
+import net.auroramc.games.util.listeners.settings.DisablePlaceListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class Tag extends Game {
@@ -33,13 +42,15 @@ public class Tag extends Game {
     }
 
     private TagScoreboardRunnable runnable;
+    private HitListener hitListener;
 
 
     @Override
     public void preLoad() {
-        this.teams.put("players", new PlayersTeam());
+        this.teams.put("players", new RunnersTeam());
         this.kits.add(new TagKit());
         runnable = new TagScoreboardRunnable();
+        hitListener = new HitListener();
     }
 
     @Override
@@ -79,7 +90,10 @@ public class Tag extends Game {
                 gp.getKit().onGameStart(player);
             }
         }
-
+        Bukkit.getPluginManager().registerEvents(hitListener, AuroraMCAPI.getCore());
+        DisableBreakListener.register();
+        DisableHungerListener.register();
+        DisablePlaceListener.register();;
         runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
     }
 
@@ -102,11 +116,34 @@ public class Tag extends Game {
     @Override
     public void inProgress() {
         super.inProgress();
-
+        TaggedTeam team = new TaggedTeam();
+        this.teams.put("Tagged", team);
+        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
+        int random = new Random().nextInt(playersAlive.size());
+        AuroraMCPlayer player = playersAlive.get(random);
+        player.setTeam(team);
+        for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+            player1.updateNametag(player);
+            if (player1.equals(player)) {
+                if (player1.isDisguised()) {
+                    if (player1.getPreferences().isHideDisguiseNameEnabled()) {
+                        player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + player.getName() + "** was tagged by the game!"));
+                        continue;
+                    }
+                }
+                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + player.getPlayer().getName() + "** was tagged by the game!"));
+            } else {
+                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + player.getPlayer().getName() + "** was tagged by the game!"));
+            }
+        }
     }
 
     private void end() {
-
+        EntityDamageByEntityEvent.getHandlerList().unregister(hitListener);
+        EntityDamageEvent.getHandlerList().unregister(hitListener);
+        DisablePlaceListener.unregister();
+        DisableBreakListener.unregister();
+        DisableHungerListener.unregister();
         runnable.cancel();
     }
 
@@ -142,9 +179,9 @@ public class Tag extends Game {
 
     @Override
     public void onPlayerLeave(AuroraMCGamePlayer auroraMCGamePlayer) {
-        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
+        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && !(player.getTeam() instanceof TaggedTeam)).collect(Collectors.toList());
         if (playersAlive.size() == 1) {
-            EngineAPI.getActiveGame().end(playersAlive.get(0));
+            this.end(playersAlive.get(0));
         }
     }
 

@@ -10,6 +10,7 @@ import net.auroramc.core.api.players.scoreboard.PlayerScoreboard;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.tag.Tag;
+import net.auroramc.games.tag.teams.TaggedTeam;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class TagScoreboardRunnable extends BukkitRunnable {
     @Override
     public void run() {
         if (EngineAPI.getActiveGame() != null && EngineAPI.getActiveGame() instanceof Tag) {
-            List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).getGameData().containsKey("tagged")).collect(Collectors.toList());
+            List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !(player.getTeam() instanceof TaggedTeam)).collect(Collectors.toList());
             long gametime = (System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp()) - 10000;
 
             double minutes = gametime / 1000d / 60d;
