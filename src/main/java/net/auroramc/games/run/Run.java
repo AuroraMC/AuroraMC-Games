@@ -13,6 +13,7 @@ import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.games.run.kits.RunKit;
 import net.auroramc.games.run.listeners.DeathListener;
 import net.auroramc.games.run.listeners.MoveListener;
@@ -24,6 +25,7 @@ import net.auroramc.games.util.listeners.settings.DisableHungerListener;
 import net.auroramc.games.util.listeners.settings.DisablePlaceListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -123,6 +125,30 @@ public class Run extends Game {
         DisablePlaceListener.unregister();
         NoDamageInstaKillListener.unregister();
         runnable.cancel();
+    }
+
+    @Override
+    public void inProgress() {
+        super.inProgress();
+
+        for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
+            AuroraMCGamePlayer gp = (AuroraMCGamePlayer) pl;
+            if (gp.isSpectator() || gp.isVanished()) {
+                return;
+            }
+            Location location = gp.getPlayer().getLocation().clone();
+            location.setY(location.getY() - 1);
+            if (location.getBlock().getType() != Material.AIR && location.getBlock().getType() != Material.STAINED_CLAY && !location.getBlock().isLiquid()) {
+                location.getBlock().setType(Material.STAINED_CLAY);
+                location.getBlock().setData((byte) 14);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        location.getBlock().setType(Material.AIR);
+                    }
+                }.runTaskLater(AuroraMCAPI.getCore(), 20);
+            }
+        }
     }
 
     @Override
