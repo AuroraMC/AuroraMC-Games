@@ -34,8 +34,8 @@ public class HitListener implements Listener {
             AuroraMCPlayer pl = AuroraMCAPI.getPlayer((Player) e.getDamager());
             if (pl instanceof AuroraMCGamePlayer) {
                 AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
-                if (!player.isSpectator() && !player.isVanished() && player.getTeam() instanceof TaggedTeam) {
-                    AuroraMCGamePlayer hit = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity());
+                AuroraMCGamePlayer hit = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity());
+                if (!player.isSpectator() && !player.isVanished() && player.getTeam() instanceof TaggedTeam && hit.getTeam() instanceof RunnersTeam) {
                     e.setDamage(0);
                     hit.setTeam(player.getTeam());
                     hit.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You were tagged!"));
