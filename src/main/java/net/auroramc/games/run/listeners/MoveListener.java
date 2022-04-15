@@ -42,14 +42,14 @@ public class MoveListener implements Listener {
             double decZ = Math.abs(location.getZ() - wholeZ);
             Location x = null;
             Location z = null;
-            if (decX <= 0.3) {
+            if (decX <= 0.31) {
                 x = location.clone();
                 if (location.getX() > 0) {
                     x.setX(x.getX() - 1);
                 } else {
                     x.setX(x.getX() + 1);
                 }
-            } else if (decX >= 0.7) {
+            } else if (decX >= 0.71) {
                 x = location.clone();
                 if (location.getX() > 0) {
                     x.setX(x.getX() + 1);
@@ -69,14 +69,14 @@ public class MoveListener implements Listener {
                 }.runTaskLater(AuroraMCAPI.getCore(), 20);
             }
 
-            if (decZ <= 0.3) {
+            if (decZ <= 0.31) {
                 z = location.clone();
                 if (location.getZ() > 0) {
                     z.setZ(z.getZ() - 1);
                 } else {
                     z.setZ(z.getZ() + 1);
                 }
-            } else if (decZ >= 0.7) {
+            } else if (decZ >= 0.71) {
                 z = location.clone();
                 if (location.getZ() > 0) {
                     z.setZ(z.getZ() + 1);
@@ -96,17 +96,19 @@ public class MoveListener implements Listener {
                         }
                     }.runTaskLater(AuroraMCAPI.getCore(), 20);
                 }
-                if (x != null && x.getBlock().getType() != Material.AIR && x.getBlock().getType() != Material.STAINED_CLAY && !x.getBlock().isLiquid()) {
+                if (x != null) {
                     Location loc2 = x.clone();
                     loc2.setZ(z.getZ());
-                    loc2.getBlock().setType(Material.STAINED_CLAY);
-                    loc2.getBlock().setData((byte)14);
-                    new BukkitRunnable(){
-                        @Override
-                        public void run() {
-                            loc2.getBlock().setType(Material.AIR);
-                        }
-                    }.runTaskLater(AuroraMCAPI.getCore(), 20);
+                    if (loc2.getBlock().getType() != Material.AIR && loc2.getBlock().getType() != Material.STAINED_CLAY && !loc2.getBlock().isLiquid()) {
+                        loc2.getBlock().setType(Material.STAINED_CLAY);
+                        loc2.getBlock().setData((byte)14);
+                        new BukkitRunnable(){
+                            @Override
+                            public void run() {
+                                loc2.getBlock().setType(Material.AIR);
+                            }
+                        }.runTaskLater(AuroraMCAPI.getCore(), 20);
+                    }
                 }
             }
 
