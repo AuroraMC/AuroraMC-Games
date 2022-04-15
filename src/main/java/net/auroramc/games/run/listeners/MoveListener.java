@@ -36,8 +36,8 @@ public class MoveListener implements Listener {
                     }
                 }.runTaskLater(AuroraMCAPI.getCore(), 20);
             }
-            int wholeX = (int) Math.round(location.getX());
-            int wholeZ = (int) Math.round(location.getZ());
+            int wholeX = (int) ((location.getX() >= 0)?Math.floor(location.getX()):Math.ceil(location.getX()));
+            int wholeZ = (int) ((location.getZ() >= 0)?Math.floor(location.getZ()):Math.ceil(location.getZ()));
             double decX = Math.abs(location.getX() - wholeX);
             double decZ = Math.abs(location.getZ() - wholeZ);
             Location x = null;
@@ -45,16 +45,16 @@ public class MoveListener implements Listener {
             if (decX <= 0.31) {
                 x = location.clone();
                 if (x.getX() >= 0) {
-                    x.setX(wholeX - 1);
+                    x.setX(x.getX() - 1);
                 } else {
-                    x.setX(wholeX + 1);
+                    x.setX(x.getX() + 1);
                 }
             } else if (decX >= 0.71) {
                 x = location.clone();
                 if (x.getX() >= 0) {
-                    x.setX(wholeX + 1);
+                    x.setX(x.getX() + 1);
                 } else {
-                    x.setX(wholeX - 1);
+                    x.setX(x.getX() - 1);
                 }
             }
             if (x != null && x.getBlock().getType() != Material.AIR && (x.getBlock().getType() != Material.STAINED_CLAY || x.getBlock().getData() != 14) && !x.getBlock().isLiquid()) {
@@ -72,9 +72,9 @@ public class MoveListener implements Listener {
             if (decZ <= 0.31) {
                 z = location.clone();
                 if (z.getZ() >= 0) {
-                    z.setZ(wholeZ - 1);
+                    z.setZ(z.getZ() - 1);
                 } else {
-                    z.setZ(wholeZ + 1);
+                    z.setZ(z.getZ() + 1);
                 }
             } else if (decZ >= 0.71) {
                 z = location.clone();
