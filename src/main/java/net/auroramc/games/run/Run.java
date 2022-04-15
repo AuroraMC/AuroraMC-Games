@@ -138,7 +138,7 @@ public class Run extends Game {
             }
             Location location = gp.getPlayer().getLocation().clone();
             location.setY(location.getY() - 1);
-            if (location.getBlock().getType() != Material.AIR && location.getBlock().getType() != Material.STAINED_CLAY && !location.getBlock().isLiquid()) {
+            if (location.getBlock().getType() != Material.AIR && (location.getBlock().getType() != Material.STAINED_CLAY || location.getBlock().getData() != 14) && !location.getBlock().isLiquid()) {
                 location.getBlock().setType(Material.STAINED_CLAY);
                 location.getBlock().setData((byte) 14);
                 new BukkitRunnable() {
