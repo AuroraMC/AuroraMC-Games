@@ -36,8 +36,8 @@ public class MoveListener implements Listener {
                     }
                 }.runTaskLater(AuroraMCAPI.getCore(), 20);
             }
-            int wholeX = (int) location.getX();
-            int wholeZ = (int) location.getZ();
+            int wholeX = (int) Math.round(location.getX());
+            int wholeZ = (int) Math.round(location.getZ());
             double decX = Math.abs(location.getX() - wholeX);
             double decZ = Math.abs(location.getZ() - wholeZ);
             Location x = null;
