@@ -157,18 +157,19 @@ public class Run extends Game {
                     int wholeZ = (int) ((location.getZ() >= 0)?Math.floor(location.getZ()):Math.ceil(location.getZ()));
                     double decX = Math.abs(location.getX() - wholeX);
                     double decZ = Math.abs(location.getZ() - wholeZ);
+                    Bukkit.broadcastMessage(wholeX + "." + decX + ", " + wholeZ + "." + decZ);
                     Location x = null;
                     Location z = null;
                     if (decX <= 0.31) {
                         x = location.clone();
-                        if (x.getX() > 0) {
+                        if (location.getX() > 0) {
                             x.setX(x.getX() - 1);
                         } else {
                             x.setX(x.getX() + 1);
                         }
                     } else if (decX >= 0.69) {
                         x = location.clone();
-                        if (x.getX() > 0) {
+                        if (location.getX() > 0) {
                             x.setX(x.getX() + 1);
                         } else {
                             x.setX(x.getX() - 1);
