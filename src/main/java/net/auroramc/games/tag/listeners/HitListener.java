@@ -66,7 +66,6 @@ public class HitListener implements Listener {
                         EngineAPI.getActiveGame().end(playersAlive.get(0));
                     }
                 } else if (!player.isSpectator() && !player.isVanished() && player.getTeam() instanceof RunnersTeam) {
-                    AuroraMCGamePlayer hit = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity());
                     if (hit.getTeam() instanceof RunnersTeam) {
                         e.setDamage(0);
                     } else {
