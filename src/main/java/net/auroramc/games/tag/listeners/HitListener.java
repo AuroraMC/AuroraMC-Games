@@ -40,6 +40,7 @@ public class HitListener implements Listener {
                     hit.setTeam(player.getTeam());
                     hit.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You were tagged!"));
                     player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "tags", 1, true);
+                    hit.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "tagged", 1, true);
                     for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
                         player1.updateNametag(hit);
                         if (player1.equals(hit)) {
