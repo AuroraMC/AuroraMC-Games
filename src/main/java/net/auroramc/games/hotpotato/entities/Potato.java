@@ -102,6 +102,7 @@ public class Potato {
             }
         } else {
             if (System.currentTimeMillis() - lastPassed <= 3000) {
+                this.oldHolder.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "closeCalls", 1, true);
                 if (!this.holder.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(164))) {
                     this.holder.getStats().achievementGained(AuroraMCAPI.getAchievement(164), 1, true);
                 }
