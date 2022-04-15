@@ -180,6 +180,28 @@ public class Tag extends Game {
     @Override
     public void onPlayerLeave(AuroraMCGamePlayer auroraMCGamePlayer) {
         List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && !(player.getTeam() instanceof TaggedTeam)).collect(Collectors.toList());
+        if (auroraMCGamePlayer.getTeam() instanceof TaggedTeam) {
+            List<AuroraMCPlayer> tagged = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && (player.getTeam() instanceof TaggedTeam)).collect(Collectors.toList());
+            if (tagged.size() == 0) {
+                int random = new Random().nextInt(playersAlive.size());
+                AuroraMCPlayer player = playersAlive.get(random);
+                player.setTeam(this.teams.get("Tagged"));
+                for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+                    player1.updateNametag(player);
+                    if (player1.equals(player)) {
+                        if (player1.isDisguised()) {
+                            if (player1.getPreferences().isHideDisguiseNameEnabled()) {
+                                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + player.getName() + "** was tagged by the game!"));
+                                continue;
+                            }
+                        }
+                        player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + player.getPlayer().getName() + "** was tagged by the game!"));
+                    } else {
+                        player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + player.getPlayer().getName() + "** was tagged by the game!"));
+                    }
+                }
+            }
+        }
         if (playersAlive.size() == 1) {
             this.end(playersAlive.get(0));
         }
