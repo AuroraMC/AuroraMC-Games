@@ -219,7 +219,7 @@ public class CrystalQuest extends Game {
                 y = specSpawn.getInt("y");
                 z = specSpawn.getInt("z");
                 float yaw = specSpawn.getFloat("yaw");
-                gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
+                gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
             } else {
                 if (gp.getTeam() instanceof CQRed) {
                     JSONObject spawn = redSpawns.getJSONObject(redSpawnIndex);
@@ -228,7 +228,7 @@ public class CrystalQuest extends Game {
                     y = spawn.getInt("y");
                     z = spawn.getInt("z");
                     float yaw = spawn.getFloat("yaw");
-                    gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
+                    gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
                     redSpawnIndex++;
                     if (redSpawnIndex >= redSpawns.length()) {
                         redSpawnIndex = 0;
@@ -240,7 +240,7 @@ public class CrystalQuest extends Game {
                     y = spawn.getInt("y");
                     z = spawn.getInt("z");
                     float yaw = spawn.getFloat("yaw");
-                    gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
+                    gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
                     blueSpawnIndex++;
                     if (blueSpawnIndex >= blueSpawns.length()) {
                         blueSpawnIndex = 0;
