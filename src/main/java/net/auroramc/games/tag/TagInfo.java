@@ -9,6 +9,6 @@ import net.auroramc.engine.api.games.GameInfo;
 public class TagInfo extends GameInfo {
 
     public TagInfo() {
-        super(106, "Tag", Tag.class, "A game description", "TAG", false, "v0.0.1-ALPHA");
+        super(103, "Tag", Tag.class, "A game description", "TAG", false, "v0.0.1-ALPHA");
     }
 }
