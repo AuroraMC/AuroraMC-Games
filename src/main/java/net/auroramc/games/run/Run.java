@@ -153,6 +153,7 @@ public class Run extends Game {
                     Location location = gp.getPlayer().getLocation().clone();
                     location.setY(location.getY() - 1);
                     if (location.getBlock().getType() != Material.AIR && (location.getBlock().getType() != Material.STAINED_CLAY || location.getBlock().getData() != 14) && !location.getBlock().isLiquid()) {
+                        gp.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "blocksBroken", 1, true);
                         location.getBlock().setType(Material.STAINED_CLAY);
                         location.getBlock().setData((byte) 14);
                         new BukkitRunnable() {
@@ -184,6 +185,7 @@ public class Run extends Game {
                         }
                     }
                     if (x != null && x.getBlock().getType() != Material.AIR && (x.getBlock().getType() != Material.STAINED_CLAY || x.getBlock().getData() != 14) && !x.getBlock().isLiquid()) {
+                        gp.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "blocksBroken", 1, true);
                         x.getBlock().setType(Material.STAINED_CLAY);
                         x.getBlock().setData((byte)14);
                         Location finX = x;
@@ -212,6 +214,7 @@ public class Run extends Game {
                     }
                     if (z != null) {
                         if (z.getBlock().getType() != Material.AIR && (z.getBlock().getType() != Material.STAINED_CLAY || z.getBlock().getData() != 14) && !z.getBlock().isLiquid()) {
+                            gp.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "blocksBroken", 1, true);
                             z.getBlock().setType(Material.STAINED_CLAY);
                             z.getBlock().setData((byte)14);
                             Location finZ = z;
@@ -226,6 +229,7 @@ public class Run extends Game {
                             Location loc2 = x.clone();
                             loc2.setZ(z.getZ());
                             if (loc2.getBlock().getType() != Material.AIR && (loc2.getBlock().getType() != Material.STAINED_CLAY || loc2.getBlock().getData() != 14) && !loc2.getBlock().isLiquid()) {
+                                gp.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "blocksBroken", 1, true);
                                 loc2.getBlock().setType(Material.STAINED_CLAY);
                                 loc2.getBlock().setData((byte)14);
                                 new BukkitRunnable(){
