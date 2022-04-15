@@ -44,17 +44,17 @@ public class MoveListener implements Listener {
             Location z = null;
             if (decX <= 0.31) {
                 x = location.clone();
-                if (location.getX() > 0) {
-                    x.setX(x.getX() - 1);
-                } else {
+                if (location.getX() >= 0) {
                     x.setX(x.getX() + 1);
+                } else {
+                    x.setX(x.getX() - 1);
                 }
             } else if (decX >= 0.71) {
                 x = location.clone();
-                if (location.getX() > 0) {
-                    x.setX(x.getX() + 1);
-                } else {
+                if (location.getX() >= 0) {
                     x.setX(x.getX() - 1);
+                } else {
+                    x.setX(x.getX() + 1);
                 }
             }
             if (x != null && x.getBlock().getType() != Material.AIR && (x.getBlock().getType() != Material.STAINED_CLAY || x.getBlock().getData() != 14) && !x.getBlock().isLiquid()) {
@@ -71,17 +71,17 @@ public class MoveListener implements Listener {
 
             if (decZ <= 0.31) {
                 z = location.clone();
-                if (location.getZ() > 0) {
-                    z.setZ(z.getZ() - 1);
-                } else {
+                if (location.getZ() >= 0) {
                     z.setZ(z.getZ() + 1);
+                } else {
+                    z.setZ(z.getZ() - 1);
                 }
             } else if (decZ >= 0.71) {
                 z = location.clone();
-                if (location.getZ() > 0) {
-                    z.setZ(z.getZ() + 1);
-                } else {
+                if (location.getZ() >= 0) {
                     z.setZ(z.getZ() - 1);
+                } else {
+                    z.setZ(z.getZ() + 1);
                 }
             }
             if (z != null) {
