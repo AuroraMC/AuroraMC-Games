@@ -44,14 +44,14 @@ public class MoveListener implements Listener {
             Location z = null;
             if (decX <= 0.31) {
                 x = location.clone();
-                if (location.getX() >= 0) {
+                if (x.getX() >= 0) {
                     x.setX(wholeX - 1);
                 } else {
                     x.setX(wholeX + 1);
                 }
             } else if (decX >= 0.71) {
                 x = location.clone();
-                if (location.getX() >= 0) {
+                if (x.getX() >= 0) {
                     x.setX(wholeX + 1);
                 } else {
                     x.setX(wholeX - 1);
@@ -71,14 +71,14 @@ public class MoveListener implements Listener {
 
             if (decZ <= 0.31) {
                 z = location.clone();
-                if (location.getZ() >= 0) {
+                if (z.getZ() >= 0) {
                     z.setZ(wholeZ - 1);
                 } else {
                     z.setZ(wholeZ + 1);
                 }
             } else if (decZ >= 0.71) {
                 z = location.clone();
-                if (location.getZ() >= 0) {
+                if (z.getZ() >= 0) {
                     z.setZ(wholeZ + 1);
                 } else {
                     z.setZ(wholeZ - 1);
