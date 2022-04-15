@@ -26,7 +26,7 @@ public class MoveListener implements Listener {
         if (!e.getFrom().getBlock().getLocation().equals(e.getTo().getBlock().getLocation()) && EngineAPI.getServerState() == ServerState.IN_GAME && !EngineAPI.getActiveGame().isStarting()) {
             Location location = e.getTo().clone();
             location.setY(location.getY() - 1);
-            if (location.getBlock().getType() != Material.AIR && location.getBlock().getType() != Material.STAINED_CLAY && !location.getBlock().isLiquid()) {
+            if (location.getBlock().getType() != Material.AIR && (location.getBlock().getType() != Material.STAINED_CLAY || location.getBlock().getData() != 14) && !location.getBlock().isLiquid()) {
                 location.getBlock().setType(Material.STAINED_CLAY);
                 location.getBlock().setData((byte)14);
                 new BukkitRunnable(){
@@ -57,7 +57,7 @@ public class MoveListener implements Listener {
                     x.setX(x.getX() - 1);
                 }
             }
-            if (x != null && x.getBlock().getType() != Material.AIR && x.getBlock().getType() != Material.STAINED_CLAY && !x.getBlock().isLiquid()) {
+            if (x != null && x.getBlock().getType() != Material.AIR && (x.getBlock().getType() != Material.STAINED_CLAY || x.getBlock().getData() != 14) && !x.getBlock().isLiquid()) {
                 x.getBlock().setType(Material.STAINED_CLAY);
                 x.getBlock().setData((byte)14);
                 Location finX = x;
@@ -85,7 +85,7 @@ public class MoveListener implements Listener {
                 }
             }
             if (z != null) {
-                if (z.getBlock().getType() != Material.AIR && z.getBlock().getType() != Material.STAINED_CLAY && !z.getBlock().isLiquid()) {
+                if (z.getBlock().getType() != Material.AIR && (z.getBlock().getType() != Material.STAINED_CLAY || z.getBlock().getData() != 14) && !z.getBlock().isLiquid()) {
                     z.getBlock().setType(Material.STAINED_CLAY);
                     z.getBlock().setData((byte)14);
                     Location finZ = z;
@@ -99,7 +99,7 @@ public class MoveListener implements Listener {
                 if (x != null) {
                     Location loc2 = x.clone();
                     loc2.setZ(z.getZ());
-                    if (loc2.getBlock().getType() != Material.AIR && loc2.getBlock().getType() != Material.STAINED_CLAY && !loc2.getBlock().isLiquid()) {
+                    if (loc2.getBlock().getType() != Material.AIR && (loc2.getBlock().getType() != Material.STAINED_CLAY || loc2.getBlock().getData() != 14) && !loc2.getBlock().isLiquid()) {
                         loc2.getBlock().setType(Material.STAINED_CLAY);
                         loc2.getBlock().setData((byte)14);
                         new BukkitRunnable(){
