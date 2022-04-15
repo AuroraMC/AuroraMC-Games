@@ -66,12 +66,8 @@ public class HitListener implements Listener {
                     if (playersAlive.size() == 1) {
                         EngineAPI.getActiveGame().end(playersAlive.get(0));
                     }
-                } else if (!player.isSpectator() && !player.isVanished() && player.getTeam() instanceof RunnersTeam) {
-                    if (hit.getTeam() instanceof RunnersTeam) {
-                        e.setDamage(0);
-                    } else {
-                        e.setCancelled(true);
-                    }
+                } else if (!player.isSpectator() && !player.isVanished() && player.getTeam().equals(hit.getTeam())) {
+                    e.setDamage(0);
                 } else {
                     e.setCancelled(true);
                 }
