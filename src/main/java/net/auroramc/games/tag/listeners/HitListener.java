@@ -10,6 +10,7 @@ import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.games.hotpotato.entities.Potato;
+import net.auroramc.games.tag.teams.RunnersTeam;
 import net.auroramc.games.tag.teams.TaggedTeam;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,38 +36,41 @@ public class HitListener implements Listener {
                 AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
                 if (!player.isSpectator() && !player.isVanished() && player.getTeam() instanceof TaggedTeam) {
                     AuroraMCGamePlayer hit = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity());
-                    if (hit.getTeam() instanceof TaggedTeam) {
-                        e.setCancelled(true);
-                    } else {
-                        e.setDamage(0);
-                        hit.setTeam(player.getTeam());
-                        hit.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You were tagged!"));
-                        for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
-                            player1.updateNametag(hit);
-                            if (player1.equals(hit)) {
-                                if (player1.isDisguised()) {
-                                    if (player1.getPreferences().isHideDisguiseNameEnabled()) {
-                                        player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + hit.getName() + "** was tagged by **" + player.getPlayer().getName() + "**!"));
-                                        continue;
-                                    }
+                    e.setDamage(0);
+                    hit.setTeam(player.getTeam());
+                    hit.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You were tagged!"));
+                    for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+                        player1.updateNametag(hit);
+                        if (player1.equals(hit)) {
+                            if (player1.isDisguised()) {
+                                if (player1.getPreferences().isHideDisguiseNameEnabled()) {
+                                    player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + hit.getName() + "** was tagged by **" + player.getPlayer().getName() + "**!"));
+                                    continue;
                                 }
-                                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + hit.getPlayer().getName() + "** was tagged by **" + player.getPlayer().getName() + "**!"));
-                            } else if (player1.equals(player)) {
-                                if (player1.isDisguised()) {
-                                    if (player1.getPreferences().isHideDisguiseNameEnabled()) {
-                                        player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + hit.getPlayer().getName() + "** was tagged by **" + player.getName() + "**!"));
-                                        continue;
-                                    }
-                                }
-                                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + hit.getPlayer().getName() + "** was tagged by **" + player.getPlayer().getName() + "**!"));
-                            } else {
-                                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + hit.getPlayer().getName() + "** was tagged by **" + player.getPlayer().getName() + "**!"));
                             }
+                            player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + hit.getPlayer().getName() + "** was tagged by **" + player.getPlayer().getName() + "**!"));
+                        } else if (player1.equals(player)) {
+                            if (player1.isDisguised()) {
+                                if (player1.getPreferences().isHideDisguiseNameEnabled()) {
+                                    player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + hit.getPlayer().getName() + "** was tagged by **" + player.getName() + "**!"));
+                                    continue;
+                                }
+                            }
+                            player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + hit.getPlayer().getName() + "** was tagged by **" + player.getPlayer().getName() + "**!"));
+                        } else {
+                            player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + hit.getPlayer().getName() + "** was tagged by **" + player.getPlayer().getName() + "**!"));
                         }
-                        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(pl2 -> !((AuroraMCGamePlayer)pl2).isSpectator() && !(pl2.getTeam() instanceof TaggedTeam)).collect(Collectors.toList());
-                        if (playersAlive.size() == 1) {
-                            EngineAPI.getActiveGame().end(playersAlive.get(0));
-                        }
+                    }
+                    List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(pl2 -> !((AuroraMCGamePlayer) pl2).isSpectator() && !(pl2.getTeam() instanceof TaggedTeam)).collect(Collectors.toList());
+                    if (playersAlive.size() == 1) {
+                        EngineAPI.getActiveGame().end(playersAlive.get(0));
+                    }
+                } else if (!player.isSpectator() && !player.isVanished() && player.getTeam() instanceof RunnersTeam) {
+                    AuroraMCGamePlayer hit = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity());
+                    if (hit.getTeam() instanceof RunnersTeam) {
+                        e.setDamage(0);
+                    } else {
+                        e.setCancelled(true);
                     }
                 } else {
                     e.setCancelled(true);
