@@ -41,7 +41,6 @@ public class MoveListener implements Listener {
             int wholeZ = (int) ((location.getZ() >= 0)?Math.floor(location.getZ()):Math.ceil(location.getZ()));
             double decX = Math.abs(location.getX() - wholeX);
             double decZ = Math.abs(location.getZ() - wholeZ);
-            Bukkit.broadcastMessage(wholeX + "." + decX + ", " + wholeZ + "." + decZ);
             Location x = null;
             Location z = null;
             if (decX <= 0.31) {
@@ -51,7 +50,7 @@ public class MoveListener implements Listener {
                 } else {
                     x.setX(x.getX() + 1);
                 }
-            } else if (decX >= 0.71) {
+            } else if (decX >= 0.69) {
                 x = location.clone();
                 if (x.getX() >= 0) {
                     x.setX(x.getX() + 1);
@@ -78,12 +77,12 @@ public class MoveListener implements Listener {
                 } else {
                     z.setZ(z.getZ() + 1);
                 }
-            } else if (decZ >= 0.71) {
+            } else if (decZ >= 0.69) {
                 z = location.clone();
                 if (z.getZ() >= 0) {
-                    z.setZ(wholeZ + 1);
+                    z.setZ(z.getZ() + 1);
                 } else {
-                    z.setZ(wholeZ - 1);
+                    z.setZ(z.getZ() - 1);
                 }
             }
             if (z != null) {
