@@ -16,6 +16,7 @@ import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.games.run.kits.RunKit;
 import net.auroramc.games.run.listeners.DeathListener;
+import net.auroramc.games.run.listeners.LeapListener;
 import net.auroramc.games.run.listeners.MoveListener;
 import net.auroramc.games.run.util.RunScoreboardRunnable;
 import net.auroramc.games.util.PlayersTeam;
@@ -28,6 +29,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
@@ -45,6 +49,7 @@ public class Run extends Game {
     private DeathListener deathListener;
     private MoveListener moveListener;
     private RunScoreboardRunnable runnable;
+    private LeapListener leapListener;
 
 
     @Override
@@ -93,12 +98,14 @@ public class Run extends Game {
         }
         deathListener = new DeathListener();
         moveListener = new MoveListener();
+        leapListener = new LeapListener();
         DisableHungerListener.register();
         DisableBreakListener.register();
         DisablePlaceListener.register();
         NoDamageInstaKillListener.register();
         Bukkit.getPluginManager().registerEvents(deathListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(moveListener, EngineAPI.getGameEngine());
+        Bukkit.getPluginManager().registerEvents(leapListener, EngineAPI.getGameEngine());
         runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
     }
 
@@ -122,6 +129,8 @@ public class Run extends Game {
         PlayerShowEvent.getHandlerList().unregister(deathListener);
         EntityDamageByEntityEvent.getHandlerList().unregister(deathListener);
         PlayerMoveEvent.getHandlerList().unregister(moveListener);
+        PlayerInteractEvent.getHandlerList().unregister(leapListener);
+        PlayerDropItemEvent.getHandlerList().unregister(leapListener);
         DisableHungerListener.unregister();
         DisableBreakListener.unregister();
         DisablePlaceListener.unregister();
