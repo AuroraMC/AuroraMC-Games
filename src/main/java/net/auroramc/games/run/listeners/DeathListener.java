@@ -9,6 +9,7 @@ import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.server.ServerState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class DeathListener implements Listener {
 
@@ -17,5 +18,10 @@ public class DeathListener implements Listener {
         if (EngineAPI.getServerState() == ServerState.IN_GAME) {
             e.setHidden(true);
         }
+    }
+
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
+        e.setCancelled(true);
     }
 }
