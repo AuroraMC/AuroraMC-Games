@@ -161,14 +161,14 @@ public class Run extends Game {
                     Location z = null;
                     if (decX <= 0.31) {
                         x = location.clone();
-                        if (x.getX() >= 0) {
+                        if (x.getX() > 0) {
                             x.setX(x.getX() - 1);
                         } else {
                             x.setX(x.getX() + 1);
                         }
                     } else if (decX >= 0.69) {
                         x = location.clone();
-                        if (x.getX() >= 0) {
+                        if (x.getX() > 0) {
                             x.setX(x.getX() + 1);
                         } else {
                             x.setX(x.getX() - 1);
@@ -188,14 +188,14 @@ public class Run extends Game {
 
                     if (decZ <= 0.31) {
                         z = location.clone();
-                        if (z.getZ() >= 0) {
+                        if (z.getZ() > 0) {
                             z.setZ(z.getZ() - 1);
                         } else {
                             z.setZ(z.getZ() + 1);
                         }
                     } else if (decZ >= 0.69) {
                         z = location.clone();
-                        if (z.getZ() >= 0) {
+                        if (z.getZ() > 0) {
                             z.setZ(z.getZ() + 1);
                         } else {
                             z.setZ(z.getZ() - 1);
