@@ -21,7 +21,8 @@ public class TagScoreboardRunnable extends BukkitRunnable {
     @Override
     public void run() {
         if (EngineAPI.getActiveGame() != null && EngineAPI.getActiveGame() instanceof Tag) {
-            List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !(player.getTeam() instanceof TaggedTeam)).collect(Collectors.toList());
+            List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !(player.getTeam() instanceof TaggedTeam) && !player.isVanished() && !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
+            List<AuroraMCPlayer> taggers = AuroraMCAPI.getPlayers().stream().filter(player -> (player.getTeam() instanceof TaggedTeam) && !player.isVanished() && !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
             long gametime = (System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp()) - 10000;
 
             double minutes = gametime / 1000d / 60d;
@@ -31,39 +32,14 @@ public class TagScoreboardRunnable extends BukkitRunnable {
             }
             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                 PlayerScoreboard scoreboard = player.getScoreboard();
-                if (playersAlive.size() < 10) {
-                    scoreboard.setLine(3, "   ");
-                    scoreboard.setLine(2, "&b&l«GAME TIME»");
-                    scoreboard.setLine(1,  finalValue + " minutes");
-                    int i = 4;
-                    for (AuroraMCPlayer player1 : playersAlive) {
-                        if (player1.equals(player)) {
-                            if (player1.isDisguised() && player1.getPreferences().isHideDisguiseNameEnabled()) {
-                                scoreboard.setLine(i, "&e" + player1.getName());
-                                continue;
-                            }
-                        }
-                        if (player1.isDisguised()) {
-                            scoreboard.setLine(i, "&e" + player1.getActiveDisguise().getName());
-                        } else {
-                            scoreboard.setLine(i, "&e" + player1.getName());
-                        }
-                        i++;
-                    }
-                    scoreboard.setLine(i, "&b&l«PLAYERS»");
-                    i++;
-                    while (i < 15) {
-                        scoreboard.clearLine(i);
-                        i++;
-                    }
-
-                } else {
-                    scoreboard.setLine(5, "&b&l«PLAYERS»");
-                    scoreboard.setLine(4, playersAlive.size() + " Remaining");
-                    scoreboard.setLine(3, "   ");
-                    scoreboard.setLine(2, "&b&l«GAME TIME»");
-                    scoreboard.setLine(1,  finalValue + " minutes");
-                }
+                scoreboard.setLine(8, "&b&l«TAGGERS»");
+                scoreboard.setLine(7, taggers.size() + "");
+                scoreboard.setLine(6, "   ");
+                scoreboard.setLine(5, "&b&l«RUNNERS»");
+                scoreboard.setLine(4, playersAlive.size() + " Remaining");
+                scoreboard.setLine(3, "   ");
+                scoreboard.setLine(2, "&b&l«GAME TIME»");
+                scoreboard.setLine(1, finalValue + " minutes");
             }
         } else {
             this.cancel();
