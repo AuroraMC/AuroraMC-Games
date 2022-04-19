@@ -119,10 +119,11 @@ public class Turret {
                         }
                     }
                     if (closest != null) {
-                        Vector vector = closest.getLocation().toVector();
-                        vector.subtract(armorStand.getLocation().toVector());
+                        Vector vector = closest.getEyeLocation().toVector();
+                        vector.subtract(armorStand.getEyeLocation().toVector());
                         armorStand.teleport(armorStand.getLocation().setDirection(vector));
                         vector.normalize();
+                        vector.multiply(1.2);
                         armorStand.launchProjectile(Snowball.class, vector);
                     }
                 }
