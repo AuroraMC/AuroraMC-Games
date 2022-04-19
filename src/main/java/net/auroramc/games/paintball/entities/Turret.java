@@ -11,6 +11,7 @@ import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftSnowman;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
@@ -67,7 +68,8 @@ public class Turret {
                     if (closest != null) {
                         Vector vector = closest.getLocation().toVector();
                         vector.subtract(snowman.getLocation().toVector());
-                        snowman.teleport(snowman.getLocation().setDirection(vector));
+                        Location loc = snowman.getLocation().setDirection(vector);
+                        ((CraftSnowman)snowman).getHandle().setLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
                         vector.normalize();
                         snowman.launchProjectile(Snowball.class, vector);
                     }
