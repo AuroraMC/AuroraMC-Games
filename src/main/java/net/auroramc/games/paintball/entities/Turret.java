@@ -67,8 +67,8 @@ public class Turret {
                     if (closest != null) {
                         Vector vector = closest.getLocation().toVector();
                         vector.subtract(snowman.getLocation().toVector());
-                        vector.normalize();
                         snowman.teleport(snowman.getLocation().setDirection(vector));
+                        vector.normalize();
                         snowman.launchProjectile(Snowball.class, vector);
                     }
                 }
