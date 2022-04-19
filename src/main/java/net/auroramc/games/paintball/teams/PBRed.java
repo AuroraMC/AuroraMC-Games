@@ -23,7 +23,6 @@ public class PBRed implements Team {
         lives = ((players.size() <= 5)?50:players.size()*10);
     }
 
-
     public int getLives() {
         return lives;
     }
@@ -35,7 +34,6 @@ public class PBRed implements Team {
     public synchronized int removeLife() {
         return lives--;
     }
-
 
     @Override
     public int getId() {

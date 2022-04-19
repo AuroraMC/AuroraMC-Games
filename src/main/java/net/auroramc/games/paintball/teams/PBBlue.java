@@ -23,7 +23,6 @@ public class PBBlue implements Team {
         lives = ((players.size() <= 5)?50:players.size()*10);
     }
 
-
     public int getLives() {
         return lives;
     }

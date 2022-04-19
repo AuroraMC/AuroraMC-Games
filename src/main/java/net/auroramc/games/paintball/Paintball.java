@@ -12,6 +12,8 @@ import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.games.paintball.entities.Turret;
+import net.auroramc.games.paintball.kits.Tribute;
 import net.auroramc.games.paintball.teams.PBBlue;
 import net.auroramc.games.paintball.teams.PBRed;
 import net.auroramc.games.paintball.utils.PaintballScoreboardRunnable;
@@ -40,6 +42,7 @@ public class Paintball extends Game {
         runnable = new PaintballScoreboardRunnable();
         this.teams.put("Red", new PBRed());
         this.teams.put("Blue", new PBBlue());
+        this.kits.add(new Tribute());
     }
 
     @Override
@@ -80,6 +83,8 @@ public class Paintball extends Game {
             }
         }
         runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
+        ((PBRed)this.teams.get("Red")).initLives();
+        ((PBBlue)this.teams.get("Blue")).initLives();
     }
 
     @Override
@@ -103,6 +108,16 @@ public class Paintball extends Game {
 
     private void end() {
         runnable.cancel();
+    }
+
+    @Override
+    public void inProgress() {
+        super.inProgress();
+        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+            if (!((AuroraMCGamePlayer)player).isSpectator()) {
+                Turret turret = new Turret(player, player.getPlayer().getLocation());
+            }
+        }
     }
 
     @Override
@@ -137,10 +152,6 @@ public class Paintball extends Game {
 
     @Override
     public void onPlayerLeave(AuroraMCGamePlayer auroraMCGamePlayer) {
-        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
-        if (playersAlive.size() == 1) {
-            EngineAPI.getActiveGame().end(playersAlive.get(0));
-        }
     }
 
     @Override
@@ -149,21 +160,6 @@ public class Paintball extends Game {
 
     @Override
     public boolean onDeath(AuroraMCGamePlayer auroraMCGamePlayer, AuroraMCGamePlayer killer) {
-        if (killer != null) {
-            if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(124))) {
-                killer.getStats().achievementGained(AuroraMCAPI.getAchievement(124), 1, true);
-            }
-        }
-
-        if ((System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp()) - 10000 < 3000) {
-            if (!auroraMCGamePlayer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(125))) {
-                auroraMCGamePlayer.getStats().achievementGained(AuroraMCAPI.getAchievement(125), 1, true);
-            }
-        }
-        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
-        if (playersAlive.size() == 1) {
-            this.end(playersAlive.get(0));
-        }
         return false;
     }
 

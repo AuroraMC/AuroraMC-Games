@@ -8,6 +8,7 @@ import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.games.crystalquest.CrystalQuestInfo;
 import net.auroramc.games.ffa.FFAInfo;
 import net.auroramc.games.hotpotato.HotPotatoInfo;
+import net.auroramc.games.paintball.PaintballInfo;
 import net.auroramc.games.run.RunInfo;
 import net.auroramc.games.spleef.SpleefInfo;
 import net.auroramc.games.tag.TagInfo;
@@ -25,6 +26,7 @@ public class AuroraMCGames extends JavaPlugin {
         EngineAPI.registerGame(new HotPotatoInfo());
         EngineAPI.registerGame(new RunInfo());
         EngineAPI.registerGame(new TagInfo());
+        EngineAPI.registerGame(new PaintballInfo());
         EngineAPI.loadRotation();
 
         Bukkit.getPluginManager().registerEvents(new BorderListener(), this);
