@@ -115,7 +115,12 @@ public class Paintball extends Game {
         super.inProgress();
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             if (!((AuroraMCGamePlayer)player).isSpectator()) {
-                Turret turret = new Turret(player, player.getPlayer().getLocation());
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        Turret turret = new Turret(player, player.getPlayer().getLocation());
+                    }
+                }.runTask(EngineAPI.getGameEngine());
             }
         }
     }
