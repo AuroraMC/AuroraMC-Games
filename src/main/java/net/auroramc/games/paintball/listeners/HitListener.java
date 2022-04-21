@@ -113,6 +113,7 @@ public class HitListener implements Listener {
                     }
                 }
                 gp.getPlayer().sendMessage(AuroraMCAPI.getFormatter().convert("&6+2 Gold"));
+                gp.getRewards().addXp("Kills", 25);
                 if (turret.getOwner().getTeam() instanceof PBRed) {
                     ((PBRed)turret.getOwner().getTeam()).addLife();
                     ((PBBlue)player.getTeam()).removeLife();
@@ -160,6 +161,7 @@ public class HitListener implements Listener {
                     }
                 }
                 gp.getPlayer().sendMessage(AuroraMCAPI.getFormatter().convert("&6+2 Gold"));
+                gp.getRewards().addXp("Kills", 25);
                 if (shooter.getTeam() instanceof  PBRed) {
                     ((PBRed)shooter.getTeam()).addLife();
                     ((PBBlue)player.getTeam()).removeLife();
