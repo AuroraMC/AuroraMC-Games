@@ -63,7 +63,11 @@ public class HitListener implements Listener {
                 }
                 AuroraMCGamePlayer gp = (AuroraMCGamePlayer) turret.getOwner();
                 gp.getGameData().put("gold", (int)gp.getGameData().get("gold") + 2);
-                gp.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &7&l" + gp.getGameData().get("gold") + " Gold", (int)gp.getGameData().get("gold")).getItem());
+                int i = (int)gp.getGameData().get("gold");
+                if (i == 0) {
+                    i = 1;
+                }
+                gp.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + gp.getGameData().get("gold") + " Gold", i);
                 int amount = 1;
                 if (gp.getKit() instanceof Tribute) {
                     if (gp.getKitLevel().getLatestUpgrade() == 2) {
@@ -106,7 +110,11 @@ public class HitListener implements Listener {
                 }
                 AuroraMCGamePlayer gp = (AuroraMCGamePlayer) shooter;
                 gp.getGameData().put("gold", (int)gp.getGameData().get("gold") + 2);
-                gp.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &7&l" + gp.getGameData().get("gold") + " Gold", (int)gp.getGameData().get("gold")).getItem());
+                int i = (int)gp.getGameData().get("gold");
+                if (i == 0) {
+                    i = 1;
+                }
+                gp.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + gp.getGameData().get("gold") + " Gold", i).getItem());
                 int amount = 1;
                 if (gp.getKit() instanceof Tribute) {
                     if (gp.getKitLevel().getLatestUpgrade() == 2) {
@@ -127,6 +135,7 @@ public class HitListener implements Listener {
                         gp.getPlayer().getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null, amount, null).getItem());
                     }
                 }
+                gp.getPlayer().sendMessage(AuroraMCAPI.getFormatter().convert("&6+2 Gold\n&r+1 Snowball"));
                 if (shooter.getTeam() instanceof  PBRed) {
                     ((PBRed)shooter.getTeam()).addLife();
                     ((PBBlue)player.getTeam()).removeLife();

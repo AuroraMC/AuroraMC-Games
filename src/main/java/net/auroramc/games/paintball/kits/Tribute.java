@@ -22,13 +22,17 @@ public class Tribute extends Kit {
 
     @Override
     public void onGameStart(AuroraMCPlayer player) {
-        player.getPlayer().getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null,64).getItem());
-        player.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &7&l" + ((AuroraMCGamePlayer)player).getGameData().get("gold") + " Gold", (int)((AuroraMCGamePlayer)player).getGameData().get("gold")).getItem());
-        Color data = ((player.getTeam() instanceof PBBlue)?Color.BLUE:Color.RED);
-        player.getPlayer().getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET, null, 1, null, (short)0, false, data).getItem());
-        player.getPlayer().getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE, null, 1, null, (short)0, false, data).getItem());
-        player.getPlayer().getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS, null, 1, null, (short)0, false, data).getItem());
-        player.getPlayer().getInventory().setBoots(new GUIItem(Material.LEATHER_BOOTS, null, 1, null, (short)0, false, data).getItem());
+        player.getPlayer().getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null, 64).getItem());
+        int amount = (int) ((AuroraMCGamePlayer) player).getGameData().get("gold");
+        if (amount == 0) {
+            amount = 1;
+        }
+        player.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + ((AuroraMCGamePlayer) player).getGameData().get("gold") + " Gold", amount).getItem());
+        Color data = ((player.getTeam() instanceof PBBlue) ? Color.BLUE : Color.RED);
+        player.getPlayer().getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET, null, 1, null, (short) 0, false, data).getItem());
+        player.getPlayer().getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE, null, 1, null, (short) 0, false, data).getItem());
+        player.getPlayer().getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS, null, 1, null, (short) 0, false, data).getItem());
+        player.getPlayer().getInventory().setBoots(new GUIItem(Material.LEATHER_BOOTS, null, 1, null, (short) 0, false, data).getItem());
     }
 
     @Override
