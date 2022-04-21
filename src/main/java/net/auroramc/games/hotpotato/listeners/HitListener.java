@@ -10,11 +10,17 @@ import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.games.hotpotato.entities.Potato;
+import net.auroramc.games.paintball.teams.PBRed;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.Random;
 
 public class HitListener implements Listener {
 
@@ -63,5 +69,29 @@ public class HitListener implements Listener {
         if (!(e instanceof EntityDamageByEntityEvent)) {
             e.setCancelled(true);
         }
+
+        if (e.getCause() == EntityDamageEvent.DamageCause.VOID && e.getEntity() instanceof Player) {
+            AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity());
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You went outside of the border so was teleported back to spawn."));
+            JSONArray playerSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("PLAYER");
+            if (player.isSpectator()) {
+                JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
+                int x, y, z;
+                x = specSpawn.getInt("x");
+                y = specSpawn.getInt("y");
+                z = specSpawn.getInt("z");
+                float yaw = specSpawn.getFloat("yaw");
+                player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+            } else {
+                JSONObject spawn = playerSpawns.getJSONObject(new Random().nextInt(playerSpawns.length()));
+                int x, y, z;
+                x = spawn.getInt("x");
+                y = spawn.getInt("y");
+                z = spawn.getInt("z");
+                float yaw = spawn.getFloat("yaw");
+                player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+            }
+        }
+
     }
 }

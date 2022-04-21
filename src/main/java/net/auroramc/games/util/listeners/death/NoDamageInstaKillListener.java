@@ -38,6 +38,15 @@ public class NoDamageInstaKillListener implements Listener {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(pl);
             if (player.isSpectator() || player.isVanished()) {
                 e.setCancelled(true);
+                if (e.getCause() == EntityDamageEvent.DamageCause.VOID) {
+                    JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
+                    int x, y, z;
+                    x = specSpawn.getInt("x");
+                    y = specSpawn.getInt("y");
+                    z = specSpawn.getInt("z");
+                    float yaw = specSpawn.getFloat("yaw");
+                    player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                }
                 return;
             }
             if (EngineAPI.getServerState() != ServerState.IN_GAME || EngineAPI.getActiveGame().isStarting()) {

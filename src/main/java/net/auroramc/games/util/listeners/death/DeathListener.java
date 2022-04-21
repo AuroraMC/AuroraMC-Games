@@ -11,6 +11,7 @@ import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
+import net.auroramc.games.paintball.teams.PBRed;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -20,9 +21,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Map;
+import java.util.Random;
 
 public class DeathListener implements Listener {
 
@@ -40,6 +43,15 @@ public class DeathListener implements Listener {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(pl);
             if (player.isSpectator() || player.isVanished()) {
                 e.setCancelled(true);
+                if (e.getCause() == EntityDamageEvent.DamageCause.VOID) {
+                    JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
+                    int x, y, z;
+                    x = specSpawn.getInt("x");
+                    y = specSpawn.getInt("y");
+                    z = specSpawn.getInt("z");
+                    float yaw = specSpawn.getFloat("yaw");
+                    player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                }
                 return;
             }
             if (EngineAPI.getServerState() != ServerState.IN_GAME || EngineAPI.getActiveGame().isStarting()) {

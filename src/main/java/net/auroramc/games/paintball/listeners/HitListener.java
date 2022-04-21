@@ -44,22 +44,32 @@ public class HitListener implements Listener {
             player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You went outside of the border so was teleported back to spawn."));
             JSONArray redSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("RED");
             JSONArray blueSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("BLUE");
-            if (player.getTeam() instanceof PBRed) {
-                JSONObject spawn = redSpawns.getJSONObject(new Random().nextInt(redSpawns.length()));
+            if (player.isSpectator()) {
+                JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
                 int x, y, z;
-                x = spawn.getInt("x");
-                y = spawn.getInt("y");
-                z = spawn.getInt("z");
-                float yaw = spawn.getFloat("yaw");
+                x = specSpawn.getInt("x");
+                y = specSpawn.getInt("y");
+                z = specSpawn.getInt("z");
+                float yaw = specSpawn.getFloat("yaw");
                 player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
             } else {
-                JSONObject spawn = blueSpawns.getJSONObject(new Random().nextInt(blueSpawns.length()));
-                int x, y, z;
-                x = spawn.getInt("x");
-                y = spawn.getInt("y");
-                z = spawn.getInt("z");
-                float yaw = spawn.getFloat("yaw");
-                player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                if (player.getTeam() instanceof PBRed) {
+                    JSONObject spawn = redSpawns.getJSONObject(new Random().nextInt(redSpawns.length()));
+                    int x, y, z;
+                    x = spawn.getInt("x");
+                    y = spawn.getInt("y");
+                    z = spawn.getInt("z");
+                    float yaw = spawn.getFloat("yaw");
+                    player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                } else {
+                    JSONObject spawn = blueSpawns.getJSONObject(new Random().nextInt(blueSpawns.length()));
+                    int x, y, z;
+                    x = spawn.getInt("x");
+                    y = spawn.getInt("y");
+                    z = spawn.getInt("z");
+                    float yaw = spawn.getFloat("yaw");
+                    player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                }
             }
         }
     }
