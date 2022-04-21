@@ -57,8 +57,8 @@ public class BorderListener implements Listener {
                 }
             } else if (EngineAPI.getServerState() != ServerState.ENDING && EngineAPI.getServerState() != ServerState.IN_GAME) {
                 int highX = 0, lowX = 0, highY = 0, lowY = 0, highZ = 0, lowZ = 0;
-                JSONObject a = EngineAPI.getActiveMap().getMapData().getJSONObject("border_a");
-                JSONObject b = EngineAPI.getActiveMap().getMapData().getJSONObject("border_b");
+                JSONObject a = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("border_a");
+                JSONObject b = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("border_b");
                 if (a.getInt("x") > b.getInt("x")) {
                     highX = a.getInt("x");
                     lowX = b.getInt("x");
