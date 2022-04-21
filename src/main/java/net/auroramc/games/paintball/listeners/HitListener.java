@@ -63,7 +63,7 @@ public class HitListener implements Listener {
                 }
                 AuroraMCGamePlayer gp = (AuroraMCGamePlayer) turret.getOwner();
                 gp.getGameData().put("gold", (int)gp.getGameData().get("gold") + 2);
-                gp.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &7&l" + gp.getGameData().get("gold") + " Gold").getItem());
+                gp.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &7&l" + gp.getGameData().get("gold") + " Gold", (int)gp.getGameData().get("gold")).getItem());
                 int amount = 1;
                 if (gp.getKit() instanceof Tribute) {
                     if (gp.getKitLevel().getLatestUpgrade() == 2) {
@@ -106,7 +106,27 @@ public class HitListener implements Listener {
                 }
                 AuroraMCGamePlayer gp = (AuroraMCGamePlayer) shooter;
                 gp.getGameData().put("gold", (int)gp.getGameData().get("gold") + 2);
-                gp.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &7&l" + gp.getGameData().get("gold") + " Gold").getItem());
+                gp.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &7&l" + gp.getGameData().get("gold") + " Gold", (int)gp.getGameData().get("gold")).getItem());
+                int amount = 1;
+                if (gp.getKit() instanceof Tribute) {
+                    if (gp.getKitLevel().getLatestUpgrade() == 2) {
+                        amount = 2;
+                    } else if (gp.getKitLevel().getLatestUpgrade() == 4) {
+                        amount = 3;
+                    } else if (gp.getKitLevel().getLatestUpgrade() == 5) {
+                        amount = 4;
+                    }
+                }
+                if (!gp.getPlayer().getInventory().contains(Material.SNOW_BALL, 64)) {
+                    if (gp.getPlayer().getInventory().getItem(0) != null && gp.getPlayer().getInventory().getItem(0).getType() == Material.SNOW_BALL) {
+                        if (gp.getPlayer().getInventory().getItem(0).getAmount() + amount > 64) {
+                            amount = 64 - gp.getPlayer().getInventory().getItem(0).getAmount();
+                        }
+                        gp.getPlayer().getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null, gp.getPlayer().getInventory().getItem(0).getAmount() + amount, null).getItem());
+                    } else {
+                        gp.getPlayer().getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null, amount, null).getItem());
+                    }
+                }
                 if (shooter.getTeam() instanceof  PBRed) {
                     ((PBRed)shooter.getTeam()).addLife();
                     ((PBBlue)player.getTeam()).removeLife();
