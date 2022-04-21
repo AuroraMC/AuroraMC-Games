@@ -67,7 +67,7 @@ public class HitListener implements Listener {
                 if (i == 0) {
                     i = 1;
                 }
-                gp.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + gp.getGameData().get("gold") + " Gold", i);
+                gp.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + gp.getGameData().get("gold") + " Gold", i).getItem());
                 int amount = 1;
                 if (gp.getKit() instanceof Tribute) {
                     if (gp.getKitLevel().getLatestUpgrade() == 2) {
