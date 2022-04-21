@@ -12,19 +12,27 @@ import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.games.crystalquest.teams.CQRed;
 import net.auroramc.games.paintball.entities.Turret;
 import net.auroramc.games.paintball.kits.Tribute;
+import net.auroramc.games.paintball.listeners.HitListener;
 import net.auroramc.games.paintball.teams.PBBlue;
 import net.auroramc.games.paintball.teams.PBRed;
 import net.auroramc.games.paintball.utils.PaintballScoreboardRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Paintball extends Game {
@@ -35,6 +43,8 @@ public class Paintball extends Game {
     }
 
     private PaintballScoreboardRunnable runnable;
+    private HitListener listener;
+    private Map<ArmorStand, Turret> turrets;
 
 
     @Override
@@ -43,6 +53,7 @@ public class Paintball extends Game {
         this.teams.put("Red", new PBRed());
         this.teams.put("Blue", new PBBlue());
         this.kits.add(new Tribute());
+        this.turrets = new HashMap<>();
     }
 
     @Override
@@ -53,8 +64,10 @@ public class Paintball extends Game {
     @Override
     public void start() {
         super.start();
-        int spawnIndex = 0;
-        JSONArray spawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
+        int redSpawnIndex = 0;
+        int blueSpawnIndex = 0;
+        JSONArray redSpawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("RED");
+        JSONArray blueSpawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("BLUE");
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
             gp.getScoreboard().clear();
@@ -66,23 +79,39 @@ public class Paintball extends Game {
                 y = specSpawn.getInt("y");
                 z = specSpawn.getInt("z");
                 float yaw = specSpawn.getFloat("yaw");
-                gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y + 0.5, z, yaw, 0));
-            } else {
-                JSONObject spawn = spawns.getJSONObject(spawnIndex);
-                int x, y, z;
-                x = spawn.getInt("x");
-                y = spawn.getInt("y");
-                z = spawn.getInt("z");
-                float yaw = spawn.getFloat("yaw");
                 gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
-                spawnIndex++;
-                if (spawnIndex >= spawns.length()) {
-                    spawnIndex = 0;
+            } else {
+                if (gp.getTeam() instanceof PBRed) {
+                    JSONObject spawn = redSpawns.getJSONObject(redSpawnIndex);
+                    int x, y, z;
+                    x = spawn.getInt("x");
+                    y = spawn.getInt("y");
+                    z = spawn.getInt("z");
+                    float yaw = spawn.getFloat("yaw");
+                    gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                    redSpawnIndex++;
+                    if (redSpawnIndex >= redSpawns.length()) {
+                        redSpawnIndex = 0;
+                    }
+                } else {
+                    JSONObject spawn = blueSpawns.getJSONObject(blueSpawnIndex);
+                    int x, y, z;
+                    x = spawn.getInt("x");
+                    y = spawn.getInt("y");
+                    z = spawn.getInt("z");
+                    float yaw = spawn.getFloat("yaw");
+                    gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                    blueSpawnIndex++;
+                    if (blueSpawnIndex >= blueSpawns.length()) {
+                        blueSpawnIndex = 0;
+                    }
                 }
                 gp.getKit().onGameStart(player);
             }
         }
         runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
+        listener = new HitListener();
+        Bukkit.getPluginManager().registerEvents(listener, EngineAPI.getGameEngine());
         ((PBRed)this.teams.get("Red")).initLives();
         ((PBBlue)this.teams.get("Blue")).initLives();
     }
@@ -108,6 +137,9 @@ public class Paintball extends Game {
 
     private void end() {
         runnable.cancel();
+        EntityDamageByEntityEvent.getHandlerList().unregister(listener);
+        EntityDamageEvent.getHandlerList().unregister(listener);
+        PlayerArmorStandManipulateEvent.getHandlerList().unregister(listener);
     }
 
     @Override
@@ -149,6 +181,9 @@ public class Paintball extends Game {
         new BukkitRunnable(){
             @Override
             public void run() {
+                for (Player player2 : Bukkit.getOnlinePlayers()) {
+                    player2.hidePlayer(auroraMCGamePlayer.getPlayer());
+                }
                 auroraMCGamePlayer.setSpectator(true, true);
             }
         }.runTask(AuroraMCAPI.getCore());
@@ -171,5 +206,9 @@ public class Paintball extends Game {
     @Override
     public void onFinalKill(AuroraMCGamePlayer auroraMCGamePlayer) {
 
+    }
+
+    public Map<ArmorStand, Turret> getTurrets() {
+        return turrets;
     }
 }

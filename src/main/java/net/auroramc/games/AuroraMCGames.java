@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2021-2022 AuroraMC Ltd. All Rights Reserved.
  */
 
 package net.auroramc.games;

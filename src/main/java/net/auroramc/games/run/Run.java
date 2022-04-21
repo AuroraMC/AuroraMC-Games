@@ -270,6 +270,9 @@ public class Run extends Game {
         new BukkitRunnable(){
             @Override
             public void run() {
+                for (Player player2 : Bukkit.getOnlinePlayers()) {
+                    player2.hidePlayer(auroraMCGamePlayer.getPlayer());
+                }
                 auroraMCGamePlayer.setSpectator(true, true);
             }
         }.runTask(AuroraMCAPI.getCore());
