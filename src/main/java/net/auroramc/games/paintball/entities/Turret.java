@@ -132,6 +132,7 @@ public class Turret {
                 if (lifetime >= 30) {
                     armorStand.remove();
                     owner.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "One of your turrets has expired!"));
+                    ((Paintball)EngineAPI.getActiveGame()).getTurrets().remove(armorStand);
                     this.cancel();
                 }
             }

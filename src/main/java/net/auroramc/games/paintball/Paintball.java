@@ -19,6 +19,7 @@ import net.auroramc.games.paintball.listeners.HitListener;
 import net.auroramc.games.paintball.teams.PBBlue;
 import net.auroramc.games.paintball.teams.PBRed;
 import net.auroramc.games.paintball.utils.PaintballScoreboardRunnable;
+import net.auroramc.games.tag.teams.TaggedTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -30,6 +31,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -140,6 +142,10 @@ public class Paintball extends Game {
         EntityDamageByEntityEvent.getHandlerList().unregister(listener);
         EntityDamageEvent.getHandlerList().unregister(listener);
         PlayerArmorStandManipulateEvent.getHandlerList().unregister(listener);
+        for (Turret turret : turrets.values()) {
+            turret.getTask().cancel();
+            turret.getArmorStand().remove();
+        }
     }
 
     @Override
@@ -192,6 +198,25 @@ public class Paintball extends Game {
 
     @Override
     public void onPlayerLeave(AuroraMCGamePlayer auroraMCGamePlayer) {
+        if (!auroraMCGamePlayer.isSpectator()) {
+            for (Turret turret : new ArrayList<>(turrets.values())) {
+                if (turret.getOwner().equals(auroraMCGamePlayer)) {
+                    turret.getTask().cancel();
+                    turret.getArmorStand().remove();
+                    turrets.remove(turret.getArmorStand());
+                }
+            }
+        }
+        List<AuroraMCPlayer> blueAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && !(player.getTeam() instanceof PBBlue)).collect(Collectors.toList());
+        List<AuroraMCPlayer> redAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && !(player.getTeam() instanceof PBRed)).collect(Collectors.toList());
+        if (blueAlive.size() == 0) {
+            this.end(this.teams.get("Red"), null);
+            return;
+        }
+        if (redAlive.size() == 0) {
+            this.end(this.teams.get("Blue"), null);
+            return;
+        }
     }
 
     @Override
