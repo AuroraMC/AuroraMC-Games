@@ -28,10 +28,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -172,6 +169,7 @@ public class Paintball extends Game {
         InventoryInteractEvent.getHandlerList().unregister(inventoryListener);
         ProjectileHitEvent.getHandlerList().unregister(inventoryListener);
         EntitySpawnEvent.getHandlerList().unregister(inventoryListener);
+        ProjectileLaunchEvent.getHandlerList().unregister(hitListener);
         for (Turret turret : turrets.values()) {
             turret.getTask().cancel();
             turret.getArmorStand().remove();

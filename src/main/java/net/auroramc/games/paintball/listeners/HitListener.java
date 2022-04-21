@@ -25,8 +25,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -223,6 +223,13 @@ public class HitListener implements Listener {
     @EventHandler
     public void onArmorStandManipulate(PlayerArmorStandManipulateEvent e) {
         e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onThrow(ProjectileLaunchEvent e) {
+        if (EngineAPI.getActiveGame().isStarting()) {
+            e.setCancelled(true);
+        }
     }
 
 }
