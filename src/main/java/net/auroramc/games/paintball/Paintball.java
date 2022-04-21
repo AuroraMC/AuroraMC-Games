@@ -20,6 +20,9 @@ import net.auroramc.games.paintball.teams.PBBlue;
 import net.auroramc.games.paintball.teams.PBRed;
 import net.auroramc.games.paintball.utils.PaintballScoreboardRunnable;
 import net.auroramc.games.tag.teams.TaggedTeam;
+import net.auroramc.games.util.listeners.settings.DisableBreakListener;
+import net.auroramc.games.util.listeners.settings.DisableHungerListener;
+import net.auroramc.games.util.listeners.settings.DisablePlaceListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -114,6 +117,9 @@ public class Paintball extends Game {
         runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
         listener = new HitListener();
         Bukkit.getPluginManager().registerEvents(listener, EngineAPI.getGameEngine());
+        DisableHungerListener.register();
+        DisableBreakListener.register();
+        DisablePlaceListener.register();
         ((PBRed)this.teams.get("Red")).initLives();
         ((PBBlue)this.teams.get("Blue")).initLives();
     }
@@ -146,6 +152,9 @@ public class Paintball extends Game {
             turret.getTask().cancel();
             turret.getArmorStand().remove();
         }
+        DisableHungerListener.unregister();
+        DisableBreakListener.unregister();
+        DisablePlaceListener.unregister();
     }
 
     @Override
