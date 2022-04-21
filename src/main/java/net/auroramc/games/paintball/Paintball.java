@@ -7,6 +7,7 @@ package net.auroramc.games.paintball;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Team;
+import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
@@ -25,12 +26,14 @@ import net.auroramc.games.util.listeners.settings.DisableHungerListener;
 import net.auroramc.games.util.listeners.settings.DisablePlaceListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -87,6 +90,7 @@ public class Paintball extends Game {
                 float yaw = specSpawn.getFloat("yaw");
                 gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
             } else {
+                gp.getGameData().put("gold", 1);
                 if (gp.getTeam() instanceof PBRed) {
                     JSONObject spawn = redSpawns.getJSONObject(redSpawnIndex);
                     int x, y, z;
@@ -165,6 +169,11 @@ public class Paintball extends Game {
         DisableHungerListener.unregister();
         DisableBreakListener.unregister();
         DisablePlaceListener.unregister();
+        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+            if (!((AuroraMCGamePlayer)player).isSpectator()) {
+                ((BukkitTask)((AuroraMCGamePlayer)player).getGameData().get("runnable")).cancel();
+            }
+        }
     }
 
     @Override
@@ -178,6 +187,38 @@ public class Paintball extends Game {
                         Turret turret = new Turret(player, player.getPlayer().getLocation());
                     }
                 }.runTask(EngineAPI.getGameEngine());
+
+                int interval = 12 * 20;
+                if (((AuroraMCGamePlayer) player).getKit() instanceof Tribute) {
+                    switch (((AuroraMCGamePlayer) player).getKitLevel().getLatestUpgrade()) {
+                        case 5:
+                            interval-=40;
+                        case 4:
+                            interval-=20;
+                        case 3:
+                            interval-=20;
+                        case 2:
+                            interval-=20;
+                        case 1:
+                            interval-=20;
+                    }
+                }
+                ((AuroraMCGamePlayer) player).getGameData().put("runnable", new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        if (player.getPlayer().isOnline()) {
+                            if (!player.getPlayer().getInventory().contains(Material.SNOW_BALL, 64)) {
+                                if (player.getPlayer().getInventory().getItem(0) != null && player.getPlayer().getInventory().getItem(0).getType() == Material.SNOW_BALL) {
+                                    player.getPlayer().getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null, player.getPlayer().getInventory().getItem(0).getAmount() + 1, null).getItem());
+                                } else {
+                                    player.getPlayer().getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null, 1, null).getItem());
+                                }
+                            }
+                        } else {
+                            this.cancel();
+                        }
+                    }
+                }.runTaskTimer(EngineAPI.getGameEngine(), interval, interval));
             }
         }
     }

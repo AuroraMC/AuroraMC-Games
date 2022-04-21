@@ -33,10 +33,10 @@ public class PaintballScoreboardRunnable extends BukkitRunnable {
             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                 PlayerScoreboard scoreboard = player.getScoreboard();
                 scoreboard.setLine(8, "&c&l«RED LIVES»");
-                scoreboard.setLine(7, ((PBRed)EngineAPI.getActiveGame().getTeams().get("Red")).getLives() + " Alive");
+                scoreboard.setLine(7, ((PBRed)EngineAPI.getActiveGame().getTeams().get("Red")).getLives() + "");
                 scoreboard.setLine(6, "   ");
                 scoreboard.setLine(5, "&9&l«BLUE LIVES»");
-                scoreboard.setLine(4, ((PBBlue)EngineAPI.getActiveGame().getTeams().get("Blue")).getLives() + " Alive");
+                scoreboard.setLine(4, ((PBBlue)EngineAPI.getActiveGame().getTeams().get("Blue")).getLives() + "");
                 scoreboard.setLine(3, "   ");
                 scoreboard.setLine(2, "&b&l«GAME TIME»");
                 scoreboard.setLine(1, finalValue + " minutes");

@@ -8,13 +8,16 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.cosmetics.Cosmetic;
 import net.auroramc.core.api.cosmetics.KillMessage;
 import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.paintball.Paintball;
 import net.auroramc.games.paintball.entities.Turret;
+import net.auroramc.games.paintball.kits.Tribute;
 import net.auroramc.games.paintball.teams.PBBlue;
 import net.auroramc.games.paintball.teams.PBRed;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
@@ -58,7 +61,31 @@ public class HitListener implements Listener {
                     e.setCancelled(true);
                     return;
                 }
-                if (turret.getOwner().getTeam() instanceof  PBRed) {
+                AuroraMCGamePlayer gp = (AuroraMCGamePlayer) turret.getOwner();
+                gp.getGameData().put("gold", (int)gp.getGameData().get("gold") + 2);
+                gp.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &7&l" + gp.getGameData().get("gold") + " Gold").getItem());
+                int amount = 1;
+                if (gp.getKit() instanceof Tribute) {
+                    if (gp.getKitLevel().getLatestUpgrade() == 2) {
+                        amount = 2;
+                    } else if (gp.getKitLevel().getLatestUpgrade() == 4) {
+                        amount = 3;
+                    } else if (gp.getKitLevel().getLatestUpgrade() == 5) {
+                        amount = 4;
+                    }
+                }
+                if (!gp.getPlayer().getInventory().contains(Material.SNOW_BALL, 64)) {
+                    if (gp.getPlayer().getInventory().getItem(0) != null && gp.getPlayer().getInventory().getItem(0).getType() == Material.SNOW_BALL) {
+                        if (gp.getPlayer().getInventory().getItem(0).getAmount() + amount > 64) {
+                            amount = 64 - gp.getPlayer().getInventory().getItem(0).getAmount();
+                        }
+                        gp.getPlayer().getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null, gp.getPlayer().getInventory().getItem(0).getAmount() + amount, null).getItem());
+                    } else {
+                        gp.getPlayer().getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null, amount, null).getItem());
+                    }
+                }
+                gp.getPlayer().sendMessage(AuroraMCAPI.getFormatter().convert("&6+2 Gold\n&r+1 Snowball"));
+                if (turret.getOwner().getTeam() instanceof PBRed) {
                     ((PBRed)turret.getOwner().getTeam()).addLife();
                     ((PBBlue)player.getTeam()).removeLife();
                     if (((PBBlue)player.getTeam()).getLives() == 0) {
@@ -77,6 +104,9 @@ public class HitListener implements Listener {
                     e.setCancelled(true);
                     return;
                 }
+                AuroraMCGamePlayer gp = (AuroraMCGamePlayer) shooter;
+                gp.getGameData().put("gold", (int)gp.getGameData().get("gold") + 2);
+                gp.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &7&l" + gp.getGameData().get("gold") + " Gold").getItem());
                 if (shooter.getTeam() instanceof  PBRed) {
                     ((PBRed)shooter.getTeam()).addLife();
                     ((PBBlue)player.getTeam()).removeLife();
@@ -113,6 +143,7 @@ public class HitListener implements Listener {
                 player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
             }
             player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
+            player.getKit().onGameStart(player);
             if (shooter != null) {
                 KillMessage killMessage = (KillMessage) shooter.getActiveCosmetics().getOrDefault(Cosmetic.CosmeticType.KILL_MESSAGE, AuroraMCAPI.getCosmetics().get(500));
                 for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {

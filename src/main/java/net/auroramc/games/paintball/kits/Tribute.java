@@ -22,7 +22,7 @@ public class Tribute extends Kit {
     @Override
     public void onGameStart(AuroraMCPlayer player) {
         player.getPlayer().getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null,64).getItem());
-        player.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&6&l0 Gold").getItem());
+        player.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l1 Gold").getItem());
         Color data = ((player.getTeam() instanceof PBBlue)?Color.BLUE:Color.RED);
         player.getPlayer().getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET, null, 1, null, (short)0, false, data).getItem());
         player.getPlayer().getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE, null, 1, null, (short)0, false, data).getItem());
