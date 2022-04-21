@@ -13,14 +13,13 @@ import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
-import net.auroramc.games.crystalquest.teams.CQRed;
 import net.auroramc.games.paintball.entities.Turret;
 import net.auroramc.games.paintball.kits.Tribute;
 import net.auroramc.games.paintball.listeners.HitListener;
+import net.auroramc.games.paintball.listeners.InventoryListener;
 import net.auroramc.games.paintball.teams.PBBlue;
 import net.auroramc.games.paintball.teams.PBRed;
 import net.auroramc.games.paintball.utils.PaintballScoreboardRunnable;
-import net.auroramc.games.tag.teams.TaggedTeam;
 import net.auroramc.games.util.listeners.settings.DisableBreakListener;
 import net.auroramc.games.util.listeners.settings.DisableHungerListener;
 import net.auroramc.games.util.listeners.settings.DisablePlaceListener;
@@ -31,7 +30,11 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.NameTagVisibility;
@@ -52,7 +55,8 @@ public class Paintball extends Game {
     }
 
     private PaintballScoreboardRunnable runnable;
-    private HitListener listener;
+    private HitListener hitListener;
+    private InventoryListener inventoryListener;
     private Map<ArmorStand, Turret> turrets;
 
 
@@ -129,8 +133,10 @@ public class Paintball extends Game {
             }
         }
         runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
-        listener = new HitListener();
-        Bukkit.getPluginManager().registerEvents(listener, EngineAPI.getGameEngine());
+        hitListener = new HitListener();
+        inventoryListener = new InventoryListener();
+        Bukkit.getPluginManager().registerEvents(hitListener, EngineAPI.getGameEngine());
+        Bukkit.getPluginManager().registerEvents(inventoryListener, EngineAPI.getGameEngine());
         DisableHungerListener.register();
         DisableBreakListener.register();
         DisablePlaceListener.register();
@@ -159,9 +165,13 @@ public class Paintball extends Game {
 
     private void end() {
         runnable.cancel();
-        EntityDamageByEntityEvent.getHandlerList().unregister(listener);
-        EntityDamageEvent.getHandlerList().unregister(listener);
-        PlayerArmorStandManipulateEvent.getHandlerList().unregister(listener);
+        EntityDamageByEntityEvent.getHandlerList().unregister(hitListener);
+        EntityDamageEvent.getHandlerList().unregister(hitListener);
+        PlayerArmorStandManipulateEvent.getHandlerList().unregister(hitListener);
+        PlayerInteractEvent.getHandlerList().unregister(inventoryListener);
+        InventoryInteractEvent.getHandlerList().unregister(inventoryListener);
+        ProjectileHitEvent.getHandlerList().unregister(inventoryListener);
+        EntitySpawnEvent.getHandlerList().unregister(inventoryListener);
         for (Turret turret : turrets.values()) {
             turret.getTask().cancel();
             turret.getArmorStand().remove();
@@ -181,13 +191,6 @@ public class Paintball extends Game {
         super.inProgress();
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             if (!((AuroraMCGamePlayer)player).isSpectator()) {
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        Turret turret = new Turret(player, player.getPlayer().getLocation());
-                    }
-                }.runTask(EngineAPI.getGameEngine());
-
                 int interval = 12 * 20;
                 if (((AuroraMCGamePlayer) player).getKit() instanceof Tribute) {
                     switch (((AuroraMCGamePlayer) player).getKitLevel().getLatestUpgrade()) {
