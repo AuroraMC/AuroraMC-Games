@@ -39,7 +39,10 @@ public class HitListener implements Listener {
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent e) {
-        if (e.getDamager() instanceof Snowball && e.getEntity() instanceof Player) {
+        if (e.getDamager() instanceof Snowball) {
+            if (!(e.getEntity() instanceof Player)) {
+                return;
+            }
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity());
             Snowball snowball = (Snowball) e.getDamager();
             if (player.isSpectator() || player.isVanished()) {

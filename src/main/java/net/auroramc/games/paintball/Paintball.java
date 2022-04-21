@@ -31,6 +31,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.NameTagVisibility;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -112,6 +113,15 @@ public class Paintball extends Game {
                     }
                 }
                 gp.getKit().onGameStart(player);
+                for (org.bukkit.scoreboard.Team team : gp.getScoreboard().getScoreboard().getTeams()) {
+                    AuroraMCPlayer player1 = AuroraMCAPI.getDisguisedPlayer(team.getName());
+                    if (player1 == null) {
+                        player1 = AuroraMCAPI.getPlayer(team.getName());
+                    }
+                    if (!player1.getTeam().equals(gp.getTeam())) {
+                        team.setNameTagVisibility(NameTagVisibility.NEVER);
+                    }
+                }
             }
         }
         runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
