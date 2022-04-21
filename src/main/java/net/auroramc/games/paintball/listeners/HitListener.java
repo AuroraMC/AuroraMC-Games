@@ -26,6 +26,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -37,6 +38,29 @@ public class HitListener implements Listener {
     public void onDamage(EntityDamageEvent e) {
         if (!(e instanceof EntityDamageByEntityEvent)) {
             e.setCancelled(true);
+        }
+        if (e.getCause() == EntityDamageEvent.DamageCause.VOID && e.getEntity() instanceof Player) {
+            AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity());
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You went outside of the border so was teleported back to spawn."));
+            JSONArray redSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("RED");
+            JSONArray blueSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("BLUE");
+            if (player.getTeam() instanceof PBRed) {
+                JSONObject spawn = redSpawns.getJSONObject(new Random().nextInt(redSpawns.length()));
+                int x, y, z;
+                x = spawn.getInt("x");
+                y = spawn.getInt("y");
+                z = spawn.getInt("z");
+                float yaw = spawn.getFloat("yaw");
+                player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+            } else {
+                JSONObject spawn = blueSpawns.getJSONObject(new Random().nextInt(blueSpawns.length()));
+                int x, y, z;
+                x = spawn.getInt("x");
+                y = spawn.getInt("y");
+                z = spawn.getInt("z");
+                float yaw = spawn.getFloat("yaw");
+                player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+            }
         }
     }
 
