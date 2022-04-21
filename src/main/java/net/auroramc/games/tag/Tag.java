@@ -17,7 +17,6 @@ import net.auroramc.games.tag.listeners.HitListener;
 import net.auroramc.games.tag.teams.RunnersTeam;
 import net.auroramc.games.tag.teams.TaggedTeam;
 import net.auroramc.games.tag.utils.TagScoreboardRunnable;
-import net.auroramc.games.util.PlayersTeam;
 import net.auroramc.games.util.listeners.settings.DisableBreakListener;
 import net.auroramc.games.util.listeners.settings.DisableHungerListener;
 import net.auroramc.games.util.listeners.settings.DisablePlaceListener;

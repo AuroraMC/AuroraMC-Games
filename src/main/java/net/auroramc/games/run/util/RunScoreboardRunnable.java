@@ -10,7 +10,6 @@ import net.auroramc.core.api.players.scoreboard.PlayerScoreboard;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.run.Run;
-import net.auroramc.games.spleef.Spleef;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;

@@ -13,7 +13,6 @@ import net.auroramc.games.crystalquest.gui.PlayerShop;
 import net.auroramc.games.crystalquest.gui.TeamShop;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;

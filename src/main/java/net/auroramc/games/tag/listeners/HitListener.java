@@ -11,7 +11,6 @@ import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
-import net.auroramc.games.hotpotato.entities.Potato;
 import net.auroramc.games.tag.teams.RunnersTeam;
 import net.auroramc.games.tag.teams.TaggedTeam;
 import org.bukkit.entity.Player;

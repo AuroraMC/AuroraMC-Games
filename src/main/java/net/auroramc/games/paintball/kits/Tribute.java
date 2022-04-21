@@ -11,7 +11,6 @@ import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.paintball.teams.PBBlue;
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 public class Tribute extends Kit {
 

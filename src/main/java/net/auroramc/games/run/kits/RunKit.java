@@ -6,13 +6,9 @@ package net.auroramc.games.run.kits;
 
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
-import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.Kit;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class RunKit extends Kit {
 
