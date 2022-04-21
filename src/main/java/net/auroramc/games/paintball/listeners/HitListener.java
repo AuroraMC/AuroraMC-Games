@@ -56,9 +56,15 @@ public class HitListener implements Listener {
                 if (turret.getOwner().getTeam() instanceof  PBRed) {
                     ((PBRed)turret.getOwner().getTeam()).addLife();
                     ((PBBlue)player.getTeam()).removeLife();
+                    if (((PBBlue)player.getTeam()).getLives() == 0) {
+                        EngineAPI.getActiveGame().end(turret.getOwner().getTeam(), null);
+                    }
                 } else {
                     ((PBBlue)turret.getOwner().getTeam()).addLife();
                     ((PBRed)player.getTeam()).removeLife();
+                    if (((PBRed)player.getTeam()).getLives() == 0) {
+                        EngineAPI.getActiveGame().end(turret.getOwner().getTeam(), null);
+                    }
                 }
             } else if (snowball.getShooter() instanceof Player) {
                 shooter = AuroraMCAPI.getPlayer((Player) snowball.getShooter());
@@ -69,9 +75,15 @@ public class HitListener implements Listener {
                 if (shooter.getTeam() instanceof  PBRed) {
                     ((PBRed)shooter.getTeam()).addLife();
                     ((PBBlue)player.getTeam()).removeLife();
+                    if (((PBBlue)player.getTeam()).getLives() == 0) {
+                        EngineAPI.getActiveGame().end(shooter.getTeam(), null);
+                    }
                 } else {
                     ((PBBlue)shooter.getTeam()).addLife();
                     ((PBRed)player.getTeam()).removeLife();
+                    if (((PBRed)player.getTeam()).getLives() == 0) {
+                        EngineAPI.getActiveGame().end(shooter.getTeam(), null);
+                    }
                 }
                 shooter.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills", 1, true);
             }

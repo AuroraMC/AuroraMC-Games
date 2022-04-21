@@ -11,6 +11,7 @@ import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.games.paintball.Paintball;
 import net.auroramc.games.paintball.teams.PBBlue;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -95,7 +96,7 @@ public class Turret {
         armorStand.setBoots(new GUIItem(Material.LEATHER_BOOTS, null, 1, null, (short)0, false, data).getItem());
         armorStand.setItemInHand(new ItemStack(((owner.getTeam() instanceof PBBlue)?Material.DIAMOND_BARDING:Material.GOLD_BARDING)));
         this.owner = owner;
-
+        ((Paintball)EngineAPI.getActiveGame()).getTurrets().put(armorStand, this);
         task = new BukkitRunnable(){
 
             int lifetime = 0;
