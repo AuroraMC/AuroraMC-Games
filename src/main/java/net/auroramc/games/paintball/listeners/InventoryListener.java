@@ -97,6 +97,7 @@ public class InventoryListener implements Listener {
                             item.remove();
                         }
                     }.runTaskLater(EngineAPI.getGameEngine(), 140);
+                    break;
                 }
             }
         }
