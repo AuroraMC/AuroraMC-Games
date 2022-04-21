@@ -54,6 +54,7 @@ public class InventoryListener implements Listener {
                     Location location = e.getClickedBlock().getLocation();
                     location.setY(e.getClickedBlock().getY() + 1);
                     new Turret(pl, location);
+                    e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
                 }
             }
         }
@@ -70,9 +71,8 @@ public class InventoryListener implements Listener {
                 if (hitBlock != null) {
                     Location loc = hitBlock.getLocation();
                     loc.setY(loc.getY() + 1);
-                    Item item = loc.getWorld().spawn(loc, Item.class);
+                    Item item = loc.getWorld().dropItem(loc, new ItemStack(Material.EGG, 1));
                     item.setPickupDelay(Integer.MAX_VALUE);
-                    item.setItemStack(new ItemStack(Material.EGG, 1));
                     Firework firework = loc.getWorld().spawn(loc, Firework.class);
                     FireworkMeta meta = firework.getFireworkMeta();
                     meta.setPower(0);
