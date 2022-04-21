@@ -7,6 +7,7 @@ package net.auroramc.games.paintball.gui;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.utils.gui.GUI;
 import net.auroramc.core.api.utils.gui.GUIItem;
+import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.paintball.teams.PBBlue;
 import net.auroramc.games.paintball.teams.PBRed;
@@ -37,6 +38,7 @@ public class Shop extends GUI {
             case 1: {
                 if (gold >= 10) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
+                    player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "extraLives", 1, true);
                     if (player.getTeam() instanceof PBBlue) {
                         PBBlue blue = (PBBlue) player.getTeam();
                         blue.addLife();
@@ -63,6 +65,7 @@ public class Shop extends GUI {
             case 3: {
                 if (gold >= 12) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
+                    player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "extraAmmo", 1, true);
                     int amountLeft = 32;
                     for (int i = 0;i < 8;i++) {
                         ItemStack stack = player.getPlayer().getInventory().getItem(i);
@@ -99,6 +102,7 @@ public class Shop extends GUI {
                 if (gold >= 12) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getPlayer().getInventory().addItem(new GUIItem(Material.EGG, "&c&lFlashbang", 1).getItem());
+                    player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "flashbang", 1, true);
                     gold -= 12;
                     ((AuroraMCGamePlayer) player).getGameData().put("gold", gold);
                     int i = gold;
@@ -114,6 +118,7 @@ public class Shop extends GUI {
             case 7: {
                 if (gold >= 16 && !player.getPlayer().getInventory().contains(Material.GOLD_BARDING, 1)) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
+                    player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "turret", 1, true);
                     player.getPlayer().getInventory().addItem(new GUIItem(Material.GOLD_BARDING, "&c&lTurret", 1).getItem());
                     gold -= 16;
                     ((AuroraMCGamePlayer) player).getGameData().put("gold", gold);
