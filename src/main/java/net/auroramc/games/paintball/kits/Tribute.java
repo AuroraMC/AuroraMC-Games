@@ -16,7 +16,7 @@ public class Tribute extends Kit {
 
 
     public Tribute() {
-        super(0, 2, "&cTribute", "A brave tribute, one who volunteers to fight for his team… Find a way to kill the enemy team and remove all their lives before they can do the same to you…", Material.SNOW_BALL, -1);
+        super(0, 3, "&cTribute", "A brave tribute, one who volunteers to fight for his team… Find a way to kill the enemy team and remove all their lives before they can do the same to you…", Material.SNOW_BALL, -1);
     }
 
     @Override
