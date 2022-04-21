@@ -223,7 +223,6 @@ public class DeathRespawnListener implements Listener {
 
                 boolean finalKill = EngineAPI.getActiveGame().onDeath(player, killer);
 
-                String finalMessage = killMessage.onKill(killer, player, entity, killReason) + ((finalKill)?" &c&lFINAL KILL!":"");
                 if (timeout > 0) {
                     player.setSpectator(true, finalKill);
                 }
@@ -251,7 +250,7 @@ public class DeathRespawnListener implements Listener {
                     if (timeout > 0) {
                         player2.hidePlayer(player.getPlayer());
                     }
-                    player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", finalMessage));
+                    player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(AuroraMCAPI.getPlayer(player2), killer, player, entity, killReason) + ((finalKill)?" &c&lFINAL KILL!":"")));
                 }
 
                 if (!finalKill) {

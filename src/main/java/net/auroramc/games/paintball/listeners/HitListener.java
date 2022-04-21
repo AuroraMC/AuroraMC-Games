@@ -5,6 +5,8 @@
 package net.auroramc.games.paintball.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.cosmetics.Cosmetic;
+import net.auroramc.core.api.cosmetics.KillMessage;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -109,16 +111,19 @@ public class HitListener implements Listener {
             }
             player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
             if (shooter != null) {
+                KillMessage killMessage = (KillMessage) shooter.getActiveCosmetics().getOrDefault(Cosmetic.CosmeticType.KILL_MESSAGE, AuroraMCAPI.getCosmetics().get(500));
                 for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
-                    player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", "**" + player.getPlayer().getName() + "** was shot by **" + shooter.getPlayer().getName() + "**."));
+                    player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(player1, shooter, player, null, KillMessage.KillReason.TAG)));
                 }
             } else if (turret != null) {
+                KillMessage killMessage = (KillMessage) turret.getOwner().getActiveCosmetics().getOrDefault(Cosmetic.CosmeticType.KILL_MESSAGE, AuroraMCAPI.getCosmetics().get(500));
                 for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
-                    player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", "**" + player.getPlayer().getName() + "** was shot by **" + turret.getOwner().getPlayer().getName() + "**'s Turret."));
+                    player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(player1, null, player, turret.getArmorStand(), KillMessage.KillReason.TAG)));
                 }
             } else {
+                KillMessage killMessage = (KillMessage) player.getActiveCosmetics().getOrDefault(Cosmetic.CosmeticType.KILL_MESSAGE, AuroraMCAPI.getCosmetics().get(500));
                 for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
-                    player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", "**" + player.getPlayer().getName() + "** was shot by the game. Somehow."));
+                    player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(player1, null, player, null, KillMessage.KillReason.TAG)));
                 }
             }
         } else {

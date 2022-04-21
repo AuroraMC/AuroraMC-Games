@@ -5,6 +5,8 @@
 package net.auroramc.games.tag.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.cosmetics.Cosmetic;
+import net.auroramc.core.api.cosmetics.KillMessage;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -41,27 +43,12 @@ public class HitListener implements Listener {
                     hit.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You were tagged!"));
                     player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "tags", 1, true);
                     hit.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "tagged", 1, true);
+
+                    KillMessage killMessage = (KillMessage) player.getActiveCosmetics().getOrDefault(Cosmetic.CosmeticType.KILL_MESSAGE, AuroraMCAPI.getCosmetics().get(500));
+
                     for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
                         player1.updateNametag(hit);
-                        if (player1.equals(hit)) {
-                            if (player1.isDisguised()) {
-                                if (player1.getPreferences().isHideDisguiseNameEnabled()) {
-                                    player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + hit.getName() + "** was tagged by **" + player.getPlayer().getName() + "**!"));
-                                    continue;
-                                }
-                            }
-                            player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + hit.getPlayer().getName() + "** was tagged by **" + player.getPlayer().getName() + "**!"));
-                        } else if (player1.equals(player)) {
-                            if (player1.isDisguised()) {
-                                if (player1.getPreferences().isHideDisguiseNameEnabled()) {
-                                    player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + hit.getPlayer().getName() + "** was tagged by **" + player.getName() + "**!"));
-                                    continue;
-                                }
-                            }
-                            player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + hit.getPlayer().getName() + "** was tagged by **" + player.getPlayer().getName() + "**!"));
-                        } else {
-                            player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + hit.getPlayer().getName() + "** was tagged by **" + player.getPlayer().getName() + "**!"));
-                        }
+                        player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(player1, player, hit, null, KillMessage.KillReason.TAG)));
                     }
                     List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(pl2 -> !((AuroraMCGamePlayer) pl2).isSpectator() && !(pl2.getTeam() instanceof TaggedTeam)).collect(Collectors.toList());
                     if (playersAlive.size() == 1) {

@@ -212,7 +212,6 @@ public class DeathListener implements Listener {
 
                 EngineAPI.getActiveGame().onDeath(player, killer);
 
-                String finalMessage = killMessage.onKill(killer, player, entity, killReason);
 
                 JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
                 int x, y, z;
@@ -226,7 +225,7 @@ public class DeathListener implements Listener {
 
                 for (Player player2 : Bukkit.getOnlinePlayers()) {
                     player2.hidePlayer(player.getPlayer());
-                    player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", finalMessage));
+                    player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(AuroraMCAPI.getPlayer(player2), killer, player, entity, killReason)));
                 }
             } else if (e instanceof EntityDamageByEntityEvent) {
                 if (e.getFinalDamage() > 0 && ((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {

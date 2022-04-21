@@ -177,7 +177,6 @@ public class NoDamageInstaKillListener implements Listener {
 
                 EngineAPI.getActiveGame().onDeath(player, killer);
 
-                String finalMessage = killMessage.onKill(killer, player, entity, killReason);
                 JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
                 int x, y, z;
                 x = specSpawn.getInt("x");
@@ -189,7 +188,7 @@ public class NoDamageInstaKillListener implements Listener {
                 player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
                 for (Player player2 : Bukkit.getOnlinePlayers()) {
                     player2.hidePlayer(player.getPlayer());
-                    player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", finalMessage));
+                    player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(AuroraMCAPI.getPlayer(player2), killer, player, entity, killReason)));
                 }
             } else if (e instanceof EntityDamageByEntityEvent) {
                 if (e.getFinalDamage() > 0 && ((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {

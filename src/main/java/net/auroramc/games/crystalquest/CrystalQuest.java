@@ -883,10 +883,9 @@ public class CrystalQuest extends Game {
                 }
             }
 
-            String finalMessage = killMessage.onKill(killer, player, null, killReason);
             player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
             for (Player player2 : Bukkit.getOnlinePlayers()) {
-                player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", finalMessage));
+                player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(AuroraMCAPI.getPlayer(player2), killer, player, null, killReason)));
             }
         }
     }
