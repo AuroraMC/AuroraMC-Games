@@ -6,6 +6,7 @@ package net.auroramc.games.paintball.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.cosmetics.Cosmetic;
+import net.auroramc.core.api.cosmetics.DeathEffect;
 import net.auroramc.core.api.cosmetics.KillMessage;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
@@ -188,6 +189,9 @@ public class HitListener implements Listener {
                 shooter.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills", 1, true);
             }
             e.setDamage(0);
+            if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.DEATH_EFFECT)) {
+                ((DeathEffect)player.getActiveCosmetics().get(Cosmetic.CosmeticType.DEATH_EFFECT)).onDeath(player);
+            }
             JSONArray redSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("RED");
             JSONArray blueSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("BLUE");
             if (player.getTeam() instanceof PBRed) {

@@ -6,6 +6,7 @@ package net.auroramc.games.util.listeners.death;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.cosmetics.Cosmetic;
+import net.auroramc.core.api.cosmetics.DeathEffect;
 import net.auroramc.core.api.cosmetics.KillMessage;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
@@ -221,6 +222,10 @@ public class DeathListener implements Listener {
                 player.getLatestHits().clear();
                 player.getPlayer().setFireTicks(0);
                 player.setSpectator(true, true);
+
+                if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.DEATH_EFFECT)) {
+                    ((DeathEffect)player.getActiveCosmetics().get(Cosmetic.CosmeticType.DEATH_EFFECT)).onDeath(player);
+                }
 
                 EngineAPI.getActiveGame().onDeath(player, killer);
 

@@ -5,6 +5,8 @@
 package net.auroramc.games.hotpotato.entities;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.cosmetics.Cosmetic;
+import net.auroramc.core.api.cosmetics.DeathEffect;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -74,6 +76,9 @@ public class Potato {
         y = specSpawn.getInt("y");
         z = specSpawn.getInt("z");
         float yaw = specSpawn.getFloat("yaw");
+        if (holder.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.DEATH_EFFECT)) {
+            ((DeathEffect)holder.getActiveCosmetics().get(Cosmetic.CosmeticType.DEATH_EFFECT)).onDeath(holder);
+        }
         holder.getGameData().clear();
         holder.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
         holder.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
