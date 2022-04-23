@@ -31,6 +31,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -169,6 +170,7 @@ public class Paintball extends Game {
         InventoryInteractEvent.getHandlerList().unregister(inventoryListener);
         ProjectileHitEvent.getHandlerList().unregister(inventoryListener);
         EntitySpawnEvent.getHandlerList().unregister(inventoryListener);
+        PlayerDropItemEvent.getHandlerList().unregister(inventoryListener);
         ProjectileLaunchEvent.getHandlerList().unregister(hitListener);
         for (Turret turret : turrets.values()) {
             turret.getTask().cancel();
@@ -268,8 +270,8 @@ public class Paintball extends Game {
                 }
             }
         }
-        List<AuroraMCPlayer> blueAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && !(player.getTeam() instanceof PBBlue)).collect(Collectors.toList());
-        List<AuroraMCPlayer> redAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && !(player.getTeam() instanceof PBRed)).collect(Collectors.toList());
+        List<AuroraMCPlayer> blueAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && (player.getTeam() instanceof PBBlue)).collect(Collectors.toList());
+        List<AuroraMCPlayer> redAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && (player.getTeam() instanceof PBRed)).collect(Collectors.toList());
         if (blueAlive.size() == 0) {
             this.end(this.teams.get("Red"), null);
             return;

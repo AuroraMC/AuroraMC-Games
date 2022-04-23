@@ -243,6 +243,8 @@ public class HitListener implements Listener {
     public void onThrow(ProjectileLaunchEvent e) {
         if (EngineAPI.getActiveGame().isStarting()) {
             e.setCancelled(true);
+            AuroraMCGamePlayer gp = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity().getShooter());
+            gp.getKit().onGameStart(gp);
         }
     }
 
