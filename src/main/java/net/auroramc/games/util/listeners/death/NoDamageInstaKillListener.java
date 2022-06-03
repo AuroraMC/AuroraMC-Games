@@ -164,6 +164,7 @@ public class NoDamageInstaKillListener implements Listener {
                     }
                     killer.getRewards().addXp("Kills", 25);
                     killer.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills", 1, true);
+                    killer.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills." + killReason.name(), 1, true);
 
                     if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(22))) {
                         killer.getStats().achievementGained(AuroraMCAPI.getAchievement(22), 1, true);
@@ -200,9 +201,10 @@ public class NoDamageInstaKillListener implements Listener {
                 player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
 
                 player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
+                player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths." + killReason.name(), 1, true);
                 for (Player player2 : Bukkit.getOnlinePlayers()) {
                     player2.hidePlayer(player.getPlayer());
-                    player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(AuroraMCAPI.getPlayer(player2), killer, player, entity, killReason)));
+                    player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(AuroraMCAPI.getPlayer(player2), killer, player, entity, killReason, EngineAPI.getActiveGameInfo().getId())));
                 }
             } else if (e instanceof EntityDamageByEntityEvent) {
                 if (e.getFinalDamage() > 0 && ((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {

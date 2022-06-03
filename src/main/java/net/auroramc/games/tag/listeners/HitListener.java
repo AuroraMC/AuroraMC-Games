@@ -51,7 +51,7 @@ public class HitListener implements Listener {
 
                     for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
                         player1.updateNametag(hit);
-                        player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(player1, player, hit, null, KillMessage.KillReason.TAG)));
+                        player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(player1, player, hit, null, KillMessage.KillReason.TAG, EngineAPI.getActiveGameInfo().getId())));
                     }
                     List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(pl2 -> !((AuroraMCGamePlayer) pl2).isSpectator() && !(pl2.getTeam() instanceof TaggedTeam)).collect(Collectors.toList());
                     if (playersAlive.size() == 1) {

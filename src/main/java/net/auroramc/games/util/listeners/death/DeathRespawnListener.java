@@ -212,6 +212,7 @@ public class DeathRespawnListener implements Listener {
                     }
                     killer.getRewards().addXp("Kills", 25);
                     killer.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills", 1, true);
+                    killer.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills." + killReason.name(), 1, true);
 
                     if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(22))) {
                         killer.getStats().achievementGained(AuroraMCAPI.getAchievement(22), 1, true);
@@ -249,6 +250,7 @@ public class DeathRespawnListener implements Listener {
                 player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
 
                 player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
+                player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths." + killReason.name(), 1, true);
 
                 player.setLastHitAt(-1);
                 player.setLastHitBy(null);
@@ -264,7 +266,7 @@ public class DeathRespawnListener implements Listener {
                     if (timeout > 0) {
                         player2.hidePlayer(player.getPlayer());
                     }
-                    player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(AuroraMCAPI.getPlayer(player2), killer, player, entity, killReason) + ((finalKill)?" &c&lFINAL KILL!":"")));
+                    player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(AuroraMCAPI.getPlayer(player2), killer, player, entity, killReason, EngineAPI.getActiveGameInfo().getId()) + ((finalKill)?" &c&lFINAL KILL!":"")));
                 }
 
                 if (!finalKill) {
