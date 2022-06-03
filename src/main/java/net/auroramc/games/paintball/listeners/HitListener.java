@@ -125,6 +125,7 @@ public class HitListener implements Listener {
                 }
                 gp.getPlayer().sendMessage(AuroraMCAPI.getFormatter().convert("&6+2 Gold"));
                 gp.getRewards().addXp("Kills", 25);
+
                 if (turret.getOwner().getTeam() instanceof PBRed) {
                     ((PBRed)turret.getOwner().getTeam()).addLife();
                     ((PBBlue)player.getTeam()).removeLife();
@@ -138,6 +139,8 @@ public class HitListener implements Listener {
                         EngineAPI.getActiveGame().end(turret.getOwner().getTeam(), null);
                     }
                 }
+                turret.getOwner().getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills", 1, true);
+                turret.getOwner().getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills.turret", 1, true);
             } else if (snowball.getShooter() instanceof Player) {
                 shooter = AuroraMCAPI.getPlayer((Player) snowball.getShooter());
                 if (shooter.getTeam().equals(player.getTeam())) {
