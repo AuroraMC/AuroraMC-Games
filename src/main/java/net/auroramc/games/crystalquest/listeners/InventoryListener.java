@@ -120,7 +120,22 @@ public class InventoryListener implements Listener {
             if (player.getGameData().containsKey("crystal_possession")) {
                 e.setCancelled(true);
                 e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot use ender pearls while you have a crystal!"));
+                return;
             }
+            if (player.getGameData().containsKey("last_pearl")) {
+                if (System.currentTimeMillis() - (long)player.getGameData().get("last_pearl") < 5000) {
+                    double amount = (((long)player.getGameData().get("last_pearl") + 7000) - System.currentTimeMillis()) / 100d;
+                    long amount1 = Math.round(amount);
+                    if (amount1 < 0) {
+                        amount1 = 0;
+                    }
+                    e.setCancelled(true);
+                    e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot use ender pearls for **" + (amount1 / 10f) + "** seconds!"));
+                    return;
+                }
+            }
+            player.getGameData().put("last_pearl", System.currentTimeMillis());
+
         }
 
     }

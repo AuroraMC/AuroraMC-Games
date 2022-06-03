@@ -207,7 +207,7 @@ public class PlayerShop extends GUI {
 
         this.setItem(0, 7, new GUIItem(Material.WATER_BUCKET, "&3&lWater Bucket", 1, ";&rClick to purchase **Water Bucket**.;;&rCost: &b48&7 Iron"));
         this.setItem(1, 7, new GUIItem(Material.GOLDEN_APPLE, "&3&lGolden Apple", 1, ";&rClick to purchase **Golden Apple**.;;&rCost: &b8&6 Gold"));
-        this.setItem(2, 7, new GUIItem(Material.COOKIE, "&3&lInstant Cookie", 1, ";&rClick to purchase **Instant Cookie**.;;&rCost: &b1&a Emerald"));
+        this.setItem(2, 7, new GUIItem(Material.COOKIE, "&3&lInstant Cookie", 1, ";&rClick to purchase **Instant Cookie**.;;&rCost: &b2&a Emerald"));
         this.setItem(3, 7, new GUIItem(Material.FLINT_AND_STEEL, "&3&lFlint and Steel", 1, ";&rClick to purchase **Flint and Steel**.;;&rCost: &b2&a Emeralds"));
         this.setItem(4, 7, new GUIItem(Material.ENDER_PEARL, "&3&lEthereal Pearl", 1, ";&rClick to purchase **Ethereal Pearl**.;;&rCost: &b8&a Emeralds"));
         this.setItem(5, 7, new GUIItem(Material.LADDER, "&3&l8 Ladders", 8, ";&rClick to purchase **8** Ladders.;;&rCost: &b10&7 Iron"));
@@ -691,9 +691,9 @@ public class PlayerShop extends GUI {
                 break;
             }
             case COOKIE: {
-                if (player.getPlayer().getInventory().contains(Material.EMERALD, 1)) {
+                if (player.getPlayer().getInventory().contains(Material.EMERALD, 2)) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
-                    player.getPlayer().getInventory().removeItem(new ItemStack(Material.EMERALD, 1));
+                    player.getPlayer().getInventory().removeItem(new ItemStack(Material.EMERALD, 2));
                     Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(new GUIItem(Material.COOKIE, "&b&lInstant Cookie", 1).getItem());
                     if (couldntPlace.size() > 0) {
                         player.getPlayer().closeInventory();
