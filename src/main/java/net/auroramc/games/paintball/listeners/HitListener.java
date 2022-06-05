@@ -140,7 +140,7 @@ public class HitListener implements Listener {
                     }
                 }
                 turret.getOwner().getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills", 1, true);
-                turret.getOwner().getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills.turret", 1, true);
+                turret.getOwner().getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills;turret", 1, true);
             } else if (snowball.getShooter() instanceof Player) {
                 shooter = AuroraMCAPI.getPlayer((Player) snowball.getShooter());
                 if (shooter.getTeam().equals(player.getTeam())) {
