@@ -97,6 +97,10 @@ public class DeathListener implements Listener {
                     if (((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
                         Player damager = (Player) ((EntityDamageByEntityEvent) e).getDamager();
                         killer = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(damager);
+                        if (killer.isSpectator()) {
+                            e.setCancelled(true);
+                            return;
+                        }
                         killer.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "damageDealt", Math.round(e.getFinalDamage() * 100), true);
                         switch (e.getCause()) {
                             case PROJECTILE: {
@@ -248,11 +252,15 @@ public class DeathListener implements Listener {
             } else if (e instanceof EntityDamageByEntityEvent) {
                 if (e.getFinalDamage() > 0 && ((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
                     AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) ((EntityDamageByEntityEvent) e).getDamager());
-                    long time = System.currentTimeMillis();
-                    player.setLastHitBy(player1);
-                    player.setLastHitAt(time);
-                    player.getLatestHits().put(player1, time);
-                    player1.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "damageDealt", Math.round(e.getFinalDamage() * 100), true);
+                    if (!player1.isSpectator()) {
+                        long time = System.currentTimeMillis();
+                        player.setLastHitBy(player1);
+                        player.setLastHitAt(time);
+                        player.getLatestHits().put(player1, time);
+                        player1.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "damageDealt", Math.round(e.getFinalDamage() * 100), true);
+                    } else {
+                        e.setCancelled(true);
+                    }
                 }
             }
         }

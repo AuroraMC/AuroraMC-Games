@@ -70,6 +70,10 @@ public class NoDamageInstaKillListener implements Listener {
                     if (((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
                         Player damager = (Player) ((EntityDamageByEntityEvent) e).getDamager();
                         killer = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(damager);
+                        if (killer.isSpectator()) {
+                            e.setCancelled(true);
+                            return;
+                        }
                         switch (e.getCause()) {
                             case PROJECTILE: {
                                 killReason = KillMessage.KillReason.BOW;
@@ -209,10 +213,14 @@ public class NoDamageInstaKillListener implements Listener {
             } else if (e instanceof EntityDamageByEntityEvent) {
                 if (e.getFinalDamage() > 0 && ((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
                     AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) ((EntityDamageByEntityEvent) e).getDamager());
-                    long time = System.currentTimeMillis();
-                    player.setLastHitBy(player1);
-                    player.setLastHitAt(time);
-                    player.getLatestHits().put(player1, time);
+                    if (!player1.isSpectator()) {
+                        long time = System.currentTimeMillis();
+                        player.setLastHitBy(player1);
+                        player.setLastHitAt(time);
+                        player.getLatestHits().put(player1, time);
+                    } else {
+                        e.setCancelled(true);
+                    }
                 }
                 e.setDamage(0);
             } else {

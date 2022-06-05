@@ -124,7 +124,7 @@ public class Paintball extends Game {
                     if (player1 == null) {
                         player1 = AuroraMCAPI.getPlayer(team.getName());
                     }
-                    if (!player1.getTeam().equals(gp.getTeam())) {
+                    if (!((AuroraMCGamePlayer)player1).isSpectator() && !player1.getTeam().equals(gp.getTeam())) {
                         team.setNameTagVisibility(NameTagVisibility.NEVER);
                     }
                 }
