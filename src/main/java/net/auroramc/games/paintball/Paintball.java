@@ -179,9 +179,11 @@ public class Paintball extends Game {
         DisableHungerListener.unregister();
         DisableBreakListener.unregister();
         DisablePlaceListener.unregister();
-        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-            if (!((AuroraMCGamePlayer)player).isSpectator()) {
-                ((BukkitTask)((AuroraMCGamePlayer)player).getGameData().get("runnable")).cancel();
+        if (!starting) {
+            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                if (!((AuroraMCGamePlayer)player).isSpectator()) {
+                    ((BukkitTask)((AuroraMCGamePlayer)player).getGameData().get("runnable")).cancel();
+                }
             }
         }
     }
