@@ -16,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Chest;
@@ -68,7 +69,7 @@ public class CQRed implements Team {
     public void setChest(Location location) {
         Block block = location.getBlock();
         block.setType(Material.CHEST);
-        Chest chest = (Chest) block.getState();
+        BlockState chest = block.getState();
         BlockFace face;
         float yaw = location.getYaw();
         if (yaw <= -135 || yaw >= 135) {
@@ -80,8 +81,8 @@ public class CQRed implements Team {
         } else {
             face = BlockFace.WEST;
         }
-        chest.setFacingDirection(face);
-
+        chest.setData(new Chest(face));
+        chest.update();
         this.chest = block;
     }
 
