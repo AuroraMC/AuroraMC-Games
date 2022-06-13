@@ -18,6 +18,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Chest;
 import org.bukkit.material.DirectionalContainer;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -67,59 +68,17 @@ public class CQRed implements Team {
     public void setChest(Location location) {
         Block block = location.getBlock();
         block.setType(Material.CHEST);
-        DirectionalContainer chest = (DirectionalContainer) block.getState().getData();
+        Chest chest = (Chest) block.getState();
         BlockFace face;
-        switch (Math.round(location.getYaw() * 10)) {
-            case -1800:
-                face = BlockFace.NORTH;
-                break;
-            case -1575:
-                face = BlockFace.NORTH_NORTH_EAST;
-                break;
-            case -1350:
-                face = BlockFace.NORTH_EAST;
-                break;
-            case -1125:
-                face = BlockFace.EAST_NORTH_EAST;
-                break;
-            case -900:
-                face = BlockFace.EAST;
-                break;
-            case -675:
-                face = BlockFace.EAST_SOUTH_EAST;
-                break;
-            case -450:
-                face = BlockFace.SOUTH_EAST;
-                break;
-            case -225:
-                face = BlockFace.SOUTH_SOUTH_EAST;
-                break;
-            case 0:
-                face = BlockFace.SOUTH;
-                break;
-            case 225:
-                face = BlockFace.SOUTH_SOUTH_WEST;
-                break;
-            case 450:
-                face = BlockFace.SOUTH_WEST;
-                break;
-            case 675:
-                face = BlockFace.WEST_SOUTH_WEST;
-                break;
-            case 900:
-                face = BlockFace.WEST;
-                break;
-            case 1125:
-                face = BlockFace.WEST_NORTH_WEST;
-                break;
-            case 1350:
-                face = BlockFace.NORTH_WEST;
-                break;
-            case 1575:
-                face = BlockFace.NORTH_NORTH_WEST;
-                break;
-            default:
-                face = BlockFace.NORTH;
+        float yaw = location.getYaw();
+        if (yaw <= -135 || yaw >= 135) {
+            face = BlockFace.NORTH;
+        } else if (yaw > -135 && yaw < -45) {
+            face = BlockFace.EAST;
+        } else if (yaw >= -45 && yaw <= 45) {
+            face = BlockFace.SOUTH;
+        } else {
+            face = BlockFace.WEST;
         }
         chest.setFacingDirection(face);
 

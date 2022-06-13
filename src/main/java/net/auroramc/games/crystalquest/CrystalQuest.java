@@ -28,6 +28,7 @@ import net.auroramc.games.crystalquest.teams.CQRed;
 import net.auroramc.games.util.listeners.death.DeathRespawnListener;
 import net.auroramc.games.util.listeners.settings.PregameMoveListener;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import netscape.javascript.JSObject;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.enchantments.Enchantment;
@@ -436,8 +437,10 @@ public class CrystalQuest extends Game {
 
                 object = map.getMapData().getJSONObject("game").getJSONObject("CHEST");
 
-                blue.setChest(new Location(EngineAPI.getMapWorld(), object.getJSONArray("BLUE").getJSONObject(0).getInt("x"), object.getJSONArray("BLUE").getJSONObject(0).getInt("y"), object.getJSONArray("BLUE").getJSONObject(0).getInt("z"), object.getJSONArray("BLUE").getJSONObject(0).getFloat("yaw"), 0));
-                red.setChest(new Location(EngineAPI.getMapWorld(), object.getJSONArray("RED").getJSONObject(0).getInt("x"), object.getJSONArray("RED").getJSONObject(0).getInt("y"), object.getJSONArray("RED").getJSONObject(0).getInt("z"), object.getJSONArray("RED").getJSONObject(0).getFloat("yaw"), 0));
+                JSONObject blueLoc = object.getJSONArray("BLUE").getJSONObject(0);
+                JSONObject redLoc = object.getJSONArray("RED").getJSONObject(0);
+                blue.setChest(new Location(EngineAPI.getMapWorld(), blueLoc.getInt("x"), blueLoc.getInt("y"), blueLoc.getInt("z"), blueLoc.getFloat("yaw"), 0));
+                red.setChest(new Location(EngineAPI.getMapWorld(), redLoc.getInt("x"), redLoc.getInt("y"), redLoc.getInt("z"),redLoc.getFloat("yaw"), 0));
 
                 scoreboardTask = new CrystalQuestScoreboardRunnable((CQBlue) teams.get("Blue"), (CQRed) teams.get("Red")).runTaskTimer(EngineAPI.getGameEngine(), 0, 20);
 
