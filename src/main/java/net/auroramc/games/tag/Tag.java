@@ -123,35 +123,41 @@ public class Tag extends Game {
         int random = new Random().nextInt(playersAlive.size());
         AuroraMCPlayer player = playersAlive.get(random);
         player.setTeam(team);
-        player.getPlayer().getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
-        player.getPlayer().getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
-        player.getPlayer().getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
-        player.getPlayer().getInventory().setBoots(new GUIItem(Material.LEATHER_BOOTS, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
-        Firework firework = player.getPlayer().getLocation().getWorld().spawn(player.getPlayer().getEyeLocation(), Firework.class);
-        FireworkMeta meta = firework.getFireworkMeta();
-        meta.setPower(0);
-        meta.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(255, 0, 0)).trail(true).flicker(true).with(FireworkEffect.Type.BURST).build());
-        firework.setFireworkMeta(meta);
+
         new BukkitRunnable(){
             @Override
             public void run() {
-                firework.detonate();
-            }
-        }.runTaskLater(AuroraMCAPI.getCore(), 2);
-        for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
-            player1.updateNametag(player);
-            if (player1.equals(player)) {
-                if (player1.isDisguised()) {
-                    if (player1.getPreferences().isHideDisguiseNameEnabled()) {
-                        player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + player.getName() + "** was tagged by the game!"));
-                        continue;
+                for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+                    player1.updateNametag(player);
+                    if (player1.equals(player)) {
+                        if (player1.isDisguised()) {
+                            if (player1.getPreferences().isHideDisguiseNameEnabled()) {
+                                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + player.getName() + "** was tagged by the game!"));
+                                continue;
+                            }
+                        }
+                        player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + player.getPlayer().getName() + "** was tagged by the game!"));
+                    } else {
+                        player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + player.getPlayer().getName() + "** was tagged by the game!"));
                     }
                 }
-                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + player.getPlayer().getName() + "** was tagged by the game!"));
-            } else {
-                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + player.getPlayer().getName() + "** was tagged by the game!"));
+                player.getPlayer().getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
+                player.getPlayer().getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
+                player.getPlayer().getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
+                player.getPlayer().getInventory().setBoots(new GUIItem(Material.LEATHER_BOOTS, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
+                Firework firework = player.getPlayer().getLocation().getWorld().spawn(player.getPlayer().getEyeLocation(), Firework.class);
+                FireworkMeta meta = firework.getFireworkMeta();
+                meta.setPower(0);
+                meta.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(255, 0, 0)).trail(true).flicker(true).with(FireworkEffect.Type.BURST).build());
+                firework.setFireworkMeta(meta);
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        firework.detonate();
+                    }
+                }.runTaskLater(AuroraMCAPI.getCore(), 2);
             }
-        }
+        }.runTask(AuroraMCAPI.getCore());
     }
 
     private void end() {
