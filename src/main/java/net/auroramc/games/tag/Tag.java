@@ -7,6 +7,7 @@ package net.auroramc.games.tag;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Team;
+import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
@@ -20,11 +21,12 @@ import net.auroramc.games.tag.utils.TagScoreboardRunnable;
 import net.auroramc.games.util.listeners.settings.DisableBreakListener;
 import net.auroramc.games.util.listeners.settings.DisableHungerListener;
 import net.auroramc.games.util.listeners.settings.DisablePlaceListener;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import org.bukkit.*;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -121,6 +123,21 @@ public class Tag extends Game {
         int random = new Random().nextInt(playersAlive.size());
         AuroraMCPlayer player = playersAlive.get(random);
         player.setTeam(team);
+        player.getPlayer().getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
+        player.getPlayer().getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
+        player.getPlayer().getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
+        player.getPlayer().getInventory().setBoots(new GUIItem(Material.LEATHER_BOOTS, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
+        Firework firework = player.getPlayer().getLocation().getWorld().spawn(player.getPlayer().getEyeLocation(), Firework.class);
+        FireworkMeta meta = firework.getFireworkMeta();
+        meta.setPower(0);
+        meta.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(255, 0, 0)).trail(true).flicker(true).with(FireworkEffect.Type.BURST).build());
+        firework.setFireworkMeta(meta);
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                firework.detonate();
+            }
+        }.runTaskLater(AuroraMCAPI.getCore(), 2);
         for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
             player1.updateNametag(player);
             if (player1.equals(player)) {
