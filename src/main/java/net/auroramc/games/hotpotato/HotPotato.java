@@ -141,6 +141,18 @@ public class HotPotato extends Game {
     }
 
     public void generatePotatoes() {
+        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+            AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
+            if (!gp.isSpectator()) {
+                JSONObject specSpawn = this.map.getMapData().getJSONObject("game").getJSONArray("MIDDLE").getJSONObject(0);
+                int x, y, z;
+                x = specSpawn.getInt("x");
+                y = specSpawn.getInt("y");
+                z = specSpawn.getInt("z");
+                float yaw = specSpawn.getFloat("yaw");
+                gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+            }
+        }
         round++;
         List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer) player).isSpectator()).collect(Collectors.toList());
         Collections.shuffle(playersAlive);
