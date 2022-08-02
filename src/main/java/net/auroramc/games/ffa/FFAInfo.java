@@ -9,6 +9,6 @@ import net.auroramc.engine.api.games.GameInfo;
 public class FFAInfo extends GameInfo {
 
     public FFAInfo() {
-        super(102, "FFA", FFA.class, "A game description", "FFA", false, "v0.0.1-ALPHA");
+        super(102, "FFA", FFA.class, "Kill your opponents and be the last one alive. That's it. Yes, it's really that simple.", "FFA", false, "v0.0.1-ALPHA");
     }
 }
