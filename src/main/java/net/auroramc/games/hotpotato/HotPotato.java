@@ -167,7 +167,7 @@ public class HotPotato extends Game {
             potatoList.add(potato);
         }
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + potatoes + "** Hot Potatoes have been released! They explode in **45** seconds!"));
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + potatoes + "** Hot Potato" + ((potatoes > 1)?"es":"") + " have been released! They explode in **45** seconds!"));
         }
         potatoTask = new BukkitRunnable(){
             @Override
