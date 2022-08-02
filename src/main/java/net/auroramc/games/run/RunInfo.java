@@ -9,6 +9,6 @@ import net.auroramc.engine.api.games.GameInfo;
 public class RunInfo extends GameInfo {
 
     public RunInfo() {
-        super(104, "Run", Run.class, "A game description", "RUN", false, "v0.0.1-ALPHA");
+        super(104, "Run", Run.class, "Run and don't stop.\nBe the last one alive.", "RUN", false, "v0.0.1-ALPHA");
     }
 }
