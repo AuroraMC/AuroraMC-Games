@@ -21,6 +21,9 @@ import net.auroramc.games.spleef.listeners.ItemSpawnListener;
 import net.auroramc.games.spleef.utils.SpleefScoreboardRunnable;
 import net.auroramc.games.util.PlayersTeam;
 import net.auroramc.games.util.listeners.death.NoDamageInstaKillListener;
+import net.auroramc.games.util.listeners.settings.DisableItemDrop;
+import net.auroramc.games.util.listeners.settings.DisableItemPickup;
+import net.auroramc.games.util.listeners.settings.DisableMovableItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -99,6 +102,9 @@ public class Spleef extends Game {
         itemSpawnListener = new ItemSpawnListener();
         hungerListener = new HungerListener();
         breakListener = new BreakListener(Material.valueOf(this.map.getMapData().getString("block").toUpperCase()));
+        DisableItemDrop.register();
+        DisableItemPickup.register();
+        DisableMovableItems.register();
         NoDamageInstaKillListener.register();
         Bukkit.getPluginManager().registerEvents(deathListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(itemSpawnListener, EngineAPI.getGameEngine());
@@ -134,6 +140,9 @@ public class Spleef extends Game {
         PlayerDropItemEvent.getHandlerList().unregister(breakListener);
         ProjectileHitEvent.getHandlerList().unregister(breakListener);
         NoDamageInstaKillListener.unregister();
+        DisableItemDrop.unregister();
+        DisableItemPickup.unregister();
+        DisableMovableItems.unregister();
         runnable.cancel();
     }
 

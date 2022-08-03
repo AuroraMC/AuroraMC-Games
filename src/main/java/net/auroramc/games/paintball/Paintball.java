@@ -20,9 +20,7 @@ import net.auroramc.games.paintball.listeners.InventoryListener;
 import net.auroramc.games.paintball.teams.PBBlue;
 import net.auroramc.games.paintball.teams.PBRed;
 import net.auroramc.games.paintball.utils.PaintballScoreboardRunnable;
-import net.auroramc.games.util.listeners.settings.DisableBreakListener;
-import net.auroramc.games.util.listeners.settings.DisableHungerListener;
-import net.auroramc.games.util.listeners.settings.DisablePlaceListener;
+import net.auroramc.games.util.listeners.settings.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -138,6 +136,9 @@ public class Paintball extends Game {
         DisableHungerListener.register();
         DisableBreakListener.register();
         DisablePlaceListener.register();
+        DisableItemDrop.register();
+        DisableItemPickup.register();
+        DisableMovableItems.register();
         ((PBRed)this.teams.get("Red")).initLives();
         ((PBBlue)this.teams.get("Blue")).initLives();
     }
@@ -179,6 +180,9 @@ public class Paintball extends Game {
         DisableHungerListener.unregister();
         DisableBreakListener.unregister();
         DisablePlaceListener.unregister();
+        DisableItemDrop.unregister();
+        DisableItemPickup.unregister();
+        DisableMovableItems.unregister();
         if (!starting) {
             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                 if (!((AuroraMCGamePlayer)player).isSpectator()) {

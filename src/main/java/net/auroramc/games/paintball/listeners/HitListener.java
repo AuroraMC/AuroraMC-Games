@@ -35,6 +35,8 @@ import java.util.Random;
 
 public class HitListener implements Listener {
 
+
+
     @EventHandler
     public void onDamage(EntityDamageEvent e) {
         if (!(e instanceof EntityDamageByEntityEvent)) {
