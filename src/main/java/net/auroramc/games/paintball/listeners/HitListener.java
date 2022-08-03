@@ -44,6 +44,7 @@ public class HitListener implements Listener {
         if (!(e instanceof EntityDamageByEntityEvent)) {
             e.setCancelled(true);
         }
+
         if (e.getCause() == EntityDamageEvent.DamageCause.VOID && e.getEntity() instanceof Player) {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity());
             player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You went outside of the border so was teleported back to spawn."));
@@ -82,6 +83,7 @@ public class HitListener implements Listener {
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent e) {
         if (!(e.getEntity() instanceof Player)) {
+            e.setCancelled(true);
             return;
         }
         if (e.getDamager() instanceof Snowball) {
