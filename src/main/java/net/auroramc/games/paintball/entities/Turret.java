@@ -98,6 +98,7 @@ public class Turret {
         armorStand.setLeggings(new GUIItem(Material.LEATHER_LEGGINGS, null, 1, null, (short)0, false, data).getItem());
         armorStand.setBoots(new GUIItem(Material.LEATHER_BOOTS, null, 1, null, (short)0, false, data).getItem());
         armorStand.setItemInHand(new ItemStack(((owner.getTeam() instanceof PBBlue)?Material.DIAMOND_BARDING:Material.GOLD_BARDING)));
+        armorStand.setMarker(true);
         this.owner = owner;
         ((Paintball)EngineAPI.getActiveGame()).getTurrets().put(armorStand, this);
         task = new BukkitRunnable(){
