@@ -18,9 +18,7 @@ import net.auroramc.games.tag.listeners.HitListener;
 import net.auroramc.games.tag.teams.RunnersTeam;
 import net.auroramc.games.tag.teams.TaggedTeam;
 import net.auroramc.games.tag.utils.TagScoreboardRunnable;
-import net.auroramc.games.util.listeners.settings.DisableBreakListener;
-import net.auroramc.games.util.listeners.settings.DisableHungerListener;
-import net.auroramc.games.util.listeners.settings.DisablePlaceListener;
+import net.auroramc.games.util.listeners.settings.*;
 import org.bukkit.*;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -94,7 +92,10 @@ public class Tag extends Game {
         Bukkit.getPluginManager().registerEvents(hitListener, AuroraMCAPI.getCore());
         DisableBreakListener.register();
         DisableHungerListener.register();
-        DisablePlaceListener.register();;
+        DisablePlaceListener.register();
+        DisableItemDrop.register();
+        DisableItemPickup.register();
+        DisableMovableItems.register();
         runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
     }
 
@@ -166,6 +167,9 @@ public class Tag extends Game {
         DisablePlaceListener.unregister();
         DisableBreakListener.unregister();
         DisableHungerListener.unregister();
+        DisableItemDrop.unregister();
+        DisableItemPickup.unregister();
+        DisableMovableItems.unregister();
         runnable.cancel();
     }
 
