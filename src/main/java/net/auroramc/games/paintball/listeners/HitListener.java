@@ -28,6 +28,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -242,6 +243,13 @@ public class HitListener implements Listener {
     @EventHandler
     public void onArmorStandManipulate(PlayerArmorStandManipulateEvent e) {
         e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractAtEntityEvent e) {
+        if (e.getRightClicked() instanceof ArmorStand) {
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler
