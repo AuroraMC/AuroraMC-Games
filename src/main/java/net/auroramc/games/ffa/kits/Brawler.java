@@ -13,7 +13,7 @@ public class Brawler extends Kit {
 
 
     public Brawler() {
-        super(0, 102, "&3&lBerserker", "Run around and attempt to eliminate other players! Right click with your axe to leap forward.", Material.DIAMOND_AXE, -1);
+        super(0, 102, "&cBerserker", "Run around and attempt to eliminate other players! Right click with your axe to leap forward.", Material.DIAMOND_AXE, -1);
     }
 
     @Override
