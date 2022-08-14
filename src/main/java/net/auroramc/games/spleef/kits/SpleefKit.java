@@ -18,7 +18,7 @@ public class SpleefKit extends Kit {
 
 
     public SpleefKit() {
-        super(0, 100, "&cSpleef Kit", "A kit for Spleef. Simple.", Material.SNOW_BALL, -1);
+        super(0, 100, "&cSnowman", "Run around and avoid getting spleefed into the lava! Receive a snowball for each block broken, and throw them to break more blocks or knock players off!", Material.SNOW_BALL, -1);
     }
 
     @Override

@@ -12,7 +12,7 @@ public class HotPotatoKit extends Kit {
 
 
     public HotPotatoKit() {
-        super(0, 101, "&cHotPotato Kit", "A kit for HotPOtato. Simple.", Material.POTATO_ITEM, -1);
+        super(0, 101, "&cHotPotato Kit", "Potatoes are cool, right? Well, in this case they're not! Avoid having a potato in your inventory at all costs.", Material.POTATO_ITEM, -1);
     }
 
     @Override
