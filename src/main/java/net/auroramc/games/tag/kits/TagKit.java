@@ -13,7 +13,7 @@ public class TagKit extends Kit {
 
 
     public TagKit() {
-        super(0, 106, "&cTag Kit", "A kit for Tag. Simple.", Material.IRON_AXE, -1);
+        super(0, 106, "&cPlayer", "Tag! You're it!", Material.IRON_AXE, -1);
     }
 
     @Override

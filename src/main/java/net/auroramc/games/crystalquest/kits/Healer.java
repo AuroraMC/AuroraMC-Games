@@ -13,7 +13,7 @@ import org.bukkit.Material;
 public class Healer extends Kit {
 
     public Healer() {
-        super(3, 1, "&3&lHealer", "&4&lDO NOT SET THIS KIT, IT IS NOT DONE", Material.GOLDEN_APPLE, 10000);
+        super(3, 1, "&cHealer", "&4&lDO NOT SET THIS KIT, IT IS NOT DONE", Material.GOLDEN_APPLE, 10000);
     }
 
     @Override

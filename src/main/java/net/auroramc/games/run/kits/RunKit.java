@@ -14,7 +14,7 @@ public class RunKit extends Kit {
 
 
     public RunKit() {
-        super(0, 104, "&cRun Kit", "A kit for Run. Simple.", Material.LEATHER_BOOTS, -1);
+        super(0, 104, "&cBerserker", "Run around as blocks fall below your feet, right click with your axe to leap into the air when falling!", Material.LEATHER_BOOTS, -1);
     }
 
     @Override
