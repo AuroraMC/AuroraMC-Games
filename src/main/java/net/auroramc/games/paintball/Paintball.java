@@ -51,9 +51,11 @@ public class Paintball extends Game {
     }
 
     private PaintballScoreboardRunnable runnable;
+    private BukkitTask endGameTask;
     private HitListener hitListener;
     private InventoryListener inventoryListener;
     private Map<ArmorStand, Turret> turrets;
+    private int livesPerKill;
 
 
     @Override
@@ -63,6 +65,7 @@ public class Paintball extends Game {
         this.teams.put("Blue", new PBBlue());
         this.kits.add(new Tribute());
         this.turrets = new HashMap<>();
+        livesPerKill = 1;
     }
 
     @Override
@@ -164,6 +167,7 @@ public class Paintball extends Game {
 
     private void end() {
         runnable.cancel();
+        endGameTask.cancel();
         EntityDamageByEntityEvent.getHandlerList().unregister(hitListener);
         EntityDamageEvent.getHandlerList().unregister(hitListener);
         PlayerArmorStandManipulateEvent.getHandlerList().unregister(hitListener);
@@ -230,6 +234,16 @@ public class Paintball extends Game {
                 }.runTaskTimer(EngineAPI.getGameEngine(), interval, interval));
             }
         }
+
+        endGameTask = new BukkitRunnable(){
+            @Override
+            public void run() {
+                livesPerKill++;
+                for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The amount of lives taken per kill has increased! You now take **" + livesPerKill + "** per kill!"));
+                }
+            }
+        }.runTaskTimer(AuroraMCAPI.getCore(), 4800, 1200);
     }
 
     @Override
@@ -304,5 +318,9 @@ public class Paintball extends Game {
 
     public Map<ArmorStand, Turret> getTurrets() {
         return turrets;
+    }
+
+    public int getLivesPerKill() {
+        return livesPerKill;
     }
 }
