@@ -36,21 +36,21 @@ public class Archer extends Kit {
         switch (i) {
             case 1: {
                 return "Increase the maximum amount of Archer Arrows a player can hold by 1 (total of 7);" +
-                        "&r - Reduce the cooldown of Quickshot ability by 1.0 seconds (becomes 44.0 seconds)";
+                        "&r - &bReduce the cooldown of Quickshot ability by 1.0 seconds (becomes 44.0 seconds)";
             }
             case 2: {
                 return "Reduce the cooldown of Quickshot ability by 1.0 seconds (becomes 43.0 seconds)";
             }
             case 3: {
                 return "Increase the maximum amount of Archer Arrows a player can hold by 1 (total of 8);" +
-                        "&r - Reduce the cooldown of Quickshot ability by 1.0 seconds (becomes 42.0 seconds)";
+                        "&r - &bReduce the cooldown of Quickshot ability by 1.0 seconds (becomes 42.0 seconds)";
             }
             case 4: {
                 return "Reduce the cooldown of Quickshot ability by 1.0 seconds (becomes 41.0 seconds)";
             }
             case 5: {
                 return "Increase the maximum amount of Archer Arrows a player can hold by 2 (total of 10);" +
-                        "&r - Reduce the cooldown of Quickshot ability by 1.0 seconds (becomes 40.0 seconds)";
+                        "&r - &bReduce the cooldown of Quickshot ability by 1.0 seconds (becomes 40.0 seconds)";
             }
         }
         return "None";    }
