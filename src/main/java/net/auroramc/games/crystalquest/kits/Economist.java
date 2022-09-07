@@ -10,10 +10,10 @@ import net.auroramc.engine.api.games.Kit;
 import net.auroramc.games.crystalquest.CrystalQuest;
 import org.bukkit.Material;
 
-public class Ecologist extends Kit {
+public class Economist extends Kit {
 
-    public Ecologist() {
-        super(4, 1, "&3&lEcologist", "&4&lDO NOT SET THIS KIT, IT IS NOT DONE", Material.EMERALD, 15000);
+    public Economist() {
+        super(4, 1, "&cEconomist", "Description is still needed here. don't miss it... &c&lI MEAN IT! DON'T MISS IT!", Material.EMERALD, 15000);
     }
 
     @Override
