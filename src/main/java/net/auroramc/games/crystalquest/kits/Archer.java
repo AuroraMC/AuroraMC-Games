@@ -13,7 +13,7 @@ import org.bukkit.Material;
 public class Archer extends Kit {
 
     public Archer() {
-        super(3, 1, "&cArcher", "A long-time master of archery, punish your enemies from afar with your bow and make them wonder where they're getting attacked from!", Material.GOLDEN_APPLE, 12000);
+        super(3, 1, "&3&lArcher", "A long-time master of archery, punish your enemies from afar with your bow and make them wonder where they're getting attacked from!", Material.BOW, 12000);
     }
 
     @Override
