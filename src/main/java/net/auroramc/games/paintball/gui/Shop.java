@@ -41,14 +41,10 @@ public class Shop extends GUI {
                     player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "extraLives", 1, true);
                     if (player.getTeam() instanceof PBBlue) {
                         PBBlue blue = (PBBlue) player.getTeam();
-                        blue.addLife();
-                        blue.addLife();
-                        blue.addLife();
+                        blue.plus3Lives();
                     } else {
                         PBRed red = (PBRed) player.getTeam();
-                        red.addLife();
-                        red.addLife();
-                        red.addLife();
+                        red.plus3Lives();
                     }
                     gold -= 10;
                     ((AuroraMCGamePlayer) player).getGameData().put("gold", gold);

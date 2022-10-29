@@ -119,76 +119,6 @@ public class CrystalQuest extends Game {
         generateMine(0.145f, 0.1f, 0.005f);
 
         //Now spawn shops.
-        JSONObject shops = map.getMapData().getJSONObject("game").getJSONObject("SHOP");
-        for (Object obj : shops.getJSONArray("PLAYER")) {
-            JSONObject playerShop = (JSONObject) obj;
-            Location location = new Location(EngineAPI.getMapWorld(), playerShop.getInt("x") + 0.5, playerShop.getInt("y"), playerShop.getInt("z") + 0.5, playerShop.getFloat("yaw"), 0);
-            Villager villager = EngineAPI.getMapWorld().spawn(location, Villager.class);
-            CraftEntity craftEntity = ((CraftEntity)villager);
-            NBTTagCompound tag = craftEntity.getHandle().getNBTTag();
-            if (tag == null) {
-                tag = new NBTTagCompound();
-            }
-            craftEntity.getHandle().c(tag);
-            tag.setInt("NoAI", 1);
-            tag.setInt("Invulnerable", 1);
-            craftEntity.getHandle().f(tag);
-            ArmorStand stand = location.getWorld().spawn(location, ArmorStand.class);
-            stand.setVisible(false);
-            stand.setCustomName(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight("&3&lPlayer Shop")));
-            stand.setCustomNameVisible(true);
-            stand.setSmall(true);
-            stand.setMarker(true);
-            Rabbit rabbit = location.getWorld().spawn(location, Rabbit.class);
-            rabbit.setPassenger(stand);
-            rabbit.setBaby();
-            craftEntity = ((CraftEntity)rabbit);
-            tag = craftEntity.getHandle().getNBTTag();
-            if (tag == null) {
-                tag = new NBTTagCompound();
-            }
-            craftEntity.getHandle().c(tag);
-            tag.setInt("NoAI", 1);
-            tag.setInt("Invulnerable", 1);
-            craftEntity.getHandle().f(tag);
-            rabbit.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1000000, 1, true, false));
-            villager.setPassenger(rabbit);
-        }
-
-        for (Object obj : shops.getJSONArray("TEAM")) {
-            JSONObject playerShop = (JSONObject) obj;
-            Location location = new Location(EngineAPI.getMapWorld(), playerShop.getInt("x") + 0.5, playerShop.getInt("y"), playerShop.getInt("z") + 0.5, playerShop.getFloat("yaw"), 0);
-            Villager villager = EngineAPI.getMapWorld().spawn(location, Villager.class);
-            CraftEntity craftEntity = ((CraftEntity)villager);
-            NBTTagCompound tag = craftEntity.getHandle().getNBTTag();
-            if (tag == null) {
-                tag = new NBTTagCompound();
-            }
-            craftEntity.getHandle().c(tag);
-            tag.setInt("NoAI", 1);
-            tag.setInt("Invulnerable", 1);
-            craftEntity.getHandle().f(tag);
-            ArmorStand stand = location.getWorld().spawn(location, ArmorStand.class);
-            stand.setVisible(false);
-            stand.setCustomName(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight("&3&lTeam Shop")));
-            stand.setCustomNameVisible(true);
-            stand.setSmall(true);
-            stand.setMarker(true);
-            Rabbit rabbit = location.getWorld().spawn(location, Rabbit.class);
-            rabbit.setPassenger(stand);
-            rabbit.setBaby();
-            craftEntity = ((CraftEntity)rabbit);
-            tag = craftEntity.getHandle().getNBTTag();
-            if (tag == null) {
-                tag = new NBTTagCompound();
-            }
-            craftEntity.getHandle().c(tag);
-            tag.setInt("NoAI", 1);
-            tag.setInt("Invulnerable", 1);
-            craftEntity.getHandle().f(tag);
-            rabbit.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1000000, 1, true, false));
-            villager.setPassenger(rabbit);
-        }
 
         //Disable tile drops for explosions.
         EngineAPI.getMapWorld().setGameRuleValue("doTileDrops", "false");
@@ -269,6 +199,78 @@ public class CrystalQuest extends Game {
             scoreboard.setLine(2, "&b&l«GAME TIME»");
             scoreboard.setLine(1, "0.0 minutes");
 
+        }
+
+        //Spawn shops
+        JSONObject shops = map.getMapData().getJSONObject("game").getJSONObject("SHOP");
+        for (Object obj : shops.getJSONArray("PLAYER")) {
+            JSONObject playerShop = (JSONObject) obj;
+            Location location = new Location(EngineAPI.getMapWorld(), playerShop.getInt("x") + 0.5, playerShop.getInt("y"), playerShop.getInt("z") + 0.5, playerShop.getFloat("yaw"), 0);
+            Villager villager = EngineAPI.getMapWorld().spawn(location, Villager.class);
+            CraftEntity craftEntity = ((CraftEntity)villager);
+            NBTTagCompound tag = craftEntity.getHandle().getNBTTag();
+            if (tag == null) {
+                tag = new NBTTagCompound();
+            }
+            craftEntity.getHandle().c(tag);
+            tag.setInt("NoAI", 1);
+            tag.setInt("Invulnerable", 1);
+            craftEntity.getHandle().f(tag);
+            ArmorStand stand = location.getWorld().spawn(location, ArmorStand.class);
+            stand.setVisible(false);
+            stand.setCustomName(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight("&3&lPlayer Shop")));
+            stand.setCustomNameVisible(true);
+            stand.setSmall(true);
+            stand.setMarker(true);
+            Rabbit rabbit = location.getWorld().spawn(location, Rabbit.class);
+            rabbit.setPassenger(stand);
+            rabbit.setBaby();
+            craftEntity = ((CraftEntity)rabbit);
+            tag = craftEntity.getHandle().getNBTTag();
+            if (tag == null) {
+                tag = new NBTTagCompound();
+            }
+            craftEntity.getHandle().c(tag);
+            tag.setInt("NoAI", 1);
+            tag.setInt("Invulnerable", 1);
+            craftEntity.getHandle().f(tag);
+            rabbit.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1000000, 1, true, false));
+            villager.setPassenger(rabbit);
+        }
+
+        for (Object obj : shops.getJSONArray("TEAM")) {
+            JSONObject playerShop = (JSONObject) obj;
+            Location location = new Location(EngineAPI.getMapWorld(), playerShop.getInt("x") + 0.5, playerShop.getInt("y"), playerShop.getInt("z") + 0.5, playerShop.getFloat("yaw"), 0);
+            Villager villager = EngineAPI.getMapWorld().spawn(location, Villager.class);
+            CraftEntity craftEntity = ((CraftEntity)villager);
+            NBTTagCompound tag = craftEntity.getHandle().getNBTTag();
+            if (tag == null) {
+                tag = new NBTTagCompound();
+            }
+            craftEntity.getHandle().c(tag);
+            tag.setInt("NoAI", 1);
+            tag.setInt("Invulnerable", 1);
+            craftEntity.getHandle().f(tag);
+            ArmorStand stand = location.getWorld().spawn(location, ArmorStand.class);
+            stand.setVisible(false);
+            stand.setCustomName(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight("&3&lTeam Shop")));
+            stand.setCustomNameVisible(true);
+            stand.setSmall(true);
+            stand.setMarker(true);
+            Rabbit rabbit = location.getWorld().spawn(location, Rabbit.class);
+            rabbit.setPassenger(stand);
+            rabbit.setBaby();
+            craftEntity = ((CraftEntity)rabbit);
+            tag = craftEntity.getHandle().getNBTTag();
+            if (tag == null) {
+                tag = new NBTTagCompound();
+            }
+            craftEntity.getHandle().c(tag);
+            tag.setInt("NoAI", 1);
+            tag.setInt("Invulnerable", 1);
+            craftEntity.getHandle().f(tag);
+            rabbit.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1000000, 1, true, false));
+            villager.setPassenger(rabbit);
         }
 
     }

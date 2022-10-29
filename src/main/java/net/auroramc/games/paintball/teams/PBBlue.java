@@ -37,6 +37,10 @@ public class PBBlue implements Team {
         lives -= ((Paintball) EngineAPI.getActiveGame()).getLivesPerKill();
     }
 
+    public synchronized void plus3Lives() {
+        lives += 3;
+    }
+
     @Override
     public int getId() {
         return 1;
