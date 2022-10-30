@@ -17,9 +17,7 @@ import net.auroramc.games.hotpotato.kits.HotPotatoKit;
 import net.auroramc.games.hotpotato.listeners.HitListener;
 import net.auroramc.games.hotpotato.utils.HotPotatoScoreboardRunnable;
 import net.auroramc.games.util.PlayersTeam;
-import net.auroramc.games.util.listeners.settings.DisableBreakListener;
-import net.auroramc.games.util.listeners.settings.DisableHungerListener;
-import net.auroramc.games.util.listeners.settings.DisablePlaceListener;
+import net.auroramc.games.util.listeners.settings.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -102,6 +100,9 @@ public class HotPotato extends Game {
         DisablePlaceListener.register();
         DisableBreakListener.register();
         DisableHungerListener.register();
+        DisableItemDrop.register();
+        DisableItemPickup.register();
+        DisableMovableItems.register();
         runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
     }
 
@@ -224,6 +225,9 @@ public class HotPotato extends Game {
         DisablePlaceListener.unregister();
         DisableBreakListener.unregister();
         DisableHungerListener.unregister();
+        DisableItemDrop.unregister();
+        DisableItemPickup.unregister();
+        DisableMovableItems.unregister();
         if (potatoTask != null) {
             potatoTask.cancel();
         }

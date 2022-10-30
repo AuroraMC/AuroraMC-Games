@@ -25,10 +25,10 @@ public class Shop extends GUI {
         border("&3&lPaintball Shop", null);
         this.player = player;
 
-        this.setItem(1, 1, new GUIItem(Material.WHEAT, "&a&l+3 Lives", 1, ";&7Add 3 lives to your teams total.;;&rCost: &610 Gold;&aClick to buy!"));
-        this.setItem(1, 3, new GUIItem(Material.ANVIL, "&a&lMore Ammo!", 1, ";&7Receive 32 more snowballs for use;&7on the battlefield!.;;&rCost: &612 Gold;&aClick to buy!"));
-        this.setItem(1, 5, new GUIItem(Material.EGG, "&c&lFlashbang", 1, ";&7When you throw this flashbang, it will blind;&rany player within 10 blocks of where it lands!;;&rCost: &612 Gold;&aClick to buy!"));
-        this.setItem(1, 7, new GUIItem(Material.GOLD_BARDING, "&c&lTurret", 1, ";&7Spawn a turret that shoots snowballs;&7at your enemies for you!;;&cNote: &rThis only lasts 30 seconds.;;&rCost: &616 Gold;&aClick to buy!"));
+        this.setItem(1, 1, new GUIItem(Material.WHEAT, "&a&l+3 Lives", 1, ";&7Add 3 lives to your teams total.;;&r&fCost: &610 Gold;&aClick to buy!"));
+        this.setItem(1, 3, new GUIItem(Material.ANVIL, "&a&lMore Ammo!", 1, ";&7Receive 32 more snowballs for use;&7on the battlefield!.;;&r&fCost: &612 Gold;&aClick to buy!"));
+        this.setItem(1, 5, new GUIItem(Material.EGG, "&c&lFlashbang", 1, ";&7When you throw this flashbang, it will blind;&r&fany player within 10 blocks of where it lands!;;&r&fCost: &612 Gold;&aClick to buy!"));
+        this.setItem(1, 7, new GUIItem(Material.GOLD_BARDING, "&c&lTurret", 1, ";&7Spawn a turret that shoots snowballs;&7at your enemies for you!;;&cNote: &r&fThis only lasts 30 seconds.;;&r&fCost: &616 Gold;&aClick to buy!"));
     }
 
     @Override
@@ -41,14 +41,10 @@ public class Shop extends GUI {
                     player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "extraLives", 1, true);
                     if (player.getTeam() instanceof PBBlue) {
                         PBBlue blue = (PBBlue) player.getTeam();
-                        blue.addLife();
-                        blue.addLife();
-                        blue.addLife();
+                        blue.plus3Lives();
                     } else {
                         PBRed red = (PBRed) player.getTeam();
-                        red.addLife();
-                        red.addLife();
-                        red.addLife();
+                        red.plus3Lives();
                     }
                     gold -= 10;
                     ((AuroraMCGamePlayer) player).getGameData().put("gold", gold);

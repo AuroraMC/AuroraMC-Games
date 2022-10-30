@@ -20,9 +20,7 @@ import net.auroramc.games.paintball.listeners.InventoryListener;
 import net.auroramc.games.paintball.teams.PBBlue;
 import net.auroramc.games.paintball.teams.PBRed;
 import net.auroramc.games.paintball.utils.PaintballScoreboardRunnable;
-import net.auroramc.games.util.listeners.settings.DisableBreakListener;
-import net.auroramc.games.util.listeners.settings.DisableHungerListener;
-import net.auroramc.games.util.listeners.settings.DisablePlaceListener;
+import net.auroramc.games.util.listeners.settings.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -53,9 +51,11 @@ public class Paintball extends Game {
     }
 
     private PaintballScoreboardRunnable runnable;
+    private BukkitTask endGameTask;
     private HitListener hitListener;
     private InventoryListener inventoryListener;
     private Map<ArmorStand, Turret> turrets;
+    private int livesPerKill;
 
 
     @Override
@@ -65,6 +65,7 @@ public class Paintball extends Game {
         this.teams.put("Blue", new PBBlue());
         this.kits.add(new Tribute());
         this.turrets = new HashMap<>();
+        livesPerKill = 1;
     }
 
     @Override
@@ -138,6 +139,9 @@ public class Paintball extends Game {
         DisableHungerListener.register();
         DisableBreakListener.register();
         DisablePlaceListener.register();
+        DisableItemDrop.register();
+        DisableItemPickup.register();
+        DisableMovableItems.register();
         ((PBRed)this.teams.get("Red")).initLives();
         ((PBBlue)this.teams.get("Blue")).initLives();
     }
@@ -163,6 +167,7 @@ public class Paintball extends Game {
 
     private void end() {
         runnable.cancel();
+        endGameTask.cancel();
         EntityDamageByEntityEvent.getHandlerList().unregister(hitListener);
         EntityDamageEvent.getHandlerList().unregister(hitListener);
         PlayerArmorStandManipulateEvent.getHandlerList().unregister(hitListener);
@@ -179,6 +184,9 @@ public class Paintball extends Game {
         DisableHungerListener.unregister();
         DisableBreakListener.unregister();
         DisablePlaceListener.unregister();
+        DisableItemDrop.unregister();
+        DisableItemPickup.unregister();
+        DisableMovableItems.unregister();
         if (!starting) {
             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                 if (!((AuroraMCGamePlayer)player).isSpectator()) {
@@ -226,6 +234,16 @@ public class Paintball extends Game {
                 }.runTaskTimer(EngineAPI.getGameEngine(), interval, interval));
             }
         }
+
+        endGameTask = new BukkitRunnable(){
+            @Override
+            public void run() {
+                livesPerKill++;
+                for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The amount of lives taken per kill has increased! You now take **" + livesPerKill + "** per kill!"));
+                }
+            }
+        }.runTaskTimer(AuroraMCAPI.getCore(), 4800, 1200);
     }
 
     @Override
@@ -272,8 +290,8 @@ public class Paintball extends Game {
                 }
             }
         }
-        List<AuroraMCPlayer> blueAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && (player.getTeam() instanceof PBBlue)).collect(Collectors.toList());
-        List<AuroraMCPlayer> redAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && (player.getTeam() instanceof PBRed)).collect(Collectors.toList());
+        List<AuroraMCPlayer> blueAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && (player.getTeam() instanceof PBBlue) && !player.equals(auroraMCGamePlayer)).collect(Collectors.toList());
+        List<AuroraMCPlayer> redAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && (player.getTeam() instanceof PBRed) && !player.equals(auroraMCGamePlayer)).collect(Collectors.toList());
         if (blueAlive.size() == 0) {
             this.end(this.teams.get("Red"), null);
             return;
@@ -300,5 +318,9 @@ public class Paintball extends Game {
 
     public Map<ArmorStand, Turret> getTurrets() {
         return turrets;
+    }
+
+    public int getLivesPerKill() {
+        return livesPerKill;
     }
 }

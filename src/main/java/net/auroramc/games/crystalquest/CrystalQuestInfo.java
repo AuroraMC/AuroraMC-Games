@@ -9,7 +9,8 @@ import net.auroramc.engine.api.games.GameInfo;
 public class CrystalQuestInfo extends GameInfo {
 
     public CrystalQuestInfo() {
-        super(1, "Crystal Quest", CrystalQuest.class, "Maneuver your way through enemy territory and collect their crystals " +
-                "to allow you to eliminate them. Upgrade armour and enchants to give your team an advantage, but remember: §bProtect your crystals at all time!", "CRYSTAL_QUEST", false, "v0.1.3-ALPHA");
+        super(1, "Crystal Quest", CrystalQuest.class, "Protect your crystals and steal enemy crystals.\n" +
+                "Mine ores or collect resources from your mining robot.\n" +
+                "Upgrade your gear and be the last alive.", "CRYSTAL_QUEST", false, "v0.1.3-ALPHA");
     }
 }

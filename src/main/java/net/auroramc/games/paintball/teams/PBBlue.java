@@ -6,6 +6,8 @@ package net.auroramc.games.paintball.teams;
 
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Team;
+import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.games.paintball.Paintball;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +29,16 @@ public class PBBlue implements Team {
         return lives;
     }
 
-    public synchronized int addLife() {
-        return lives++;
+    public synchronized void addLife() {
+        lives += ((Paintball) EngineAPI.getActiveGame()).getLivesPerKill();
     }
 
-    public synchronized int removeLife() {
-        return lives--;
+    public synchronized void removeLife() {
+        lives -= ((Paintball) EngineAPI.getActiveGame()).getLivesPerKill();
+    }
+
+    public synchronized void plus3Lives() {
+        lives += 3;
     }
 
     @Override

@@ -20,9 +20,7 @@ import net.auroramc.games.run.listeners.MoveListener;
 import net.auroramc.games.run.util.RunScoreboardRunnable;
 import net.auroramc.games.util.PlayersTeam;
 import net.auroramc.games.util.listeners.death.NoDamageInstaKillListener;
-import net.auroramc.games.util.listeners.settings.DisableBreakListener;
-import net.auroramc.games.util.listeners.settings.DisableHungerListener;
-import net.auroramc.games.util.listeners.settings.DisablePlaceListener;
+import net.auroramc.games.util.listeners.settings.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -101,6 +99,9 @@ public class Run extends Game {
         DisableBreakListener.register();
         DisablePlaceListener.register();
         NoDamageInstaKillListener.register();
+        DisableItemDrop.register();
+        DisableItemPickup.register();
+        DisableMovableItems.register();
         Bukkit.getPluginManager().registerEvents(deathListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(moveListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(leapListener, EngineAPI.getGameEngine());
@@ -133,6 +134,9 @@ public class Run extends Game {
         DisableBreakListener.unregister();
         DisablePlaceListener.unregister();
         NoDamageInstaKillListener.unregister();
+        DisableItemDrop.unregister();
+        DisableItemPickup.unregister();
+        DisableMovableItems.unregister();
         runnable.cancel();
     }
 

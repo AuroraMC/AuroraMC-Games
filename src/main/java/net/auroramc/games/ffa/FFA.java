@@ -20,11 +20,13 @@ import net.auroramc.games.ffa.listeners.ShowListener;
 import net.auroramc.games.ffa.util.FFAScoreboardRunnable;
 import net.auroramc.games.util.PlayersTeam;
 import net.auroramc.games.util.listeners.death.DeathListener;
-import net.auroramc.games.util.listeners.death.NoDamageInstaKillListener;
-import net.auroramc.games.util.listeners.settings.DisableHungerListener;
+import net.auroramc.games.util.listeners.settings.DisableItemDrop;
+import net.auroramc.games.util.listeners.settings.DisableItemPickup;
+import net.auroramc.games.util.listeners.settings.DisableRemovableArmor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -103,7 +105,9 @@ public class FFA extends Game {
         DeathListener.register(true);
         Bukkit.getPluginManager().registerEvents(showListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(itemSpawnListener, EngineAPI.getGameEngine());
-        DisableHungerListener.register();
+        DisableItemDrop.register();
+        DisableItemPickup.register();
+        DisableRemovableArmor.register();
         Bukkit.getPluginManager().registerEvents(breakListener, EngineAPI.getGameEngine());
         runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
     }
@@ -127,10 +131,13 @@ public class FFA extends Game {
     private void end() {
         ItemSpawnEvent.getHandlerList().unregister(itemSpawnListener);
         DeathListener.unregister();
+        DisableItemDrop.unregister();
+        DisableItemPickup.unregister();
+        DisableRemovableArmor.unregister();
         PlayerInteractEvent.getHandlerList().unregister(breakListener);
         PlayerShowEvent.getHandlerList().unregister(showListener);
         PlayerDropItemEvent.getHandlerList().unregister(breakListener);
-        NoDamageInstaKillListener.unregister();
+        EntityDamageByEntityEvent.getHandlerList().unregister(breakListener);
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             if (player.getStats().getStatistic(EngineAPI.getActiveGameInfo().getId(), "damageDealt") >= 100000) {
                 if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(142))) {

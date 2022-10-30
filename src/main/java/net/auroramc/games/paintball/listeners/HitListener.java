@@ -28,6 +28,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -35,11 +37,14 @@ import java.util.Random;
 
 public class HitListener implements Listener {
 
+
+
     @EventHandler
     public void onDamage(EntityDamageEvent e) {
         if (!(e instanceof EntityDamageByEntityEvent)) {
             e.setCancelled(true);
         }
+
         if (e.getCause() == EntityDamageEvent.DamageCause.VOID && e.getEntity() instanceof Player) {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity());
             player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You went outside of the border so was teleported back to spawn."));
@@ -78,6 +83,7 @@ public class HitListener implements Listener {
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent e) {
         if (!(e.getEntity() instanceof Player)) {
+            e.setCancelled(true);
             return;
         }
         if (e.getDamager() instanceof Snowball) {
@@ -179,13 +185,13 @@ public class HitListener implements Listener {
                 if (shooter.getTeam() instanceof  PBRed) {
                     ((PBRed)shooter.getTeam()).addLife();
                     ((PBBlue)player.getTeam()).removeLife();
-                    if (((PBBlue)player.getTeam()).getLives() == 0) {
+                    if (((PBBlue)player.getTeam()).getLives() <= 0) {
                         EngineAPI.getActiveGame().end(shooter.getTeam(), null);
                     }
                 } else {
                     ((PBBlue)shooter.getTeam()).addLife();
                     ((PBRed)player.getTeam()).removeLife();
-                    if (((PBRed)player.getTeam()).getLives() == 0) {
+                    if (((PBRed)player.getTeam()).getLives() <= 0) {
                         EngineAPI.getActiveGame().end(shooter.getTeam(), null);
                     }
                 }
