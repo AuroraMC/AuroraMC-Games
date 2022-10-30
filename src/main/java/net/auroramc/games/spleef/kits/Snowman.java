@@ -14,10 +14,10 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class SpleefKit extends Kit {
+public class Snowman extends Kit {
 
 
-    public SpleefKit() {
+    public Snowman() {
         super(0, 100, "&cSnowman", "Run around and avoid getting spleefed into the lava! Receive a snowball for each block broken, and throw them to break more blocks or knock players off!", Material.SNOW_BALL, -1);
     }
 

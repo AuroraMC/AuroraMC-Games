@@ -10,10 +10,10 @@ import net.auroramc.engine.api.games.Kit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class RunKit extends Kit {
+public class Berserker extends Kit {
 
 
-    public RunKit() {
+    public Berserker() {
         super(0, 104, "&cBerserker", "Run around as blocks fall below your feet, right click with your axe to leap into the air when falling!", Material.LEATHER_BOOTS, -1);
     }
 

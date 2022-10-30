@@ -27,7 +27,7 @@ public class Shop extends GUI {
 
         this.setItem(1, 1, new GUIItem(Material.WHEAT, "&a&l+3 Lives", 1, ";&7Add 3 lives to your teams total.;;&fCost: &610 Gold;&aClick to buy!"));
         this.setItem(1, 3, new GUIItem(Material.ANVIL, "&a&lMore Ammo!", 1, ";&7Receive 32 more snowballs for use;&7on the battlefield!.;;&fCost: &612 Gold;&aClick to buy!"));
-        this.setItem(1, 5, new GUIItem(Material.EGG, "&c&lFlashbang", 1, ";&7When you throw this flashbang, it will blind;&fany player within 10 blocks of where it lands!;;&fCost: &612 Gold;&aClick to buy!"));
+        this.setItem(1, 5, new GUIItem(Material.EGG, "&c&lFlashbang", 1, ";&7When you throw this flashbang, it will blind;&7any player within 10 blocks of where it lands!;;&fCost: &612 Gold;&aClick to buy!"));
         this.setItem(1, 7, new GUIItem(Material.GOLD_BARDING, "&c&lTurret", 1, ";&7Spawn a turret that shoots snowballs;&7at your enemies for you!;;&cNote: &fThis only lasts 30 seconds.;;&fCost: &616 Gold;&aClick to buy!"));
     }
 

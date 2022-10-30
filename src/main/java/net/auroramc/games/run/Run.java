@@ -13,7 +13,7 @@ import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
-import net.auroramc.games.run.kits.RunKit;
+import net.auroramc.games.run.kits.Berserker;
 import net.auroramc.games.run.listeners.DeathListener;
 import net.auroramc.games.run.listeners.LeapListener;
 import net.auroramc.games.run.listeners.MoveListener;
@@ -51,7 +51,7 @@ public class Run extends Game {
     @Override
     public void preLoad() {
         this.teams.put("players", new PlayersTeam());
-        this.kits.add(new RunKit());
+        this.kits.add(new Berserker());
         runnable = new RunScoreboardRunnable();
     }
 
