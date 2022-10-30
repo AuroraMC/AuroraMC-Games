@@ -109,12 +109,12 @@ public class PlayerShop extends GUI {
         this.setItem(4, 4, item);
 
 
-        this.setItem(1, 1, new GUIItem(Material.STAINED_CLAY, "&3&l16 Clay Blocks", 16, ";&r&fClick to purchase **16** Clay Blocks.;;&r&fCost: &b16&7 Iron Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
-        this.setItem(0, 1, new GUIItem(Material.WOOL, "&3&l16 Wool Blocks", 16, ";&r&fClick to purchase **16** Wool Blocks.;;&r&fCost: &b12&7 Iron Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
-        this.setItem(3, 1, new GUIItem(Material.WOOD, "&3&l16 Wood Blocks", 16, ";&r&fClick to purchase **16** Wood Blocks.;;&r&fCost: &b8&6 Gold Ingots"));
-        this.setItem(2, 1, new GUIItem(Material.STAINED_GLASS, "&3&l16 Glass Blocks", 16, ";&r&fClick to purchase **16** Glass Blocks.;;&r&fCost: &b16&6 Gold Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
-        this.setItem(4, 1, new GUIItem(Material.ENDER_STONE, "&3&l8 End Stone", 8, ";&r&fClick to purchase **8** End Stone.;;&r&fCost: &b24&6 Gold Ingots"));
-        this.setItem(5, 1, new GUIItem(Material.OBSIDIAN, "&3&l1 Obsidian", 1, ";&r&fClick to purchase **1** Obsidian.;;&r&fCost: &b4&a Emeralds"));
+        this.setItem(1, 1, new GUIItem(Material.STAINED_CLAY, "&3&l16 Clay Blocks", 16, ";&r&fClick to purchase **16** &fClay Blocks.;;&r&fCost: &b16&7 Iron Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
+        this.setItem(0, 1, new GUIItem(Material.WOOL, "&3&l16 Wool Blocks", 16, ";&r&fClick to purchase **16** &fWool Blocks.;;&r&fCost: &b12&7 Iron Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
+        this.setItem(3, 1, new GUIItem(Material.WOOD, "&3&l16 Wood Blocks", 16, ";&r&fClick to purchase **16** &fWood Blocks.;;&r&fCost: &b8&6 Gold Ingots"));
+        this.setItem(2, 1, new GUIItem(Material.STAINED_GLASS, "&3&l16 Glass Blocks", 16, ";&r&fClick to purchase **16** &fGlass Blocks.;;&r&fCost: &b16&6 Gold Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
+        this.setItem(4, 1, new GUIItem(Material.ENDER_STONE, "&3&l8 End Stone", 8, ";&r&fClick to purchase **8** &fEnd Stone.;;&r&fCost: &b24&6 Gold Ingots"));
+        this.setItem(5, 1, new GUIItem(Material.OBSIDIAN, "&3&l1 Obsidian", 1, ";&r&fClick to purchase **1** &fObsidian.;;&r&fCost: &b4&a Emeralds"));
 
         int swordSlot = 0, pickSlot = 1, axeSlot = 2;
 
@@ -210,7 +210,7 @@ public class PlayerShop extends GUI {
         this.setItem(2, 7, new GUIItem(Material.COOKIE, "&3&lInstant Cookie", 1, ";&r&fClick to purchase **Instant Cookie**.;;&r&fCost: &b2&a Emerald"));
         this.setItem(3, 7, new GUIItem(Material.FLINT_AND_STEEL, "&3&lFlint and Steel", 1, ";&r&fClick to purchase **Flint and Steel**.;;&r&fCost: &b2&a Emeralds"));
         this.setItem(4, 7, new GUIItem(Material.ENDER_PEARL, "&3&lEthereal Pearl", 1, ";&r&fClick to purchase **Ethereal Pearl**.;;&r&fCost: &b8&a Emeralds"));
-        this.setItem(5, 7, new GUIItem(Material.LADDER, "&3&l8 Ladders", 8, ";&r&fClick to purchase **8** Ladders.;;&r&fCost: &b10&7 Iron"));
+        this.setItem(5, 7, new GUIItem(Material.LADDER, "&3&l8 Ladders", 8, ";&r&fClick to purchase **8** &fLadders.;;&r&fCost: &b10&7 Iron"));
     }
 
     @Override
