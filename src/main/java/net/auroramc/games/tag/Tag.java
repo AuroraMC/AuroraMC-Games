@@ -13,7 +13,6 @@ import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
-import net.auroramc.games.tag.kits.TagKit;
 import net.auroramc.games.tag.listeners.HitListener;
 import net.auroramc.games.tag.teams.RunnersTeam;
 import net.auroramc.games.tag.teams.TaggedTeam;
@@ -47,7 +46,7 @@ public class Tag extends Game {
     @Override
     public void preLoad() {
         this.teams.put("players", new RunnersTeam());
-        this.kits.add(new TagKit());
+        this.kits.add(new net.auroramc.games.tag.kits.Player());
         runnable = new TagScoreboardRunnable();
         hitListener = new HitListener();
     }
