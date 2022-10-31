@@ -10,10 +10,10 @@ import net.auroramc.engine.api.games.Kit;
 import net.auroramc.games.crystalquest.CrystalQuest;
 import org.bukkit.Material;
 
-public class Healer extends Kit {
+public class Archer extends Kit {
 
-    public Healer() {
-        super(3, 1, "&cHealer", "&4&lDO NOT SET THIS KIT, IT IS NOT DONE", Material.GOLDEN_APPLE, 10000);
+    public Archer() {
+        super(3, 1, "&cArcher", "A long-time master of archery, punish your enemies from afar with your bow and make them wonder where they're getting attacked from!", Material.GOLDEN_APPLE, 10000);
     }
 
     @Override
