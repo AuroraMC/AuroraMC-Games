@@ -13,7 +13,7 @@ import org.bukkit.Material;
 public class Economist extends Kit {
 
     public Economist() {
-        super(4, 1, "&cEconomist", "Intrigued about the mining robots, economists spent hours finding out how to duplicate that technology to generate resources themselves.", Material.EMERALD, 15000);
+        super(4, 1, "&cEconomist", "Intrigued about the mining robots, economists spent hours finding out how to duplicate that technology to generate resources themselves.", Material.EMERALD, 20000);
     }
 
     @Override
