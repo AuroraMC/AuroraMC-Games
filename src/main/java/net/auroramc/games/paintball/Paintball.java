@@ -166,6 +166,9 @@ public class Paintball extends Game {
     }
 
     private void end() {
+        if (InventoryListener.getRunnable() != null) {
+            InventoryListener.getRunnable().cancel();
+        }
         runnable.cancel();
         endGameTask.cancel();
         EntityDamageByEntityEvent.getHandlerList().unregister(hitListener);

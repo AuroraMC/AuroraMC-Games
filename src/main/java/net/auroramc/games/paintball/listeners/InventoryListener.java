@@ -8,6 +8,7 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.games.paintball.entities.Turret;
 import net.auroramc.games.paintball.gui.Shop;
 import org.bukkit.*;
@@ -26,11 +27,15 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BlockIterator;
+import org.bukkit.util.Vector;
 
 import java.util.List;
 
 public class InventoryListener implements Listener {
+
+    public static BukkitTask runnable = null;
 
     @EventHandler
     public void onInventoryInteract(InventoryInteractEvent e) {
@@ -44,6 +49,10 @@ public class InventoryListener implements Listener {
     public void onInteract(PlayerInteractEvent e) {
         AuroraMCPlayer pl = AuroraMCAPI.getPlayer(e.getPlayer());
 
+        if (EngineAPI.getServerState() != ServerState.IN_GAME) {
+            return;
+        }
+
         if (e.getItem() != null) {
             if (e.getItem().getType() == Material.GOLD_NUGGET) {
                 e.setCancelled(true);
@@ -56,6 +65,37 @@ public class InventoryListener implements Listener {
                     location.setY(e.getClickedBlock().getY() + 1);
                     new Turret(pl, location);
                     e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
+                }
+            } else if (e.getItem().getType() == Material.FIREWORK && runnable == null) {
+                if (e.getClickedBlock() != null) {
+                    e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
+                    for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + e.getPlayer().getName() + "** has called a Missile Strike, take cover immediately!"));
+                    }
+                    runnable = new BukkitRunnable(){
+                        int i = 0;
+
+                        @Override
+                        public void run() {
+                            if (i < 10) {
+                                for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 1);
+                                }
+                                i++;
+                            } else {
+                                int y = EngineAPI.getActiveMap().getHighY();
+                                for (int x = EngineAPI.getActiveMap().getLowX();x < EngineAPI.getActiveMap().getHighX();x+=5) {
+                                    for (int z = EngineAPI.getActiveMap().getLowZ();z < EngineAPI.getActiveMap().getHighZ();z+=5) {
+                                        Snowball snowball = EngineAPI.getMapWorld().spawn(new Location(EngineAPI.getMapWorld(), x, y, z), Snowball.class);
+                                        snowball.setShooter(null);
+                                        snowball.setVelocity(new Vector(0, -1, 0).normalize());
+                                    }
+                                }
+                                runnable = null;
+                                this.cancel();
+                            }
+                        }
+                    }.runTaskTimer(AuroraMCAPI.getCore(), 0, 10);
                 }
             }
         }
@@ -116,4 +156,7 @@ public class InventoryListener implements Listener {
         e.setCancelled(true);
     }
 
+    public static BukkitTask getRunnable() {
+        return runnable;
+    }
 }
