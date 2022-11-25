@@ -23,9 +23,9 @@ public class RobotMenu extends GUI {
 
     static {
         descs = new HashMap<>();
-        descs.put(1, "&b5 &7Iron &revery &b10 seconds&r.;&b3 &6Gold &revery &b20 seconds&r.;&b1 &aEmeralds &revery &b30 seconds&r.");
-        descs.put(2, "&b7 &7Iron &revery &b7 seconds&r.;&b4 &6Gold &revery &b14 seconds&r.;&b1 &aEmeralds &revery &b20 seconds&r.");
-        descs.put(3, "&b7 &7Iron &revery &b7 seconds&r.;&b6 &6Gold &revery &b7 seconds&r.;&b1 &aEmeralds &revery &b14 seconds&r.");
+        descs.put(1, "&b5 &7Iron &r&fevery &b10 seconds&r&f.;&b3 &6Gold &r&fevery &b20 seconds&r&f.;&b1 &aEmeralds &r&fevery &b30 seconds&r&f.");
+        descs.put(2, "&b7 &7Iron &r&fevery &b7 seconds&r&f.;&b4 &6Gold &r&fevery &b14 seconds&r&f.;&b1 &aEmeralds &r&fevery &b20 seconds&r&f.");
+        descs.put(3, "&b7 &7Iron &r&fevery &b7 seconds&r&f.;&b6 &6Gold &r&fevery &b7 seconds&r&f.;&b1 &aEmeralds &r&fevery &b14 seconds&r&f.");
     }
 
     private final MiningRobot robot;
@@ -38,14 +38,14 @@ public class RobotMenu extends GUI {
         this.player = player;
         this.robot = robot;
 
-        this.setItem(0, 4, new GUIItem(Material.SKULL_ITEM, robot.getEntity().getCustomName() + " (Level " + robot.getLevel() + ")", 1, "&rThis mines:;" + descs.get(robot.getLevel())));
+        this.setItem(0, 4, new GUIItem(Material.SKULL_ITEM, robot.getEntity().getCustomName() + " (Level " + robot.getLevel() + ")", 1, "&r&fThis mines:;" + descs.get(robot.getLevel())));
 
-        this.setItem(1, 2, new GUIItem(Material.SKULL_ITEM, "&3&lPersonal Resources", 1, "&rYou have:;;&b" + robot.getInventories().get(player).getIron() + " &7Iron;&b" + robot.getInventories().get(player).getGold() + " &6Gold;;&aClick to collect!", (short)3, false, player.getPlayer().getName()));
-        this.setItem(1, 4, new GUIItem(Material.SKULL_ITEM, "&3&lTeam Resources", 1, "&rYou have:;;&b" + robot.getEmeralds() + " &aEmeralds;;&aClick to collect!", (short)3));
+        this.setItem(1, 2, new GUIItem(Material.SKULL_ITEM, "&3&lPersonal Resources", 1, "&r&fYou have:;;&b" + robot.getInventories().get(player).getIron() + " &7Iron;&b" + robot.getInventories().get(player).getGold() + " &6Gold;;&aClick to collect!", (short)3, false, player.getPlayer().getName()));
+        this.setItem(1, 4, new GUIItem(Material.SKULL_ITEM, "&3&lTeam Resources", 1, "&r&fYou have:;;&b" + robot.getEmeralds() + " &aEmeralds;;&aClick to collect!", (short)3));
         if (robot.getLevel() == 3) {
-            this.setItem(1, 6, new GUIItem(Material.BARRIER, "&3&lUpgrade Robot", 1, ";&rYou already have the max upgrade for this robot."));
+            this.setItem(1, 6, new GUIItem(Material.BARRIER, "&3&lUpgrade Robot", 1, ";&r&fYou already have the max upgrade for this robot."));
         } else {
-            this.setItem(1, 6, new GUIItem(Material.EXP_BOTTLE, "&3&lUpgrade Robot", 1, ";&rUpgrade to:;&bLevel " + (robot.getLevel() + 1) + ";;&rCost:;&b" + ((robot.getLevel() == 1)?24:32) + " &aEmeralds;;&rThis mines:;" + descs.get(robot.getLevel() + 1)));
+            this.setItem(1, 6, new GUIItem(Material.EXP_BOTTLE, "&3&lUpgrade Robot", 1, ";&r&fUpgrade to:;&bLevel " + (robot.getLevel() + 1) + ";;&r&fCost:;&b" + ((robot.getLevel() == 1)?24:32) + " &aEmeralds;;&r&fThis mines:;" + descs.get(robot.getLevel() + 1)));
         }
 
     }
@@ -72,7 +72,7 @@ public class RobotMenu extends GUI {
                     }
                 }
                 player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
-                this.updateItem(1, 2, new GUIItem(Material.SKULL_ITEM, "&3&lPersonal Resources", 1, "&rYou have:;;&b" + robot.getInventories().get(player).getIron() + " &7Iron;&b" + robot.getInventories().get(player).getGold() + " &6Gold;;&aClick to collect!", (short)3, false, player.getPlayer().getName()));
+                this.updateItem(1, 2, new GUIItem(Material.SKULL_ITEM, "&3&lPersonal Resources", 1, "&r&fYou have:;;&b" + robot.getInventories().get(player).getIron() + " &7Iron;&b" + robot.getInventories().get(player).getGold() + " &6Gold;;&aClick to collect!", (short)3, false, player.getPlayer().getName()));
                 break;
             }
             case 4: {
@@ -83,7 +83,7 @@ public class RobotMenu extends GUI {
                     }
                 }
                 player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
-                this.updateItem(1, 4, new GUIItem(Material.SKULL_ITEM, "&3&lTeam Resources", 1, "&rYou have:;;&b" + robot.getEmeralds() + " &aEmeralds;;&aClick to collect!", (short)3));
+                this.updateItem(1, 4, new GUIItem(Material.SKULL_ITEM, "&3&lTeam Resources", 1, "&r&fYou have:;;&b" + robot.getEmeralds() + " &aEmeralds;;&aClick to collect!", (short)3));
                 break;
             }
             case 6: {
@@ -97,12 +97,12 @@ public class RobotMenu extends GUI {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                     robot.upgrade();
                     if (robot.getLevel() == 3) {
-                        this.setItem(1, 6, new GUIItem(Material.BARRIER, "&3&lUpgrade Robot", 1, ";&rYou already have the max upgrade for this robot."));
+                        this.setItem(1, 6, new GUIItem(Material.BARRIER, "&3&lUpgrade Robot", 1, ";&r&fYou already have the max upgrade for this robot."));
                         if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(69))) {
                             player.getStats().achievementGained(AuroraMCAPI.getAchievement(69), 1, true);
                         }
                     } else {
-                        this.setItem(1, 6, new GUIItem(Material.EXP_BOTTLE, "&3&lUpgrade Robot", 1, ";&rUpgrade to:;&bLevel " + (robot.getLevel() + 1) + ";;Cost:;&b" + ((robot.getLevel() == 1)?24:32) + " &aEmeralds;;&rThis mines:;" + descs.get(robot.getLevel() + 1)));
+                        this.setItem(1, 6, new GUIItem(Material.EXP_BOTTLE, "&3&lUpgrade Robot", 1, ";&r&fUpgrade to:;&bLevel " + (robot.getLevel() + 1) + ";;Cost:;&b" + ((robot.getLevel() == 1)?24:32) + " &aEmeralds;;&r&fThis mines:;" + descs.get(robot.getLevel() + 1)));
                     }
                     player.getPlayer().closeInventory();
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Your mining robot was upgraded to **Level " + robot.getLevel() + "**!"));

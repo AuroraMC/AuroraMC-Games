@@ -293,8 +293,8 @@ public class Paintball extends Game {
                 }
             }
         }
-        List<AuroraMCPlayer> blueAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && (player.getTeam() instanceof PBBlue)).collect(Collectors.toList());
-        List<AuroraMCPlayer> redAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && (player.getTeam() instanceof PBRed)).collect(Collectors.toList());
+        List<AuroraMCPlayer> blueAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && (player.getTeam() instanceof PBBlue) && !player.equals(auroraMCGamePlayer)).collect(Collectors.toList());
+        List<AuroraMCPlayer> redAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && (player.getTeam() instanceof PBRed) && !player.equals(auroraMCGamePlayer)).collect(Collectors.toList());
         if (blueAlive.size() == 0) {
             this.end(this.teams.get("Red"), null);
             return;
