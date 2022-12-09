@@ -35,7 +35,8 @@ import java.util.List;
 
 public class InventoryListener implements Listener {
 
-    public static BukkitTask runnable = null;
+    private static BukkitTask runnable = null;
+    private static int round = 0;
 
     @EventHandler
     public void onInventoryInteract(InventoryInteractEvent e) {
@@ -83,15 +84,8 @@ public class InventoryListener implements Listener {
                                 }
                                 i++;
                             } else {
-                                int y = EngineAPI.getActiveMap().getHighY();
-                                for (int x = EngineAPI.getActiveMap().getLowX();x < EngineAPI.getActiveMap().getHighX();x+=5) {
-                                    for (int z = EngineAPI.getActiveMap().getLowZ();z < EngineAPI.getActiveMap().getHighZ();z+=5) {
-                                        Snowball snowball = EngineAPI.getMapWorld().spawn(new Location(EngineAPI.getMapWorld(), x, y, z), Snowball.class);
-                                        snowball.setShooter(null);
-                                        snowball.setVelocity(new Vector(0, -1, 0).normalize());
-                                    }
-                                }
                                 runnable = null;
+                                newRound();
                                 this.cancel();
                             }
                         }
@@ -158,5 +152,28 @@ public class InventoryListener implements Listener {
 
     public static BukkitTask getRunnable() {
         return runnable;
+    }
+
+    public static void newRound() {
+        runnable = new BukkitRunnable(){
+            @Override
+            public void run() {
+                int y = EngineAPI.getActiveMap().getHighY();
+                for (int x = EngineAPI.getActiveMap().getLowX();x < EngineAPI.getActiveMap().getHighX();x+=5) {
+                    for (int z = EngineAPI.getActiveMap().getLowZ();z < EngineAPI.getActiveMap().getHighZ();z+=5) {
+                        Snowball snowball = EngineAPI.getMapWorld().spawn(new Location(EngineAPI.getMapWorld(), x, y, z), Snowball.class);
+                        snowball.setShooter(null);
+                        snowball.setVelocity(new Vector(0, -1, 0).normalize());
+                    }
+                }
+                if (round == 2) {
+                    round = 0;
+                } else {
+                    round++;
+                    InventoryListener.newRound();
+                }
+            }
+
+        }.runTaskLater(EngineAPI.getGameEngine(), 30);
     }
 }
