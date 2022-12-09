@@ -104,7 +104,7 @@ public class Shop extends GUI {
                 if (gold >= 24) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "teamAmmo", 1, true);
-                    for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers().stream().filter(pl -> !pl.isDead() && !((AuroraMCGamePlayer)pl).isSpectator()).collect(Collectors.toList())) {
+                    for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers().stream().filter(pl -> !pl.isDead() && !((AuroraMCGamePlayer)pl).isSpectator() && pl.getTeam() != null && pl.getTeam().equals(player.getTeam())).collect(Collectors.toList())) {
                         int amountLeft = 32;
                         for (int i = 0;i < 8;i++) {
                             ItemStack stack = pl.getPlayer().getInventory().getItem(i);
