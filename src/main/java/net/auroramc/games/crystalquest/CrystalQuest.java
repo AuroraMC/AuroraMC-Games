@@ -12,6 +12,7 @@ import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Team;
 import net.auroramc.core.api.players.scoreboard.PlayerScoreboard;
 import net.auroramc.core.api.utils.gui.GUIItem;
+import net.auroramc.core.api.utils.holograms.Hologram;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
@@ -214,26 +215,10 @@ public class CrystalQuest extends Game {
             tag.setInt("NoAI", 1);
             tag.setInt("Invulnerable", 1);
             craftEntity.getHandle().f(tag);
-            ArmorStand stand = location.getWorld().spawn(location, ArmorStand.class);
-            stand.setVisible(false);
-            stand.setCustomName(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight("&3&lPlayer Shop")));
-            stand.setCustomNameVisible(true);
-            stand.setSmall(true);
-            stand.setMarker(true);
-            Rabbit rabbit = location.getWorld().spawn(location, Rabbit.class);
-            rabbit.setPassenger(stand);
-            rabbit.setBaby();
-            craftEntity = ((CraftEntity)rabbit);
-            tag = craftEntity.getHandle().getNBTTag();
-            if (tag == null) {
-                tag = new NBTTagCompound();
-            }
-            craftEntity.getHandle().c(tag);
-            tag.setInt("NoAI", 1);
-            tag.setInt("Invulnerable", 1);
-            craftEntity.getHandle().f(tag);
-            rabbit.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1000000, 1, true, false));
-            villager.setPassenger(rabbit);
+
+            Hologram hologram = new Hologram(null, location.clone().add(0, 2.5, 0), null);
+            hologram.addLine(1, "&3&lPlayer Shop");
+            hologram.spawn();
         }
 
         for (Object obj : shops.getJSONArray("TEAM")) {
@@ -249,26 +234,9 @@ public class CrystalQuest extends Game {
             tag.setInt("NoAI", 1);
             tag.setInt("Invulnerable", 1);
             craftEntity.getHandle().f(tag);
-            ArmorStand stand = location.getWorld().spawn(location, ArmorStand.class);
-            stand.setVisible(false);
-            stand.setCustomName(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight("&3&lTeam Shop")));
-            stand.setCustomNameVisible(true);
-            stand.setSmall(true);
-            stand.setMarker(true);
-            Rabbit rabbit = location.getWorld().spawn(location, Rabbit.class);
-            rabbit.setPassenger(stand);
-            rabbit.setBaby();
-            craftEntity = ((CraftEntity)rabbit);
-            tag = craftEntity.getHandle().getNBTTag();
-            if (tag == null) {
-                tag = new NBTTagCompound();
-            }
-            craftEntity.getHandle().c(tag);
-            tag.setInt("NoAI", 1);
-            tag.setInt("Invulnerable", 1);
-            craftEntity.getHandle().f(tag);
-            rabbit.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1000000, 1, true, false));
-            villager.setPassenger(rabbit);
+            Hologram hologram = new Hologram(null, location.clone().add(0, 2.5, 0), null);
+            hologram.addLine(1, "&3&lTeam Shop");
+            hologram.spawn();
         }
 
     }
