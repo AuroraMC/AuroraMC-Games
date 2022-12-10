@@ -110,7 +110,7 @@ public class KitListener implements Listener {
                         @Override
                         public void run() {
                             e.getPlayer().launchProjectile(Arrow.class);
-                            if (amount.decrementAndGet() >= 0 || EngineAPI.getServerState() != ServerState.IN_GAME) {
+                            if (amount.decrementAndGet() <= 0 || EngineAPI.getServerState() != ServerState.IN_GAME) {
                                 this.cancel();
                             }
                         }
