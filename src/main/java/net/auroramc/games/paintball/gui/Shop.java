@@ -143,7 +143,7 @@ public class Shop extends GUI {
                 if (gold >= 24 && !player.getPlayer().getInventory().contains(Material.GOLD_BARDING, 1)) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getPlayer().getInventory().addItem(new GUIItem(Material.FIREWORK, "&c&lMissle Strike", 1).getItem());
-                    player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "missleStrike", 1, true);
+                    player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "missileStrike", 1, true);
                     gold -= 24;
                     ((AuroraMCGamePlayer) player).getGameData().put("gold", gold);
                     int i = gold;
