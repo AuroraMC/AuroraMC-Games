@@ -16,6 +16,7 @@ import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -26,9 +27,15 @@ public class ItemListener implements Listener {
     @EventHandler
     public void onClick(PlayerInteractEvent e) {
         AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
-        if (player != null && !player.isSpectator() && player.getKit() instanceof Blinker && EngineAPI.getServerState() == ServerState.IN_GAME) {
+        if (player != null && !player.isSpectator() && player.getKit() instanceof Blinker && EngineAPI.getServerState() == ServerState.IN_GAME && !EngineAPI.getActiveGame().isStarting()) {
             if (e.getItem() != null && e.getItem().getType() == Material.ENDER_PEARL) {
                 e.setCancelled(true);
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        e.getPlayer().updateInventory();
+                    }
+                }.runTaskLater(AuroraMCAPI.getCore(), 2);
                 if (player.getGameData().containsKey("last_blink")) {
                     int cooldown = 40000;
                     switch (player.getKitLevel().getLatestUpgrade()) {
