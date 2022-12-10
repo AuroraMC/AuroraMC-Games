@@ -236,7 +236,7 @@ public class PlayerShop extends GUI {
                 if (player.getPlayer().getInventory().contains(Material.GOLD_INGOT, 1)) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getPlayer().getInventory().removeItem(new ItemStack(Material.GOLD_INGOT, 1));
-                    Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(new GUIItem(Material.IRON_INGOT, null, 20).getItem());
+                    Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT, 20));
                     if (couldntPlace.size() > 0) {
                         player.getPlayer().closeInventory();
                         for (Map.Entry<Integer, ItemStack> entry : couldntPlace.entrySet()) {
@@ -253,7 +253,7 @@ public class PlayerShop extends GUI {
                 if (player.getPlayer().getInventory().contains(Material.IRON_INGOT, 20)) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getPlayer().getInventory().removeItem(new ItemStack(Material.IRON_INGOT, 20));
-                    Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(new GUIItem(Material.GOLD_INGOT, null, 1).getItem());
+                    Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(new ItemStack(Material.GOLD_INGOT, 1));
                     if (couldntPlace.size() > 0) {
                         player.getPlayer().closeInventory();
                         for (Map.Entry<Integer, ItemStack> entry : couldntPlace.entrySet()) {

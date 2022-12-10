@@ -768,7 +768,7 @@ public class CrystalQuest extends Game {
                     @Override
                     public void run() {
                         if (player.getPlayer().isOnline()) {
-                            if (!player.getPlayer().getInventory().contains(stack, max) && !player.isSpectator()) {
+                            if (!player.getPlayer().getInventory().contains(Material.ARROW, max) && !player.isSpectator()) {
                                 player.getPlayer().getInventory().addItem(stack);
                             }
                         } else {
