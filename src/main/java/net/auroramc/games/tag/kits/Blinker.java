@@ -24,7 +24,7 @@ public class Blinker extends Kit {
         player.getPlayer().getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE).getItem());
         player.getPlayer().getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS).getItem());
 
-        player.getPlayer().getInventory().setItem(8, new GUIItem(Material.ENDER_PEARL).getItem());
+        player.getPlayer().getInventory().setItem(8, new GUIItem(Material.ENDER_PEARL, "&3&lBlink", 1, ";&aRight-click to use blink!").getItem());
 
     }
 
