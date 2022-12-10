@@ -8,6 +8,7 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.utils.gui.GUI;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.games.crystalquest.kits.Archer;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
 import org.bukkit.Material;
@@ -205,7 +206,11 @@ public class PlayerShop extends GUI {
             this.setItem(3, 3, new GUIItem(Material.BARRIER, "&3Bow", 1, ";&r&fYou already have a Bow."));
         }
 
-        this.setItem(4, 3, new GUIItem(Material.ARROW, "&32 Arrows", 2, ";&r&fClick here to buy;&72 Arrows.;;&r&fCost: &b8 &7Iron."));
+        if (!(player.getKit() instanceof Archer)) {
+            this.setItem(4, 3, new GUIItem(Material.ARROW, "&32 Arrows", 2, ";&r&fClick here to buy;&72 Arrows.;;&r&fCost: &b8 &7Iron."));
+        } else {
+            this.setItem(4, 3, new GUIItem(Material.BARRIER, "&32 Arrows", 1, ";&r&fYou are not able to buy arrows with Archer Kit enabled."));
+        }
 
         this.setItem(0, 7, new GUIItem(Material.WATER_BUCKET, "&3&lWater Bucket", 1, ";&r&fClick to purchase **Water Bucket**.;;&r&fCost: &b48&7 Iron"));
         this.setItem(1, 7, new GUIItem(Material.GOLDEN_APPLE, "&3&lGolden Apple", 1, ";&r&fClick to purchase **Golden Apple**.;;&r&fCost: &b8&6 Gold"));

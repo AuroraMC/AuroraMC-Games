@@ -12,6 +12,7 @@ import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.games.crystalquest.kits.Archer;
 import net.auroramc.games.crystalquest.kits.Fighter;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,7 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class KitListener implements Listener {
 
-    private final ItemStack stack = new GUIItem(Material.ARROW, "&eArchers Arrow").getItem();
+    private final ItemStack stack = new GUIItem(Material.ARROW, "&eArcher's Arrow").getItem();
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onDamage(EntityDamageByEntityEvent e) {
@@ -99,22 +100,28 @@ public class KitListener implements Listener {
                         }
                     }
                     player.getGameData().put("last_quickshot", System.currentTimeMillis());
-                    AtomicInteger amount = new AtomicInteger();
-                    e.getPlayer().getInventory().all(stack).values().forEach(itemStack -> amount.addAndGet(itemStack.getAmount()));
+                    AtomicInteger amount = new AtomicInteger(0);
+                    e.getPlayer().getInventory().all(Material.ARROW).values().forEach(itemStack -> amount.addAndGet(itemStack.getAmount()));
                     ItemStack s = stack.clone();
                     s.setAmount(amount.get());
                     e.getPlayer().getInventory().remove(s);
-                    e.getPlayer().launchProjectile(Arrow.class);
+                    Arrow arrow = e.getPlayer().launchProjectile(Arrow.class);
+                    arrow.setVelocity(arrow.getVelocity().multiply(1.2));
+                    player.getPlayer().playSound(player.getPlayer().getEyeLocation(), Sound.SHOOT_ARROW, 1, 100);
                     amount.decrementAndGet();
-                    new BukkitRunnable(){
-                        @Override
-                        public void run() {
-                            e.getPlayer().launchProjectile(Arrow.class);
-                            if (amount.decrementAndGet() <= 0 || EngineAPI.getServerState() != ServerState.IN_GAME) {
-                                this.cancel();
+                    if (amount.get() > 0) {
+                        new BukkitRunnable(){
+                            @Override
+                            public void run() {
+                                Arrow arrow = e.getPlayer().launchProjectile(Arrow.class);
+                                arrow.setVelocity(arrow.getVelocity().multiply(1.2));
+                                player.getPlayer().playSound(player.getPlayer().getEyeLocation(), Sound.SHOOT_ARROW, 1, 100);
+                                if (amount.decrementAndGet() <= 0 || EngineAPI.getServerState() != ServerState.IN_GAME) {
+                                    this.cancel();
+                                }
                             }
-                        }
-                    }.runTaskTimer(EngineAPI.getGameEngine(), 10, 10);
+                        }.runTaskTimer(EngineAPI.getGameEngine(), 2, 2);
+                    }
                 }
             }
         }

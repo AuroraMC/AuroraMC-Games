@@ -775,7 +775,7 @@ public class CrystalQuest extends Game {
                             this.cancel();
                         }
                     }
-                }.runTaskTimer(EngineAPI.getGameEngine(), 200, 200));
+                }.runTaskTimer(EngineAPI.getGameEngine(), 120, 120));
 
             } else if (!player.isSpectator() && player.getKit() instanceof Economist) {
                 int iron = 400, gold = 800, emerald = 1200;
