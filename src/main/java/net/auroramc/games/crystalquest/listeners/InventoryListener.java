@@ -164,16 +164,19 @@ public class InventoryListener implements Listener {
                     ItemStack s = stack.clone();
                     s.setAmount(amount);
                     player.getPlayer().getInventory().remove(s);
-                    player.getPlayer().launchProjectile(Arrow.class, v);
+                    Arrow arrow = player.getPlayer().getWorld().spawnArrow(player.getPlayer().getEyeLocation(), v, 0.6f, 12f);
+                    arrow.setShooter(player.getPlayer());
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            player.getPlayer().launchProjectile(Arrow.class, v);
+                            Arrow arrow = player.getPlayer().getWorld().spawnArrow(player.getPlayer().getEyeLocation(), v, 0.6f, 12f);
+                            arrow.setShooter(player.getPlayer());
                             if (finalamount == 3) {
                                 new BukkitRunnable() {
                                     @Override
                                     public void run() {
-                                        player.getPlayer().launchProjectile(Arrow.class, v);
+                                        Arrow arrow = player.getPlayer().getWorld().spawnArrow(player.getPlayer().getEyeLocation(), v, 0.6f, 12f);
+                                        arrow.setShooter(player.getPlayer());
                                     }
                                 }.runTaskLater(EngineAPI.getGameEngine(), 10);
                             }
