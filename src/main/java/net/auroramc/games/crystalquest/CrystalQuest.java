@@ -762,7 +762,7 @@ public class CrystalQuest extends Game {
                 int fm = max;
                 tasks.add(new BukkitRunnable() {
 
-                    private final ItemStack stack = new GUIItem(Material.ARROW, "&eArchers Arrow").getItem();
+                    private final ItemStack stack = new GUIItem(Material.ARROW, "&eArcher's Arrow").getItem();
                     private final int max = fm;
 
                     @Override
