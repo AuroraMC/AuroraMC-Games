@@ -195,7 +195,7 @@ public class PlayerShop extends GUI {
                 break;
             }
         }
-        this.setItem(1, 3, new GUIItem(Material.GOLD_INGOT, "&3Gold Ingot Conversion", 1, ";&r&fClick here to buy;&61 Gold Ingot.;;&r&fCost: &b20 &7Iron."));
+        this.setItem(1, 5, new GUIItem(Material.GOLD_INGOT, "&3Gold Ingot Conversion", 1, ";&r&fClick here to buy;&61 Gold Ingot.;;&r&fCost: &b20 &7Iron."));
         this.setItem(1, 3, new GUIItem(Material.IRON_INGOT, "&3Iron Ingot Conversion", 1, ";&r&fClick here to buy;&720 Iron Ingots.;;&r&fCost: &b1 &6Gold."));
         this.setItem(2, 3, item);
 

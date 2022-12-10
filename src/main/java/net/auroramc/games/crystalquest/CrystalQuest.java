@@ -778,6 +778,48 @@ public class CrystalQuest extends Game {
                 }.runTaskTimer(EngineAPI.getGameEngine(), 200, 200));
                 break;
 
+            } else if (!player.isSpectator() && player.getKit() instanceof Economist) {
+                int iron = 400, gold = 800, emerald = 1200;
+                switch (player.getKitLevel().getLatestUpgrade()) {
+                    case 5:
+                        iron-=10;
+                        gold-=10;
+                        emerald-=10;
+                    case 4:
+                        iron-=10;
+                        gold-=10;
+                        emerald-=10;
+                    case 3:
+                        iron-=10;
+                        gold-=10;
+                        emerald-=10;
+                    case 2:
+                        iron-=10;
+                        gold-=10;
+                        emerald-=10;
+                    case 1:
+                        iron-=10;
+                        gold-=10;
+                        emerald-=10;
+                }
+                tasks.add(new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        player.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT, 1));
+                    }
+                }.runTaskTimer(EngineAPI.getGameEngine(), iron, iron));
+                tasks.add(new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        player.getPlayer().getInventory().addItem(new ItemStack(Material.GOLD_INGOT, 1));
+                    }
+                }.runTaskTimer(EngineAPI.getGameEngine(), gold, gold));
+                tasks.add(new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        player.getPlayer().getInventory().addItem(new ItemStack(Material.EMERALD, 1));
+                    }
+                }.runTaskTimer(EngineAPI.getGameEngine(), emerald, emerald));
             }
         }
     }
@@ -945,6 +987,9 @@ public class CrystalQuest extends Game {
             player.getPlayer().getInventory().setItem(0, (ItemStack) player.getGameData().get("death_sword"));
             player.getPlayer().getInventory().setItem(1, (ItemStack) player.getGameData().get("death_pickaxe"));
             player.getPlayer().getInventory().setItem(2, (ItemStack) player.getGameData().get("death_axe"));
+            if (player.getKit() instanceof Archer) {
+                player.getPlayer().getInventory().setItem(3, new GUIItem(Material.BOW, "&3&lArcher's Bow", 1, ";&r&aLeft-Click to use Quickshot;&r&cFully charge the bow to use Barrage.").getItem());
+            }
             player.getPlayer().getInventory().setItem(8, compass);
         }
 
