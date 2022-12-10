@@ -27,9 +27,9 @@ public class ItemListener implements Listener {
     @EventHandler
     public void onClick(PlayerInteractEvent e) {
         AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
-        if (player != null && !player.isSpectator() && player.getKit() instanceof Blinker && EngineAPI.getServerState() == ServerState.IN_GAME && !EngineAPI.getActiveGame().isStarting()) {
-            if (e.getItem() != null && e.getItem().getType() == Material.ENDER_PEARL) {
-                e.setCancelled(true);
+        if (e.getItem() != null && e.getItem().getType() == Material.ENDER_PEARL) {
+            e.setCancelled(true);
+            if (player != null && !player.isSpectator() && player.getKit() instanceof Blinker && EngineAPI.getServerState() == ServerState.IN_GAME && !EngineAPI.getActiveGame().isStarting()) {
                 new BukkitRunnable(){
                     @Override
                     public void run() {
@@ -61,7 +61,7 @@ public class ItemListener implements Listener {
                         return;
                     }
                 }
-                player.getGameData().put("last_quickshot", System.currentTimeMillis());
+                player.getGameData().put("last_blink", System.currentTimeMillis());
                 JSONArray spawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
 
                 JSONObject spawn = spawns.getJSONObject(new Random().nextInt(spawns.length()));
