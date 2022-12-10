@@ -195,6 +195,8 @@ public class PlayerShop extends GUI {
                 break;
             }
         }
+        this.setItem(1, 3, new GUIItem(Material.GOLD_INGOT, "&3Gold Ingot Conversion", 1, ";&r&fClick here to buy;&61 Gold Ingot.;;&r&fCost: &b20 &7Iron."));
+        this.setItem(1, 3, new GUIItem(Material.IRON_INGOT, "&3Iron Ingot Conversion", 1, ";&r&fClick here to buy;&720 Iron Ingots.;;&r&fCost: &b1 &6Gold."));
         this.setItem(2, 3, item);
 
         if (!player.getPlayer().getInventory().contains(Material.BOW)) {
@@ -230,6 +232,40 @@ public class PlayerShop extends GUI {
             }
         }
         switch (item.getType()) {
+            case IRON_INGOT: {
+                if (player.getPlayer().getInventory().contains(Material.GOLD_INGOT, 1)) {
+                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
+                    player.getPlayer().getInventory().removeItem(new ItemStack(Material.GOLD_INGOT, 1));
+                    Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(new GUIItem(Material.IRON_INGOT, null, 20).getItem());
+                    if (couldntPlace.size() > 0) {
+                        player.getPlayer().closeInventory();
+                        for (Map.Entry<Integer, ItemStack> entry : couldntPlace.entrySet()) {
+                            player.getPlayer().getLocation().getWorld().dropItem(player.getPlayer().getLocation(), entry.getValue());
+                        }
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Player Shop", "Some of the items wouldn't fit in your inventory"));
+                    }
+                } else {
+                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+                }
+                break;
+            }
+            case GOLD_INGOT: {
+                if (player.getPlayer().getInventory().contains(Material.IRON_INGOT, 20)) {
+                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
+                    player.getPlayer().getInventory().removeItem(new ItemStack(Material.IRON_INGOT, 20));
+                    Map<Integer, ItemStack> couldntPlace = player.getPlayer().getInventory().addItem(new GUIItem(Material.GOLD_INGOT, null, 1).getItem());
+                    if (couldntPlace.size() > 0) {
+                        player.getPlayer().closeInventory();
+                        for (Map.Entry<Integer, ItemStack> entry : couldntPlace.entrySet()) {
+                            player.getPlayer().getLocation().getWorld().dropItem(player.getPlayer().getLocation(), entry.getValue());
+                        }
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Player Shop", "Some of the items wouldn't fit in your inventory"));
+                    }
+                } else {
+                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+                }
+                break;
+            }
             //Boots
             case CHAINMAIL_BOOTS: {
                 if (player.getPlayer().getInventory().contains(Material.IRON_INGOT, 4)) {
