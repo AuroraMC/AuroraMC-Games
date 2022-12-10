@@ -31,76 +31,12 @@ public class ShopListener implements Listener {
         if (e.getDamager() instanceof Player) {
             if (e.getEntity() instanceof Villager) {
                 e.setCancelled(true);
-                if (ChatColor.stripColor(e.getEntity().getPassenger().getPassenger().getCustomName()).startsWith("Player")) {
+                if (e.getEntity().getCustomName().equals("player")) {
                     gui = new PlayerShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager()));
-                } else if (ChatColor.stripColor(e.getEntity().getPassenger().getPassenger().getCustomName()).startsWith("Team")) {
+                } else if (e.getEntity().getCustomName().equals("team")) {
                     gui = new TeamShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager()));
                 } else {
                     return;
-                }
-            } else if (e.getEntity() instanceof Rabbit && !((Rabbit)e.getEntity()).isAdult()) {
-                if (e.getEntity().isInsideVehicle()) {
-                    if (e.getEntity().getVehicle() instanceof Damageable) {
-                        e.setCancelled(true);
-                        if (ChatColor.stripColor(e.getEntity().getPassenger().getCustomName()).startsWith("Player")) {
-                            gui = new PlayerShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager()));
-                        } else if (ChatColor.stripColor(e.getEntity().getPassenger().getCustomName()).startsWith("Team")) {
-                            gui = new TeamShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager()));
-                        } else {
-                            return;
-                        }
-                    }
-                }
-            } else if (e.getEntity() instanceof ArmorStand) {
-                e.setCancelled(true);
-                if (e.getEntity().getCustomName() != null) {
-                    if (ChatColor.stripColor(e.getEntity().getCustomName()).startsWith("Player")) {
-                        gui = new PlayerShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager()));
-                    } else if (ChatColor.stripColor(e.getEntity().getCustomName()).startsWith("Team")) {
-                        gui = new TeamShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager()));
-                    } else {
-                        AuroraMCPlayer player = AuroraMCAPI.getPlayer((Player) e.getDamager());
-                        CQRed red = (CQRed) EngineAPI.getActiveGame().getTeams().get("Red");
-                        CQBlue blue = (CQBlue) EngineAPI.getActiveGame().getTeams().get("Blue");
-                        if (e.getEntity().equals(red.getRobotSlotA().getEntity())) {
-                            if (player.getTeam().equals(red)) {
-                                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(67))) {
-                                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(67), 1, true);
-                                }
-                            }
-                        } else if (e.getEntity().equals(red.getRobotSlotB().getEntity())) {
-                            if (player.getTeam().equals(red)) {
-                                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(67))) {
-                                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(67), 1, true);
-                                }
-                            }
-                        } else if (e.getEntity().equals(red.getRobotSlotC().getEntity())) {
-                            if (player.getTeam().equals(red)) {
-                                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(67))) {
-                                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(67), 1, true);
-                                }
-                            }
-                        } else if (e.getEntity().equals(blue.getRobotSlotA().getEntity())) {
-                            if (player.getTeam().equals(blue)) {
-                                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(67))) {
-                                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(67), 1, true);
-                                }
-                            }
-                        } else if (e.getEntity().equals(blue.getRobotSlotB().getEntity())) {
-                            if (player.getTeam().equals(blue)) {
-                                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(67))) {
-                                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(67), 1, true);
-                                }
-                            }
-                        } else if (e.getEntity().equals(blue.getRobotSlotC().getEntity())) {
-                            if (player.getTeam().equals(blue)) {
-                                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(67))) {
-                                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(67), 1, true);
-                                }
-                            }
-                        }
-                        return;
-                    }
                 }
             }
         }
@@ -146,11 +82,6 @@ public class ShopListener implements Listener {
             if (e.getRightClicked() instanceof ArmorStand) {
                 if (e.getRightClicked().getCustomName() != null) {
                     AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
-                    if (ChatColor.stripColor(e.getRightClicked().getCustomName()).startsWith("Player")) {
-                        gui = new PlayerShop((AuroraMCGamePlayer) player);
-                    } else if (ChatColor.stripColor(e.getRightClicked().getCustomName()).startsWith("Team")) {
-                        gui = new TeamShop((AuroraMCGamePlayer) player);
-                    } else {
                         CQRed red = (CQRed) EngineAPI.getActiveGame().getTeams().get("Red");
                         CQBlue blue = (CQBlue) EngineAPI.getActiveGame().getTeams().get("Blue");
                         if (e.getRightClicked().equals(red.getRobotSlotA().getEntity())) {
@@ -191,23 +122,13 @@ public class ShopListener implements Listener {
                             }
                         }
                         return;
-
-                    }
-                } else {
-                    return;
-                }
-            } else if (e.getRightClicked() instanceof Rabbit && !((Rabbit)e.getRightClicked()).isAdult()) {
-                if (ChatColor.stripColor(e.getRightClicked().getPassenger().getCustomName()).startsWith("Player")) {
-                    gui = new PlayerShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer()));
-                } else if (ChatColor.stripColor(e.getRightClicked().getPassenger().getCustomName()).startsWith("Team")) {
-                    gui = new TeamShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer()));
                 } else {
                     return;
                 }
             } else if (e.getRightClicked() instanceof Villager) {
-                if (ChatColor.stripColor(e.getRightClicked().getPassenger().getPassenger().getCustomName()).startsWith("Player")) {
+                if (e.getRightClicked().getCustomName().equals("player")) {
                     gui = new PlayerShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer()));
-                } else if (ChatColor.stripColor(e.getRightClicked().getPassenger().getPassenger().getCustomName()).startsWith("Team")) {
+                } else if (e.getRightClicked().getCustomName().equals("team")) {
                     gui = new TeamShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer()));
                 } else {
                     return;

@@ -6,13 +6,17 @@ package net.auroramc.games.crystalquest.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
+import net.auroramc.games.crystalquest.kits.Archer;
 import org.bukkit.Material;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -26,8 +30,11 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 public class InventoryListener implements Listener {
+
+    private final ItemStack stack = new GUIItem(Material.ARROW, "&eArchers Arrow").getItem();
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
@@ -124,7 +131,7 @@ public class InventoryListener implements Listener {
             }
             if (player.getGameData().containsKey("last_pearl")) {
                 if (System.currentTimeMillis() - (long)player.getGameData().get("last_pearl") < 5000) {
-                    double amount = (((long)player.getGameData().get("last_pearl") + 7000) - System.currentTimeMillis()) / 100d;
+                    double amount = (((long)player.getGameData().get("last_pearl") + 5000) - System.currentTimeMillis()) / 100d;
                     long amount1 = Math.round(amount);
                     if (amount1 < 0) {
                         amount1 = 0;
@@ -138,6 +145,44 @@ public class InventoryListener implements Listener {
 
         }
 
+    }
+
+    @EventHandler
+    public void onShoot(EntityShootBowEvent e) {
+        if (e.getEntity() instanceof Player && EngineAPI.getServerState() == ServerState.IN_GAME && e.getBow() != null) {
+            Player p = (Player) e.getEntity();
+            AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(p);
+            if (!player.isSpectator() && player.getKit() instanceof Archer && e.getForce() == 1.0f) {
+                if (player.getPlayer().getInventory().contains(stack, 2)) {
+                    int amount = 2;
+                    if (player.getPlayer().getInventory().contains(stack, 3)) {
+                        amount = 3;
+                    }
+                    int finalamount = amount;
+                    Vector v = e.getProjectile().getVelocity();
+                    e.setCancelled(true);
+                    ItemStack s = stack.clone();
+                    s.setAmount(amount);
+                    player.getPlayer().getInventory().remove(s);
+                    player.getPlayer().launchProjectile(Arrow.class, v);
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            player.getPlayer().launchProjectile(Arrow.class, v);
+                            if (finalamount == 3) {
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+                                        player.getPlayer().launchProjectile(Arrow.class, v);
+                                    }
+                                }.runTaskLater(EngineAPI.getGameEngine(), 10);
+                            }
+                        }
+                    }.runTaskLater(EngineAPI.getGameEngine(), 10);
+                }
+
+            }
+        }
     }
 
 }

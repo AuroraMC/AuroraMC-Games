@@ -39,6 +39,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -206,6 +207,8 @@ public class CrystalQuest extends Game {
             JSONObject playerShop = (JSONObject) obj;
             Location location = new Location(EngineAPI.getMapWorld(), playerShop.getInt("x") + 0.5, playerShop.getInt("y"), playerShop.getInt("z") + 0.5, playerShop.getFloat("yaw"), 0);
             Villager villager = EngineAPI.getMapWorld().spawn(location, Villager.class);
+            villager.setCustomName("player");
+            villager.setCustomNameVisible(false);
             CraftEntity craftEntity = ((CraftEntity)villager);
             NBTTagCompound tag = craftEntity.getHandle().getNBTTag();
             if (tag == null) {
@@ -225,6 +228,8 @@ public class CrystalQuest extends Game {
             JSONObject playerShop = (JSONObject) obj;
             Location location = new Location(EngineAPI.getMapWorld(), playerShop.getInt("x") + 0.5, playerShop.getInt("y"), playerShop.getInt("z") + 0.5, playerShop.getFloat("yaw"), 0);
             Villager villager = EngineAPI.getMapWorld().spawn(location, Villager.class);
+            villager.setCustomName("team");
+            villager.setCustomNameVisible(false);
             CraftEntity craftEntity = ((CraftEntity)villager);
             NBTTagCompound tag = craftEntity.getHandle().getNBTTag();
             if (tag == null) {
@@ -348,6 +353,8 @@ public class CrystalQuest extends Game {
         BlockFromToEvent.getHandlerList().unregister(miningListener);
         PlayerInteractEvent.getHandlerList().unregister(chestListener);
         EntityDamageByEntityEvent.getHandlerList().unregister(kitListener);
+        EntityShootBowEvent.getHandlerList().unregister(inventoryListener);
+        PlayerInteractEvent.getHandlerList().unregister(kitListener);
         DeathRespawnListener.unregister();
         PregameMoveListener.unregister();
 
@@ -734,6 +741,43 @@ public class CrystalQuest extends Game {
                         break;
                     }
                 }
+            } else if (!player.isSpectator() && player.getKit() instanceof Archer) {
+                int max = 0;
+                switch (player.getKitLevel().getLatestUpgrade()) {
+                    case 5: {
+                        max+=2;
+                    }
+                    case 4:
+                    case 3:{
+                        max++;
+                    }
+                    case 2:
+                    case 1: {
+                        max++;
+                    }
+                    case 0: {
+                        max += 6;
+                    }
+                }
+                int fm = max;
+                tasks.add(new BukkitRunnable() {
+
+                    private final ItemStack stack = new GUIItem(Material.ARROW, "&eArchers Arrow").getItem();
+                    private final int max = fm;
+
+                    @Override
+                    public void run() {
+                        if (player.getPlayer().isOnline()) {
+                            if (!player.getPlayer().getInventory().contains(stack, max) && !player.isSpectator()) {
+                                player.getPlayer().getInventory().addItem(stack);
+                            }
+                        } else {
+                            this.cancel();
+                        }
+                    }
+                }.runTaskTimer(EngineAPI.getGameEngine(), 200, 200));
+                break;
+
             }
         }
     }
