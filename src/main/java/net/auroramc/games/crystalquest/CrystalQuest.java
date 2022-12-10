@@ -780,6 +780,7 @@ public class CrystalQuest extends Game {
 
             } else if (!player.isSpectator() && player.getKit() instanceof Economist) {
                 int iron = 400, gold = 800, emerald = 1200;
+                int amountIron = 3, amountGold = 2;
                 switch (player.getKitLevel().getLatestUpgrade()) {
                     case 5:
                         iron-=10;
@@ -789,6 +790,7 @@ public class CrystalQuest extends Game {
                         iron-=10;
                         gold-=10;
                         emerald-=10;
+                        amountGold++;
                     case 3:
                         iron-=10;
                         gold-=10;
@@ -797,21 +799,24 @@ public class CrystalQuest extends Game {
                         iron-=10;
                         gold-=10;
                         emerald-=10;
+                        amountIron++;
                     case 1:
                         iron-=10;
                         gold-=10;
                         emerald-=10;
                 }
+
+                int finalAmountIron = amountIron, finalAmountGold = amountGold;
                 tasks.add(new BukkitRunnable(){
                     @Override
                     public void run() {
-                        player.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT, 1));
+                        player.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT, finalAmountIron));
                     }
                 }.runTaskTimer(EngineAPI.getGameEngine(), iron, iron));
                 tasks.add(new BukkitRunnable(){
                     @Override
                     public void run() {
-                        player.getPlayer().getInventory().addItem(new ItemStack(Material.GOLD_INGOT, 1));
+                        player.getPlayer().getInventory().addItem(new ItemStack(Material.GOLD_INGOT, finalAmountGold));
                     }
                 }.runTaskTimer(EngineAPI.getGameEngine(), gold, gold));
                 tasks.add(new BukkitRunnable(){
