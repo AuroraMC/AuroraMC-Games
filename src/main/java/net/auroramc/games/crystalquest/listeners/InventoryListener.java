@@ -11,6 +11,7 @@ import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.games.crystalquest.kits.Archer;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -153,9 +154,9 @@ public class InventoryListener implements Listener {
             Player p = (Player) e.getEntity();
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(p);
             if (!player.isSpectator() && player.getKit() instanceof Archer && e.getForce() == 1.0f) {
-                if (player.getPlayer().getInventory().contains(stack, 2)) {
+                if (player.getPlayer().getInventory().containsAtLeast(stack, 2)) {
                     int amount = 2;
-                    if (player.getPlayer().getInventory().contains(stack, 3)) {
+                    if (player.getPlayer().getInventory().containsAtLeast(stack, 3)) {
                         amount = 3;
                     }
                     int finalamount = amount;

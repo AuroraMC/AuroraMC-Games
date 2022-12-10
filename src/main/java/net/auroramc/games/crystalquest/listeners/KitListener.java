@@ -84,7 +84,7 @@ public class KitListener implements Listener {
         if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
             if (player != null && !player.isSpectator() && player.getKit() instanceof Archer && EngineAPI.getServerState() == ServerState.IN_GAME) {
-                if (e.getItem() != null && e.getItem().getType() == Material.BOW && e.getPlayer().getInventory().contains(stack)) {
+                if (e.getItem() != null && e.getItem().getType() == Material.BOW && e.getPlayer().getInventory().containsAtLeast(stack, 1)) {
                     if (player.getGameData().containsKey("last_quickshot")) {
                         int cooldown = 45000 - (player.getKitLevel().getLatestUpgrade() * 1000);
                         if (System.currentTimeMillis() - (long)player.getGameData().get("last_quickshot") < cooldown) {
