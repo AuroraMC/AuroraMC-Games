@@ -8,10 +8,10 @@ import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.games.Kit;
 import org.bukkit.Material;
 
-public class HotPotatoKit extends Kit {
+public class Potato extends Kit {
 
 
-    public HotPotatoKit() {
+    public Potato() {
         super(0, 101, "&cPotato", "Potatoes are cool, right? Well, in this case they're not! Avoid having a potato in your inventory at all costs.", Material.POTATO_ITEM, -1);
     }
 

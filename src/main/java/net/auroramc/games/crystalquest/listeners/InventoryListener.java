@@ -6,13 +6,19 @@ package net.auroramc.games.crystalquest.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
+import net.auroramc.games.crystalquest.kits.Archer;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -26,8 +32,11 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 public class InventoryListener implements Listener {
+
+    private final ItemStack stack = new GUIItem(Material.ARROW, "&eArcher's Arrow").getItem();
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
@@ -66,7 +75,7 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent e) {
-        if (e.getItemDrop().getItemStack().getType().name().endsWith("_SWORD") || e.getItemDrop().getItemStack().getType().name().endsWith("_PICKAXE") || e.getItemDrop().getItemStack().getType().name().endsWith("_AXE") || e.getItemDrop().getItemStack().getType() == Material.COMPASS || e.getItemDrop().getItemStack().getType().name().endsWith("_HELMET") || e.getItemDrop().getItemStack().getType().name().endsWith("_CHESTPLATE") || e.getItemDrop().getItemStack().getType().name().endsWith("_LEGGINGS") || e.getItemDrop().getItemStack().getType().name().endsWith("_BOOTS") || e.getItemDrop().getItemStack().getType() == Material.NETHER_STAR) {
+        if (e.getItemDrop().getItemStack().getType().name().endsWith("_SWORD") || e.getItemDrop().getItemStack().getType().name().endsWith("_PICKAXE") || e.getItemDrop().getItemStack().getType().name().endsWith("_AXE") || e.getItemDrop().getItemStack().getType() == Material.COMPASS || e.getItemDrop().getItemStack().getType().name().endsWith("_HELMET") || e.getItemDrop().getItemStack().getType().name().endsWith("_CHESTPLATE") || e.getItemDrop().getItemStack().getType().name().endsWith("_LEGGINGS") || e.getItemDrop().getItemStack().getType().name().endsWith("_BOOTS") || e.getItemDrop().getItemStack().getType() == Material.NETHER_STAR || e.getItemDrop().getItemStack().getType() == Material.ARROW || e.getItemDrop().getItemStack().getType() == Material.BOW) {
             e.setCancelled(true);
             e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot drop this item!"));
         }
@@ -124,7 +133,7 @@ public class InventoryListener implements Listener {
             }
             if (player.getGameData().containsKey("last_pearl")) {
                 if (System.currentTimeMillis() - (long)player.getGameData().get("last_pearl") < 5000) {
-                    double amount = (((long)player.getGameData().get("last_pearl") + 7000) - System.currentTimeMillis()) / 100d;
+                    double amount = (((long)player.getGameData().get("last_pearl") + 5000) - System.currentTimeMillis()) / 100d;
                     long amount1 = Math.round(amount);
                     if (amount1 < 0) {
                         amount1 = 0;
@@ -138,6 +147,38 @@ public class InventoryListener implements Listener {
 
         }
 
+    }
+
+    @EventHandler
+    public void onShoot(EntityShootBowEvent e) {
+        if (e.getEntity() instanceof Player && EngineAPI.getServerState() == ServerState.IN_GAME && e.getBow() != null) {
+            Player p = (Player) e.getEntity();
+            AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(p);
+            if (!player.isSpectator() && player.getKit() instanceof Archer && e.getForce() == 1.0f) {
+                if (player.getPlayer().getInventory().containsAtLeast(stack, 1)) {
+                    Vector v = e.getProjectile().getVelocity();
+                    e.setCancelled(false);
+                    e.getProjectile().remove();
+                    e.setProjectile(player.getPlayer().launchProjectile(Arrow.class, v));
+                    player.getPlayer().playSound(player.getPlayer().getEyeLocation(), Sound.SHOOT_ARROW, 1, 100);
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            player.getPlayer().launchProjectile(Arrow.class, v.clone().add(new Vector(0.05, 0, 0.05)));
+                            player.getPlayer().playSound(player.getPlayer().getEyeLocation(), Sound.SHOOT_ARROW, 1, 100);
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+                                        player.getPlayer().launchProjectile(Arrow.class, v.clone().add(new Vector(-0.05, 0, -0.05)));
+                                        player.getPlayer().playSound(player.getPlayer().getEyeLocation(), Sound.SHOOT_ARROW, 1, 100);
+                                    }
+                                }.runTaskLater(EngineAPI.getGameEngine(), 2);
+                        }
+                    }.runTaskLater(EngineAPI.getGameEngine(), 2);
+                }
+
+            }
+        }
     }
 
 }

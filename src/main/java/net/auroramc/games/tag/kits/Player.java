@@ -9,10 +9,10 @@ import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.games.Kit;
 import org.bukkit.Material;
 
-public class TagKit extends Kit {
+public class Player extends Kit {
 
 
-    public TagKit() {
+    public Player() {
         super(0, 106, "&cPlayer", "Tag! You're it!", Material.IRON_AXE, -1);
     }
 

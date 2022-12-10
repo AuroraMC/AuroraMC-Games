@@ -13,8 +13,9 @@ import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
-import net.auroramc.games.tag.kits.TagKit;
+import net.auroramc.games.tag.kits.Blinker;
 import net.auroramc.games.tag.listeners.HitListener;
+import net.auroramc.games.tag.listeners.ItemListener;
 import net.auroramc.games.tag.teams.RunnersTeam;
 import net.auroramc.games.tag.teams.TaggedTeam;
 import net.auroramc.games.tag.utils.TagScoreboardRunnable;
@@ -24,6 +25,7 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
@@ -42,13 +44,16 @@ public class Tag extends Game {
 
     private TagScoreboardRunnable runnable;
     private HitListener hitListener;
+    private ItemListener itemListener;
 
 
     @Override
     public void preLoad() {
         this.teams.put("players", new RunnersTeam());
-        this.kits.add(new TagKit());
+        this.kits.add(new net.auroramc.games.tag.kits.Player());
+        this.kits.add(new Blinker());
         runnable = new TagScoreboardRunnable();
+        itemListener = new ItemListener();
         hitListener = new HitListener();
     }
 
@@ -90,6 +95,7 @@ public class Tag extends Game {
             }
         }
         Bukkit.getPluginManager().registerEvents(hitListener, AuroraMCAPI.getCore());
+        Bukkit.getPluginManager().registerEvents(itemListener, AuroraMCAPI.getCore());
         DisableBreakListener.register();
         DisableHungerListener.register();
         DisablePlaceListener.register();
@@ -164,6 +170,7 @@ public class Tag extends Game {
     private void end() {
         EntityDamageByEntityEvent.getHandlerList().unregister(hitListener);
         EntityDamageEvent.getHandlerList().unregister(hitListener);
+        PlayerInteractEvent.getHandlerList().unregister(itemListener);
         DisablePlaceListener.unregister();
         DisableBreakListener.unregister();
         DisableHungerListener.unregister();

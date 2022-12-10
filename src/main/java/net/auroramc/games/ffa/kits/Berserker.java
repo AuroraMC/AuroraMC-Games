@@ -9,10 +9,10 @@ import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.games.Kit;
 import org.bukkit.Material;
 
-public class Brawler extends Kit {
+public class Berserker extends Kit {
 
 
-    public Brawler() {
+    public Berserker() {
         super(0, 102, "&cBerserker", "Run around and attempt to eliminate other players! Right click with your axe to leap forward.", Material.DIAMOND_AXE, -1);
     }
 

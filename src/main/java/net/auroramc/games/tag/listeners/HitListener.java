@@ -51,6 +51,8 @@ public class HitListener implements Listener {
                 if (!player.isSpectator() && !player.isVanished() && player.getTeam() instanceof TaggedTeam && hit.getTeam() instanceof RunnersTeam) {
                     e.setDamage(0);
                     hit.setTeam(player.getTeam());
+                    hit.setKit(EngineAPI.getActiveGame().getKits().get(0));
+                    hit.getPlayer().getInventory().setItem(8, new ItemStack(Material.AIR));
                     hit.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You were tagged!"));
                     player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "tags", 1, true);
                     hit.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "tagged", 1, true);
@@ -82,7 +84,7 @@ public class HitListener implements Listener {
                     if (playersAlive.size() == 1) {
                         EngineAPI.getActiveGame().end(playersAlive.get(0));
                     }
-                } else if (!player.isSpectator() && !player.isVanished() && player.getTeam().equals(hit.getTeam())) {
+                } else if (!player.isSpectator() && !player.isVanished() && player.getTeam().equals(hit.getTeam()) && player.getKit() instanceof net.auroramc.games.tag.kits.Player) {
                     e.setDamage(0);
                 } else {
                     e.setCancelled(true);

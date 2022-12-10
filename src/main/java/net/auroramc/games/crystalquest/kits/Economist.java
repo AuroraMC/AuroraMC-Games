@@ -10,10 +10,10 @@ import net.auroramc.engine.api.games.Kit;
 import net.auroramc.games.crystalquest.CrystalQuest;
 import org.bukkit.Material;
 
-public class Healer extends Kit {
+public class Economist extends Kit {
 
-    public Healer() {
-        super(3, 1, "&cHealer", "&4&lDO NOT SET THIS KIT, IT IS NOT DONE", Material.GOLDEN_APPLE, 10000);
+    public Economist() {
+        super(4, 1, "&cEconomist", "Intrigued about the mining robots, economists spent hours finding out how to duplicate that technology to generate resources themselves.", Material.EMERALD, 20000);
     }
 
     @Override
@@ -33,7 +33,23 @@ public class Healer extends Kit {
     @Override
     public String getUpgradeReward(int i) {
         switch (i) {
-
+            case 1: {
+                return "Reduce each cooldown by 0.5 seconds (Iron - 19.5 seconds, Gold - 39.5 seconds, Emerald 59.5 seconds)";
+            }
+            case 2: {
+                return "Reduce each cooldown by 0.5 seconds (Iron - 19 seconds, Gold - 39 seconds, Emerald 59 seconds;)" +
+                        "&r - &bReceive +1 Iron per ability (Total of 4)";
+            }
+            case 3: {
+                return "Reduce each cooldown by 0.5 seconds (Iron - 18.5 seconds, Gold - 38.5 seconds, Emerald 58.5 seconds)";
+            }
+            case 4: {
+                return "Reduce each cooldown by 0.5 seconds (Iron - 18 seconds, Gold - 38 seconds, Emerald 58 seconds);" +
+                        "&r - &bReceive +1 Gold per ability (Total of 3)";
+            }
+            case 5: {
+                return "Reduce each cooldown by 0.5 seconds (Iron - 17.5 seconds, Gold - 37.5 seconds, Emerald 57.5 seconds)";
+            }
         }
         return "None";
     }

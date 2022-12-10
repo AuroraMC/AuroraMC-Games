@@ -13,7 +13,7 @@ import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
-import net.auroramc.games.ffa.kits.Brawler;
+import net.auroramc.games.ffa.kits.Berserker;
 import net.auroramc.games.ffa.listeners.BreakListener;
 import net.auroramc.games.ffa.listeners.ItemSpawnListener;
 import net.auroramc.games.ffa.listeners.ShowListener;
@@ -53,7 +53,7 @@ public class FFA extends Game {
     @Override
     public void preLoad() {
         this.teams.put("players", new PlayersTeam());
-        this.kits.add(new Brawler());
+        this.kits.add(new Berserker());
         runnable = new FFAScoreboardRunnable();
     }
 

@@ -28,13 +28,13 @@ public class Shop extends GUI {
         border("&3&lPaintball Shop", null);
         this.player = player;
 
-        this.setItem(1, 1, new GUIItem(Material.WHEAT, "&a&l+3 Lives", 1, ";&7Add 3 lives to your teams total.;;&r&fCost: &610 Gold;&aClick to buy!"));
-        this.setItem(1, 2, new GUIItem(Material.ANVIL, "&a&lMore Ammo!", 1, ";&fReceive 32 more snowballs for use;&7on the battlefield!.;;&r&fCost: &612 Gold;&aClick to buy!"));
+        this.setItem(1, 1, new GUIItem(Material.WHEAT, "&a&l+3 Lives", 1, ";&fAdd 3 lives to your teams total.;;&r&fCost: &610 Gold;&aClick to buy!"));
+        this.setItem(1, 2, new GUIItem(Material.ANVIL, "&a&lMore Ammo!", 1, ";&fReceive 32 more snowballs for use;&fon the battlefield!.;;&r&fCost: &612 Gold;&aClick to buy!"));
         this.setItem(1, 3, new GUIItem(Material.ANVIL, "&a&lTeam Ammo!", 2, ";&fEveryone on your team will receive 32 more snowballs for use;&r&fon the battlefield!.;;&r&fCost: &624 Gold;&aClick to buy!"));
 
-        this.setItem(1, 5, new GUIItem(Material.FIREWORK, "&a&lMissle Strike!", 1, ";&fSummon a Missle Strike that attacks;&7anyone on the battlefield!.;&cNOTE:&f This item is capable of;&r&ffriendly fire! You do not;&r&freceive gold for using this item.;;&rCost: &624 Gold;&aClick to buy!"));
+        this.setItem(1, 5, new GUIItem(Material.FIREWORK, "&c&lMissle Strike!", 1, ";&fSummon a Missle Strike that attacks;&fanyone on the battlefield!.;;&cNOTE:&f This item is capable of;&r&ffriendly fire! You do not;&r&freceive gold for using this item.;;&rCost: &624 Gold;&aClick to buy!"));
         this.setItem(1, 6, new GUIItem(Material.EGG, "&c&lFlashbang", 1, ";&r&fWhen you throw this flashbang, it will blind;&r&fany player within 10 blocks of where it lands!;;&r&fCost: &612 Gold;&aClick to buy!"));
-        this.setItem(1, 7, new GUIItem(Material.GOLD_BARDING, "&c&lTurret", 1, ";&r&fSpawn a turret that shoots snowballs;&7at your enemies for you!;;&cNote: &r&fThis only lasts 30 seconds.;;&r&fCost: &616 Gold;&aClick to buy!"));
+        this.setItem(1, 7, new GUIItem(Material.GOLD_BARDING, "&c&lTurret", 1, ";&r&fSpawn a turret that shoots snowballs;&fat your enemies for you!;;&cNOTE: &r&fThis only lasts 30 seconds.;;&r&fCost: &616 Gold;&aClick to buy!"));
     }
 
     @Override
@@ -104,7 +104,7 @@ public class Shop extends GUI {
                 if (gold >= 24) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "teamAmmo", 1, true);
-                    for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers().stream().filter(pl -> !pl.isDead() && !((AuroraMCGamePlayer)pl).isSpectator()).collect(Collectors.toList())) {
+                    for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers().stream().filter(pl -> !pl.isDead() && !((AuroraMCGamePlayer)pl).isSpectator() && pl.getTeam() != null && pl.getTeam().equals(player.getTeam())).collect(Collectors.toList())) {
                         int amountLeft = 32;
                         for (int i = 0;i < 8;i++) {
                             ItemStack stack = pl.getPlayer().getInventory().getItem(i);
@@ -143,7 +143,7 @@ public class Shop extends GUI {
                 if (gold >= 24 && !player.getPlayer().getInventory().contains(Material.GOLD_BARDING, 1)) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getPlayer().getInventory().addItem(new GUIItem(Material.FIREWORK, "&c&lMissle Strike", 1).getItem());
-                    player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "missleStrike", 1, true);
+                    player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "missileStrike", 1, true);
                     gold -= 24;
                     ((AuroraMCGamePlayer) player).getGameData().put("gold", gold);
                     int i = gold;

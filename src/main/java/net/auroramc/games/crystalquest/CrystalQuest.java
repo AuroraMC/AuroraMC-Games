@@ -12,6 +12,7 @@ import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Team;
 import net.auroramc.core.api.players.scoreboard.PlayerScoreboard;
 import net.auroramc.core.api.utils.gui.GUIItem;
+import net.auroramc.core.api.utils.holograms.Hologram;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
@@ -19,9 +20,7 @@ import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.entities.Crystal;
 import net.auroramc.games.crystalquest.entities.CrystalQuestScoreboardRunnable;
-import net.auroramc.games.crystalquest.kits.Defender;
-import net.auroramc.games.crystalquest.kits.Fighter;
-import net.auroramc.games.crystalquest.kits.Miner;
+import net.auroramc.games.crystalquest.kits.*;
 import net.auroramc.games.crystalquest.listeners.*;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
@@ -40,6 +39,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -98,8 +98,8 @@ public class CrystalQuest extends Game {
         this.kits.add(new Miner());
         this.kits.add(new Defender());
         this.kits.add(new Fighter());
-        //this.kits.add(new Healer());
-        //this.kits.add(new Ecologist());
+        this.kits.add(new Archer());
+        this.kits.add(new Economist());
         this.tasks = new ArrayList<>();
         blueUnlucky = true;
         redUnlucky = true;
@@ -207,6 +207,8 @@ public class CrystalQuest extends Game {
             JSONObject playerShop = (JSONObject) obj;
             Location location = new Location(EngineAPI.getMapWorld(), playerShop.getInt("x") + 0.5, playerShop.getInt("y"), playerShop.getInt("z") + 0.5, playerShop.getFloat("yaw"), 0);
             Villager villager = EngineAPI.getMapWorld().spawn(location, Villager.class);
+            villager.setCustomName("player");
+            villager.setCustomNameVisible(false);
             CraftEntity craftEntity = ((CraftEntity)villager);
             NBTTagCompound tag = craftEntity.getHandle().getNBTTag();
             if (tag == null) {
@@ -216,32 +218,18 @@ public class CrystalQuest extends Game {
             tag.setInt("NoAI", 1);
             tag.setInt("Invulnerable", 1);
             craftEntity.getHandle().f(tag);
-            ArmorStand stand = location.getWorld().spawn(location, ArmorStand.class);
-            stand.setVisible(false);
-            stand.setCustomName(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight("&3&lPlayer Shop")));
-            stand.setCustomNameVisible(true);
-            stand.setSmall(true);
-            stand.setMarker(true);
-            Rabbit rabbit = location.getWorld().spawn(location, Rabbit.class);
-            rabbit.setPassenger(stand);
-            rabbit.setBaby();
-            craftEntity = ((CraftEntity)rabbit);
-            tag = craftEntity.getHandle().getNBTTag();
-            if (tag == null) {
-                tag = new NBTTagCompound();
-            }
-            craftEntity.getHandle().c(tag);
-            tag.setInt("NoAI", 1);
-            tag.setInt("Invulnerable", 1);
-            craftEntity.getHandle().f(tag);
-            rabbit.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1000000, 1, true, false));
-            villager.setPassenger(rabbit);
+
+            Hologram hologram = new Hologram(null, location.clone().add(0, 2.5, 0), null);
+            hologram.addLine(1, "&3&lPlayer Shop");
+            hologram.spawn();
         }
 
         for (Object obj : shops.getJSONArray("TEAM")) {
             JSONObject playerShop = (JSONObject) obj;
             Location location = new Location(EngineAPI.getMapWorld(), playerShop.getInt("x") + 0.5, playerShop.getInt("y"), playerShop.getInt("z") + 0.5, playerShop.getFloat("yaw"), 0);
             Villager villager = EngineAPI.getMapWorld().spawn(location, Villager.class);
+            villager.setCustomName("team");
+            villager.setCustomNameVisible(false);
             CraftEntity craftEntity = ((CraftEntity)villager);
             NBTTagCompound tag = craftEntity.getHandle().getNBTTag();
             if (tag == null) {
@@ -251,26 +239,9 @@ public class CrystalQuest extends Game {
             tag.setInt("NoAI", 1);
             tag.setInt("Invulnerable", 1);
             craftEntity.getHandle().f(tag);
-            ArmorStand stand = location.getWorld().spawn(location, ArmorStand.class);
-            stand.setVisible(false);
-            stand.setCustomName(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight("&3&lTeam Shop")));
-            stand.setCustomNameVisible(true);
-            stand.setSmall(true);
-            stand.setMarker(true);
-            Rabbit rabbit = location.getWorld().spawn(location, Rabbit.class);
-            rabbit.setPassenger(stand);
-            rabbit.setBaby();
-            craftEntity = ((CraftEntity)rabbit);
-            tag = craftEntity.getHandle().getNBTTag();
-            if (tag == null) {
-                tag = new NBTTagCompound();
-            }
-            craftEntity.getHandle().c(tag);
-            tag.setInt("NoAI", 1);
-            tag.setInt("Invulnerable", 1);
-            craftEntity.getHandle().f(tag);
-            rabbit.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1000000, 1, true, false));
-            villager.setPassenger(rabbit);
+            Hologram hologram = new Hologram(null, location.clone().add(0, 2.5, 0), null);
+            hologram.addLine(1, "&3&lTeam Shop");
+            hologram.spawn();
         }
 
     }
@@ -382,6 +353,8 @@ public class CrystalQuest extends Game {
         BlockFromToEvent.getHandlerList().unregister(miningListener);
         PlayerInteractEvent.getHandlerList().unregister(chestListener);
         EntityDamageByEntityEvent.getHandlerList().unregister(kitListener);
+        EntityShootBowEvent.getHandlerList().unregister(inventoryListener);
+        PlayerInteractEvent.getHandlerList().unregister(kitListener);
         DeathRespawnListener.unregister();
         PregameMoveListener.unregister();
 
@@ -768,6 +741,89 @@ public class CrystalQuest extends Game {
                         break;
                     }
                 }
+            } else if (!player.isSpectator() && player.getKit() instanceof Archer) {
+                int max = 0;
+                switch (player.getKitLevel().getLatestUpgrade()) {
+                    case 5: {
+                        max+=2;
+                    }
+                    case 4:
+                    case 3:{
+                        max++;
+                    }
+                    case 2:
+                    case 1: {
+                        max++;
+                    }
+                    case 0: {
+                        max += 6;
+                    }
+                }
+                int fm = max;
+                tasks.add(new BukkitRunnable() {
+
+                    private final ItemStack stack = new GUIItem(Material.ARROW, "&eArcher's Arrow").getItem();
+                    private final int max = fm;
+
+                    @Override
+                    public void run() {
+                        if (player.getPlayer().isOnline()) {
+                            if (!player.getPlayer().getInventory().contains(Material.ARROW, max) && !player.isSpectator()) {
+                                player.getPlayer().getInventory().addItem(stack);
+                            }
+                        } else {
+                            this.cancel();
+                        }
+                    }
+                }.runTaskTimer(EngineAPI.getGameEngine(), 120, 120));
+
+            } else if (!player.isSpectator() && player.getKit() instanceof Economist) {
+                int iron = 400, gold = 800, emerald = 1200;
+                int amountIron = 3, amountGold = 2;
+                switch (player.getKitLevel().getLatestUpgrade()) {
+                    case 5:
+                        iron-=10;
+                        gold-=10;
+                        emerald-=10;
+                    case 4:
+                        iron-=10;
+                        gold-=10;
+                        emerald-=10;
+                        amountGold++;
+                    case 3:
+                        iron-=10;
+                        gold-=10;
+                        emerald-=10;
+                    case 2:
+                        iron-=10;
+                        gold-=10;
+                        emerald-=10;
+                        amountIron++;
+                    case 1:
+                        iron-=10;
+                        gold-=10;
+                        emerald-=10;
+                }
+
+                int finalAmountIron = amountIron, finalAmountGold = amountGold;
+                tasks.add(new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        player.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT, finalAmountIron));
+                    }
+                }.runTaskTimer(EngineAPI.getGameEngine(), iron, iron));
+                tasks.add(new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        player.getPlayer().getInventory().addItem(new ItemStack(Material.GOLD_INGOT, finalAmountGold));
+                    }
+                }.runTaskTimer(EngineAPI.getGameEngine(), gold, gold));
+                tasks.add(new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        player.getPlayer().getInventory().addItem(new ItemStack(Material.EMERALD, 1));
+                    }
+                }.runTaskTimer(EngineAPI.getGameEngine(), emerald, emerald));
             }
         }
     }
@@ -935,6 +991,9 @@ public class CrystalQuest extends Game {
             player.getPlayer().getInventory().setItem(0, (ItemStack) player.getGameData().get("death_sword"));
             player.getPlayer().getInventory().setItem(1, (ItemStack) player.getGameData().get("death_pickaxe"));
             player.getPlayer().getInventory().setItem(2, (ItemStack) player.getGameData().get("death_axe"));
+            if (player.getKit() instanceof Archer) {
+                player.getPlayer().getInventory().setItem(3, new GUIItem(Material.BOW, "&3&lArcher's Bow", 1, ";&r&aLeft-Click to use Quickshot;&r&cFully charge the bow to use Barrage.").getItem());
+            }
             player.getPlayer().getInventory().setItem(8, compass);
         }
 
