@@ -159,8 +159,8 @@ public class InventoryListener implements Listener {
             @Override
             public void run() {
                 int y = EngineAPI.getActiveMap().getHighY();
-                for (int x = EngineAPI.getActiveMap().getLowX();x < EngineAPI.getActiveMap().getHighX();x+=5) {
-                    for (int z = EngineAPI.getActiveMap().getLowZ();z < EngineAPI.getActiveMap().getHighZ();z+=5) {
+                for (int x = EngineAPI.getActiveMap().getLowX();x < EngineAPI.getActiveMap().getHighX();x+=(5 - round)) {
+                    for (int z = EngineAPI.getActiveMap().getLowZ();z < EngineAPI.getActiveMap().getHighZ();z+=(5 - round)) {
                         Snowball snowball = EngineAPI.getMapWorld().spawn(new Location(EngineAPI.getMapWorld(), x, y, z), Snowball.class);
                         snowball.setShooter(null);
                         snowball.setVelocity(new Vector(0, -1, 0).normalize());
