@@ -68,10 +68,12 @@ public class InventoryListener implements Listener {
                     e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
                 }
             } else if (e.getItem().getType() == Material.FIREWORK && runnable == null) {
+                e.setCancelled(true);
                 if (e.getClickedBlock() != null) {
                     e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
                     for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                         player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + e.getPlayer().getName() + "** has called a Missile Strike, take cover immediately!"));
+                        player.sendTitle("§4§lMISSILE STRIKE", "§d§lTAKE COVER IMMEDIATELY", 20, 100, 20, ChatColor.DARK_RED, ChatColor.RED, true, true);
                     }
                     runnable = new BukkitRunnable(){
                         int i = 0;
@@ -91,6 +93,8 @@ public class InventoryListener implements Listener {
                         }
                     }.runTaskTimer(AuroraMCAPI.getCore(), 0, 10);
                 }
+            } else if (e.getItem().getType() == Material.FIREWORK) {
+                e.setCancelled(true);
             }
         }
     }
@@ -159,8 +163,8 @@ public class InventoryListener implements Listener {
             @Override
             public void run() {
                 int y = EngineAPI.getActiveMap().getHighY();
-                for (int x = EngineAPI.getActiveMap().getLowX();x < EngineAPI.getActiveMap().getHighX();x+=(5 - round)) {
-                    for (int z = EngineAPI.getActiveMap().getLowZ();z < EngineAPI.getActiveMap().getHighZ();z+=(5 - round)) {
+                for (int x = EngineAPI.getActiveMap().getLowX();x < EngineAPI.getActiveMap().getHighX();x+=(5 - (round*2))) {
+                    for (int z = EngineAPI.getActiveMap().getLowZ();z < EngineAPI.getActiveMap().getHighZ();z+=(5 - (round*2))) {
                         Snowball snowball = EngineAPI.getMapWorld().spawn(new Location(EngineAPI.getMapWorld(), x, y, z), Snowball.class);
                         snowball.setShooter(null);
                         snowball.setVelocity(new Vector(0, -1, 0).normalize());
