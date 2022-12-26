@@ -95,6 +95,7 @@ public class InventoryListener implements Listener {
                 }
             } else if (e.getItem().getType() == Material.FIREWORK) {
                 e.setCancelled(true);
+                e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot use a Missile Strike while one is in progress!"));
             }
         }
     }
@@ -172,6 +173,8 @@ public class InventoryListener implements Listener {
                 }
                 if (round == 2) {
                     round = 0;
+                    runnable = null;
+                    this.cancel();
                 } else {
                     round++;
                     InventoryListener.newRound();

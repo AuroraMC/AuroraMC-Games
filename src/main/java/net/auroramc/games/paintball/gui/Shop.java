@@ -24,7 +24,7 @@ public class Shop extends GUI {
     private AuroraMCPlayer player;
 
     public Shop(AuroraMCPlayer player) {
-        super("&3&lPaintball Shop", 3, true);
+        super("&3&lPaintball Shop", 2, true);
         border("&3&lPaintball Shop", null);
         this.player = player;
 
@@ -140,9 +140,9 @@ public class Shop extends GUI {
                 break;
             }
             case 5: {
-                if (gold >= 24 && !player.getPlayer().getInventory().contains(Material.GOLD_BARDING, 1)) {
+                if (gold >= 24 && !player.getPlayer().getInventory().contains(Material.FIREWORK, 1)) {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
-                    player.getPlayer().getInventory().addItem(new GUIItem(Material.FIREWORK, "&c&lMissle Strike", 1).getItem());
+                    player.getPlayer().getInventory().addItem(new GUIItem(Material.FIREWORK, "&c&lMissile Strike", 1).getItem());
                     player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "missileStrike", 1, true);
                     gold -= 24;
                     ((AuroraMCGamePlayer) player).getGameData().put("gold", gold);
@@ -151,6 +151,9 @@ public class Shop extends GUI {
                         i = 1;
                     }
                     player.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + gold + " Gold", i).getItem());
+                } else if (player.getPlayer().getInventory().contains(Material.FIREWORK, 1)) {
+                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You can only have 1 Missile Strike item in your inventory at a time!"));
                 } else {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                 }
@@ -185,6 +188,9 @@ public class Shop extends GUI {
                         i = 1;
                     }
                     player.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + gold + " Gold", i).getItem());
+                } else if (player.getPlayer().getInventory().contains(Material.GOLD_BARDING, 1)) {
+                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You can only have 1 Turret item in your inventory at a time!"));
                 } else {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                 }
