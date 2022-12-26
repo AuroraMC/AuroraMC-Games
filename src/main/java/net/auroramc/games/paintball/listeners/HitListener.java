@@ -171,16 +171,16 @@ public class HitListener implements Listener {
                 shooter.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills", 1, true);
             }
             if (player.getTeam() instanceof PBRed) {
-                ((PBBlue)EngineAPI.getActiveGame().getTeams().get("blue")).addLife();
+                ((PBBlue)EngineAPI.getActiveGame().getTeams().get("Blue")).addLife();
                 ((PBRed)player.getTeam()).removeLife();
                 if (((PBRed)player.getTeam()).getLives() == 0) {
-                    EngineAPI.getActiveGame().end(EngineAPI.getActiveGame().getTeams().get("blue"), null);
+                    EngineAPI.getActiveGame().end(EngineAPI.getActiveGame().getTeams().get("Blue"), null);
                 }
             } else {
-                ((PBRed)EngineAPI.getActiveGame().getTeams().get("red")).addLife();
+                ((PBRed)EngineAPI.getActiveGame().getTeams().get("Red")).addLife();
                 ((PBBlue)player.getTeam()).removeLife();
                 if (((PBBlue)player.getTeam()).getLives() == 0) {
-                    EngineAPI.getActiveGame().end(EngineAPI.getActiveGame().getTeams().get("red"), null);
+                    EngineAPI.getActiveGame().end(EngineAPI.getActiveGame().getTeams().get("Red"), null);
                 }
             }
             e.setDamage(0);
