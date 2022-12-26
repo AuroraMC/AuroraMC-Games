@@ -131,20 +131,6 @@ public class HitListener implements Listener {
                 }
                 gp.getPlayer().sendMessage(AuroraMCAPI.getFormatter().convert("&6+2 Gold"));
                 gp.getRewards().addXp("Kills", 25);
-
-                if (turret.getOwner().getTeam() instanceof PBRed) {
-                    ((PBRed)turret.getOwner().getTeam()).addLife();
-                    ((PBBlue)player.getTeam()).removeLife();
-                    if (((PBBlue)player.getTeam()).getLives() == 0) {
-                        EngineAPI.getActiveGame().end(turret.getOwner().getTeam(), null);
-                    }
-                } else {
-                    ((PBBlue)turret.getOwner().getTeam()).addLife();
-                    ((PBRed)player.getTeam()).removeLife();
-                    if (((PBRed)player.getTeam()).getLives() == 0) {
-                        EngineAPI.getActiveGame().end(turret.getOwner().getTeam(), null);
-                    }
-                }
                 turret.getOwner().getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills", 1, true);
                 turret.getOwner().getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills;turret", 1, true);
             } else if (snowball.getShooter() instanceof Player) {
@@ -182,20 +168,20 @@ public class HitListener implements Listener {
                 }
                 gp.getPlayer().sendMessage(AuroraMCAPI.getFormatter().convert("&6+2 Gold"));
                 gp.getRewards().addXp("Kills", 25);
-                if (shooter.getTeam() instanceof  PBRed) {
-                    ((PBRed)shooter.getTeam()).addLife();
-                    ((PBBlue)player.getTeam()).removeLife();
-                    if (((PBBlue)player.getTeam()).getLives() <= 0) {
-                        EngineAPI.getActiveGame().end(shooter.getTeam(), null);
-                    }
-                } else {
-                    ((PBBlue)shooter.getTeam()).addLife();
-                    ((PBRed)player.getTeam()).removeLife();
-                    if (((PBRed)player.getTeam()).getLives() <= 0) {
-                        EngineAPI.getActiveGame().end(shooter.getTeam(), null);
-                    }
-                }
                 shooter.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills", 1, true);
+            }
+            if (player.getTeam() instanceof PBRed) {
+                ((PBBlue)EngineAPI.getActiveGame().getTeams().get("blue")).addLife();
+                ((PBRed)player.getTeam()).removeLife();
+                if (((PBRed)player.getTeam()).getLives() == 0) {
+                    EngineAPI.getActiveGame().end(EngineAPI.getActiveGame().getTeams().get("blue"), null);
+                }
+            } else {
+                ((PBRed)EngineAPI.getActiveGame().getTeams().get("red")).addLife();
+                ((PBBlue)player.getTeam()).removeLife();
+                if (((PBBlue)player.getTeam()).getLives() == 0) {
+                    EngineAPI.getActiveGame().end(EngineAPI.getActiveGame().getTeams().get("red"), null);
+                }
             }
             e.setDamage(0);
             if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.DEATH_EFFECT)) {
@@ -227,6 +213,7 @@ public class HitListener implements Listener {
                 for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
                     player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(player1, shooter, player, null, KillMessage.KillReason.PAINTBALL, EngineAPI.getActiveGameInfo().getId())));
                 }
+
             } else if (turret != null) {
                 KillMessage killMessage = (KillMessage) turret.getOwner().getActiveCosmetics().getOrDefault(Cosmetic.CosmeticType.KILL_MESSAGE, AuroraMCAPI.getCosmetics().get(500));
                 for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
