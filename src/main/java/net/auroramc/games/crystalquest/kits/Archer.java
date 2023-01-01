@@ -20,7 +20,7 @@ public class Archer extends Kit {
     public void onGameStart(AuroraMCPlayer player) {
         player.getPlayer().getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET).getItem());
         player.getPlayer().getInventory().setBoots(new GUIItem(Material.LEATHER_BOOTS).getItem());
-        player.getPlayer().getInventory().setChestplate(new GUIItem(Material.CHAINMAIL_CHESTPLATE).getItem());
+        player.getPlayer().getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE).getItem());
         player.getPlayer().getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS).getItem());
 
         player.getPlayer().getInventory().setItem(0, new GUIItem(Material.STONE_SWORD).getItem());
