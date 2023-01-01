@@ -155,7 +155,7 @@ public class TeamShop extends GUI {
                     if (prot == 2) {
                         this.updateItem(1, 1, new GUIItem(Material.BARRIER, "&3&lProtection Upgrade", 1, ";&r&fYou already have the max upgrade."));
                     } else {
-                        this.updateItem(1, 1, new GUIItem(Material.NETHER_STAR, "&3&lProtection Upgrade", 1, ";&r&fCurrent: **" + ((prot == 0)?"None":"Level " + prot) + "**;;&r&fClick to upgrade to:;**Protection " + (prot + 1) + "**;&r&fCost: &b" + ((prot == 0)?16:20) + " &aEmeralds"));
+                        this.updateItem(1, 1, new GUIItem(Material.NETHER_STAR, "&3&lProtection Upgrade", 1, ";&r&fCurrent: **" + ((prot == 0)?"None":"Level " + prot) + "**;;&r&fClick to upgrade to:;**Protection " + (prot + 1) + "**;&r&fCost: &b" + ((prot == 0)?13:17) + " &aEmeralds"));
                     }
                 }
                 break;
@@ -236,7 +236,7 @@ public class TeamShop extends GUI {
                     if (sharp == 2) {
                         this.updateItem(1, 5, new GUIItem(Material.BARRIER, "&3&lSharpness Upgrade", 1, ";&r&fYou already have the max upgrade."));
                     } else {
-                        this.updateItem(1, 5, new GUIItem(Material.NETHER_STAR, "&3&lSharpness Upgrade", 1, ";&r&fCurrent: **" + ((sharp == 0)?"None":"Level " + sharp) + "**;;&r&fClick to upgrade to:;**Sharpness " + (sharp + 1) + "**;&r&fCost: &b" + ((sharp == 0)?13:17) + " &aEmeralds"));
+                        this.updateItem(1, 5, new GUIItem(Material.NETHER_STAR, "&3&lSharpness Upgrade", 1, ";&r&fCurrent: **" + ((sharp == 0)?"None":"Level " + sharp) + "**;;&r&fClick to upgrade to:;**Sharpness " + (sharp + 1) + "**;&r&fCost: &b" + ((sharp == 0)?16:20) + " &aEmeralds"));
                     }
                 }
                 break;
