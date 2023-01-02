@@ -10,6 +10,7 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.paintball.Paintball;
 import net.auroramc.games.paintball.teams.PBBlue;
@@ -25,6 +26,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 import java.util.Base64;
@@ -100,6 +102,7 @@ public class Turret {
         armorStand.setItemInHand(new ItemStack(((owner.getTeam() instanceof PBBlue)?Material.DIAMOND_BARDING:Material.GOLD_BARDING)));
         this.owner = owner;
         ((Paintball)EngineAPI.getActiveGame()).getTurrets().put(armorStand, this);
+        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Turret Placed").put("player", owner.getPlayer().getName())));
         task = new BukkitRunnable(){
 
             int lifetime = 0;

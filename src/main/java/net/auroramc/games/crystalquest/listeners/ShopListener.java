@@ -31,9 +31,9 @@ public class ShopListener implements Listener {
         if (e.getDamager() instanceof Player) {
             if (e.getEntity() instanceof Villager) {
                 e.setCancelled(true);
-                if (e.getEntity().getCustomName().equals("player")) {
+                if (((Villager) e.getEntity()).getProfession() == Villager.Profession.LIBRARIAN) {
                     gui = new PlayerShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager()));
-                } else if (e.getEntity().getCustomName().equals("team")) {
+                } else if (((Villager) e.getEntity()).getProfession() == Villager.Profession.BLACKSMITH) {
                     gui = new TeamShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager()));
                 } else {
                     return;
@@ -126,9 +126,9 @@ public class ShopListener implements Listener {
                     return;
                 }
             } else if (e.getRightClicked() instanceof Villager) {
-                if (e.getRightClicked().getCustomName().equals("player")) {
+                if (((Villager) e.getRightClicked()).getProfession() == Villager.Profession.LIBRARIAN) {
                     gui = new PlayerShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer()));
-                } else if (e.getRightClicked().getCustomName().equals("team")) {
+                } else if (((Villager) e.getRightClicked()).getProfession() == Villager.Profession.BLACKSMITH) {
                     gui = new TeamShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer()));
                 } else {
                     return;

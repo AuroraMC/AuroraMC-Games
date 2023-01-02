@@ -11,6 +11,7 @@ import net.auroramc.core.api.cosmetics.KillMessage;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.paintball.Paintball;
 import net.auroramc.games.paintball.entities.Turret;
@@ -47,6 +48,7 @@ public class HitListener implements Listener {
 
         if (e.getCause() == EntityDamageEvent.DamageCause.VOID && e.getEntity() instanceof Player) {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity());
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", player.getPlayer().getName()).put("killer", "None").put("final", false)));
             player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You went outside of the border so was teleported back to spawn."));
             JSONArray redSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("RED");
             JSONArray blueSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("BLUE");
@@ -213,13 +215,15 @@ public class HitListener implements Listener {
                 for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
                     player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(player1, shooter, player, null, KillMessage.KillReason.PAINTBALL, EngineAPI.getActiveGameInfo().getId())));
                 }
-
+                EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", player.getPlayer().getName()).put("killer", shooter.getPlayer().getName()).put("final", false)));
             } else if (turret != null) {
                 KillMessage killMessage = (KillMessage) turret.getOwner().getActiveCosmetics().getOrDefault(Cosmetic.CosmeticType.KILL_MESSAGE, AuroraMCAPI.getCosmetics().get(500));
                 for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
                     player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(player1, turret.getOwner(), player, turret.getArmorStand(), KillMessage.KillReason.PAINTBALL, EngineAPI.getActiveGameInfo().getId())));
                 }
+                EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", player.getPlayer().getName()).put("killer", turret.getOwner().getPlayer().getName()).put("final", false)));
             } else {
+                EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", player.getPlayer().getName()).put("killer", "None").put("final", false)));
                 KillMessage killMessage = (KillMessage) player.getActiveCosmetics().getOrDefault(Cosmetic.CosmeticType.KILL_MESSAGE, AuroraMCAPI.getCosmetics().get(500));
                 for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
                     player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(player1, null, player, null, KillMessage.KillReason.PAINTBALL, EngineAPI.getActiveGameInfo().getId())));

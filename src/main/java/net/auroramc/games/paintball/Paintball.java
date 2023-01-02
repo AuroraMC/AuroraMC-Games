@@ -11,6 +11,7 @@ import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
+import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.paintball.entities.Turret;
@@ -270,6 +271,9 @@ public class Paintball extends Game {
 
     @Override
     public void onPlayerJoin(AuroraMCGamePlayer auroraMCGamePlayer) {
+        if (!auroraMCGamePlayer.isVanished()) {
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Spectator Joined").put("player", auroraMCGamePlayer.getPlayer().getName())));
+        }
         new BukkitRunnable(){
             @Override
             public void run() {
@@ -284,6 +288,9 @@ public class Paintball extends Game {
 
     @Override
     public void onPlayerLeave(AuroraMCGamePlayer auroraMCGamePlayer) {
+        if (!auroraMCGamePlayer.isVanished()) {
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Leave").put("player", auroraMCGamePlayer.getPlayer().getName())));
+        }
         if (!auroraMCGamePlayer.isSpectator()) {
             for (Turret turret : new ArrayList<>(turrets.values())) {
                 if (turret.getOwner().equals(auroraMCGamePlayer)) {

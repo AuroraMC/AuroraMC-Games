@@ -7,6 +7,7 @@ package net.auroramc.games.paintball.listeners;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.games.paintball.entities.Turret;
@@ -30,6 +31,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -71,6 +73,7 @@ public class InventoryListener implements Listener {
                 e.setCancelled(true);
                 if (e.getClickedBlock() != null) {
                     e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
+                    EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Missile Strike Used").put("player", e.getPlayer().getName())));
                     for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                         player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + e.getPlayer().getName() + "** has called a Missile Strike, take cover immediately!"));
                         player.sendTitle("§4§lMISSILE STRIKE", "§d§lTAKE COVER IMMEDIATELY", 20, 100, 20, ChatColor.DARK_RED, ChatColor.RED, true, true);

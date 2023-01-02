@@ -9,6 +9,7 @@ import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Team;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.listeners.CrystalReturnListener;
 import net.auroramc.games.crystalquest.teams.CQBlue;
@@ -22,6 +23,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.json.JSONObject;
 
 public class Crystal {
 
@@ -49,6 +51,8 @@ public class Crystal {
         if (this.holder != null) {
             return;
         }
+
+        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", homeTeam.getName() + " Teams " + ((boss)?"Boss ":"Tower " + (type)) + " Crystal Collected").put("player", holder.getPlayer().getName())));
         this.holder = holder;
         this.holder.getStats().incrementStatistic(1, "crystalsCollected", 1, true);
         crystal.remove();
@@ -83,6 +87,7 @@ public class Crystal {
     public void crystalDead(Location location, boolean message) {
         this.state = CrystalState.DEAD;
         if (this.holder != null) {
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", homeTeam.getName() + " Teams " + ((boss)?"Boss ":"Tower " + (type)) + " Crystal Captured").put("player", holder.getPlayer().getName())));
             this.holder.getStats().addProgress(AuroraMCAPI.getAchievement(62), 1, this.holder.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(62), 0), true);
             this.holder.getPlayer().getInventory().setContents((ItemStack[]) this.holder.getGameData().remove("crystal_inventory"));
             this.holder.getGameData().remove("crystal_possession");
@@ -103,6 +108,8 @@ public class Crystal {
                 }
             }
             this.holder = null;
+        } else {
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", homeTeam.getName() + " Teams " + ((boss)?"Boss ":"Tower " + (type)) + " Crystal Destroyed By The Game")));
         }
 
         home.getWorld().createExplosion(home, 6);
@@ -115,6 +122,7 @@ public class Crystal {
 
 
     public void crystalReturned() {
+        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", homeTeam.getName() + " Teams " + ((boss)?"Boss ":"Tower " + (type)) + " Crystal Returned").put("player", holder.getPlayer().getName())));
         this.holder.getPlayer().removePotionEffect(PotionEffectType.REGENERATION);
         this.holder.getPlayer().setFoodLevel(25);
         if (!this.holder.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(64))) {

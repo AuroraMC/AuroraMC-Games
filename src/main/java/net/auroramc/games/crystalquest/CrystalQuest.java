@@ -16,6 +16,7 @@ import net.auroramc.core.api.utils.holograms.Hologram;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
+import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.entities.Crystal;
@@ -207,7 +208,7 @@ public class CrystalQuest extends Game {
             JSONObject playerShop = (JSONObject) obj;
             Location location = new Location(EngineAPI.getMapWorld(), playerShop.getInt("x") + 0.5, playerShop.getInt("y"), playerShop.getInt("z") + 0.5, playerShop.getFloat("yaw"), 0);
             Villager villager = EngineAPI.getMapWorld().spawn(location, Villager.class);
-            villager.setCustomName("player");
+            villager.setProfession(Villager.Profession.LIBRARIAN);
             villager.setCustomNameVisible(false);
             CraftEntity craftEntity = ((CraftEntity)villager);
             NBTTagCompound tag = craftEntity.getHandle().getNBTTag();
@@ -228,7 +229,7 @@ public class CrystalQuest extends Game {
             JSONObject playerShop = (JSONObject) obj;
             Location location = new Location(EngineAPI.getMapWorld(), playerShop.getInt("x") + 0.5, playerShop.getInt("y"), playerShop.getInt("z") + 0.5, playerShop.getFloat("yaw"), 0);
             Villager villager = EngineAPI.getMapWorld().spawn(location, Villager.class);
-            villager.setCustomName("team");
+            villager.setProfession(Villager.Profession.BLACKSMITH);
             villager.setCustomNameVisible(false);
             CraftEntity craftEntity = ((CraftEntity)villager);
             NBTTagCompound tag = craftEntity.getHandle().getNBTTag();
@@ -274,6 +275,7 @@ public class CrystalQuest extends Game {
                 location.getBlock().setType(Material.STONE);
             }
         }
+        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Mine regenerated")));
     }
 
     @Override
@@ -854,6 +856,9 @@ public class CrystalQuest extends Game {
 
     @Override
     public void onPlayerJoin(AuroraMCGamePlayer auroraMCGamePlayer) {
+        if (!auroraMCGamePlayer.isVanished()) {
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Spectator Joined").put("player", auroraMCGamePlayer.getPlayer().getName())));
+        }
         new BukkitRunnable(){
             @Override
             public void run() {
@@ -867,6 +872,9 @@ public class CrystalQuest extends Game {
 
     @Override
     public void onPlayerLeave(AuroraMCGamePlayer player) {
+        if (!player.isVanished()) {
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Leave").put("player", player.getPlayer().getName())));
+        }
         if (player.getTeam() != null) {
             if (player.getTeam() instanceof CQRed) {
                 CQRed red = (CQRed) player.getTeam();
@@ -954,6 +962,7 @@ public class CrystalQuest extends Game {
 
     @Override
     public void onRespawn(AuroraMCGamePlayer player) {
+        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Respawn").put("player", player.getPlayer().getName())));
         Location location;
         if (player.getTeam() instanceof CQRed) {
             JSONArray spawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("RED");
@@ -1074,6 +1083,7 @@ public class CrystalQuest extends Game {
                 }
             }
         }
+        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", player.getPlayer().getName()).put("killer", ((killer != null)?killer.getPlayer().getName():"None")).put("final", finalKill)));
         if (!finalKill) {
             if (life) {
                 player.getGameData().put("death_helmet", player.getPlayer().getInventory().getHelmet());
