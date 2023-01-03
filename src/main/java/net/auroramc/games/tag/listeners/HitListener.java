@@ -10,6 +10,7 @@ import net.auroramc.core.api.cosmetics.KillMessage;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.games.tag.teams.RunnersTeam;
@@ -80,6 +81,7 @@ public class HitListener implements Listener {
                         player1.updateNametag(hit);
                         player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(player1, player, hit, null, KillMessage.KillReason.TAG, EngineAPI.getActiveGameInfo().getId())));
                     }
+                    EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", hit.getPlayer().getName()).put("killer", player.getPlayer().getName()).put("final", true)));
                     List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(pl2 -> !((AuroraMCGamePlayer) pl2).isSpectator() && !(pl2.getTeam() instanceof TaggedTeam)).collect(Collectors.toList());
                     if (playersAlive.size() == 1) {
                         EngineAPI.getActiveGame().end(playersAlive.get(0));

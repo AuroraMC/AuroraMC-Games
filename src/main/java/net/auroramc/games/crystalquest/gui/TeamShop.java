@@ -9,6 +9,7 @@ import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.utils.gui.GUI;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.entities.MiningRobot;
 import net.auroramc.games.crystalquest.teams.CQBlue;
@@ -17,6 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -152,10 +154,12 @@ public class TeamShop extends GUI {
                     } else {
                         prot = red.getProtUpgrade();
                     }
+
+                    EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Protection upgraded to " + prot + " for Team " + player.getTeam().getName()).put("player", player.getPlayer().getName())));
                     if (prot == 2) {
                         this.updateItem(1, 1, new GUIItem(Material.BARRIER, "&3&lProtection Upgrade", 1, ";&r&fYou already have the max upgrade."));
                     } else {
-                        this.updateItem(1, 1, new GUIItem(Material.NETHER_STAR, "&3&lProtection Upgrade", 1, ";&r&fCurrent: **" + ((prot == 0)?"None":"Level " + prot) + "**;;&r&fClick to upgrade to:;**Protection " + (prot + 1) + "**;&r&fCost: &b" + ((prot == 0)?16:20) + " &aEmeralds"));
+                        this.updateItem(1, 1, new GUIItem(Material.NETHER_STAR, "&3&lProtection Upgrade", 1, ";&r&fCurrent: **" + ((prot == 0)?"None":"Level " + prot) + "**;;&r&fClick to upgrade to:;**Protection " + (prot + 1) + "**;&r&fCost: &b" + ((prot == 0)?13:17) + " &aEmeralds"));
                     }
                 }
                 break;
@@ -180,6 +184,8 @@ public class TeamShop extends GUI {
                     } else {
                         power = red.getPowerUpgrade();
                     }
+                    EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Power upgraded to " + power + " for Team " + player.getTeam().getName()).put("player", player.getPlayer().getName())));
+
                     if (power == 2) {
                         this.updateItem(1, 3, new GUIItem(Material.BARRIER, "&3&lPower Upgrade", 1, ";&r&fYou already have the max upgrade."));
                     } else {
@@ -194,9 +200,11 @@ public class TeamShop extends GUI {
                     player.getPlayer().getInventory().removeItem(new ItemStack(Material.EMERALD, 12));
                     if (robotB.getEntity() == null) {
                         robotB.spawn();
+                        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Robot B purchased for Team " + player.getTeam().getName()).put("player", player.getPlayer().getName())));
                         this.updateItem(4, 4, new GUIItem(Material.SKULL_ITEM, robotB.getEntity().getCustomName() + " (Level " + robotB.getLevel() + ")", 1, ";&r&fThis mines:;" + descs.get(robotB.getLevel())));
                     } else {
                         robotC.spawn();
+                        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Robot C purchased for Team " + player.getTeam().getName()).put("player", player.getPlayer().getName())));
                         this.updateItem(4, 5, new GUIItem(Material.SKULL_ITEM, robotC.getEntity().getCustomName() + " (Level " + robotC.getLevel() + ")", 1, ";&r&fThis mines:;" + descs.get(robotC.getLevel())));
                         this.updateItem(2, 4, new GUIItem(Material.BARRIER, "&3&lLevel 1 Mining Robot", 1, ";&r&fAll of your Mining Robot slots are full!"));
                         if (power == 2 && prot == 2 && sharp == 2 && robotB.getEntity() != null && robotC.getEntity() != null) {
@@ -233,10 +241,11 @@ public class TeamShop extends GUI {
                     } else {
                         sharp = red.getSharpUpgrade();
                     }
+                    EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Sharpness upgraded to " + sharp + " for Team " + player.getTeam().getName()).put("player", player.getPlayer().getName())));
                     if (sharp == 2) {
                         this.updateItem(1, 5, new GUIItem(Material.BARRIER, "&3&lSharpness Upgrade", 1, ";&r&fYou already have the max upgrade."));
                     } else {
-                        this.updateItem(1, 5, new GUIItem(Material.NETHER_STAR, "&3&lSharpness Upgrade", 1, ";&r&fCurrent: **" + ((sharp == 0)?"None":"Level " + sharp) + "**;;&r&fClick to upgrade to:;**Sharpness " + (sharp + 1) + "**;&r&fCost: &b" + ((sharp == 0)?13:17) + " &aEmeralds"));
+                        this.updateItem(1, 5, new GUIItem(Material.NETHER_STAR, "&3&lSharpness Upgrade", 1, ";&r&fCurrent: **" + ((sharp == 0)?"None":"Level " + sharp) + "**;;&r&fClick to upgrade to:;**Sharpness " + (sharp + 1) + "**;&r&fCost: &b" + ((sharp == 0)?16:20) + " &aEmeralds"));
                     }
                 }
                 break;
@@ -249,6 +258,7 @@ public class TeamShop extends GUI {
                     } else {
                         upgrade = red.lifeBrought();
                     }
+                    EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Life purchased for Team " + player.getTeam().getName()).put("player", player.getPlayer().getName())));
                     if (upgrade) {
                         player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
                         player.getPlayer().getInventory().removeItem(new ItemStack(Material.EMERALD, 8), new ItemStack(Material.IRON_INGOT, 48), new ItemStack(Material.GOLD_INGOT, 32));

@@ -9,6 +9,7 @@ import net.auroramc.core.api.cosmetics.Cosmetic;
 import net.auroramc.core.api.cosmetics.DeathEffect;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import org.bukkit.*;
 import org.bukkit.entity.Firework;
@@ -41,6 +42,7 @@ public class Potato {
                     }
                 }
             }
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Potato Given").put("player", this.holder.getPlayer().getName()).put("to", holder.getPlayer().getName())));
             this.oldHolder = this.holder;
             lastPassed = System.currentTimeMillis();
             this.holder.getPlayer().getInventory().clear();

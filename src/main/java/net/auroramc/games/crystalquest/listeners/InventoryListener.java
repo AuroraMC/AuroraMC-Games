@@ -157,19 +157,24 @@ public class InventoryListener implements Listener {
             if (!player.isSpectator() && player.getKit() instanceof Archer && e.getForce() == 1.0f) {
                 if (player.getPlayer().getInventory().containsAtLeast(stack, 1)) {
                     Vector v = e.getProjectile().getVelocity();
+                    double damage = ((Arrow)e.getProjectile()).spigot().getDamage();
                     e.setCancelled(false);
                     e.getProjectile().remove();
-                    e.setProjectile(player.getPlayer().launchProjectile(Arrow.class, v));
+                    Arrow arrow = player.getPlayer().launchProjectile(Arrow.class, v);
+                    e.setProjectile(arrow);
+                    arrow.spigot().setDamage(damage);
                     player.getPlayer().playSound(player.getPlayer().getEyeLocation(), Sound.SHOOT_ARROW, 1, 100);
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            player.getPlayer().launchProjectile(Arrow.class, v.clone().add(new Vector(0.05, 0, 0.05)));
+                            Arrow arrow = player.getPlayer().launchProjectile(Arrow.class, v.clone().add(new Vector(0.05, 0, 0.05)));
+                            arrow.spigot().setDamage(damage);
                             player.getPlayer().playSound(player.getPlayer().getEyeLocation(), Sound.SHOOT_ARROW, 1, 100);
                                 new BukkitRunnable() {
                                     @Override
                                     public void run() {
-                                        player.getPlayer().launchProjectile(Arrow.class, v.clone().add(new Vector(-0.05, 0, -0.05)));
+                                        Arrow arrow = player.getPlayer().launchProjectile(Arrow.class, v.clone().add(new Vector(-0.05, 0, -0.05)));
+                                        arrow.spigot().setDamage(damage);
                                         player.getPlayer().playSound(player.getPlayer().getEyeLocation(), Sound.SHOOT_ARROW, 1, 100);
                                     }
                                 }.runTaskLater(EngineAPI.getGameEngine(), 2);

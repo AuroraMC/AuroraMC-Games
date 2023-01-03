@@ -38,7 +38,7 @@ public class PBRed implements Team {
     }
 
     public synchronized void plus3Lives() {
-        lives += 3+((Paintball) EngineAPI.getActiveGame()).getLivesPerKill();;
+        lives += 3;
     }
 
     @Override

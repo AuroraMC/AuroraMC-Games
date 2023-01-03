@@ -177,7 +177,7 @@
         <dependency>
             <groupId>net.auroramc</groupId>
             <artifactId>AuroraMC-Game-Engine</artifactId>
-            <version>1.0-20221125.140414-45</version>
+            <version>1.0-20230101.233609-46</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

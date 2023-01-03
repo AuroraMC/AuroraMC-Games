@@ -6,6 +6,7 @@ package net.auroramc.games.crystalquest.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.entities.Crystal;
 import net.auroramc.games.crystalquest.teams.CQBlue;
@@ -14,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.json.JSONObject;
 
 public class ChestListener implements Listener {
 
@@ -27,12 +29,16 @@ public class ChestListener implements Listener {
                     if (!((CQBlue) player.getTeam()).getChest().equals(e.getClickedBlock()) && red.getBossCrystal().getState() != Crystal.CrystalState.DEAD) {
                         player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "This is not your teams chest!"));
                         e.setCancelled(true);
+                    } else {
+                        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Team " + player.getTeam().getName() + " Chest Opened").put("player", player.getPlayer().getName())));
                     }
                 } else {
                     CQBlue blue = (CQBlue) EngineAPI.getActiveGame().getTeams().get("Blue");
                     if (!((CQRed) player.getTeam()).getChest().equals(e.getClickedBlock()) && blue.getBossCrystal().getState() != Crystal.CrystalState.DEAD) {
                         player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "This is not your teams chest!"));
                         e.setCancelled(true);
+                    } else {
+                        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Team " + player.getTeam().getName() + " Chest Opened").put("player", player.getPlayer().getName())));
                     }
                 }
             }

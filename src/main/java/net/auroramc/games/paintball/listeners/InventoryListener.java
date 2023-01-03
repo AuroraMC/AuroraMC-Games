@@ -7,6 +7,7 @@ package net.auroramc.games.paintball.listeners;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.games.paintball.entities.Turret;
@@ -30,6 +31,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -68,10 +70,13 @@ public class InventoryListener implements Listener {
                     e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
                 }
             } else if (e.getItem().getType() == Material.FIREWORK && runnable == null) {
+                e.setCancelled(true);
                 if (e.getClickedBlock() != null) {
                     e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
+                    EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Missile Strike Used").put("player", e.getPlayer().getName())));
                     for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                         player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + e.getPlayer().getName() + "** has called a Missile Strike, take cover immediately!"));
+                        player.sendTitle("§4§lMISSILE STRIKE", "§d§lTAKE COVER IMMEDIATELY", 20, 100, 20, ChatColor.DARK_RED, ChatColor.RED, true, true);
                     }
                     runnable = new BukkitRunnable(){
                         int i = 0;
@@ -91,6 +96,9 @@ public class InventoryListener implements Listener {
                         }
                     }.runTaskTimer(AuroraMCAPI.getCore(), 0, 10);
                 }
+            } else if (e.getItem().getType() == Material.FIREWORK) {
+                e.setCancelled(true);
+                e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot use a Missile Strike while one is in progress!"));
             }
         }
     }
@@ -159,8 +167,8 @@ public class InventoryListener implements Listener {
             @Override
             public void run() {
                 int y = EngineAPI.getActiveMap().getHighY();
-                for (int x = EngineAPI.getActiveMap().getLowX();x < EngineAPI.getActiveMap().getHighX();x+=5) {
-                    for (int z = EngineAPI.getActiveMap().getLowZ();z < EngineAPI.getActiveMap().getHighZ();z+=5) {
+                for (int x = EngineAPI.getActiveMap().getLowX();x < EngineAPI.getActiveMap().getHighX();x+=(5 - (round*1.5))) {
+                    for (int z = EngineAPI.getActiveMap().getLowZ();z < EngineAPI.getActiveMap().getHighZ();z+=(5 - (round*1.5))) {
                         Snowball snowball = EngineAPI.getMapWorld().spawn(new Location(EngineAPI.getMapWorld(), x, y, z), Snowball.class);
                         snowball.setShooter(null);
                         snowball.setVelocity(new Vector(0, -1, 0).normalize());
@@ -168,6 +176,8 @@ public class InventoryListener implements Listener {
                 }
                 if (round == 2) {
                     round = 0;
+                    runnable = null;
+                    this.cancel();
                 } else {
                     round++;
                     InventoryListener.newRound();
