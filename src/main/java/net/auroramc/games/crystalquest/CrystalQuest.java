@@ -116,8 +116,6 @@ public class CrystalQuest extends Game {
         ((CQBlue)this.teams.get("Blue")).loadRobots(map);
         ((CQRed)this.teams.get("Red")).loadRobots(map);
 
-        //Generate the mine.
-        generateMine(0.145f, 0.1f, 0.005f);
 
         //Now spawn shops.
 
@@ -128,6 +126,7 @@ public class CrystalQuest extends Game {
     @Override
     public void start() {
         super.start();
+        generateMine(0.145f, 0.1f, 0.005f);
         DeathRespawnListener.register(100, false);
         PregameMoveListener.register();
         Bukkit.getPluginManager().registerEvents(showListener, EngineAPI.getGameEngine());
