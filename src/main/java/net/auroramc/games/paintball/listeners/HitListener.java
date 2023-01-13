@@ -175,13 +175,13 @@ public class HitListener implements Listener {
             if (player.getTeam() instanceof PBRed) {
                 ((PBBlue)EngineAPI.getActiveGame().getTeams().get("Blue")).addLife();
                 ((PBRed)player.getTeam()).removeLife();
-                if (((PBRed)player.getTeam()).getLives() == 0) {
+                if (((PBRed)player.getTeam()).getLives() <= 0) {
                     EngineAPI.getActiveGame().end(EngineAPI.getActiveGame().getTeams().get("Blue"), null);
                 }
             } else {
                 ((PBRed)EngineAPI.getActiveGame().getTeams().get("Red")).addLife();
                 ((PBBlue)player.getTeam()).removeLife();
-                if (((PBBlue)player.getTeam()).getLives() == 0) {
+                if (((PBBlue)player.getTeam()).getLives() <= 0) {
                     EngineAPI.getActiveGame().end(EngineAPI.getActiveGame().getTeams().get("Red"), null);
                 }
             }
