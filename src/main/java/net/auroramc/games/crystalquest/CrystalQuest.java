@@ -358,6 +358,7 @@ public class CrystalQuest extends Game {
         EntityDamageByEntityEvent.getHandlerList().unregister(kitListener);
         EntityShootBowEvent.getHandlerList().unregister(inventoryListener);
         PlayerInteractEvent.getHandlerList().unregister(kitListener);
+        PlayerArmorStandManipulateEvent.getHandlerList().unregister(shopListener);
         DeathRespawnListener.unregister();
         PregameMoveListener.unregister();
         DisableWeatherListener.unregister();
