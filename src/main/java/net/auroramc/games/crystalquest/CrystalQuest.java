@@ -965,7 +965,7 @@ public class CrystalQuest extends Game {
 
     @Override
     public void onRespawn(AuroraMCGamePlayer player) {
-        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Respawn").put("player", player.getPlayer().getName())));
+        getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Respawn").put("player", player.getPlayer().getName())));
         Location location;
         if (player.getTeam() instanceof CQRed) {
             JSONArray spawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("RED");
@@ -1005,6 +1005,12 @@ public class CrystalQuest extends Game {
             player.getPlayer().getInventory().setItem(2, (ItemStack) player.getGameData().get("death_axe"));
             if (player.getKit() instanceof Archer) {
                 player.getPlayer().getInventory().setItem(3, new GUIItem(Material.BOW, "&3&lArcher's Bow", 1, ";&r&aLeft-Click to use Quickshot;&r&cFully charge the bow to use Barrage.").getItem());
+                ItemStack stack = player.getPlayer().getInventory().getItem(3);
+                if (player.getTeam() instanceof CQBlue) {
+                    stack.addEnchantment(Enchantment.ARROW_DAMAGE, ((CQBlue)player.getTeam()).getPowerUpgrade());
+                } else {
+                    stack.addEnchantment(Enchantment.ARROW_DAMAGE, ((CQRed)player.getTeam()).getPowerUpgrade());
+                }
             }
             player.getPlayer().getInventory().setItem(8, compass);
         }
