@@ -103,6 +103,7 @@ public class Run extends Game {
         DisableItemDrop.register();
         DisableItemPickup.register();
         DisableMovableItems.register();
+        DisableWeatherListener.register();
         Bukkit.getPluginManager().registerEvents(deathListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(moveListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(leapListener, EngineAPI.getGameEngine());
@@ -138,6 +139,7 @@ public class Run extends Game {
         DisableItemDrop.unregister();
         DisableItemPickup.unregister();
         DisableMovableItems.unregister();
+        DisableWeatherListener.unregister();
         runnable.cancel();
     }
 

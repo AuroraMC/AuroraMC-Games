@@ -26,6 +26,7 @@ import net.auroramc.games.crystalquest.listeners.*;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
 import net.auroramc.games.util.listeners.death.DeathRespawnListener;
+import net.auroramc.games.util.listeners.settings.DisableWeatherListener;
 import net.auroramc.games.util.listeners.settings.PregameMoveListener;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import netscape.javascript.JSObject;
@@ -129,6 +130,7 @@ public class CrystalQuest extends Game {
         generateMine(0.145f, 0.1f, 0.005f);
         DeathRespawnListener.register(100, false);
         PregameMoveListener.register();
+        DisableWeatherListener.register();
         Bukkit.getPluginManager().registerEvents(showListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(shopListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(inventoryListener, EngineAPI.getGameEngine());
@@ -358,6 +360,7 @@ public class CrystalQuest extends Game {
         PlayerInteractEvent.getHandlerList().unregister(kitListener);
         DeathRespawnListener.unregister();
         PregameMoveListener.unregister();
+        DisableWeatherListener.unregister();
 
         if (!starting) {
             CQRed red = (CQRed) getTeams().get("Red");

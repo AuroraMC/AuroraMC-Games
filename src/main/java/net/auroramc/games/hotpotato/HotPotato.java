@@ -103,6 +103,7 @@ public class HotPotato extends Game {
         DisableItemDrop.register();
         DisableItemPickup.register();
         DisableMovableItems.register();
+        DisableWeatherListener.register();
         runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
     }
 
@@ -231,6 +232,7 @@ public class HotPotato extends Game {
         DisableItemDrop.unregister();
         DisableItemPickup.unregister();
         DisableMovableItems.unregister();
+        DisableWeatherListener.unregister();
         if (potatoTask != null) {
             potatoTask.cancel();
         }

@@ -25,6 +25,7 @@ import net.auroramc.games.util.listeners.death.NoDamageInstaKillListener;
 import net.auroramc.games.util.listeners.settings.DisableItemDrop;
 import net.auroramc.games.util.listeners.settings.DisableItemPickup;
 import net.auroramc.games.util.listeners.settings.DisableMovableItems;
+import net.auroramc.games.util.listeners.settings.DisableWeatherListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -107,6 +108,7 @@ public class Spleef extends Game {
         DisableItemPickup.register();
         DisableMovableItems.register();
         NoDamageInstaKillListener.register();
+        DisableWeatherListener.register();
         Bukkit.getPluginManager().registerEvents(deathListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(itemSpawnListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(hungerListener, EngineAPI.getGameEngine());
@@ -144,6 +146,7 @@ public class Spleef extends Game {
         DisableItemDrop.unregister();
         DisableItemPickup.unregister();
         DisableMovableItems.unregister();
+        DisableWeatherListener.unregister();
         runnable.cancel();
     }
 

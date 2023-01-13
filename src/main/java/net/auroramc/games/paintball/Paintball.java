@@ -143,6 +143,7 @@ public class Paintball extends Game {
         DisableItemDrop.register();
         DisableItemPickup.register();
         DisableMovableItems.register();
+        DisableWeatherListener.register();
         ((PBRed)this.teams.get("Red")).initLives();
         ((PBBlue)this.teams.get("Blue")).initLives();
     }
@@ -191,6 +192,7 @@ public class Paintball extends Game {
         DisableItemDrop.unregister();
         DisableItemPickup.unregister();
         DisableMovableItems.unregister();
+        DisableWeatherListener.unregister();
         if (!starting) {
             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                 if (!((AuroraMCGamePlayer)player).isSpectator()) {
