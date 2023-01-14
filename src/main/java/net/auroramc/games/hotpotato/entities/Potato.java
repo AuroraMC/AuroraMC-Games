@@ -50,10 +50,10 @@ public class Potato {
             this.holder.getPlayer().removePotionEffect(PotionEffectType.SPEED);
             this.holder.getGameData().remove("potato_holder");
             PlayerInventory inventory = this.holder.getPlayer().getInventory();
-            inventory.setBoots(new GUIItem(Material.AIR).getItem());
-            inventory.setLeggings(new GUIItem(Material.AIR).getItem());
-            inventory.setChestplate(new GUIItem(Material.AIR).getItem());
-            inventory.setHelmet(new GUIItem(Material.AIR).getItem());
+            inventory.setBoots(new ItemStack(Material.AIR));
+            inventory.setLeggings(new ItemStack(Material.AIR));
+            inventory.setChestplate(new ItemStack(Material.AIR));
+            inventory.setHelmet(new ItemStack(Material.AIR));
             holder.getGameData().put("had_potato", true);
         }
         this.holder = holder;
