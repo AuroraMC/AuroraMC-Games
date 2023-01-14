@@ -293,7 +293,8 @@ public class Run extends Game {
             EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Leave").put("player", auroraMCGamePlayer.getPlayer().getName())));
         }
         List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
-        if (playersAlive.size() == 1) {
+        if (playersAlive.size() == 1 || (playersAlive.contains(auroraMCGamePlayer) && playersAlive.size() == 2)) {
+            playersAlive.remove(auroraMCGamePlayer);
             EngineAPI.getActiveGame().end(playersAlive.get(0));
         }
     }
