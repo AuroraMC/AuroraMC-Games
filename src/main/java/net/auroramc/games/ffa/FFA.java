@@ -24,6 +24,7 @@ import net.auroramc.games.util.listeners.death.DeathListener;
 import net.auroramc.games.util.listeners.settings.DisableItemDrop;
 import net.auroramc.games.util.listeners.settings.DisableItemPickup;
 import net.auroramc.games.util.listeners.settings.DisableRemovableArmor;
+import net.auroramc.games.util.listeners.settings.DisableWeatherListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -109,6 +110,7 @@ public class FFA extends Game {
         DisableItemDrop.register();
         DisableItemPickup.register();
         DisableRemovableArmor.register();
+        DisableWeatherListener.register();
         Bukkit.getPluginManager().registerEvents(breakListener, EngineAPI.getGameEngine());
         runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
     }
@@ -135,6 +137,7 @@ public class FFA extends Game {
         DisableItemDrop.unregister();
         DisableItemPickup.unregister();
         DisableRemovableArmor.unregister();
+        DisableWeatherListener.unregister();
         PlayerInteractEvent.getHandlerList().unregister(breakListener);
         PlayerShowEvent.getHandlerList().unregister(showListener);
         PlayerDropItemEvent.getHandlerList().unregister(breakListener);
@@ -191,7 +194,8 @@ public class FFA extends Game {
             EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Leave").put("player", auroraMCGamePlayer.getPlayer().getName())));
         }
         List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
-        if (playersAlive.size() == 1) {
+        if (playersAlive.size() == 1 || (playersAlive.contains(auroraMCGamePlayer) && playersAlive.size() == 2)) {
+            playersAlive.remove(auroraMCGamePlayer);
             EngineAPI.getActiveGame().end(playersAlive.get(0));
         }
     }

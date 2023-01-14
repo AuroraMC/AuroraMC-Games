@@ -26,6 +26,7 @@ import net.auroramc.games.crystalquest.listeners.*;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
 import net.auroramc.games.util.listeners.death.DeathRespawnListener;
+import net.auroramc.games.util.listeners.settings.DisableWeatherListener;
 import net.auroramc.games.util.listeners.settings.PregameMoveListener;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import netscape.javascript.JSObject;
@@ -129,6 +130,7 @@ public class CrystalQuest extends Game {
         generateMine(0.145f, 0.1f, 0.005f);
         DeathRespawnListener.register(100, false);
         PregameMoveListener.register();
+        DisableWeatherListener.register();
         Bukkit.getPluginManager().registerEvents(showListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(shopListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(inventoryListener, EngineAPI.getGameEngine());
@@ -356,8 +358,10 @@ public class CrystalQuest extends Game {
         EntityDamageByEntityEvent.getHandlerList().unregister(kitListener);
         EntityShootBowEvent.getHandlerList().unregister(inventoryListener);
         PlayerInteractEvent.getHandlerList().unregister(kitListener);
+        PlayerArmorStandManipulateEvent.getHandlerList().unregister(shopListener);
         DeathRespawnListener.unregister();
         PregameMoveListener.unregister();
+        DisableWeatherListener.unregister();
 
         if (!starting) {
             CQRed red = (CQRed) getTeams().get("Red");
@@ -961,7 +965,7 @@ public class CrystalQuest extends Game {
 
     @Override
     public void onRespawn(AuroraMCGamePlayer player) {
-        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Respawn").put("player", player.getPlayer().getName())));
+        getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Respawn").put("player", player.getPlayer().getName())));
         Location location;
         if (player.getTeam() instanceof CQRed) {
             JSONArray spawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("RED");
@@ -1001,6 +1005,16 @@ public class CrystalQuest extends Game {
             player.getPlayer().getInventory().setItem(2, (ItemStack) player.getGameData().get("death_axe"));
             if (player.getKit() instanceof Archer) {
                 player.getPlayer().getInventory().setItem(3, new GUIItem(Material.BOW, "&3&lArcher's Bow", 1, ";&r&aLeft-Click to use Quickshot;&r&cFully charge the bow to use Barrage.").getItem());
+                ItemStack stack = player.getPlayer().getInventory().getItem(3);
+                if (player.getTeam() instanceof CQBlue) {
+                    if (((CQBlue)player.getTeam()).getPowerUpgrade() > 0) {
+                        stack.addEnchantment(Enchantment.ARROW_DAMAGE, ((CQBlue)player.getTeam()).getPowerUpgrade());
+                    }
+                } else {
+                    if (((CQRed)player.getTeam()).getPowerUpgrade() > 0) {
+                        stack.addEnchantment(Enchantment.ARROW_DAMAGE, ((CQRed)player.getTeam()).getPowerUpgrade());
+                    }
+                }
             }
             player.getPlayer().getInventory().setItem(8, compass);
         }

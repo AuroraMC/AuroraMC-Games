@@ -9,6 +9,7 @@ import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.utils.gui.GUI;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.games.crystalquest.gui.PlayerShop;
 import net.auroramc.games.crystalquest.gui.TeamShop;
 import net.auroramc.games.crystalquest.teams.CQBlue;
@@ -20,6 +21,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.MerchantInventory;
 
@@ -38,10 +40,12 @@ public class ShopListener implements Listener {
                 } else {
                     return;
                 }
+            } else if (e.getEntity() instanceof ArmorStand) {
+                e.setCancelled(true);
             }
         }
         if (e.isCancelled() && gui != null) {
-            gui.open(AuroraMCAPI.getPlayer((Player) e.getDamager()));
+                gui.open(AuroraMCAPI.getPlayer((Player) e.getDamager()));
             AuroraMCAPI.openGUI(AuroraMCAPI.getPlayer((Player) e.getDamager()), gui);
         }
     }
@@ -57,15 +61,6 @@ public class ShopListener implements Listener {
                 return;
             }
             e.setCancelled(true);
-        } else if (e.getEntity() instanceof Rabbit && !((Rabbit)e.getEntity()).isAdult()) {
-            if (e.getEntity().isInsideVehicle()) {
-                if (e.getEntity().getVehicle() instanceof Damageable) {
-                    if (e instanceof EntityDamageByEntityEvent) {
-                        return;
-                    }
-                    e.setCancelled(true);
-                }
-            }
         } else if (e.getEntity() instanceof ArmorStand) {
             if (e instanceof EntityDamageByEntityEvent) {
                 return;
@@ -76,7 +71,7 @@ public class ShopListener implements Listener {
 
     @EventHandler
     public void onEntityInteract(PlayerInteractAtEntityEvent e) {
-        if (e.getRightClicked() instanceof Villager || (e.getRightClicked() instanceof Rabbit && !((Rabbit)e.getRightClicked()).isAdult()) || e.getRightClicked() instanceof ArmorStand) {
+        if (e.getRightClicked() instanceof Villager || e.getRightClicked() instanceof ArmorStand) {
             e.setCancelled(true);
             GUI gui = null;
             if (e.getRightClicked() instanceof ArmorStand) {
@@ -145,6 +140,13 @@ public class ShopListener implements Listener {
     @EventHandler
     public void onInvOpen(InventoryOpenEvent e) {
         if (e.getInventory() instanceof MerchantInventory) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onArmorStandManipulate(PlayerArmorStandManipulateEvent e) {
+        if (EngineAPI.getServerState() != ServerState.IN_GAME) {
             e.setCancelled(true);
         }
     }

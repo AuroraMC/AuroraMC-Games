@@ -148,6 +148,9 @@ public class TeamShop extends GUI {
                         } else {
                             red.upgradeProt();
                         }
+                        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Protection upgraded to " + prot + " for Team " + player.getTeam().getName()).put("player", player.getPlayer().getName())));
+                    } else {
+                        player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                     }
                     if (player.getTeam() instanceof CQBlue) {
                         prot = blue.getProtUpgrade();
@@ -155,7 +158,6 @@ public class TeamShop extends GUI {
                         prot = red.getProtUpgrade();
                     }
 
-                    EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Protection upgraded to " + prot + " for Team " + player.getTeam().getName()).put("player", player.getPlayer().getName())));
                     if (prot == 2) {
                         this.updateItem(1, 1, new GUIItem(Material.BARRIER, "&3&lProtection Upgrade", 1, ";&r&fYou already have the max upgrade."));
                     } else {
@@ -178,13 +180,15 @@ public class TeamShop extends GUI {
                         } else {
                             red.upgradePower();
                         }
+                        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Power upgraded to " + power + " for Team " + player.getTeam().getName()).put("player", player.getPlayer().getName())));
+                    } else {
+                        player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                     }
                     if (player.getTeam() instanceof CQBlue) {
                         power = blue.getPowerUpgrade();
                     } else {
                         power = red.getPowerUpgrade();
                     }
-                    EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Power upgraded to " + power + " for Team " + player.getTeam().getName()).put("player", player.getPlayer().getName())));
 
                     if (power == 2) {
                         this.updateItem(1, 3, new GUIItem(Material.BARRIER, "&3&lPower Upgrade", 1, ";&r&fYou already have the max upgrade."));
@@ -215,8 +219,10 @@ public class TeamShop extends GUI {
                             }
                         }
                     }
-                } else {
+                } else if (!(robotB.getEntity() == null || robotC.getEntity() == null)) {
                     this.setItem(2, 4, new GUIItem(Material.BARRIER, "&3&lLevel 1 Mining Robot", 1, ";&r&fAll of your Mining Robot slots are full!"));
+                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+                } else {
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                 }
                 break;
@@ -235,13 +241,15 @@ public class TeamShop extends GUI {
                         } else {
                             red.upgradeSharp();
                         }
+                        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Sharpness upgraded to " + sharp + " for Team " + player.getTeam().getName()).put("player", player.getPlayer().getName())));
+                    } else {
+                        player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                     }
                     if (player.getTeam() instanceof CQBlue) {
                         sharp = blue.getSharpUpgrade();
                     } else {
                         sharp = red.getSharpUpgrade();
                     }
-                    EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Sharpness upgraded to " + sharp + " for Team " + player.getTeam().getName()).put("player", player.getPlayer().getName())));
                     if (sharp == 2) {
                         this.updateItem(1, 5, new GUIItem(Material.BARRIER, "&3&lSharpness Upgrade", 1, ";&r&fYou already have the max upgrade."));
                     } else {
@@ -266,6 +274,8 @@ public class TeamShop extends GUI {
                         player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                         player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Your team already has 5 lives!"));
                     }
+                } else {
+                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                 }
                 break;
             }

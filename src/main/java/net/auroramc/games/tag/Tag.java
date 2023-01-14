@@ -103,6 +103,7 @@ public class Tag extends Game {
         DisableItemDrop.register();
         DisableItemPickup.register();
         DisableMovableItems.register();
+        DisableWeatherListener.register();
         runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
     }
 
@@ -178,6 +179,7 @@ public class Tag extends Game {
         DisableItemDrop.unregister();
         DisableItemPickup.unregister();
         DisableMovableItems.unregister();
+        DisableWeatherListener.unregister();
         runnable.cancel();
     }
 

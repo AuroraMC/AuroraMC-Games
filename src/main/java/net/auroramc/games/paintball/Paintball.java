@@ -23,6 +23,7 @@ import net.auroramc.games.paintball.teams.PBRed;
 import net.auroramc.games.paintball.utils.PaintballScoreboardRunnable;
 import net.auroramc.games.util.listeners.settings.*;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
@@ -95,6 +96,7 @@ public class Paintball extends Game {
                 gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
             } else {
                 gp.getGameData().put("gold", 1);
+                gp.getPlayer().setGameMode(GameMode.ADVENTURE);
                 if (gp.getTeam() instanceof PBRed) {
                     JSONObject spawn = redSpawns.getJSONObject(redSpawnIndex);
                     int x, y, z;
@@ -143,6 +145,7 @@ public class Paintball extends Game {
         DisableItemDrop.register();
         DisableItemPickup.register();
         DisableMovableItems.register();
+        DisableWeatherListener.register();
         ((PBRed)this.teams.get("Red")).initLives();
         ((PBBlue)this.teams.get("Blue")).initLives();
     }
@@ -191,12 +194,12 @@ public class Paintball extends Game {
         DisableItemDrop.unregister();
         DisableItemPickup.unregister();
         DisableMovableItems.unregister();
-        if (!starting) {
-            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                if (!((AuroraMCGamePlayer)player).isSpectator()) {
-                    ((BukkitTask)((AuroraMCGamePlayer)player).getGameData().get("runnable")).cancel();
-                }
+        DisableWeatherListener.unregister();
+        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+            if (!((AuroraMCGamePlayer)player).isSpectator() && !starting) {
+                ((BukkitTask)((AuroraMCGamePlayer)player).getGameData().get("runnable")).cancel();
             }
+            player.getPlayer().setGameMode(GameMode.SURVIVAL);
         }
     }
 
