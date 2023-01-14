@@ -1007,9 +1007,13 @@ public class CrystalQuest extends Game {
                 player.getPlayer().getInventory().setItem(3, new GUIItem(Material.BOW, "&3&lArcher's Bow", 1, ";&r&aLeft-Click to use Quickshot;&r&cFully charge the bow to use Barrage.").getItem());
                 ItemStack stack = player.getPlayer().getInventory().getItem(3);
                 if (player.getTeam() instanceof CQBlue) {
-                    stack.addEnchantment(Enchantment.ARROW_DAMAGE, ((CQBlue)player.getTeam()).getPowerUpgrade());
+                    if (((CQBlue)player.getTeam()).getPowerUpgrade() > 0) {
+                        stack.addEnchantment(Enchantment.ARROW_DAMAGE, ((CQBlue)player.getTeam()).getPowerUpgrade());
+                    }
                 } else {
-                    stack.addEnchantment(Enchantment.ARROW_DAMAGE, ((CQRed)player.getTeam()).getPowerUpgrade());
+                    if (((CQRed)player.getTeam()).getPowerUpgrade() > 0) {
+                        stack.addEnchantment(Enchantment.ARROW_DAMAGE, ((CQRed)player.getTeam()).getPowerUpgrade());
+                    }
                 }
             }
             player.getPlayer().getInventory().setItem(8, compass);
