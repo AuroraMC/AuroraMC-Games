@@ -58,7 +58,7 @@ public class Potato {
         }
         this.holder = holder;
         this.holder.getGameData().put("potato_holder", this);
-        this.holder.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 1000000, 0, false, false));
+        this.holder.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 1000000, 1, false, false));
         this.holder.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You've been given the Hot Potato! Get rid of it before it explodes by punching a player!"));
         PlayerInventory inventory = this.holder.getPlayer().getInventory();
         inventory.setBoots(new GUIItem(Material.LEATHER_BOOTS, null, 1, null, (short)0, false, Color.fromRGB(255, 0, 0)).getItem());
