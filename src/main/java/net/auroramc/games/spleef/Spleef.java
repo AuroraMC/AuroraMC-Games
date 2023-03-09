@@ -102,7 +102,7 @@ public class Spleef extends Game {
         deathListener = new DeathListener();
         itemSpawnListener = new ItemSpawnListener();
         hungerListener = new HungerListener();
-        waterListener = new WaterListener()
+        waterListener = new WaterListener();
         breakListener = new BreakListener(Material.valueOf(this.map.getMapData().getString("block").toUpperCase()));
         DisableItemDrop.register();
         DisableItemPickup.register();
