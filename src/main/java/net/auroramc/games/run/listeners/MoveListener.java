@@ -8,10 +8,12 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -36,6 +38,10 @@ public class MoveListener implements Listener {
                         location.getBlock().setType(Material.AIR);
                     }
                 }.runTaskLater(AuroraMCAPI.getCore(), 20);
+            } else if (location.getBlock().isLiquid() && (location.getBlock().getType() == Material.WATER || location.getBlock().getType() == Material.STATIONARY_WATER)) {
+                EntityDamageEvent event = new EntityDamageEvent(e.getPlayer(), EntityDamageEvent.DamageCause.VOID, 500);
+                Bukkit.getPluginManager().callEvent(event);
+                return;
             }
             int wholeX = (int) ((location.getX() >= 0)?Math.floor(location.getX()):Math.ceil(location.getX()));
             int wholeZ = (int) ((location.getZ() >= 0)?Math.floor(location.getZ()):Math.ceil(location.getZ()));

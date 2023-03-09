@@ -15,10 +15,7 @@ import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.spleef.kits.Snowman;
-import net.auroramc.games.spleef.listeners.BreakListener;
-import net.auroramc.games.spleef.listeners.DeathListener;
-import net.auroramc.games.spleef.listeners.HungerListener;
-import net.auroramc.games.spleef.listeners.ItemSpawnListener;
+import net.auroramc.games.spleef.listeners.*;
 import net.auroramc.games.spleef.utils.SpleefScoreboardRunnable;
 import net.auroramc.games.util.PlayersTeam;
 import net.auroramc.games.util.listeners.death.NoDamageInstaKillListener;
@@ -35,6 +32,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -53,6 +51,7 @@ public class Spleef extends Game {
     private ItemSpawnListener itemSpawnListener;
     private BreakListener breakListener;
     private HungerListener hungerListener;
+    private WaterListener waterListener;
     private SpleefScoreboardRunnable runnable;
 
 
@@ -103,6 +102,7 @@ public class Spleef extends Game {
         deathListener = new DeathListener();
         itemSpawnListener = new ItemSpawnListener();
         hungerListener = new HungerListener();
+        waterListener = new WaterListener()
         breakListener = new BreakListener(Material.valueOf(this.map.getMapData().getString("block").toUpperCase()));
         DisableItemDrop.register();
         DisableItemPickup.register();
@@ -113,6 +113,7 @@ public class Spleef extends Game {
         Bukkit.getPluginManager().registerEvents(itemSpawnListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(hungerListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(breakListener, EngineAPI.getGameEngine());
+        Bukkit.getPluginManager().registerEvents(waterListener, EngineAPI.getGameEngine());
         runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
     }
 
@@ -142,6 +143,7 @@ public class Spleef extends Game {
         PlayerShowEvent.getHandlerList().unregister(deathListener);
         PlayerDropItemEvent.getHandlerList().unregister(breakListener);
         ProjectileHitEvent.getHandlerList().unregister(breakListener);
+        PlayerMoveEvent.getHandlerList().unregister(waterListener);
         NoDamageInstaKillListener.unregister();
         DisableItemDrop.unregister();
         DisableItemPickup.unregister();
