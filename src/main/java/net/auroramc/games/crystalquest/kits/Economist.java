@@ -4,7 +4,7 @@
 
 package net.auroramc.games.crystalquest.kits;
 
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.games.Kit;
 import net.auroramc.games.crystalquest.CrystalQuest;
@@ -17,17 +17,17 @@ public class Economist extends Kit {
     }
 
     @Override
-    public void onGameStart(AuroraMCPlayer player) {
-        player.getPlayer().getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET).getItem());
-        player.getPlayer().getInventory().setBoots(new GUIItem(Material.LEATHER_BOOTS).getItem());
-        player.getPlayer().getInventory().setChestplate(new GUIItem(Material.CHAINMAIL_CHESTPLATE).getItem());
-        player.getPlayer().getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS).getItem());
+    public void onGameStart(AuroraMCServerPlayer player) {
+        player.getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET).getItemStack());
+        player.getInventory().setBoots(new GUIItem(Material.LEATHER_BOOTS).getItemStack());
+        player.getInventory().setChestplate(new GUIItem(Material.CHAINMAIL_CHESTPLATE).getItemStack());
+        player.getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS).getItemStack());
 
-        player.getPlayer().getInventory().setItem(0, new GUIItem(Material.STONE_SWORD).getItem());
-        player.getPlayer().getInventory().setItem(1, new GUIItem(Material.STONE_PICKAXE).getItem());
-        player.getPlayer().getInventory().setItem(2, new GUIItem(Material.WOOD_AXE).getItem());
+        player.getInventory().setItem(0, new GUIItem(Material.STONE_SWORD).getItemStack());
+        player.getInventory().setItem(1, new GUIItem(Material.STONE_PICKAXE).getItemStack());
+        player.getInventory().setItem(2, new GUIItem(Material.WOOD_AXE).getItemStack());
 
-        player.getPlayer().getInventory().setItem(8, CrystalQuest.compass);
+        player.getInventory().setItem(8, CrystalQuest.compass);
     }
 
     @Override

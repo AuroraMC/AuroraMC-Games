@@ -4,22 +4,25 @@
 
 package net.auroramc.games.crystalquest.entities;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.players.Team;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.player.Team;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.events.player.PlayerMoveEvent;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.listeners.CrystalReturnListener;
 import net.auroramc.games.crystalquest.teams.CQBlue;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EnderCrystal;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -52,7 +55,7 @@ public class Crystal {
             return;
         }
 
-        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", homeTeam.getName() + " Teams " + ((boss)?"Boss ":"Tower " + (type)) + " Crystal Collected").put("player", holder.getPlayer().getName())));
+        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", homeTeam.getName() + " Teams " + ((boss)?"Boss ":"Tower " + (type)) + " Crystal Collected").put("player", holder.getByDisguiseName())));
         this.holder = holder;
         this.holder.getStats().incrementStatistic(1, "crystalsCollected", 1, true);
         crystal.remove();
@@ -61,50 +64,70 @@ public class Crystal {
         listener = new CrystalReturnListener(this);
         Bukkit.getPluginManager().registerEvents(listener, EngineAPI.getGameEngine());
         holder.getGameData().put("crystal_possession", type);
-        holder.getGameData().put("crystal_inventory", holder.getPlayer().getInventory().getContents());
-        holder.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 1000000, 0, true, false));
-        holder.getPlayer().getInventory().clear();
-        this.holder.getPlayer().setFoodLevel(3);
+        holder.getGameData().put("crystal_inventory", holder.getInventory().getContents());
+        holder.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 1000000, 0, true, false));
+        holder.getInventory().clear();
+        this.holder.setFoodLevel(3);
 
-        ItemStack stack = new GUIItem(Material.NETHER_STAR, "&3&lCollected Crystal", 1, ";&rReturn this to your base!").getItem();
+        ItemStack stack = new GUIItem(Material.NETHER_STAR, "&3&lCollected Crystal", 1, ";&rReturn this to your base!").getItemStack();
         stack.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 3);
 
         for (int i = 0;i < 36;i++) {
-            holder.getPlayer().getInventory().setItem(i, stack);
+            holder.getInventory().setItem(i, stack);
         }
 
-        String team = "&c&l";
+        ChatColor team = ChatColor.RED;
         if (homeTeam instanceof CQBlue) {
-            team = "&9&l";
+            team = ChatColor.BLUE;
         }
-        String finalMessage = team + holder.getPlayer().getName() + " collected " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!");
-        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-            player.sendTitle(AuroraMCAPI.getFormatter().convert(team + homeTeam.getName() + ((isBoss())?" Boss Crystal Collected!":" Tower Crystal Collected!")), holder.getPlayer().getName() + " collected " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!"), 20, 100, 20, ChatColor.BLUE, ChatColor.RESET, true, false);
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", finalMessage + " &r" + ((player.getTeam() != null)?((player.getTeam().equals(homeTeam)?"Kill them to return it to the base!":"Protect them at all costs.")):"")));
+        String finalMessage = team + "§l" + holder.getByDisguiseName() + " collected " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!");
+
+        TextComponent title = new TextComponent(homeTeam.getName() + ((isBoss())?" Boss Crystal Collected!":" Tower Crystal Collected!"));
+        title.setColor(team);
+        title.setBold(true);
+
+        TextComponent subtitle = new TextComponent(holder.getByDisguiseName() + " collected " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!"));
+        subtitle.setBold(false);
+        subtitle.setColor(ChatColor.WHITE);
+
+        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+
+            player.sendTitle(title, ((player.equals(holder) && player.isDisguised() && player.getPreferences().isHideDisguiseNameEnabled())?new TextComponent(holder.getName() + " collected " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!")):subtitle), 20, 100, 20);
+            player.sendMessage(TextFormatter.pluginMessage("Game", ((player.equals(holder) && player.isDisguised() && player.getPreferences().isHideDisguiseNameEnabled())?team + "§l" + holder.getName() + " collected " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!"):finalMessage) + " §r" + ((player.getTeam() != null)?((player.getTeam().equals(homeTeam)?"Kill them to return it to the base!":"Protect them at all costs.")):"")));
         }
     }
 
     public void crystalDead(Location location, boolean message) {
         this.state = CrystalState.DEAD;
         if (this.holder != null) {
-            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", homeTeam.getName() + " Teams " + ((boss)?"Boss ":"Tower " + (type)) + " Crystal Captured").put("player", holder.getPlayer().getName())));
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", homeTeam.getName() + " Teams " + ((boss)?"Boss ":"Tower " + (type)) + " Crystal Captured").put("player", holder.getName())));
             this.holder.getStats().addProgress(AuroraMCAPI.getAchievement(62), 1, this.holder.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(62), 0), true);
-            this.holder.getPlayer().getInventory().setContents((ItemStack[]) this.holder.getGameData().remove("crystal_inventory"));
+            this.holder.getInventory().setContents((ItemStack[]) this.holder.getGameData().remove("crystal_inventory"));
             this.holder.getGameData().remove("crystal_possession");
-            this.holder.getPlayer().removePotionEffect(PotionEffectType.REGENERATION);
-            this.holder.getPlayer().setFoodLevel(25);
+            this.holder.removePotionEffect(PotionEffectType.REGENERATION);
+            this.holder.setFoodLevel(25);
 
             if (message) {
                 this.holder.getRewards().addXp("Crystal Capture", 50);
                 this.holder.getStats().incrementStatistic(1, "crystalsCaptured", 1, true);
-                String team = "&c&l";
+
+                ChatColor team = ChatColor.RED;
                 if (homeTeam instanceof CQBlue) {
-                    team = "&9&l";
+                    team = ChatColor.BLUE;
                 }
-                String finalMessage = team + holder.getPlayer().getName() + " captured " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!");
-                for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                    player.sendTitle(AuroraMCAPI.getFormatter().convert(team + homeTeam.getName() + ((isBoss())?" Boss Crystal Captured!":" Tower Crystal Captured!")), holder.getPlayer().getName() + " captured " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!"), 20, 100, 20, ChatColor.BLUE, ChatColor.RESET, true, false);
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", finalMessage + " &r" + ((isBoss())?homeTeam.getName() + " can no longer respawn!":"")));
+
+                TextComponent title = new TextComponent(homeTeam.getName() + ((isBoss())?" Boss Crystal Captured!":" Tower Crystal Captured!"));
+                title.setColor(team);
+                title.setBold(true);
+
+                TextComponent subtitle = new TextComponent(holder.getByDisguiseName() + " captured " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!"));
+                subtitle.setBold(false);
+                subtitle.setColor(ChatColor.WHITE);
+
+                String finalMessage = team + "§l" + holder.getByDisguiseName() + " captured " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!");
+                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                    player.sendTitle(title, ((player.equals(holder) && player.isDisguised() && player.getPreferences().isHideDisguiseNameEnabled())?new TextComponent(holder.getName() + " collected " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!")):subtitle), 20, 100, 20);
+                    player.sendMessage(TextFormatter.pluginMessage("Game", ((player.equals(holder) && player.isDisguised() && player.getPreferences().isHideDisguiseNameEnabled())?team + "§l" + holder.getName() + " collected " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!"):finalMessage) + " §r" + ((player.getTeam() != null)?((player.getTeam().equals(homeTeam)?"Kill them to return it to the base!":"Protect them at all costs.")):"")));
                 }
             }
             this.holder = null;
@@ -122,9 +145,9 @@ public class Crystal {
 
 
     public void crystalReturned() {
-        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", homeTeam.getName() + " Teams " + ((boss)?"Boss ":"Tower " + (type)) + " Crystal Returned").put("player", holder.getPlayer().getName())));
-        this.holder.getPlayer().removePotionEffect(PotionEffectType.REGENERATION);
-        this.holder.getPlayer().setFoodLevel(25);
+        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", homeTeam.getName() + " Teams " + ((boss)?"Boss ":"Tower " + (type)) + " Crystal Returned").put("player", holder.getName())));
+        this.holder.removePotionEffect(PotionEffectType.REGENERATION);
+        this.holder.setFoodLevel(25);
         if (!this.holder.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(64))) {
             this.holder.getStats().achievementGained(AuroraMCAPI.getAchievement(64), 1, true);
         }
@@ -133,14 +156,18 @@ public class Crystal {
         crystal.setCustomName(homeTeam.getName() + type);
         state = CrystalState.AT_HOME;
 
-        String team = "&c&l";
+        ChatColor team = ChatColor.RED;
         if (homeTeam instanceof CQBlue) {
-            team = "&9&l";
+            team = ChatColor.BLUE;
         }
-        String finalMessage = team + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal Returned!":"Tower Crystal Returned!");
-        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-            player.sendTitle(AuroraMCAPI.getFormatter().convert(finalMessage), "", 20, 100, 20, ChatColor.BLUE, ChatColor.RESET, true, false);
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", finalMessage + ""));
+        TextComponent title = new TextComponent(homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal Returned!":"Tower Crystal Returned!"));
+        title.setBold(true);
+        title.setColor(team);
+
+        String finalMessage = team + "§l" + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal Returned!":"Tower Crystal Returned!");
+        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+            player.sendTitle(title, new TextComponent(""), 20, 100, 20);
+            player.sendMessage(TextFormatter.pluginMessage("Game", finalMessage));
         }
         unregisterListener();
     }

@@ -4,13 +4,25 @@
 
 package net.auroramc.games.crystalquest;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.cosmetics.Cosmetic;
-import net.auroramc.core.api.cosmetics.KillMessage;
-import net.auroramc.core.api.events.player.PlayerShowEvent;
-import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.players.Team;
-import net.auroramc.core.api.players.scoreboard.PlayerScoreboard;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.cosmetics.Cosmetic;
+import net.auroramc.api.cosmetics.KillMessage;
+import net.auroramc.api.player.AuroraMCPlayer;
+import net.auroramc.api.player.Team;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.events.block.BlockBreakEvent;
+import net.auroramc.core.api.events.block.BlockPlaceEvent;
+import net.auroramc.core.api.events.entity.EntityDamageByPlayerEvent;
+import net.auroramc.core.api.events.entity.FoodLevelChangeEvent;
+import net.auroramc.core.api.events.entity.PlayerDamageByPlayerEvent;
+import net.auroramc.core.api.events.inventory.CraftItemEvent;
+import net.auroramc.core.api.events.inventory.InventoryClickEvent;
+import net.auroramc.core.api.events.inventory.InventoryOpenEvent;
+import net.auroramc.core.api.events.inventory.PrepareItemCraftEvent;
+import net.auroramc.core.api.events.player.*;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
+import net.auroramc.core.api.player.scoreboard.PlayerScoreboard;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.core.api.utils.holograms.Hologram;
 import net.auroramc.engine.api.EngineAPI;
@@ -28,27 +40,17 @@ import net.auroramc.games.crystalquest.teams.CQRed;
 import net.auroramc.games.util.listeners.death.DeathRespawnListener;
 import net.auroramc.games.util.listeners.settings.DisableWeatherListener;
 import net.auroramc.games.util.listeners.settings.PregameMoveListener;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
-import netscape.javascript.JSObject;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Villager;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.json.JSONArray;
@@ -82,7 +84,7 @@ public class CrystalQuest extends Game {
     private boolean blueUnlucky;
 
     static {
-        compass = new GUIItem(Material.COMPASS, "&3Crystal Compass", 1, ";&rThe compass will display the distance;&rfrom the closest crystal currently captured.").getItem();
+        compass = new GUIItem(Material.COMPASS, "&3Crystal Compass", 1, ";&rThe compass will display the distance;&rfrom the closest crystal currently captured.").getItemStack();
     }
 
 
@@ -143,7 +145,7 @@ public class CrystalQuest extends Game {
         int blueSpawnIndex = 0;
         JSONArray redSpawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("RED");
         JSONArray blueSpawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("BLUE");
-        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
             AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
             if (gp.isSpectator()) {
                 JSONObject specSpawn = this.map.getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
@@ -152,7 +154,7 @@ public class CrystalQuest extends Game {
                 y = specSpawn.getInt("y");
                 z = specSpawn.getInt("z");
                 float yaw = specSpawn.getFloat("yaw");
-                gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                gp.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
             } else {
                 if (gp.getTeam() instanceof CQRed) {
                     JSONObject spawn = redSpawns.getJSONObject(redSpawnIndex);
@@ -161,7 +163,7 @@ public class CrystalQuest extends Game {
                     y = spawn.getInt("y");
                     z = spawn.getInt("z");
                     float yaw = spawn.getFloat("yaw");
-                    gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                    gp.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
                     redSpawnIndex++;
                     if (redSpawnIndex >= redSpawns.length()) {
                         redSpawnIndex = 0;
@@ -173,7 +175,7 @@ public class CrystalQuest extends Game {
                     y = spawn.getInt("y");
                     z = spawn.getInt("z");
                     float yaw = spawn.getFloat("yaw");
-                    gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                    gp.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
                     blueSpawnIndex++;
                     if (blueSpawnIndex >= blueSpawns.length()) {
                         blueSpawnIndex = 0;
@@ -183,7 +185,7 @@ public class CrystalQuest extends Game {
             }
         }
 
-        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
             PlayerScoreboard scoreboard = player.getScoreboard();
             scoreboard.setTitle("&3&l-= &b&lCRYSTAL QUEST &3&l=-");
             scoreboard.setLine(14, "&9&l«BLUE CRYSTALS»");
@@ -280,7 +282,7 @@ public class CrystalQuest extends Game {
     }
 
     @Override
-    public void end(AuroraMCPlayer winner) {
+    public void end(AuroraMCServerPlayer winner) {
         onEnd();
         super.end(winner);
     }
@@ -342,12 +344,14 @@ public class CrystalQuest extends Game {
         PlayerShowEvent.getHandlerList().unregister(showListener);
         PlayerInteractAtEntityEvent.getHandlerList().unregister(shopListener);
         InventoryOpenEvent.getHandlerList().unregister(shopListener);
-        EntityDamageByEntityEvent.getHandlerList().unregister(shopListener);
+        EntityDamageEvent.getHandlerList().unregister(shopListener);
+        EntityDamageByPlayerEvent.getHandlerList().unregister(shopListener);
         InventoryClickEvent.getHandlerList().unregister(inventoryListener);
         PlayerDropItemEvent.getHandlerList().unregister(inventoryListener);
         PlayerItemConsumeEvent.getHandlerList().unregister(inventoryListener);
         PlayerInteractEvent.getHandlerList().unregister(inventoryListener);
         BlockBreakEvent.getHandlerList().unregister(miningListener);
+        EntityDamageByPlayerEvent.getHandlerList().unregister(crystalListener);
         EntityDamageByEntityEvent.getHandlerList().unregister(crystalListener);
         PlayerInteractAtEntityEvent.getHandlerList().unregister(crystalListener);
         FoodLevelChangeEvent.getHandlerList().unregister(miningListener);
@@ -355,10 +359,13 @@ public class CrystalQuest extends Game {
         PlayerPickupItemEvent.getHandlerList().unregister(miningListener);
         BlockFromToEvent.getHandlerList().unregister(miningListener);
         PlayerInteractEvent.getHandlerList().unregister(chestListener);
-        EntityDamageByEntityEvent.getHandlerList().unregister(kitListener);
-        EntityShootBowEvent.getHandlerList().unregister(inventoryListener);
+        PlayerDamageByPlayerEvent.getHandlerList().unregister(kitListener);
+        PlayerShootBowEvent.getHandlerList().unregister(inventoryListener);
         PlayerInteractEvent.getHandlerList().unregister(kitListener);
         PlayerArmorStandManipulateEvent.getHandlerList().unregister(shopListener);
+        CraftItemEvent.getHandlerList().unregister(inventoryListener);
+        PrepareItemCraftEvent.getHandlerList().unregister(inventoryListener);
+        PlayerPickupItemEvent.getHandlerList().unregister(inventoryListener);
         DeathRespawnListener.unregister();
         PregameMoveListener.unregister();
         DisableWeatherListener.unregister();
@@ -425,30 +432,30 @@ public class CrystalQuest extends Game {
                 scoreboardTask = new CrystalQuestScoreboardRunnable((CQBlue) teams.get("Blue"), (CQRed) teams.get("Red")).runTaskTimer(EngineAPI.getGameEngine(), 0, 20);
 
             }
-        }.runTask(AuroraMCAPI.getCore());
+        }.runTask(ServerAPI.getCore());
         mineTask = new BukkitRunnable() {
             @Override
             public void run() {
                 generateMine(0.14f, 0.12f, 0.01f);
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The mine has been reset! The next reset is in **5** minutes."));
+                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                    player.sendMessage(TextFormatter.pluginMessage("Game", "The mine has been reset! The next reset is in **5** minutes."));
                 }
                 mineTask = new BukkitRunnable(){
                     @Override
                     public void run() {
                         generateMine(0.14f, 0.14f, 0.02f);
-                        for (Player player : Bukkit.getOnlinePlayers()) {
-                            player.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The mine has been reset! The next reset is in **5** minutes."));
+                        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                            player.sendMessage(TextFormatter.pluginMessage("Game", "The mine has been reset! The next reset is in **5** minutes."));
                         }
                     }
-                }.runTaskTimer(AuroraMCAPI.getCore(), 6000, 6000);
+                }.runTaskTimer(ServerAPI.getCore(), 6000, 6000);
             }
-        }.runTaskLater(AuroraMCAPI.getCore(), 3600);
+        }.runTaskLater(ServerAPI.getCore(), 3600);
         destroyTask = new BukkitRunnable() {
             @Override
             public void run() {
-                for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Crystals will be destroyed in **5 minutes**!"));
+                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                    player.sendMessage(TextFormatter.pluginMessage("Game", "Crystals will be destroyed in **5 minutes**!"));
                 }
                 destroyTask = new BukkitRunnable(){
                     @Override
@@ -498,123 +505,123 @@ public class CrystalQuest extends Game {
                             blue.getBossCrystal().crystalDead(c, false);
                         }
 
-                        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "&c&lAll Crystals have been destroyed! Last team alive wins!"));
+                        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                            player.sendMessage(TextFormatter.pluginMessage("Game", "&c&lAll Crystals have been destroyed! Last team alive wins!"));
                         }
 
                     }
-                }.runTaskLater(AuroraMCAPI.getCore(), 5999);
+                }.runTaskLater(ServerAPI.getCore(), 5999);
             }
-        }.runTaskLater(AuroraMCAPI.getCore(), 17999);
+        }.runTaskLater(ServerAPI.getCore(), 17999);
         endTask = new BukkitRunnable() {
             @Override
             public void run() {
-                for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The game will be end in **5 minutes**!"));
+                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                    player.sendMessage(TextFormatter.pluginMessage("Game", "The game will be end in **5 minutes**!"));
                 }
                 endTask = new BukkitRunnable(){
                     @Override
                     public void run() {
                         end(null);
                     }
-                }.runTaskLater(AuroraMCAPI.getCore(), 5999);
+                }.runTaskLater(ServerAPI.getCore(), 5999);
             }
-        }.runTaskLater(AuroraMCAPI.getCore(), 47999);
+        }.runTaskLater(ServerAPI.getCore(), 47999);
         compassTask = new BukkitRunnable(){
             @Override
             public void run() {
-                for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
+                for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
                     if (!player.isSpectator()) {
                         CQBlue blue = (CQBlue) teams.get("Blue");
                         CQRed red = (CQRed) teams.get("Red");
                         if (player.getTeam().equals(blue)) {
                             if (blue.getBossCrystal().getState() == Crystal.CrystalState.CAPTURED) {
-                                player.getPlayer().setCompassTarget(blue.getBossCrystal().getHolder().getPlayer().getLocation());
+                                player.setCompassTarget(blue.getBossCrystal().getHolder().getLocation());
                             } else if (blue.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED) {
-                                player.getPlayer().setCompassTarget(blue.getTowerACrystal().getHolder().getPlayer().getLocation());
+                                player.setCompassTarget(blue.getTowerACrystal().getHolder().getLocation());
                             } else if (blue.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED) {
-                                player.getPlayer().setCompassTarget(blue.getTowerBCrystal().getHolder().getPlayer().getLocation());
+                                player.setCompassTarget(blue.getTowerBCrystal().getHolder().getLocation());
                             } else if (red.getBossCrystal().getState() == Crystal.CrystalState.CAPTURED) {
-                                player.getPlayer().setCompassTarget(red.getBossCrystal().getHolder().getPlayer().getLocation());
+                                player.setCompassTarget(red.getBossCrystal().getHolder().getLocation());
                             } else if (red.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED) {
-                                player.getPlayer().setCompassTarget(red.getTowerACrystal().getHolder().getPlayer().getLocation());
+                                player.setCompassTarget(red.getTowerACrystal().getHolder().getLocation());
                             } else if (red.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED) {
-                                player.getPlayer().setCompassTarget(red.getTowerBCrystal().getHolder().getPlayer().getLocation());
+                                player.setCompassTarget(red.getTowerBCrystal().getHolder().getLocation());
                             } else {
                                 Location closest = null;
                                 if (red.getBossCrystal().getState() == Crystal.CrystalState.AT_HOME) {
                                     closest = red.getBossCrystal().getHome();
                                 }
                                 if (red.getTowerACrystal().getState() == Crystal.CrystalState.AT_HOME) {
-                                    if (closest == null || closest.distanceSquared(player.getPlayer().getLocation()) > red.getTowerACrystal().getHome().distanceSquared(player.getPlayer().getLocation())) {
+                                    if (closest == null || closest.distanceSquared(player.getLocation()) > red.getTowerACrystal().getHome().distanceSquared(player.getLocation())) {
                                         closest = red.getTowerACrystal().getHome();
                                     }
                                 }
                                 if (red.getTowerBCrystal().getState() == Crystal.CrystalState.AT_HOME) {
-                                    if (closest == null || closest.distanceSquared(player.getPlayer().getLocation()) > red.getTowerBCrystal().getHome().distanceSquared(player.getPlayer().getLocation())) {
+                                    if (closest == null || closest.distanceSquared(player.getLocation()) > red.getTowerBCrystal().getHome().distanceSquared(player.getLocation())) {
                                         closest = red.getTowerBCrystal().getHome();
                                     }
                                 }
                                 if (closest == null) {
-                                    for (AuroraMCPlayer pl1 : AuroraMCAPI.getPlayers()) {
+                                    for (AuroraMCServerPlayer pl1 : ServerAPI.getPlayers()) {
                                         AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) pl1;
                                         if (!player1.isSpectator() && !player1.getTeam().equals(player.getTeam())) {
-                                            if (closest == null || closest.distanceSquared(player.getPlayer().getLocation()) > player1.getPlayer().getLocation().distanceSquared(player.getPlayer().getLocation())) {
-                                                closest = player1.getPlayer().getLocation();
+                                            if (closest == null || closest.distanceSquared(player.getLocation()) > player1.getLocation().distanceSquared(player.getLocation())) {
+                                                closest = player1.getLocation();
                                             }
                                         }
                                     }
-                                    player.getPlayer().setCompassTarget(closest);
+                                    player.setCompassTarget(closest);
                                 } else {
-                                    player.getPlayer().setCompassTarget(closest);
+                                    player.setCompassTarget(closest);
                                 }
                             }
                         } else {
                             if (red.getBossCrystal().getState() == Crystal.CrystalState.CAPTURED) {
-                                player.getPlayer().setCompassTarget(red.getBossCrystal().getHolder().getPlayer().getLocation());
+                                player.setCompassTarget(red.getBossCrystal().getHolder().getLocation());
                             } else if (red.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED) {
-                                player.getPlayer().setCompassTarget(red.getTowerACrystal().getHolder().getPlayer().getLocation());
+                                player.setCompassTarget(red.getTowerACrystal().getHolder().getLocation());
                             } else if (red.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED) {
-                                player.getPlayer().setCompassTarget(red.getTowerBCrystal().getHolder().getPlayer().getLocation());
+                                player.setCompassTarget(red.getTowerBCrystal().getHolder().getLocation());
                             } else if (blue.getBossCrystal().getState() == Crystal.CrystalState.CAPTURED) {
-                                player.getPlayer().setCompassTarget(blue.getBossCrystal().getHolder().getPlayer().getLocation());
+                                player.setCompassTarget(blue.getBossCrystal().getHolder().getLocation());
                             } else if (blue.getTowerACrystal().getState() == Crystal.CrystalState.CAPTURED) {
-                                player.getPlayer().setCompassTarget(blue.getTowerACrystal().getHolder().getPlayer().getLocation());
+                                player.setCompassTarget(blue.getTowerACrystal().getHolder().getLocation());
                             } else if (blue.getTowerBCrystal().getState() == Crystal.CrystalState.CAPTURED) {
-                                player.getPlayer().setCompassTarget(blue.getTowerBCrystal().getHolder().getPlayer().getLocation());
+                                player.setCompassTarget(blue.getTowerBCrystal().getHolder().getLocation());
                             } else {
                                 Location closest = null;
                                 if (blue.getBossCrystal().getState() == Crystal.CrystalState.AT_HOME) {
                                     closest = blue.getBossCrystal().getHome();
                                 }
                                 if (blue.getTowerACrystal().getState() == Crystal.CrystalState.AT_HOME) {
-                                    if (closest == null || closest.distanceSquared(player.getPlayer().getLocation()) > blue.getTowerACrystal().getHome().distanceSquared(player.getPlayer().getLocation())) {
+                                    if (closest == null || closest.distanceSquared(player.getLocation()) > blue.getTowerACrystal().getHome().distanceSquared(player.getLocation())) {
                                         closest = blue.getTowerACrystal().getHome();
                                     }
                                 }
                                 if (blue.getTowerBCrystal().getState() == Crystal.CrystalState.AT_HOME) {
-                                    if (closest == null || closest.distanceSquared(player.getPlayer().getLocation()) > blue.getTowerBCrystal().getHome().distanceSquared(player.getPlayer().getLocation())) {
+                                    if (closest == null || closest.distanceSquared(player.getLocation()) > blue.getTowerBCrystal().getHome().distanceSquared(player.getLocation())) {
                                         closest = blue.getTowerBCrystal().getHome();
                                     }
                                 }
                                 if (closest == null) {
-                                    for (AuroraMCPlayer pl1 : AuroraMCAPI.getPlayers()) {
+                                    for (AuroraMCServerPlayer pl1 : ServerAPI.getPlayers()) {
                                         AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) pl1;
                                         if (!player1.isSpectator() && !player1.getTeam().equals(player.getTeam())) {
-                                            if (closest == null || closest.distanceSquared(player.getPlayer().getLocation()) > player1.getPlayer().getLocation().distanceSquared(player.getPlayer().getLocation())) {
-                                                closest = player1.getPlayer().getLocation();
+                                            if (closest == null || closest.distanceSquared(player.getLocation()) > player1.getLocation().distanceSquared(player.getLocation())) {
+                                                closest = player1.getLocation();
                                             }
                                         }
                                     }
-                                    player.getPlayer().setCompassTarget(closest);
+                                    player.setCompassTarget(closest);
                                 } else {
-                                    player.getPlayer().setCompassTarget(closest);
+                                    player.setCompassTarget(closest);
                                 }
                             }
                         }
 
-                        if (player.getPlayer().getInventory().contains(Material.EMERALD, 64)) {
+                        if (player.getInventory().contains(Material.EMERALD, 64)) {
                             if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(68))) {
                                 player.getStats().achievementGained(AuroraMCAPI.getAchievement(68), 1, true);
                             }
@@ -626,26 +633,26 @@ public class CrystalQuest extends Game {
         protectionTask = new BukkitRunnable(){
             @Override
             public void run() {
-                for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
-                    pl.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You can now capture crystals!"));
+                for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
+                    pl.sendMessage(TextFormatter.pluginMessage("Game", "You can now capture crystals!"));
                 }
             }
-        }.runTaskLater(AuroraMCAPI.getCore(), 2399);
-        for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
-            pl.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Crystals are protected for the first 2 minutes of the game!"));
+        }.runTaskLater(ServerAPI.getCore(), 2399);
+        for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
+            pl.sendMessage(TextFormatter.pluginMessage("Game", "Crystals are protected for the first 2 minutes of the game!"));
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
             if (!player.isSpectator() && player.getKit() instanceof Defender) {
                 switch (player.getKitLevel().getLatestUpgrade()) {
                     case 0: {
                         tasks.add(new BukkitRunnable() {
 
-                            private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItem();
+                            private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
                             @Override
                             public void run() {
-                                if (player.getPlayer().isOnline()) {
-                                    if (!player.getPlayer().getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
-                                        player.getPlayer().getInventory().addItem(new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItem());
+                                if (player.isOnline()) {
+                                    if (!player.getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
+                                        player.getInventory().addItem(new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack());
                                     }
                                 } else {
                                     this.cancel();
@@ -657,13 +664,13 @@ public class CrystalQuest extends Game {
                     case 1: {
                         tasks.add(new BukkitRunnable() {
 
-                            private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItem();
+                            private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
                             @Override
                             public void run() {
-                                if (player.getPlayer().isOnline()) {
-                                    if (!player.getPlayer().getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
-                                        player.getPlayer().getInventory().addItem(stack);
+                                if (player.isOnline()) {
+                                    if (!player.getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
+                                        player.getInventory().addItem(stack);
                                     }
                                 } else {
                                     this.cancel();
@@ -675,13 +682,13 @@ public class CrystalQuest extends Game {
                     case 2: {
                         tasks.add(new BukkitRunnable() {
 
-                            private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItem();
+                            private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
                             @Override
                             public void run() {
-                                if (player.getPlayer().isOnline()) {
-                                    if (!player.getPlayer().getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
-                                        player.getPlayer().getInventory().addItem(stack);
+                                if (player.isOnline()) {
+                                    if (!player.getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
+                                        player.getInventory().addItem(stack);
                                     }
                                 } else {
                                     this.cancel();
@@ -693,13 +700,13 @@ public class CrystalQuest extends Game {
                     case 3: {
                         tasks.add(new BukkitRunnable() {
 
-                            private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItem();
+                            private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
                             @Override
                             public void run() {
-                                if (player.getPlayer().isOnline()) {
-                                    if (!player.getPlayer().getInventory().contains(Material.STAINED_GLASS, 14) && !player.isSpectator()) {
-                                        player.getPlayer().getInventory().addItem(stack);
+                                if (player.isOnline()) {
+                                    if (!player.getInventory().contains(Material.STAINED_GLASS, 14) && !player.isSpectator()) {
+                                        player.getInventory().addItem(stack);
                                     }
                                 } else {
                                     this.cancel();
@@ -711,13 +718,13 @@ public class CrystalQuest extends Game {
                     case 4: {
                         tasks.add(new BukkitRunnable() {
 
-                            private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItem();
+                            private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
                             @Override
                             public void run() {
-                                if (player.getPlayer().isOnline()) {
-                                    if (!player.getPlayer().getInventory().contains(Material.STAINED_GLASS, 16) && !player.isSpectator()) {
-                                        player.getPlayer().getInventory().addItem(stack);
+                                if (player.isOnline()) {
+                                    if (!player.getInventory().contains(Material.STAINED_GLASS, 16) && !player.isSpectator()) {
+                                        player.getInventory().addItem(stack);
                                     }
                                 } else {
                                     this.cancel();
@@ -729,13 +736,13 @@ public class CrystalQuest extends Game {
                     case 5: {
                         tasks.add(new BukkitRunnable() {
 
-                            private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItem();
+                            private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
                             @Override
                             public void run() {
-                                if (player.getPlayer().isOnline()) {
-                                    if (!player.getPlayer().getInventory().contains(Material.STAINED_GLASS, 16) && !player.isSpectator()) {
-                                        player.getPlayer().getInventory().addItem(stack);
+                                if (player.isOnline()) {
+                                    if (!player.getInventory().contains(Material.STAINED_GLASS, 16) && !player.isSpectator()) {
+                                        player.getInventory().addItem(stack);
                                     }
                                 } else {
                                     this.cancel();
@@ -767,14 +774,14 @@ public class CrystalQuest extends Game {
                 int fm = max;
                 tasks.add(new BukkitRunnable() {
 
-                    private final ItemStack stack = new GUIItem(Material.ARROW, "&eArcher's Arrow").getItem();
+                    private final ItemStack stack = new GUIItem(Material.ARROW, "&eArcher's Arrow").getItemStack();
                     private final int max = fm;
 
                     @Override
                     public void run() {
-                        if (player.getPlayer().isOnline()) {
-                            if (!player.getPlayer().getInventory().contains(Material.ARROW, max) && !player.isSpectator()) {
-                                player.getPlayer().getInventory().addItem(stack);
+                        if (player.isOnline()) {
+                            if (!player.getInventory().contains(Material.ARROW, max) && !player.isSpectator()) {
+                                player.getInventory().addItem(stack);
                             }
                         } else {
                             this.cancel();
@@ -814,19 +821,19 @@ public class CrystalQuest extends Game {
                 tasks.add(new BukkitRunnable(){
                     @Override
                     public void run() {
-                        player.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT, finalAmountIron));
+                        player.getInventory().addItem(new ItemStack(Material.IRON_INGOT, finalAmountIron));
                     }
                 }.runTaskTimer(EngineAPI.getGameEngine(), iron, iron));
                 tasks.add(new BukkitRunnable(){
                     @Override
                     public void run() {
-                        player.getPlayer().getInventory().addItem(new ItemStack(Material.GOLD_INGOT, finalAmountGold));
+                        player.getInventory().addItem(new ItemStack(Material.GOLD_INGOT, finalAmountGold));
                     }
                 }.runTaskTimer(EngineAPI.getGameEngine(), gold, gold));
                 tasks.add(new BukkitRunnable(){
                     @Override
                     public void run() {
-                        player.getPlayer().getInventory().addItem(new ItemStack(Material.EMERALD, 1));
+                        player.getInventory().addItem(new ItemStack(Material.EMERALD, 1));
                     }
                 }.runTaskTimer(EngineAPI.getGameEngine(), emerald, emerald));
             }
@@ -834,7 +841,7 @@ public class CrystalQuest extends Game {
     }
 
     @Override
-    public void generateTeam(AuroraMCPlayer auroraMCPlayer) {
+    public void generateTeam(AuroraMCServerPlayer auroraMCPlayer) {
 
     }
 
@@ -854,29 +861,29 @@ public class CrystalQuest extends Game {
                     player2.hidePlayer(player);
                 }
             }
-        }.runTaskLater(AuroraMCAPI.getCore(), 2);
+        }.runTaskLater(ServerAPI.getCore(), 2);
     }
 
     @Override
     public void onPlayerJoin(AuroraMCGamePlayer auroraMCGamePlayer) {
         if (!auroraMCGamePlayer.isVanished()) {
-            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Spectator Joined").put("player", auroraMCGamePlayer.getPlayer().getName())));
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Spectator Joined").put("player", auroraMCGamePlayer.getName())));
         }
         new BukkitRunnable(){
             @Override
             public void run() {
-                for (Player player2 : Bukkit.getOnlinePlayers()) {
-                    player2.hidePlayer(auroraMCGamePlayer.getPlayer());
+                for (AuroraMCServerPlayer player2 : ServerAPI.getPlayers()) {
+                    player2.hidePlayer(auroraMCGamePlayer);
                 }
                 auroraMCGamePlayer.setSpectator(true, true);
             }
-        }.runTask(AuroraMCAPI.getCore());
+        }.runTask(ServerAPI.getCore());
     }
 
     @Override
     public void onPlayerLeave(AuroraMCGamePlayer player) {
         if (!player.isVanished()) {
-            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Leave").put("player", player.getPlayer().getName())));
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Leave").put("player", player.getName())));
         }
         if (player.getTeam() != null) {
             if (player.getTeam() instanceof CQRed) {
@@ -899,7 +906,7 @@ public class CrystalQuest extends Game {
                 CQBlue blue = (CQBlue) player.getTeam();
                 if (player.getGameData().containsKey("crystal_possession")) {
                     CQRed red = (CQRed) this.getTeams().get("Red");
-                    player.getPlayer().getInventory().setContents((ItemStack[]) player.getGameData().remove("crystal_inventory"));
+                    player.getInventory().setContents((ItemStack[]) player.getGameData().remove("crystal_inventory"));
                     String crystal = (String) player.getGameData().remove("crystal_possession");
                     if (crystal.equals("BOSS")) {
                         red.getBossCrystal().crystalReturned();
@@ -913,7 +920,7 @@ public class CrystalQuest extends Game {
                 CQRed red = (CQRed) player.getTeam();
                 if (player.getGameData().containsKey("crystal_possession")) {
                     CQBlue blue = (CQBlue) this.getTeams().get("Blue");
-                    player.getPlayer().getInventory().setContents((ItemStack[]) player.getGameData().remove("crystal_inventory"));
+                    player.getInventory().setContents((ItemStack[]) player.getGameData().remove("crystal_inventory"));
                     String crystal = (String) player.getGameData().remove("crystal_possession");
                     if (crystal.equals("BOSS")) {
                         blue.getBossCrystal().crystalReturned();
@@ -949,23 +956,23 @@ public class CrystalQuest extends Game {
                 for (Map.Entry<AuroraMCGamePlayer, Long> entry : player.getLatestHits().entrySet()) {
                     if (System.currentTimeMillis() - entry.getValue() < 60000 && entry.getKey().getId() != killer.getId()) {
                         entry.getKey().getRewards().addXp("Assists", 10);
-                        entry.getKey().getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", "You got an assist on player **" + player.getPlayer().getName() + "**!"));
-                        entry.getKey().getPlayer().playSound(entry.getKey().getPlayer().getLocation(), Sound.ARROW_HIT, 100, 1);
+                        entry.getKey().sendMessage(TextFormatter.pluginMessage("Kill", "You got an assist on player **" + player.getName() + "**!"));
+                        entry.getKey().playSound(entry.getKey().getLocation(), Sound.ARROW_HIT, 100, 1);
                     }
                 }
             }
 
             player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
             player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths." + killReason.name(), 1, true);
-            for (Player player2 : Bukkit.getOnlinePlayers()) {
-                player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(AuroraMCAPI.getPlayer(player2), killer, player, null, killReason, EngineAPI.getActiveGameInfo().getId())));
+            for (AuroraMCServerPlayer player2 : ServerAPI.getPlayers()) {
+                player2.sendMessage(TextFormatter.pluginMessage("Kill", killMessage.onKill(player2, killer, player, null, killReason, EngineAPI.getActiveGameInfo().getId())));
             }
         }
     }
 
     @Override
     public void onRespawn(AuroraMCGamePlayer player) {
-        getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Respawn").put("player", player.getPlayer().getName())));
+        getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Respawn").put("player", player.getName())));
         Location location;
         if (player.getTeam() instanceof CQRed) {
             JSONArray spawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("RED");
@@ -987,25 +994,25 @@ public class CrystalQuest extends Game {
             float yaw = spawn.getFloat("yaw");
             location = new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0);
         }
-        player.getPlayer().teleport(location);
+        player.teleport(location);
         if (player.getGameData().containsKey("death_inventory")) {
-            player.getPlayer().getInventory().setContents((ItemStack[]) player.getGameData().get("death_inventory"));
-            player.getPlayer().getInventory().setHelmet((ItemStack) player.getGameData().get("death_helmet"));
-            player.getPlayer().getInventory().setChestplate((ItemStack) player.getGameData().get("death_chestplate"));
-            player.getPlayer().getInventory().setLeggings((ItemStack) player.getGameData().get("death_leggings"));
-            player.getPlayer().getInventory().setBoots((ItemStack) player.getGameData().get("death_boots"));
+            player.getInventory().setContents((ItemStack[]) player.getGameData().get("death_inventory"));
+            player.getInventory().setHelmet((ItemStack) player.getGameData().get("death_helmet"));
+            player.getInventory().setChestplate((ItemStack) player.getGameData().get("death_chestplate"));
+            player.getInventory().setLeggings((ItemStack) player.getGameData().get("death_leggings"));
+            player.getInventory().setBoots((ItemStack) player.getGameData().get("death_boots"));
         } else {
-            player.getPlayer().getInventory().setHelmet((ItemStack) player.getGameData().get("death_helmet"));
-            player.getPlayer().getInventory().setChestplate((ItemStack) player.getGameData().get("death_chestplate"));
-            player.getPlayer().getInventory().setLeggings((ItemStack) player.getGameData().get("death_leggings"));
-            player.getPlayer().getInventory().setBoots((ItemStack) player.getGameData().get("death_boots"));
+            player.getInventory().setHelmet((ItemStack) player.getGameData().get("death_helmet"));
+            player.getInventory().setChestplate((ItemStack) player.getGameData().get("death_chestplate"));
+            player.getInventory().setLeggings((ItemStack) player.getGameData().get("death_leggings"));
+            player.getInventory().setBoots((ItemStack) player.getGameData().get("death_boots"));
 
-            player.getPlayer().getInventory().setItem(0, (ItemStack) player.getGameData().get("death_sword"));
-            player.getPlayer().getInventory().setItem(1, (ItemStack) player.getGameData().get("death_pickaxe"));
-            player.getPlayer().getInventory().setItem(2, (ItemStack) player.getGameData().get("death_axe"));
+            player.getInventory().setItem(0, (ItemStack) player.getGameData().get("death_sword"));
+            player.getInventory().setItem(1, (ItemStack) player.getGameData().get("death_pickaxe"));
+            player.getInventory().setItem(2, (ItemStack) player.getGameData().get("death_axe"));
             if (player.getKit() instanceof Archer) {
-                player.getPlayer().getInventory().setItem(3, new GUIItem(Material.BOW, "&3&lArcher's Bow", 1, ";&r&aLeft-Click to use Quickshot;&r&cFully charge the bow to use Barrage.").getItem());
-                ItemStack stack = player.getPlayer().getInventory().getItem(3);
+                player.getInventory().setItem(3, new GUIItem(Material.BOW, "&3&lArcher's Bow", 1, ";&r&aLeft-Click to use Quickshot;&r&cFully charge the bow to use Barrage.").getItemStack());
+                ItemStack stack = player.getInventory().getItem(3);
                 if (player.getTeam() instanceof CQBlue) {
                     if (((CQBlue)player.getTeam()).getPowerUpgrade() > 0) {
                         stack.addEnchantment(Enchantment.ARROW_DAMAGE, ((CQBlue)player.getTeam()).getPowerUpgrade());
@@ -1016,18 +1023,18 @@ public class CrystalQuest extends Game {
                     }
                 }
             }
-            player.getPlayer().getInventory().setItem(8, compass);
+            player.getInventory().setItem(8, compass);
         }
 
         player.getGameData().clear();
 
-        player.getPlayer().setGameMode(GameMode.SURVIVAL);
-        player.getPlayer().setHealth(20.0D);
-        player.getPlayer().setFoodLevel(30);
-        player.getPlayer().setExp(0.0F);
-        player.getPlayer().setLevel(0);
-        player.getPlayer().setFlying(false);
-        player.getPlayer().setAllowFlight(false);
+        player.setGameMode(GameMode.SURVIVAL);
+        player.setHealth(20.0D);
+        player.setFoodLevel(30);
+        player.setExp(0.0F);
+        player.setLevel(0);
+        player.setFlying(false);
+        player.setAllowFlight(false);
     }
 
     @Override
@@ -1038,7 +1045,7 @@ public class CrystalQuest extends Game {
             CQBlue blue = (CQBlue) player.getTeam();
             if (player.getGameData().containsKey("crystal_possession")) {
                     CQRed red = (CQRed) this.getTeams().get("Red");
-                    player.getPlayer().getInventory().setContents((ItemStack[]) player.getGameData().remove("crystal_inventory"));
+                    player.getInventory().setContents((ItemStack[]) player.getGameData().remove("crystal_inventory"));
                     String crystal = (String) player.getGameData().remove("crystal_possession");
                     if (crystal.equals("BOSS")) {
                         red.getBossCrystal().crystalReturned();
@@ -1067,7 +1074,7 @@ public class CrystalQuest extends Game {
             CQRed red = (CQRed) player.getTeam();
             if (player.getGameData().containsKey("crystal_possession")) {
                 CQBlue blue = (CQBlue) this.getTeams().get("Blue");
-                player.getPlayer().getInventory().setContents((ItemStack[]) player.getGameData().remove("crystal_inventory"));
+                player.getInventory().setContents((ItemStack[]) player.getGameData().remove("crystal_inventory"));
                 String crystal = (String) player.getGameData().remove("crystal_possession");
                 if (crystal.equals("BOSS")) {
                     blue.getBossCrystal().crystalReturned();
@@ -1090,24 +1097,24 @@ public class CrystalQuest extends Game {
         }
         if (killer != null) {
             killer.getStats().addProgress(AuroraMCAPI.getAchievement(65), 1, player.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(65), 0), true);
-            if (killer.getPlayer().getHealth() >= 19) {
+            if (killer.getHealth() >= 19) {
                 if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(72))) {
                     killer.getStats().achievementGained(AuroraMCAPI.getAchievement(72), 1, true);
                 }
             }
         }
-        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", player.getPlayer().getName()).put("killer", ((killer != null)?killer.getPlayer().getName():"None")).put("final", finalKill)));
+        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", player.getName()).put("killer", ((killer != null)?killer.getName():"None")).put("final", finalKill)));
         if (!finalKill) {
             if (life) {
-                player.getGameData().put("death_helmet", player.getPlayer().getInventory().getHelmet());
-                player.getGameData().put("death_chestplate", player.getPlayer().getInventory().getChestplate());
-                player.getGameData().put("death_leggings", player.getPlayer().getInventory().getLeggings());
-                player.getGameData().put("death_boots", player.getPlayer().getInventory().getBoots());
-                player.getGameData().put("death_inventory", player.getPlayer().getInventory().getContents());
+                player.getGameData().put("death_helmet", player.getInventory().getHelmet());
+                player.getGameData().put("death_chestplate", player.getInventory().getChestplate());
+                player.getGameData().put("death_leggings", player.getInventory().getLeggings());
+                player.getGameData().put("death_boots", player.getInventory().getBoots());
+                player.getGameData().put("death_inventory", player.getInventory().getContents());
             } else {
-                Map<Integer, ? extends ItemStack> gold = player.getPlayer().getInventory().all(Material.GOLD_INGOT);
-                Map<Integer, ? extends ItemStack> iron = player.getPlayer().getInventory().all(Material.IRON_INGOT);
-                Map<Integer, ? extends ItemStack> emeralds = player.getPlayer().getInventory().all(Material.EMERALD);
+                Map<Integer, ? extends ItemStack> gold = player.getInventory().all(Material.GOLD_INGOT);
+                Map<Integer, ? extends ItemStack> iron = player.getInventory().all(Material.IRON_INGOT);
+                Map<Integer, ? extends ItemStack> emeralds = player.getInventory().all(Material.EMERALD);
 
                 int amountOfGold = 0, amountOfIron = 0, amountOfEmeralds = 0;
 
@@ -1138,33 +1145,33 @@ public class CrystalQuest extends Game {
                     }
 
                     if (builder.size() > 0) {
-                        killer.getPlayer().sendMessage(AuroraMCAPI.getFormatter().convert(String.join("\n", builder)));
+                        killer.sendMessage(new TextComponent(TextFormatter.convert(String.join("\n", builder))));
                     }
                 }
 
                 while (amountOfGold > 0) {
                     if (amountOfGold > 64) {
                         if (killer != null) {
-                            Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.GOLD_INGOT, 64));
+                            Map<Integer, ItemStack> items = killer.getInventory().addItem(new ItemStack(Material.GOLD_INGOT, 64));
                             if (items.size() > 0) {
                                 for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
-                                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
+                                    player.getLocation().getWorld().dropItemNaturally(player.getLocation(), item.getValue());
                                 }
                             }
                         } else {
-                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.GOLD_INGOT, 64));
+                            player.getLocation().getWorld().dropItemNaturally(player.getLocation(), new ItemStack(Material.GOLD_INGOT, 64));
                         }
                         amountOfGold -= 64;
                     } else {
                         if (killer != null) {
-                            Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.GOLD_INGOT, amountOfGold));
+                            Map<Integer, ItemStack> items = killer.getInventory().addItem(new ItemStack(Material.GOLD_INGOT, amountOfGold));
                             if (items.size() > 0) {
                                 for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
-                                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
+                                    player.getLocation().getWorld().dropItemNaturally(player.getLocation(), item.getValue());
                                 }
                             }
                         } else {
-                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.GOLD_INGOT, amountOfGold));
+                            player.getLocation().getWorld().dropItemNaturally(player.getLocation(), new ItemStack(Material.GOLD_INGOT, amountOfGold));
                         }
                         amountOfGold = 0;
                     }
@@ -1173,26 +1180,26 @@ public class CrystalQuest extends Game {
                 while (amountOfIron > 0) {
                     if (amountOfIron > 64) {
                         if (killer != null) {
-                            Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT, 64));
+                            Map<Integer, ItemStack> items = killer.getInventory().addItem(new ItemStack(Material.IRON_INGOT, 64));
                             if (items.size() > 0) {
                                 for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
-                                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
+                                    player.getLocation().getWorld().dropItemNaturally(player.getLocation(), item.getValue());
                                 }
                             }
                         } else {
-                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.IRON_INGOT, 64));
+                            player.getLocation().getWorld().dropItemNaturally(player.getLocation(), new ItemStack(Material.IRON_INGOT, 64));
                         }
                         amountOfIron -= 64;
                     } else {
                         if (killer != null) {
-                            Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT, amountOfIron));
+                            Map<Integer, ItemStack> items = killer.getInventory().addItem(new ItemStack(Material.IRON_INGOT, amountOfIron));
                             if (items.size() > 0) {
                                 for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
-                                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
+                                    player.getLocation().getWorld().dropItemNaturally(player.getLocation(), item.getValue());
                                 }
                             }
                         } else {
-                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.IRON_INGOT, amountOfIron));
+                            player.getLocation().getWorld().dropItemNaturally(player.getLocation(), new ItemStack(Material.IRON_INGOT, amountOfIron));
                         }
                         amountOfIron = 0;
                     }
@@ -1201,61 +1208,61 @@ public class CrystalQuest extends Game {
                 while (amountOfEmeralds > 0) {
                     if (amountOfEmeralds > 64) {
                         if (killer != null) {
-                            Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.EMERALD, 64));
+                            Map<Integer, ItemStack> items = killer.getInventory().addItem(new ItemStack(Material.EMERALD, 64));
                             if (items.size() > 0) {
                                 for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
-                                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
+                                    player.getLocation().getWorld().dropItemNaturally(player.getLocation(), item.getValue());
                                 }
                             }
                         } else {
-                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.EMERALD, 64));
+                            player.getLocation().getWorld().dropItemNaturally(player.getLocation(), new ItemStack(Material.EMERALD, 64));
                         }
                         amountOfEmeralds -= 64;
                     } else {
                         if (killer != null) {
-                            Map<Integer, ItemStack> items = killer.getPlayer().getInventory().addItem(new ItemStack(Material.EMERALD, amountOfEmeralds));
+                            Map<Integer, ItemStack> items = killer.getInventory().addItem(new ItemStack(Material.EMERALD, amountOfEmeralds));
                             if (items.size() > 0) {
                                 for (Map.Entry<Integer, ItemStack> item : items.entrySet()) {
-                                    player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), item.getValue());
+                                    player.getLocation().getWorld().dropItemNaturally(player.getLocation(), item.getValue());
                                 }
                             }
                         } else {
-                            player.getPlayer().getLocation().getWorld().dropItemNaturally(player.getPlayer().getLocation(), new ItemStack(Material.EMERALD, amountOfEmeralds));
+                            player.getLocation().getWorld().dropItemNaturally(player.getLocation(), new ItemStack(Material.EMERALD, amountOfEmeralds));
                         }
                         amountOfEmeralds = 0;
                     }
                 }
-                switch (player.getPlayer().getInventory().getHelmet().getType()) {
+                switch (player.getInventory().getHelmet().getType()) {
                     case LEATHER_HELMET: {
-                        player.getGameData().put("death_helmet", player.getPlayer().getInventory().getHelmet());
+                        player.getGameData().put("death_helmet", player.getInventory().getHelmet());
                         break;
                     }
                     case CHAINMAIL_HELMET: {
-                        ItemStack stack = player.getPlayer().getInventory().getHelmet();
+                        ItemStack stack = player.getInventory().getHelmet();
                         stack.setType(Material.LEATHER_HELMET);
                         player.getGameData().put("death_helmet", stack);
                         break;
                     }
                     case IRON_HELMET: {
-                        ItemStack stack = player.getPlayer().getInventory().getHelmet();
+                        ItemStack stack = player.getInventory().getHelmet();
                         stack.setType(Material.CHAINMAIL_HELMET);
                         player.getGameData().put("death_helmet", stack);
                         break;
                     }
                     case DIAMOND_HELMET: {
-                        ItemStack stack = player.getPlayer().getInventory().getHelmet();
+                        ItemStack stack = player.getInventory().getHelmet();
                         stack.setType(Material.IRON_HELMET);
                         player.getGameData().put("death_helmet", stack);
                         break;
                     }
                 }
-                switch (player.getPlayer().getInventory().getChestplate().getType()) {
+                switch (player.getInventory().getChestplate().getType()) {
                     case LEATHER_CHESTPLATE: {
-                        player.getGameData().put("death_chestplate", player.getPlayer().getInventory().getChestplate());
+                        player.getGameData().put("death_chestplate", player.getInventory().getChestplate());
                         break;
                     }
                     case CHAINMAIL_CHESTPLATE: {
-                        ItemStack stack = player.getPlayer().getInventory().getChestplate();
+                        ItemStack stack = player.getInventory().getChestplate();
                         if (!(player.getKit() instanceof Fighter)) {
                             stack.setType(Material.LEATHER_CHESTPLATE);
                         }
@@ -1263,61 +1270,61 @@ public class CrystalQuest extends Game {
                         break;
                     }
                     case IRON_CHESTPLATE: {
-                        ItemStack stack = player.getPlayer().getInventory().getChestplate();
+                        ItemStack stack = player.getInventory().getChestplate();
                         stack.setType(Material.CHAINMAIL_CHESTPLATE);
                         player.getGameData().put("death_chestplate", stack);
                         break;
                     }
                     case DIAMOND_CHESTPLATE: {
-                        ItemStack stack = player.getPlayer().getInventory().getChestplate();
+                        ItemStack stack = player.getInventory().getChestplate();
                         stack.setType(Material.IRON_CHESTPLATE);
                         player.getGameData().put("death_chestplate", stack);
                         break;
                     }
                 }
-                switch (player.getPlayer().getInventory().getLeggings().getType()) {
+                switch (player.getInventory().getLeggings().getType()) {
                     case LEATHER_LEGGINGS: {
-                        player.getGameData().put("death_leggings", player.getPlayer().getInventory().getLeggings());
+                        player.getGameData().put("death_leggings", player.getInventory().getLeggings());
                         break;
                     }
                     case CHAINMAIL_LEGGINGS: {
-                        ItemStack stack = player.getPlayer().getInventory().getLeggings();
+                        ItemStack stack = player.getInventory().getLeggings();
                         stack.setType(Material.LEATHER_LEGGINGS);
                         player.getGameData().put("death_leggings", stack);
                         break;
                     }
                     case IRON_LEGGINGS: {
-                        ItemStack stack = player.getPlayer().getInventory().getLeggings();
+                        ItemStack stack = player.getInventory().getLeggings();
                         stack.setType(Material.CHAINMAIL_LEGGINGS);
                         player.getGameData().put("death_leggings", stack);
                         break;
                     }
                     case DIAMOND_LEGGINGS: {
-                        ItemStack stack = player.getPlayer().getInventory().getLeggings();
+                        ItemStack stack = player.getInventory().getLeggings();
                         stack.setType(Material.IRON_LEGGINGS);
                         player.getGameData().put("death_leggings", stack);
                         break;
                     }
                 }
-                switch (player.getPlayer().getInventory().getBoots().getType()) {
+                switch (player.getInventory().getBoots().getType()) {
                     case LEATHER_BOOTS: {
-                        player.getGameData().put("death_boots", player.getPlayer().getInventory().getBoots());
+                        player.getGameData().put("death_boots", player.getInventory().getBoots());
                         break;
                     }
                     case CHAINMAIL_BOOTS: {
-                        ItemStack stack = player.getPlayer().getInventory().getBoots();
+                        ItemStack stack = player.getInventory().getBoots();
                         stack.setType(Material.LEATHER_BOOTS);
                         player.getGameData().put("death_boots", stack);
                         break;
                     }
                     case IRON_BOOTS: {
-                        ItemStack stack = player.getPlayer().getInventory().getBoots();
+                        ItemStack stack = player.getInventory().getBoots();
                         stack.setType(Material.CHAINMAIL_BOOTS);
                         player.getGameData().put("death_boots", stack);
                         break;
                     }
                     case DIAMOND_BOOTS: {
-                        ItemStack stack = player.getPlayer().getInventory().getBoots();
+                        ItemStack stack = player.getInventory().getBoots();
                         stack.setType(Material.IRON_BOOTS);
                         player.getGameData().put("death_boots", stack);
                         break;
@@ -1327,49 +1334,49 @@ public class CrystalQuest extends Game {
                 int swordSlot = 0, pickSlot = 1, axeSlot = 2;
 
                 for (int i = 0; i < 36; i++) {
-                    if (player.getPlayer().getInventory().getItem(i) == null) {
+                    if (player.getInventory().getItem(i) == null) {
                         continue;
                     }
-                    if (player.getPlayer().getInventory().getItem(i).getType().name().endsWith("_SWORD")) {
+                    if (player.getInventory().getItem(i).getType().name().endsWith("_SWORD")) {
                         swordSlot = i;
-                    } else if (player.getPlayer().getInventory().getItem(i).getType().name().endsWith("_AXE")) {
+                    } else if (player.getInventory().getItem(i).getType().name().endsWith("_AXE")) {
                         axeSlot = i;
-                    } else if (player.getPlayer().getInventory().getItem(i).getType().name().endsWith("_PICKAXE")) {
+                    } else if (player.getInventory().getItem(i).getType().name().endsWith("_PICKAXE")) {
                         pickSlot = i;
                     }
                 }
-                switch (player.getPlayer().getInventory().getItem(swordSlot).getType()) {
+                switch (player.getInventory().getItem(swordSlot).getType()) {
                     case STONE_SWORD: {
-                        player.getGameData().put("death_sword", player.getPlayer().getInventory().getItem(swordSlot));
+                        player.getGameData().put("death_sword", player.getInventory().getItem(swordSlot));
                         break;
                     }
                     case IRON_SWORD: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(swordSlot);
+                        ItemStack stack = player.getInventory().getItem(swordSlot);
                         stack.setType(Material.STONE_SWORD);
                         player.getGameData().put("death_sword", stack);
                         break;
                     }
                     case DIAMOND_SWORD: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(swordSlot);
+                        ItemStack stack = player.getInventory().getItem(swordSlot);
                         stack.setType(Material.IRON_SWORD);
                         player.getGameData().put("death_sword", stack);
                         break;
                     }
                 }
 
-                switch (player.getPlayer().getInventory().getItem(pickSlot).getType()) {
+                switch (player.getInventory().getItem(pickSlot).getType()) {
                     case STONE_PICKAXE: {
-                        player.getGameData().put("death_pickaxe", player.getPlayer().getInventory().getItem(pickSlot));
+                        player.getGameData().put("death_pickaxe", player.getInventory().getItem(pickSlot));
                         break;
                     }
                     case IRON_PICKAXE: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(pickSlot);
+                        ItemStack stack = player.getInventory().getItem(pickSlot);
                         stack.setType(Material.STONE_PICKAXE);
                         player.getGameData().put("death_pickaxe", stack);
                         break;
                     }
                     case DIAMOND_PICKAXE: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(pickSlot);
+                        ItemStack stack = player.getInventory().getItem(pickSlot);
                             if (stack.getEnchantmentLevel(Enchantment.DIG_SPEED) < 2) {
                                 stack.setType(Material.IRON_PICKAXE);
                             } else {
@@ -1382,22 +1389,22 @@ public class CrystalQuest extends Game {
                     }
                 }
 
-                switch (player.getPlayer().getInventory().getItem(axeSlot).getType()) {
+                switch (player.getInventory().getItem(axeSlot).getType()) {
                     case WOOD_AXE:
                     case STONE_AXE: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(axeSlot);
+                        ItemStack stack = player.getInventory().getItem(axeSlot);
                         stack.setType(Material.WOOD_AXE);
                         player.getGameData().put("death_axe", stack);
                         break;
                     }
                     case IRON_AXE: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(axeSlot);
+                        ItemStack stack = player.getInventory().getItem(axeSlot);
                         stack.setType(Material.STONE_AXE);
                         player.getGameData().put("death_axe", stack);
                         break;
                     }
                     case DIAMOND_AXE: {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(axeSlot);
+                        ItemStack stack = player.getInventory().getItem(axeSlot);
                         stack.setType(Material.IRON_AXE);
                         stack.removeEnchantment(Enchantment.DIG_SPEED);
                         player.getGameData().put("death_axe", stack);
@@ -1411,7 +1418,7 @@ public class CrystalQuest extends Game {
 
     @Override
     public void onFinalKill(AuroraMCGamePlayer player) {
-        if (player.getTeam().getPlayers().stream().noneMatch(auroraMCPlayer -> (!auroraMCPlayer.isDead()))) {
+        if (player.getTeam().getPlayers().stream().noneMatch(auroraMCPlayer -> (!((AuroraMCGamePlayer)auroraMCPlayer).isDead()))) {
             if (player.getTeam() instanceof CQBlue) {
                 //Red won.
                 this.end(teams.get("Red"), null);

@@ -4,7 +4,7 @@
 
 package net.auroramc.games.backstab;
 
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
@@ -29,7 +29,7 @@ public class Backstab extends Game {
     }
 
     @Override
-    public void generateTeam(AuroraMCPlayer auroraMCPlayer) {
+    public void generateTeam(AuroraMCServerPlayer auroraMCPlayer) {
 
     }
 

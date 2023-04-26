@@ -4,6 +4,7 @@
 
 package net.auroramc.games.crystalquest.listeners;
 
+import net.auroramc.core.api.events.player.PlayerMoveEvent;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.games.crystalquest.entities.Crystal;
 import net.auroramc.games.crystalquest.teams.CQBlue;
@@ -11,7 +12,6 @@ import net.auroramc.games.crystalquest.teams.CQRed;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -25,7 +25,7 @@ public class CrystalReturnListener implements Listener {
 
     @EventHandler
     public void onReturn(PlayerMoveEvent e) {
-        if (e.getPlayer().equals(crystal.getHolder().getPlayer())) {
+        if (e.getPlayer().equals(crystal.getHolder())) {
             if (!e.getTo().getBlock().equals(e.getFrom().getBlock())) {
                 JSONArray returnPoints = EngineAPI.getActiveMap().getMapData().getJSONObject("game").getJSONObject("CRYSTAL").getJSONArray("RETURN " + ((crystal.getHomeTeam().getName().equalsIgnoreCase("Red")?"BLUE":"RED")));
                 JSONObject pointA = returnPoints.getJSONObject(0);

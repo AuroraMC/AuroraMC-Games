@@ -4,7 +4,7 @@
 
 package net.auroramc.games.tag.kits;
 
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.games.Kit;
 import org.bukkit.Material;
@@ -17,13 +17,13 @@ public class Player extends Kit {
     }
 
     @Override
-    public void onGameStart(AuroraMCPlayer player) {
-        player.getPlayer().getInventory().clear();
-        player.getPlayer().getInventory().setItem(0, new GUIItem(Material.IRON_AXE).getItem());
-        player.getPlayer().getInventory().setBoots(new GUIItem(Material.LEATHER_BOOTS).getItem());
-        player.getPlayer().getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET).getItem());
-        player.getPlayer().getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE).getItem());
-        player.getPlayer().getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS).getItem());
+    public void onGameStart(AuroraMCServerPlayer player) {
+        player.getInventory().clear();
+        player.getInventory().setItem(0, new GUIItem(Material.IRON_AXE).getItemStack());
+        player.getInventory().setBoots(new GUIItem(Material.LEATHER_BOOTS).getItemStack());
+        player.getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET).getItemStack());
+        player.getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE).getItemStack());
+        player.getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS).getItemStack());
 
     }
 

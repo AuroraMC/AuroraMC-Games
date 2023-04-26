@@ -4,15 +4,20 @@
 
 package net.auroramc.games.paintball.listeners;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.events.player.PlayerDropItemEvent;
+import net.auroramc.core.api.events.player.PlayerInteractEvent;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.games.paintball.entities.Turret;
 import net.auroramc.games.paintball.gui.Shop;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
+import org.bukkit.Color;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -20,8 +25,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -42,15 +45,15 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onInventoryInteract(InventoryInteractEvent e) {
-        AuroraMCPlayer pl = AuroraMCAPI.getPlayer((Player) e.getWhoClicked());
-        if (AuroraMCAPI.getGUI(pl) == null || e.getInventory() instanceof PlayerInventory) {
+        AuroraMCServerPlayer pl = ServerAPI.getPlayer((Player) e.getWhoClicked());
+        if (ServerAPI.getGUI(pl) == null || e.getInventory() instanceof PlayerInventory) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        AuroraMCPlayer pl = AuroraMCAPI.getPlayer(e.getPlayer());
+        AuroraMCServerPlayer pl = e.getPlayer();
 
         if (EngineAPI.getServerState() != ServerState.IN_GAME) {
             return;
@@ -61,7 +64,6 @@ public class InventoryListener implements Listener {
                 e.setCancelled(true);
                 Shop shop = new Shop(pl);
                 shop.open(pl);
-                AuroraMCAPI.openGUI(pl, shop);
             } else if (e.getItem().getType() == Material.GOLD_BARDING) {
                 if (e.getClickedBlock() != null) {
                     Location location = e.getClickedBlock().getLocation();
@@ -74,9 +76,18 @@ public class InventoryListener implements Listener {
                 if (e.getClickedBlock() != null) {
                     e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
                     EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Missile Strike Used").put("player", e.getPlayer().getName())));
-                    for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + e.getPlayer().getName() + "** has called a Missile Strike, take cover immediately!"));
-                        player.sendTitle("§4§lMISSILE STRIKE", "§d§lTAKE COVER IMMEDIATELY", 20, 100, 20, ChatColor.DARK_RED, ChatColor.RED, true, true);
+                    for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                        player.sendMessage(TextFormatter.pluginMessage("Game", "**" + e.getPlayer().getName() + "** has called a Missile Strike, take cover immediately!"));
+                        TextComponent title = new TextComponent("MISSILE STRIKE");
+                        title.setColor(ChatColor.DARK_RED.asBungee());
+                        title.setBold(true);
+
+                        TextComponent subtitle = new TextComponent("TAKE COVER IMMEDIATELY");
+                        title.setColor(ChatColor.LIGHT_PURPLE.asBungee());
+                        title.setBold(true);
+
+
+                        player.sendTitle(title, subtitle, 20, 100, 20);
                     }
                     runnable = new BukkitRunnable(){
                         int i = 0;
@@ -84,8 +95,8 @@ public class InventoryListener implements Listener {
                         @Override
                         public void run() {
                             if (i < 10) {
-                                for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 1);
+                                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                                    player.playSound(player.getLocation(), Sound.NOTE_PLING, 100, 1);
                                 }
                                 i++;
                             } else {
@@ -94,11 +105,11 @@ public class InventoryListener implements Listener {
                                 this.cancel();
                             }
                         }
-                    }.runTaskTimer(AuroraMCAPI.getCore(), 0, 10);
+                    }.runTaskTimer(ServerAPI.getCore(), 0, 10);
                 }
             } else if (e.getItem().getType() == Material.FIREWORK) {
                 e.setCancelled(true);
-                e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot use a Missile Strike while one is in progress!"));
+                e.getPlayer().sendMessage(TextFormatter.pluginMessage("Game", "You cannot use a Missile Strike while one is in progress!"));
             }
         }
     }
@@ -106,7 +117,7 @@ public class InventoryListener implements Listener {
     @EventHandler
     public void onSnowballHit(ProjectileHitEvent e) {
         if (e.getEntity() instanceof Egg && e.getEntity().getShooter() instanceof Player) {
-            AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity().getShooter());
+            AuroraMCGamePlayer player = (AuroraMCGamePlayer) ServerAPI.getPlayer((Player) e.getEntity().getShooter());
             Location location = e.getEntity().getLocation();
             BlockIterator iterator = new BlockIterator(location.getWorld(), location.toVector(), e.getEntity().getVelocity().normalize(), 0, 2);
             while (iterator.hasNext()) {
@@ -126,7 +137,7 @@ public class InventoryListener implements Listener {
                         public void run() {
                             firework.detonate();
                         }
-                    }.runTaskLater(AuroraMCAPI.getCore(), 2);
+                    }.runTaskLater(ServerAPI.getCore(), 2);
                     List<Entity> players = item.getNearbyEntities(10, 10, 10);
                     for (Entity entity : players) {
                         if (entity instanceof Player) {

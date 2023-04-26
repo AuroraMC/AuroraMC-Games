@@ -6,9 +6,11 @@ package net.auroramc.games.crystalquest.entities;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.players.Team;
+import net.auroramc.api.player.AuroraMCPlayer;
+import net.auroramc.api.player.Team;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.gui.RobotMenu;
@@ -195,17 +197,16 @@ public class MiningRobot {
     }
 
     public void openGUI(AuroraMCPlayer player) {
-        for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
-            if (AuroraMCAPI.getGUI(player1) != null && AuroraMCAPI.getGUI(player1) instanceof RobotMenu) {
-                RobotMenu menu = (RobotMenu) AuroraMCAPI.getGUI(player1);
+        for (AuroraMCServerPlayer player1 : ServerAPI.getPlayers()) {
+            if (ServerAPI.getGUI(player1) != null && ServerAPI.getGUI(player1) instanceof RobotMenu) {
+                RobotMenu menu = (RobotMenu) ServerAPI.getGUI(player1);
                 if (menu.getRobot().equals(this)) {
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Someone is already in the Robot's menu!"));
+                    player.sendMessage(TextFormatter.pluginMessage("Game", "Someone is already in the Robot's menu!"));
                     return;
                 }
             }
         }
-        RobotMenu menu = new RobotMenu(player, this);
-        menu.open(player);
-        AuroraMCAPI.openGUI(player, menu);
+        RobotMenu menu = new RobotMenu((AuroraMCServerPlayer)player, this);
+        menu.open((AuroraMCServerPlayer) player);
     }
 }

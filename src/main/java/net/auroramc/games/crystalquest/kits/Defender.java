@@ -4,7 +4,7 @@
 
 package net.auroramc.games.crystalquest.kits;
 
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.games.Kit;
 import net.auroramc.games.crystalquest.CrystalQuest;
@@ -19,23 +19,23 @@ public class Defender extends Kit {
     }
 
     @Override
-    public void onGameStart(AuroraMCPlayer player) {
-        player.getPlayer().getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET).getItem());
-        ItemStack stack = new GUIItem(Material.LEATHER_BOOTS).getItem();
+    public void onGameStart(AuroraMCServerPlayer player) {
+        player.getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET).getItemStack());
+        ItemStack stack = new GUIItem(Material.LEATHER_BOOTS).getItemStack();
         stack.addEnchantment(Enchantment.PROTECTION_FALL, 4);
-        player.getPlayer().getInventory().setBoots(stack);
-        player.getPlayer().getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE).getItem());
-        player.getPlayer().getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS).getItem());
+        player.getInventory().setBoots(stack);
+        player.getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE).getItemStack());
+        player.getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS).getItemStack());
 
-        player.getPlayer().getInventory().setItem(0, new GUIItem(Material.STONE_SWORD).getItem());
+        player.getInventory().setItem(0, new GUIItem(Material.STONE_SWORD).getItemStack());
 
-        player.getPlayer().getInventory().setItem(1, new GUIItem(Material.STONE_PICKAXE).getItem());
-        ItemStack axe = new GUIItem(Material.WOOD_AXE).getItem();
+        player.getInventory().setItem(1, new GUIItem(Material.STONE_PICKAXE).getItemStack());
+        ItemStack axe = new GUIItem(Material.WOOD_AXE).getItemStack();
         axe.addEnchantment(Enchantment.DAMAGE_ALL, 1);
-        player.getPlayer().getInventory().setItem(2, axe);
-        player.getPlayer().getInventory().setItem(3, new GUIItem(Material.STAINED_GLASS, null, 12, null, (short)((player.getTeam().getId() == 0)?14:3)).getItem());
+        player.getInventory().setItem(2, axe);
+        player.getInventory().setItem(3, new GUIItem(Material.STAINED_GLASS, null, 12, null, (short)((player.getTeam().getId() == 0)?14:3)).getItemStack());
 
-        player.getPlayer().getInventory().setItem(8, CrystalQuest.compass);
+        player.getInventory().setItem(8, CrystalQuest.compass);
     }
 
     @Override

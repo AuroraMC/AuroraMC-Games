@@ -4,9 +4,13 @@
 
 package net.auroramc.games.hotpotato;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.players.Team;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.player.Team;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.events.entity.PlayerDamageByPlayerEvent;
+import net.auroramc.core.api.events.entity.PlayerDamageEvent;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
@@ -69,7 +73,7 @@ public class HotPotato extends Game {
         super.start();
         int spawnIndex = 0;
         JSONArray spawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
-        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
             AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
             gp.getScoreboard().clear();
             gp.getScoreboard().setTitle("&3&l-= &b&lHOTPOTATO &3&l=-");
@@ -80,7 +84,7 @@ public class HotPotato extends Game {
                 y = specSpawn.getInt("y");
                 z = specSpawn.getInt("z");
                 float yaw = specSpawn.getFloat("yaw");
-                gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                gp.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
             } else {
                 JSONObject spawn = spawns.getJSONObject(spawnIndex);
                 int x, y, z;
@@ -88,7 +92,7 @@ public class HotPotato extends Game {
                 y = spawn.getInt("y");
                 z = spawn.getInt("z");
                 float yaw = spawn.getFloat("yaw");
-                gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                gp.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
                 spawnIndex++;
                 if (spawnIndex >= spawns.length()) {
                     spawnIndex = 0;
@@ -104,11 +108,11 @@ public class HotPotato extends Game {
         DisableItemPickup.register();
         DisableMovableItems.register();
         DisableWeatherListener.register();
-        runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
+        runnable.runTaskTimer(ServerAPI.getCore(), 0, 20);
     }
 
     @Override
-    public void end(AuroraMCPlayer winner) {
+    public void end(AuroraMCServerPlayer winner) {
         end();
         if (winner != null) {
             AuroraMCGamePlayer gp = (AuroraMCGamePlayer) winner;
@@ -128,7 +132,7 @@ public class HotPotato extends Game {
     }
 
     @Override
-    public void generateTeam(AuroraMCPlayer auroraMCPlayer) {
+    public void generateTeam(AuroraMCServerPlayer auroraMCPlayer) {
     }
 
     @Override
@@ -139,11 +143,11 @@ public class HotPotato extends Game {
             public void run() {
                 generatePotatoes();
             }
-        }.runTask(AuroraMCAPI.getCore());
+        }.runTask(ServerAPI.getCore());
     }
 
     public void generatePotatoes() {
-        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
             AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
             if (!gp.isSpectator()) {
                 JSONObject specSpawn = this.map.getMapData().getJSONObject("game").getJSONArray("MIDDLE").getJSONObject(0);
@@ -152,11 +156,11 @@ public class HotPotato extends Game {
                 y = specSpawn.getInt("y");
                 z = specSpawn.getInt("z");
                 float yaw = specSpawn.getFloat("yaw");
-                gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                gp.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
             }
         }
         round++;
-        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer) player).isSpectator()).collect(Collectors.toList());
+        List<AuroraMCServerPlayer> playersAlive = ServerAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer) player).isSpectator()).collect(Collectors.toList());
         Collections.shuffle(playersAlive);
         potatoes = Math.round(playersAlive.size() / 4f);
         if (potatoes < 1) {
@@ -166,12 +170,12 @@ public class HotPotato extends Game {
         EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", potatoes + " Potatoes Released")));
         for (int i = 0;i < potatoes;i++) {
             Potato potato = new Potato();
-            AuroraMCPlayer pl = playersAlive.remove(0);
+            AuroraMCServerPlayer pl = playersAlive.remove(0);
             potato.newHolder((AuroraMCGamePlayer) pl);
             potatoList.add(potato);
         }
-        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + potatoes + "** Hot Potato" + ((potatoes > 1)?"es":"") + " have been released! They explode in **45** seconds!"));
+        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+            player.sendMessage(TextFormatter.pluginMessage("Game", "**" + potatoes + "** Hot Potato" + ((potatoes > 1)?"es":"") + " have been released! They explode in **45** seconds!"));
         }
         potatoTask = new BukkitRunnable(){
             @Override
@@ -187,8 +191,8 @@ public class HotPotato extends Game {
                 }
                 potatoList.clear();
                 EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Potatoes Exploded")));
-                List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer) player).isSpectator()).collect(Collectors.toList());
-                for (AuroraMCPlayer player : playersAlive) {
+                List<AuroraMCServerPlayer> playersAlive = ServerAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer) player).isSpectator()).collect(Collectors.toList());
+                for (AuroraMCServerPlayer player : playersAlive) {
                     AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
                     if (gp.getGameData().containsKey("had_potato")) {
                         gp.getGameData().remove("had_potato");
@@ -210,22 +214,22 @@ public class HotPotato extends Game {
                     end(playersAlive.get(0));
                     return;
                 }
-                for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The potatoes have exploded! The next round starts in 10 seconds!"));
+                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                    player.sendMessage(TextFormatter.pluginMessage("Game", "The potatoes have exploded! The next round starts in 10 seconds!"));
                 }
                 potatoTask = new BukkitRunnable() {
                     @Override
                     public void run() {
                         generatePotatoes();
                     }
-                }.runTaskLater(AuroraMCAPI.getCore(), 200);
+                }.runTaskLater(ServerAPI.getCore(), 200);
             }
-        }.runTaskLater(AuroraMCAPI.getCore(), 900);
+        }.runTaskLater(ServerAPI.getCore(), 900);
     }
 
     private void end() {
-        EntityDamageByEntityEvent.getHandlerList().unregister(hitListener);
-        EntityDamageEvent.getHandlerList().unregister(hitListener);
+        PlayerDamageByPlayerEvent.getHandlerList().unregister(hitListener);
+        PlayerDamageEvent.getHandlerList().unregister(hitListener);
         DisablePlaceListener.unregister();
         DisableBreakListener.unregister();
         DisableHungerListener.unregister();
@@ -255,32 +259,32 @@ public class HotPotato extends Game {
                     player2.hidePlayer(player);
                 }
             }
-        }.runTaskLater(AuroraMCAPI.getCore(), 2);
+        }.runTaskLater(ServerAPI.getCore(), 2);
     }
 
     @Override
     public void onPlayerJoin(AuroraMCGamePlayer auroraMCGamePlayer) {
         if (!auroraMCGamePlayer.isVanished()) {
-            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Spectator Joined").put("player", auroraMCGamePlayer.getPlayer().getName())));
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Spectator Joined").put("player", auroraMCGamePlayer.getByDisguiseName())));
         }
         new BukkitRunnable(){
             @Override
             public void run() {
-                for (Player player2 : Bukkit.getOnlinePlayers()) {
-                    player2.hidePlayer(auroraMCGamePlayer.getPlayer());
+                for (AuroraMCServerPlayer player2 : ServerAPI.getPlayers()) {
+                    player2.hidePlayer(auroraMCGamePlayer);
                 }
                 auroraMCGamePlayer.setSpectator(true, true);
             }
-        }.runTask(AuroraMCAPI.getCore());
+        }.runTask(ServerAPI.getCore());
 
     }
 
     @Override
     public void onPlayerLeave(AuroraMCGamePlayer auroraMCGamePlayer) {
         if (!auroraMCGamePlayer.isVanished()) {
-            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Leave").put("player", auroraMCGamePlayer.getPlayer().getName())));
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Leave").put("player", auroraMCGamePlayer.getByDisguiseName())));
         }
-        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
+        List<AuroraMCServerPlayer> playersAlive = ServerAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
         if (playersAlive.size() == 1 || (playersAlive.contains(auroraMCGamePlayer) && playersAlive.size() == 2)) {
             playersAlive.remove(auroraMCGamePlayer);
             EngineAPI.getActiveGame().end(playersAlive.get(0));
@@ -288,8 +292,8 @@ public class HotPotato extends Game {
             if (auroraMCGamePlayer.getGameData().containsKey("potato_holder")) {
                 if (potatoes == 1) {
                     potatoTask.cancel();
-                    for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The player with the potato has left! The next round starts in 10 seconds!"));
+                    for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                        player.sendMessage(TextFormatter.pluginMessage("Game", "The player with the potato has left! The next round starts in 10 seconds!"));
                     }
                     potatoList.clear();
                     potatoTask = new BukkitRunnable() {
@@ -297,7 +301,7 @@ public class HotPotato extends Game {
                         public void run() {
                             generatePotatoes();
                         }
-                    }.runTaskLater(AuroraMCAPI.getCore(), 200);
+                    }.runTaskLater(ServerAPI.getCore(), 200);
                 } else {
                     Potato potato = (Potato) auroraMCGamePlayer.getGameData().get("potato_holder");
                     potatoList.remove(potato);
@@ -313,8 +317,8 @@ public class HotPotato extends Game {
 
     @Override
     public boolean onDeath(AuroraMCGamePlayer auroraMCGamePlayer, AuroraMCGamePlayer killer) {
-        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", auroraMCGamePlayer.getPlayer().getName()).put("killer", ((killer != null)?killer.getPlayer().getName():"None")).put("final", true)));
-        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).getGameData().containsKey("tagged")).collect(Collectors.toList());
+        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", auroraMCGamePlayer.getByDisguiseName()).put("killer", ((killer != null)?killer.getByDisguiseName():"None")).put("final", true)));
+        List<AuroraMCServerPlayer> playersAlive = ServerAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).getGameData().containsKey("tagged")).collect(Collectors.toList());
         if (playersAlive.size() == 1) {
             this.end(playersAlive.get(0));
         }

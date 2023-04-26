@@ -4,9 +4,9 @@
 
 package net.auroramc.games.crystalquest.entities;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.players.scoreboard.PlayerScoreboard;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
+import net.auroramc.core.api.player.scoreboard.PlayerScoreboard;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
@@ -38,11 +38,11 @@ public class CrystalQuestScoreboardRunnable extends BukkitRunnable {
             finalTimeTillReset = 3;
         }
 
-        long blueAlive = EngineAPI.getActiveGame().getTeams().get("Blue").getPlayers().stream().filter(auroraMCPlayer -> (!auroraMCPlayer.isDead())).count();
-        long redAlive = EngineAPI.getActiveGame().getTeams().get("Red").getPlayers().stream().filter(auroraMCPlayer -> (!auroraMCPlayer.isDead())).count();
+        long blueAlive = EngineAPI.getActiveGame().getTeams().get("Blue").getPlayers().stream().filter(auroraMCPlayer -> (!((AuroraMCServerPlayer)auroraMCPlayer).isDead())).count();
+        long redAlive = EngineAPI.getActiveGame().getTeams().get("Red").getPlayers().stream().filter(auroraMCPlayer -> (!((AuroraMCServerPlayer)auroraMCPlayer).isDead())).count();
 
 
-        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
             PlayerScoreboard scoreboard = player.getScoreboard();
             scoreboard.setTitle("&3&l-= &b&lCRYSTAL QUEST &3&l=-");
 

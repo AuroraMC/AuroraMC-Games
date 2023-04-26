@@ -4,7 +4,12 @@
 
 package net.auroramc.games.crystalquest.listeners;
 
-import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.events.block.BlockBreakEvent;
+import net.auroramc.core.api.events.block.BlockPlaceEvent;
+import net.auroramc.core.api.events.entity.FoodLevelChangeEvent;
+import net.auroramc.core.api.events.player.PlayerPickupItemEvent;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -18,11 +23,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
@@ -42,7 +43,7 @@ public class MiningListener implements Listener {
 
         if (e.getBlock().getLocation().distanceSquared(red.getRobotSlotA().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getRobotSlotB().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getRobotSlotC().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotA().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotB().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotB().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getTowerACrystal().getHome()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getTowerBCrystal().getHome()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getBossCrystal().getHome()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getTowerACrystal().getHome()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getTowerBCrystal().getHome()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getBossCrystal().getHome()) < protectionRadius) {
             e.setCancelled(true);
-            e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot break blocks here!"));
+            e.getPlayer().sendMessage(TextFormatter.pluginMessage("Game", "You cannot break blocks here!"));
             return;
         }
         switch (e.getBlock().getType()) {
@@ -67,7 +68,7 @@ public class MiningListener implements Listener {
                         }
                     }
                 }
-                AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
+                AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
                 int amount = 1;
                 if (player.getKit() instanceof Miner) {
                     PlayerKitLevel level = player.getKitLevel();
@@ -141,7 +142,7 @@ public class MiningListener implements Listener {
                         }
                     }
                 }
-                AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
+                AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
                 int amount = 1;
                 if (player.getKit() instanceof Miner) {
                     PlayerKitLevel level = player.getKitLevel();
@@ -215,7 +216,7 @@ public class MiningListener implements Listener {
                         }
                     }
                 }
-                AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
+                AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
                 int amount = 1;
                 if (player.getKit() instanceof Miner) {
                     PlayerKitLevel level = player.getKitLevel();
@@ -301,7 +302,7 @@ public class MiningListener implements Listener {
                             e.getBlock().setType(Material.STONE);
                         }
                     }
-                }.runTaskLater(AuroraMCAPI.getCore(), 100);
+                }.runTaskLater(ServerAPI.getCore(), 100);
                 break;
             }
             case STAINED_CLAY:
@@ -310,7 +311,7 @@ public class MiningListener implements Listener {
                     e.setCancelled(true);
                     return;
                 }
-                e.getBlock().getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), new GUIItem(e.getBlock().getType(), null, 1, null, (short)((AuroraMCAPI.getPlayer(e.getPlayer()).getTeam().getName().equalsIgnoreCase("Red"))?14:11)).getItem());
+                e.getBlock().getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), new GUIItem(e.getBlock().getType(), null, 1, null, (short)((e.getPlayer().getTeam().getName().equalsIgnoreCase("Red"))?14:11)).getItemStack());
                 break;
             }
             case COBBLESTONE:
@@ -336,19 +337,16 @@ public class MiningListener implements Listener {
     @EventHandler
     public void onHunger(FoodLevelChangeEvent e) {
         if (EngineAPI.getServerState() == ServerState.IN_GAME) {
-            if (e.getEntity() instanceof Player) {
-                Player player = (Player) e.getEntity();
-                AuroraMCGamePlayer gp = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(player);
-                if (!gp.getGameData().containsKey("crystal_possession")) {
-                    if (e.getFoodLevel() < 25) {
-                        e.setCancelled(true);
-                        e.setFoodLevel(30);
-                    }
-                } else {
-                    if (e.getFoodLevel() < 3) {
-                        e.setCancelled(true);
-                        e.setFoodLevel(3);
-                    }
+            AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
+            if (!player.getGameData().containsKey("crystal_possession")) {
+                if (e.getLevel() < 25) {
+                    e.setCancelled(true);
+                    e.setLevel(30);
+                }
+            } else {
+                if (e.getLevel() < 3) {
+                    e.setCancelled(true);
+                    e.setLevel(3);
                 }
             }
         }
@@ -362,7 +360,7 @@ public class MiningListener implements Listener {
         int protectionRadius = 25;
         if (e.getBlock().getLocation().distanceSquared(red.getRobotSlotA().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getRobotSlotB().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getRobotSlotC().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotA().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotB().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getRobotSlotB().getLocation()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getTowerACrystal().getHome()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getTowerBCrystal().getHome()) < protectionRadius || e.getBlock().getLocation().distanceSquared(blue.getBossCrystal().getHome()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getTowerACrystal().getHome()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getTowerBCrystal().getHome()) < protectionRadius || e.getBlock().getLocation().distanceSquared(red.getBossCrystal().getHome()) < protectionRadius) {
             e.setCancelled(true);
-            e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot place blocks here!"));
+            e.getPlayer().sendMessage(TextFormatter.pluginMessage("Game", "You cannot place blocks here!"));
         }
 
         JSONArray redSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("RED");

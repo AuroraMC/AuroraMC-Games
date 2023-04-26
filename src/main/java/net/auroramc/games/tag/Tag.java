@@ -4,9 +4,13 @@
 
 package net.auroramc.games.tag;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.players.Team;
+import net.auroramc.api.player.Team;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.events.entity.PlayerDamageByPlayerEvent;
+import net.auroramc.core.api.events.entity.PlayerDamageEvent;
+import net.auroramc.core.api.events.player.PlayerInteractEvent;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.Game;
@@ -26,7 +30,6 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
@@ -68,7 +71,7 @@ public class Tag extends Game {
         super.start();
         int spawnIndex = 0;
         JSONArray spawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
-        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
             AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
             gp.getScoreboard().clear();
             gp.getScoreboard().setTitle("&3&l-= &b&lTAG &3&l=-");
@@ -79,7 +82,7 @@ public class Tag extends Game {
                 y = specSpawn.getInt("y");
                 z = specSpawn.getInt("z");
                 float yaw = specSpawn.getFloat("yaw");
-                gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y + 0.5, z, yaw, 0));
+                gp.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y + 0.5, z, yaw, 0));
             } else {
                 JSONObject spawn = spawns.getJSONObject(spawnIndex);
                 int x, y, z;
@@ -87,7 +90,7 @@ public class Tag extends Game {
                 y = spawn.getInt("y");
                 z = spawn.getInt("z");
                 float yaw = spawn.getFloat("yaw");
-                gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                gp.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
                 spawnIndex++;
                 if (spawnIndex >= spawns.length()) {
                     spawnIndex = 0;
@@ -95,8 +98,8 @@ public class Tag extends Game {
                 gp.getKit().onGameStart(player);
             }
         }
-        Bukkit.getPluginManager().registerEvents(hitListener, AuroraMCAPI.getCore());
-        Bukkit.getPluginManager().registerEvents(itemListener, AuroraMCAPI.getCore());
+        Bukkit.getPluginManager().registerEvents(hitListener, ServerAPI.getCore());
+        Bukkit.getPluginManager().registerEvents(itemListener, ServerAPI.getCore());
         DisableBreakListener.register();
         DisableHungerListener.register();
         DisablePlaceListener.register();
@@ -104,11 +107,11 @@ public class Tag extends Game {
         DisableItemPickup.register();
         DisableMovableItems.register();
         DisableWeatherListener.register();
-        runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
+        runnable.runTaskTimer(ServerAPI.getCore(), 0, 20);
     }
 
     @Override
-    public void end(AuroraMCPlayer winner) {
+    public void end(AuroraMCServerPlayer winner) {
         end();
         super.end(winner);
     }
@@ -120,7 +123,7 @@ public class Tag extends Game {
     }
 
     @Override
-    public void generateTeam(AuroraMCPlayer auroraMCPlayer) {
+    public void generateTeam(AuroraMCServerPlayer auroraMCPlayer) {
     }
 
     @Override
@@ -128,33 +131,33 @@ public class Tag extends Game {
         super.inProgress();
         TaggedTeam team = new TaggedTeam();
         this.teams.put("Tagged", team);
-        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
+        List<AuroraMCServerPlayer> playersAlive = ServerAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
         int random = new Random().nextInt(playersAlive.size());
-        AuroraMCPlayer player = playersAlive.get(random);
+        AuroraMCServerPlayer player = playersAlive.get(random);
         player.setTeam(team);
 
         new BukkitRunnable(){
             @Override
             public void run() {
-                for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+                for (AuroraMCServerPlayer player1 : ServerAPI.getPlayers()) {
                     player1.updateNametag(player);
                     if (player1.equals(player)) {
                         if (player1.isDisguised()) {
                             if (player1.getPreferences().isHideDisguiseNameEnabled()) {
-                                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + player.getName() + "** was tagged by the game!"));
+                                player1.sendMessage(TextFormatter.pluginMessage("Game", "**" + player.getName() + "** was tagged by the game!"));
                                 continue;
                             }
                         }
-                        player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + player.getPlayer().getName() + "** was tagged by the game!"));
+                        player1.sendMessage(TextFormatter.pluginMessage("Game", "**" + player.getName() + "** was tagged by the game!"));
                     } else {
-                        player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + player.getPlayer().getName() + "** was tagged by the game!"));
+                        player1.sendMessage(TextFormatter.pluginMessage("Game", "**" + player.getName() + "** was tagged by the game!"));
                     }
                 }
-                player.getPlayer().getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
-                player.getPlayer().getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
-                player.getPlayer().getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
-                player.getPlayer().getInventory().setBoots(new GUIItem(Material.LEATHER_BOOTS, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
-                Firework firework = player.getPlayer().getLocation().getWorld().spawn(player.getPlayer().getEyeLocation(), Firework.class);
+                player.getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItemStack());
+                player.getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItemStack());
+                player.getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItemStack());
+                player.getInventory().setBoots(new GUIItem(Material.LEATHER_BOOTS, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItemStack());
+                Firework firework = player.getLocation().getWorld().spawn(player.getEyeLocation(), Firework.class);
                 FireworkMeta meta = firework.getFireworkMeta();
                 meta.setPower(0);
                 meta.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(255, 0, 0)).trail(true).flicker(true).with(FireworkEffect.Type.BURST).build());
@@ -164,14 +167,14 @@ public class Tag extends Game {
                     public void run() {
                         firework.detonate();
                     }
-                }.runTaskLater(AuroraMCAPI.getCore(), 2);
+                }.runTaskLater(ServerAPI.getCore(), 2);
             }
-        }.runTask(AuroraMCAPI.getCore());
+        }.runTask(ServerAPI.getCore());
     }
 
     private void end() {
-        EntityDamageByEntityEvent.getHandlerList().unregister(hitListener);
-        EntityDamageEvent.getHandlerList().unregister(hitListener);
+        PlayerDamageByPlayerEvent.getHandlerList().unregister(hitListener);
+        PlayerDamageEvent.getHandlerList().unregister(hitListener);
         PlayerInteractEvent.getHandlerList().unregister(itemListener);
         DisablePlaceListener.unregister();
         DisableBreakListener.unregister();
@@ -199,50 +202,50 @@ public class Tag extends Game {
                     player2.hidePlayer(player);
                 }
             }
-        }.runTaskLater(AuroraMCAPI.getCore(), 2);
+        }.runTaskLater(ServerAPI.getCore(), 2);
     }
 
     @Override
     public void onPlayerJoin(AuroraMCGamePlayer auroraMCGamePlayer) {
         if (!auroraMCGamePlayer.isVanished()) {
-            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Spectator Joined").put("player", auroraMCGamePlayer.getPlayer().getName())));
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Spectator Joined").put("player", auroraMCGamePlayer.getByDisguiseName())));
         }
         new BukkitRunnable(){
             @Override
             public void run() {
-                for (Player player2 : Bukkit.getOnlinePlayers()) {
-                    player2.hidePlayer(auroraMCGamePlayer.getPlayer());
+                for (AuroraMCServerPlayer player2 : ServerAPI.getPlayers()) {
+                    player2.hidePlayer(auroraMCGamePlayer);
                 }
                 auroraMCGamePlayer.setSpectator(true, true);
             }
-        }.runTask(AuroraMCAPI.getCore());
+        }.runTask(ServerAPI.getCore());
 
     }
 
     @Override
     public void onPlayerLeave(AuroraMCGamePlayer auroraMCGamePlayer) {
         if (!auroraMCGamePlayer.isVanished()) {
-            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Leave").put("player", auroraMCGamePlayer.getPlayer().getName())));
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Leave").put("player", auroraMCGamePlayer.getByDisguiseName())));
         }
-        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && !(player.getTeam() instanceof TaggedTeam)).collect(Collectors.toList());
+        List<AuroraMCServerPlayer> playersAlive = ServerAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && !(player.getTeam() instanceof TaggedTeam)).collect(Collectors.toList());
         if (auroraMCGamePlayer.getTeam() instanceof TaggedTeam) {
-            List<AuroraMCPlayer> tagged = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && (player.getTeam() instanceof TaggedTeam)).collect(Collectors.toList());
+            List<AuroraMCServerPlayer> tagged = ServerAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && (player.getTeam() instanceof TaggedTeam)).collect(Collectors.toList());
             if (tagged.size() == 0) {
                 int random = new Random().nextInt(playersAlive.size());
-                AuroraMCPlayer player = playersAlive.get(random);
+                AuroraMCServerPlayer player = playersAlive.get(random);
                 player.setTeam(this.teams.get("Tagged"));
-                for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+                for (AuroraMCServerPlayer player1 : ServerAPI.getPlayers()) {
                     player1.updateNametag(player);
                     if (player1.equals(player)) {
                         if (player1.isDisguised()) {
                             if (player1.getPreferences().isHideDisguiseNameEnabled()) {
-                                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + player.getName() + "** was tagged by the game!"));
+                                player1.sendMessage(TextFormatter.pluginMessage("Game", "**" + player.getName() + "** was tagged by the game!"));
                                 continue;
                             }
                         }
-                        player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + player.getPlayer().getName() + "** was tagged by the game!"));
+                        player1.sendMessage(TextFormatter.pluginMessage("Game", "**" + player.getName() + "** was tagged by the game!"));
                     } else {
-                        player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "**" + player.getPlayer().getName() + "** was tagged by the game!"));
+                        player1.sendMessage(TextFormatter.pluginMessage("Game", "**" + player.getName() + "** was tagged by the game!"));
                     }
                 }
             }
@@ -258,8 +261,8 @@ public class Tag extends Game {
 
     @Override
     public boolean onDeath(AuroraMCGamePlayer auroraMCGamePlayer, AuroraMCGamePlayer killer) {
-        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", auroraMCGamePlayer.getPlayer().getName()).put("killer", ((killer != null)?killer.getPlayer().getName():"None")).put("final", true)));
-        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).getGameData().containsKey("tagged")).collect(Collectors.toList());
+        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", auroraMCGamePlayer.getByDisguiseName()).put("killer", ((killer != null)?killer.getByDisguiseName():"None")).put("final", true)));
+        List<AuroraMCServerPlayer> playersAlive = ServerAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).getGameData().containsKey("tagged")).collect(Collectors.toList());
         if (playersAlive.size() == 1) {
             this.end(playersAlive.get(0));
         }

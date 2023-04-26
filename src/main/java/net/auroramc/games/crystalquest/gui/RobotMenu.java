@@ -4,8 +4,9 @@
 
 package net.auroramc.games.crystalquest.gui;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUI;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.games.crystalquest.entities.MiningRobot;
@@ -29,9 +30,9 @@ public class RobotMenu extends GUI {
     }
 
     private final MiningRobot robot;
-    private final AuroraMCPlayer player;
+    private final AuroraMCServerPlayer player;
 
-    public RobotMenu(AuroraMCPlayer player, MiningRobot robot) {
+    public RobotMenu(AuroraMCServerPlayer player, MiningRobot robot) {
         super(robot.getEntity().getCustomName() + " (Level " + robot.getLevel() + ")", 2, true);
         border(robot.getEntity().getCustomName() + " (Level " + robot.getLevel() + ")", null);
 
@@ -40,7 +41,7 @@ public class RobotMenu extends GUI {
 
         this.setItem(0, 4, new GUIItem(Material.SKULL_ITEM, robot.getEntity().getCustomName() + " (Level " + robot.getLevel() + ")", 1, "&r&fThis mines:;" + descs.get(robot.getLevel())));
 
-        this.setItem(1, 2, new GUIItem(Material.SKULL_ITEM, "&3&lPersonal Resources", 1, "&r&fYou have:;;&b" + robot.getInventories().get(player).getIron() + " &7Iron;&b" + robot.getInventories().get(player).getGold() + " &6Gold;;&aClick to collect!", (short)3, false, player.getPlayer().getName()));
+        this.setItem(1, 2, new GUIItem(Material.SKULL_ITEM, "&3&lPersonal Resources", 1, "&r&fYou have:;;&b" + robot.getInventories().get(player).getIron() + " &7Iron;&b" + robot.getInventories().get(player).getGold() + " &6Gold;;&aClick to collect!", (short)3, false, player.getName()));
         this.setItem(1, 4, new GUIItem(Material.SKULL_ITEM, "&3&lTeam Resources", 1, "&r&fYou have:;;&b" + robot.getEmeralds() + " &aEmeralds;;&aClick to collect!", (short)3));
         if (robot.getLevel() == 3) {
             this.setItem(1, 6, new GUIItem(Material.BARRIER, "&3&lUpgrade Robot", 1, ";&r&fYou already have the max upgrade for this robot."));
@@ -53,48 +54,48 @@ public class RobotMenu extends GUI {
     @Override
     public void onClick(int row, int column, ItemStack item, ClickType clickType) {
         if (row != 1) {
-            player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+            player.playSound(player.getLocation(), Sound.ITEM_BREAK, 100, 0);
             return;
         }
 
         switch (column) {
             case 2: {
                 if (robot.getInventories().get(player).getIron() > 0) {
-                    Map<Integer, ItemStack> stacks = player.getPlayer().getInventory().addItem(new ItemStack(Material.IRON_INGOT, robot.getInventories().get(player).withdrawIron()));
+                    Map<Integer, ItemStack> stacks = player.getInventory().addItem(new ItemStack(Material.IRON_INGOT, robot.getInventories().get(player).withdrawIron()));
                     if (stacks.size() > 0) {
                         robot.getInventories().get(player).addIron(stacks.get(0).getAmount());
                     }
                 }
                 if (robot.getInventories().get(player).getGold() > 0) {
-                    Map<Integer, ItemStack> stacks = player.getPlayer().getInventory().addItem(new ItemStack(Material.GOLD_INGOT, robot.getInventories().get(player).withdrawGold()));
+                    Map<Integer, ItemStack> stacks = player.getInventory().addItem(new ItemStack(Material.GOLD_INGOT, robot.getInventories().get(player).withdrawGold()));
                     if (stacks.size() > 0) {
                         robot.getInventories().get(player).addGold(stacks.get(0).getAmount());
                     }
                 }
-                player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
-                this.updateItem(1, 2, new GUIItem(Material.SKULL_ITEM, "&3&lPersonal Resources", 1, "&r&fYou have:;;&b" + robot.getInventories().get(player).getIron() + " &7Iron;&b" + robot.getInventories().get(player).getGold() + " &6Gold;;&aClick to collect!", (short)3, false, player.getPlayer().getName()));
+                player.playSound(player.getLocation(), Sound.NOTE_PLING, 100, 0);
+                this.updateItem(1, 2, new GUIItem(Material.SKULL_ITEM, "&3&lPersonal Resources", 1, "&r&fYou have:;;&b" + robot.getInventories().get(player).getIron() + " &7Iron;&b" + robot.getInventories().get(player).getGold() + " &6Gold;;&aClick to collect!", (short)3, false, player.getName()));
                 break;
             }
             case 4: {
                 if (robot.getEmeralds() > 0) {
-                    Map<Integer, ItemStack> stacks = player.getPlayer().getInventory().addItem(new ItemStack(Material.EMERALD, robot.withdrawEmeralds()));
+                    Map<Integer, ItemStack> stacks = player.getInventory().addItem(new ItemStack(Material.EMERALD, robot.withdrawEmeralds()));
                     if (stacks.size() > 0) {
                         robot.addEmeralds(stacks.get(0).getAmount());
                     }
                 }
-                player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
+                player.playSound(player.getLocation(), Sound.NOTE_PLING, 100, 0);
                 this.updateItem(1, 4, new GUIItem(Material.SKULL_ITEM, "&3&lTeam Resources", 1, "&r&fYou have:;;&b" + robot.getEmeralds() + " &aEmeralds;;&aClick to collect!", (short)3));
                 break;
             }
             case 6: {
                 if (item.getType() == Material.BARRIER) {
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+                    player.playSound(player.getLocation(), Sound.ITEM_BREAK, 100, 0);
                     return;
                 }
 
-                if (player.getPlayer().getInventory().contains(Material.EMERALD, ((robot.getLevel() == 1)?24:32))) {
-                    player.getPlayer().getInventory().removeItem(new ItemStack(Material.EMERALD, ((robot.getLevel() == 1)?24:32)));
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
+                if (player.getInventory().contains(Material.EMERALD, ((robot.getLevel() == 1)?24:32))) {
+                    player.getInventory().removeItem(new ItemStack(Material.EMERALD, ((robot.getLevel() == 1)?24:32)));
+                    player.playSound(player.getLocation(), Sound.NOTE_PLING, 100, 0);
                     robot.upgrade();
                     if (robot.getLevel() == 3) {
                         this.setItem(1, 6, new GUIItem(Material.BARRIER, "&3&lUpgrade Robot", 1, ";&r&fYou already have the max upgrade for this robot."));
@@ -104,13 +105,13 @@ public class RobotMenu extends GUI {
                     } else {
                         this.setItem(1, 6, new GUIItem(Material.EXP_BOTTLE, "&3&lUpgrade Robot", 1, ";&r&fUpgrade to:;&bLevel " + (robot.getLevel() + 1) + ";;Cost:;&b" + ((robot.getLevel() == 1)?24:32) + " &aEmeralds;;&r&fThis mines:;" + descs.get(robot.getLevel() + 1)));
                     }
-                    player.getPlayer().closeInventory();
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Your mining robot was upgraded to **Level " + robot.getLevel() + "**!"));
+                    player.closeInventory();
+                    player.sendMessage(TextFormatter.pluginMessage("Game", "Your mining robot was upgraded to **Level " + robot.getLevel() + "**!"));
                 }
                 break;
             }
             default: {
-                player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+                player.playSound(player.getLocation(), Sound.ITEM_BREAK, 100, 0);
             }
         }
     }

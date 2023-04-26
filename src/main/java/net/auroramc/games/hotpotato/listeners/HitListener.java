@@ -4,21 +4,20 @@
 
 package net.auroramc.games.hotpotato.listeners;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.events.entity.PlayerDamageByPlayerEvent;
+import net.auroramc.core.api.events.entity.PlayerDamageEvent;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.games.hotpotato.entities.Potato;
-import net.auroramc.games.paintball.teams.PBRed;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.hanging.HangingBreakEvent;
-import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -27,35 +26,26 @@ import java.util.Random;
 public class HitListener implements Listener {
 
     @EventHandler
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
+    public void onEntityDamageByEntity(PlayerDamageByPlayerEvent e) {
         if (EngineAPI.getServerState() != ServerState.IN_GAME || EngineAPI.getActiveGame().isStarting()) {
             e.setCancelled(true);
             return;
         }
-        if (e.getDamager() instanceof Player) {
-            e.setDamage(0);
-            AuroraMCPlayer pl = AuroraMCAPI.getPlayer((Player) e.getDamager());
-            if (pl instanceof AuroraMCGamePlayer) {
-                AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
-                if (!player.isSpectator() && !player.isVanished()) {
-                    AuroraMCGamePlayer newHolder = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity());
-                    if (player.getGameData().containsKey("potato_holder") && !newHolder.getGameData().containsKey("potato_holder")) {
-                        Potato potato = (Potato) player.getGameData().get("potato_holder");
-                        potato.newHolder(newHolder);
-                    } else if (player.getGameData().containsKey("potato_holder") && newHolder.getGameData().containsKey("potato_holder")) {
-                        if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(166))) {
-                            player.getStats().achievementGained(AuroraMCAPI.getAchievement(166), 1, true);
-                        }
-                    } else if (!player.getGameData().containsKey("potato_holder")) {
-                        if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(169))) {
-                            player.getStats().achievementGained(AuroraMCAPI.getAchievement(169), 1, true);
-                        }
-                    }
-                } else {
-                    e.setCancelled(true);
+        e.setDamage(0);
+        AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getDamager();
+        if (!player.isSpectator() && !player.isVanished()) {
+            AuroraMCGamePlayer newHolder = (AuroraMCGamePlayer) e.getPlayer();
+            if (player.getGameData().containsKey("potato_holder") && !newHolder.getGameData().containsKey("potato_holder")) {
+                Potato potato = (Potato) player.getGameData().get("potato_holder");
+                potato.newHolder(newHolder);
+            } else if (player.getGameData().containsKey("potato_holder") && newHolder.getGameData().containsKey("potato_holder")) {
+                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(166))) {
+                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(166), 1, true);
                 }
-            } else {
-                e.setCancelled(true);
+            } else if (!player.getGameData().containsKey("potato_holder")) {
+                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(169))) {
+                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(169), 1, true);
+                }
             }
         } else {
             e.setCancelled(true);
@@ -63,18 +53,18 @@ public class HitListener implements Listener {
     }
 
     @EventHandler
-    public void onEntityDamage(EntityDamageEvent e) {
+    public void onEntityDamage(PlayerDamageEvent e) {
         if (EngineAPI.getServerState() != ServerState.IN_GAME) {
             e.setCancelled(true);
             return;
         }
-        if (!(e instanceof EntityDamageByEntityEvent)) {
+        if (!(e instanceof PlayerDamageByPlayerEvent)) {
             e.setCancelled(true);
         }
 
-        if (e.getCause() == EntityDamageEvent.DamageCause.VOID && e.getEntity() instanceof Player) {
-            AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity());
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You went outside of the border so you were teleported back to spawn."));
+        if (e.getCause() == PlayerDamageEvent.DamageCause.VOID) {
+            AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
+            player.sendMessage(TextFormatter.pluginMessage("Game", "You went outside of the border so you were teleported back to spawn."));
             JSONArray playerSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
             if (player.isSpectator()) {
                 JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
@@ -83,7 +73,7 @@ public class HitListener implements Listener {
                 y = specSpawn.getInt("y");
                 z = specSpawn.getInt("z");
                 float yaw = specSpawn.getFloat("yaw");
-                player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                player.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
             } else {
                 JSONObject spawn = playerSpawns.getJSONObject(new Random().nextInt(playerSpawns.length()));
                 int x, y, z;
@@ -91,7 +81,7 @@ public class HitListener implements Listener {
                 y = spawn.getInt("y");
                 z = spawn.getInt("z");
                 float yaw = spawn.getFloat("yaw");
-                player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                player.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
             }
         }
 

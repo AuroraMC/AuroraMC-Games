@@ -4,8 +4,14 @@
 
 package net.auroramc.games.crystalquest.listeners;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.events.inventory.CraftItemEvent;
+import net.auroramc.core.api.events.inventory.InventoryClickEvent;
+import net.auroramc.core.api.events.inventory.PrepareItemCraftEvent;
+import net.auroramc.core.api.events.player.*;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -19,14 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
@@ -36,39 +35,39 @@ import org.bukkit.util.Vector;
 
 public class InventoryListener implements Listener {
 
-    private final ItemStack stack = new GUIItem(Material.ARROW, "&eArcher's Arrow").getItem();
+    private final ItemStack stack = new GUIItem(Material.ARROW, "&eArcher's Arrow").getItemStack();
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
         if (EngineAPI.getServerState() == ServerState.IN_GAME) {
-            AuroraMCGamePlayer gamePlayer = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getWhoClicked());
+            AuroraMCGamePlayer gamePlayer = (AuroraMCGamePlayer) e.getPlayer();
             if (e.getSlot() == 8 && e.getClickedInventory() instanceof PlayerInventory) {
                 e.setCancelled(true);
-                e.getWhoClicked().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot move this item!"));
+                gamePlayer.sendMessage(TextFormatter.pluginMessage("Game", "You cannot move this item!"));
                 new BukkitRunnable(){
                     @Override
                     public void run() {
-                        ((Player)e.getWhoClicked()).updateInventory();
+                        gamePlayer.updateInventory();
                     }
-                }.runTaskLater(AuroraMCAPI.getCore(), 3);
+                }.runTaskLater(ServerAPI.getCore(), 3);
             } else if (e.getSlotType() == InventoryType.SlotType.ARMOR) {
                 e.setCancelled(true);
-                e.getWhoClicked().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot move this item!"));
+                gamePlayer.sendMessage(TextFormatter.pluginMessage("Game", "You cannot move this item!"));
                 new BukkitRunnable(){
                     @Override
                     public void run() {
-                        ((Player)e.getWhoClicked()).updateInventory();
+                        gamePlayer.updateInventory();
                     }
-                }.runTaskLater(AuroraMCAPI.getCore(), 3);
+                }.runTaskLater(ServerAPI.getCore(), 3);
             } else if (gamePlayer.getGameData().containsKey("crystal_possession")) {
                 e.setCancelled(true);
-                e.getWhoClicked().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot move this item!"));
+                gamePlayer.sendMessage(TextFormatter.pluginMessage("Game", "You cannot move this item!"));
                 new BukkitRunnable(){
                     @Override
                     public void run() {
-                        ((Player)e.getWhoClicked()).updateInventory();
+                        gamePlayer.updateInventory();
                     }
-                }.runTaskLater(AuroraMCAPI.getCore(), 3);
+                }.runTaskLater(ServerAPI.getCore(), 3);
             }
         }
     }
@@ -77,7 +76,7 @@ public class InventoryListener implements Listener {
     public void onDrop(PlayerDropItemEvent e) {
         if (e.getItemDrop().getItemStack().getType().name().endsWith("_SWORD") || e.getItemDrop().getItemStack().getType().name().endsWith("_PICKAXE") || e.getItemDrop().getItemStack().getType().name().endsWith("_AXE") || e.getItemDrop().getItemStack().getType() == Material.COMPASS || e.getItemDrop().getItemStack().getType().name().endsWith("_HELMET") || e.getItemDrop().getItemStack().getType().name().endsWith("_CHESTPLATE") || e.getItemDrop().getItemStack().getType().name().endsWith("_LEGGINGS") || e.getItemDrop().getItemStack().getType().name().endsWith("_BOOTS") || e.getItemDrop().getItemStack().getType() == Material.NETHER_STAR || e.getItemDrop().getItemStack().getType() == Material.ARROW || e.getItemDrop().getItemStack().getType() == Material.BOW) {
             e.setCancelled(true);
-            e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot drop this item!"));
+            e.getPlayer().sendMessage(TextFormatter.pluginMessage("Game", "You cannot drop this item!"));
         }
     }
 
@@ -122,13 +121,13 @@ public class InventoryListener implements Listener {
             }
             e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 0));
             e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 0));
-            AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
+            AuroraMCServerPlayer player = e.getPlayer();
             player.getStats().addProgress(AuroraMCAPI.getAchievement(73), 1, player.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(73), 0), true);
         } else if (e.getItem() != null && e.getItem().getType() == Material.ENDER_PEARL) {
-            AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
+            AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
             if (player.getGameData().containsKey("crystal_possession")) {
                 e.setCancelled(true);
-                e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot use ender pearls while you have a crystal!"));
+                e.getPlayer().sendMessage(TextFormatter.pluginMessage("Game", "You cannot use ender pearls while you have a crystal!"));
                 return;
             }
             if (player.getGameData().containsKey("last_pearl")) {
@@ -139,7 +138,7 @@ public class InventoryListener implements Listener {
                         amount1 = 0;
                     }
                     e.setCancelled(true);
-                    e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot use ender pearls for **" + (amount1 / 10f) + "** seconds!"));
+                    e.getPlayer().sendMessage(TextFormatter.pluginMessage("Game", "You cannot use ender pearls for **" + (amount1 / 10f) + "** seconds!"));
                     return;
                 }
             }
@@ -150,32 +149,31 @@ public class InventoryListener implements Listener {
     }
 
     @EventHandler
-    public void onShoot(EntityShootBowEvent e) {
-        if (e.getEntity() instanceof Player && EngineAPI.getServerState() == ServerState.IN_GAME && e.getBow() != null) {
-            Player p = (Player) e.getEntity();
-            AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(p);
+    public void onShoot(PlayerShootBowEvent e) {
+        if (EngineAPI.getServerState() == ServerState.IN_GAME && e.getBow() != null) {
+            AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
             if (!player.isSpectator() && player.getKit() instanceof Archer && e.getForce() == 1.0f) {
-                if (player.getPlayer().getInventory().containsAtLeast(stack, 1)) {
+                if (player.getInventory().containsAtLeast(stack, 1)) {
                     Vector v = e.getProjectile().getVelocity();
                     double damage = ((Arrow)e.getProjectile()).spigot().getDamage();
                     e.setCancelled(false);
                     e.getProjectile().remove();
-                    Arrow arrow = player.getPlayer().launchProjectile(Arrow.class, v);
+                    Arrow arrow = player.launchProjectile(Arrow.class, v);
                     e.setProjectile(arrow);
                     arrow.spigot().setDamage(damage);
-                    player.getPlayer().playSound(player.getPlayer().getEyeLocation(), Sound.SHOOT_ARROW, 1, 100);
+                    player.playSound(player.getEyeLocation(), Sound.SHOOT_ARROW, 1, 100);
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            Arrow arrow = player.getPlayer().launchProjectile(Arrow.class, v.clone().add(new Vector(0.05, 0, 0.05)));
+                            Arrow arrow = player.launchProjectile(Arrow.class, v.clone().add(new Vector(0.05, 0, 0.05)));
                             arrow.spigot().setDamage(damage);
-                            player.getPlayer().playSound(player.getPlayer().getEyeLocation(), Sound.SHOOT_ARROW, 1, 100);
+                            player.playSound(player.getEyeLocation(), Sound.SHOOT_ARROW, 1, 100);
                                 new BukkitRunnable() {
                                     @Override
                                     public void run() {
-                                        Arrow arrow = player.getPlayer().launchProjectile(Arrow.class, v.clone().add(new Vector(-0.05, 0, -0.05)));
+                                        Arrow arrow = player.launchProjectile(Arrow.class, v.clone().add(new Vector(-0.05, 0, -0.05)));
                                         arrow.spigot().setDamage(damage);
-                                        player.getPlayer().playSound(player.getPlayer().getEyeLocation(), Sound.SHOOT_ARROW, 1, 100);
+                                        player.playSound(player.getEyeLocation(), Sound.SHOOT_ARROW, 1, 100);
                                     }
                                 }.runTaskLater(EngineAPI.getGameEngine(), 2);
                         }

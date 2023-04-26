@@ -4,7 +4,7 @@
 
 package net.auroramc.games.paintball.kits;
 
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.games.Kit;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -20,18 +20,18 @@ public class Tribute extends Kit {
     }
 
     @Override
-    public void onGameStart(AuroraMCPlayer player) {
-        player.getPlayer().getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null, 64).getItem());
+    public void onGameStart(AuroraMCServerPlayer player) {
+        player.getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null, 64).getItemStack());
         int amount = (int) ((AuroraMCGamePlayer) player).getGameData().get("gold");
         if (amount == 0) {
             amount = 1;
         }
-        player.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + ((AuroraMCGamePlayer) player).getGameData().get("gold") + " Gold", amount).getItem());
+        player.getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + ((AuroraMCGamePlayer) player).getGameData().get("gold") + " Gold", amount).getItemStack());
         Color data = ((player.getTeam() instanceof PBBlue) ? Color.BLUE : Color.RED);
-        player.getPlayer().getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET, null, 1, null, (short) 0, false, data).getItem());
-        player.getPlayer().getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE, null, 1, null, (short) 0, false, data).getItem());
-        player.getPlayer().getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS, null, 1, null, (short) 0, false, data).getItem());
-        player.getPlayer().getInventory().setBoots(new GUIItem(Material.LEATHER_BOOTS, null, 1, null, (short) 0, false, data).getItem());
+        player.getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET, null, 1, null, (short) 0, false, data).getItemStack());
+        player.getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE, null, 1, null, (short) 0, false, data).getItemStack());
+        player.getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS, null, 1, null, (short) 0, false, data).getItemStack());
+        player.getInventory().setBoots(new GUIItem(Material.LEATHER_BOOTS, null, 1, null, (short) 0, false, data).getItemStack());
     }
 
     @Override

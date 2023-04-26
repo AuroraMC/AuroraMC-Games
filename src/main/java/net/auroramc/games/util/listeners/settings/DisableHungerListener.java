@@ -4,11 +4,11 @@
 
 package net.auroramc.games.util.listeners.settings;
 
+import net.auroramc.core.api.events.entity.FoodLevelChangeEvent;
 import net.auroramc.engine.api.EngineAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
 
 public class DisableHungerListener implements Listener {
 
@@ -20,8 +20,8 @@ public class DisableHungerListener implements Listener {
 
     @EventHandler
     public void onMove(FoodLevelChangeEvent e) {
-        if (e.getFoodLevel() < 30) {
-            e.setFoodLevel(30);
+        if (e.getLevel() < 30) {
+            e.setLevel(30);
         }
     }
 

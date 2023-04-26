@@ -4,7 +4,7 @@
 
 package net.auroramc.games.spleef.kits;
 
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.Kit;
@@ -22,37 +22,37 @@ public class Snowman extends Kit {
     }
 
     @Override
-    public void onGameStart(AuroraMCPlayer player) {
-        player.getPlayer().getInventory().clear();
+    public void onGameStart(AuroraMCServerPlayer player) {
+        player.getInventory().clear();
         switch (EngineAPI.getActiveMap().getMapData().getString("tool")) {
             case "spade": {
-                ItemStack stack = new GUIItem(Material.DIAMOND_SPADE).getItem();
+                ItemStack stack = new GUIItem(Material.DIAMOND_SPADE).getItemStack();
                 stack.addUnsafeEnchantment(Enchantment.DIG_SPEED, 50);
 
                 ItemMeta meta = stack.getItemMeta();
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 stack.setItemMeta(meta);
-                player.getPlayer().getInventory().setItem(0, stack);
+                player.getInventory().setItem(0, stack);
                 break;
             }
             case "axe": {
-                ItemStack stack = new GUIItem(Material.DIAMOND_AXE).getItem();
+                ItemStack stack = new GUIItem(Material.DIAMOND_AXE).getItemStack();
                 stack.addUnsafeEnchantment(Enchantment.DIG_SPEED, 50);
 
                 ItemMeta meta = stack.getItemMeta();
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 stack.setItemMeta(meta);
-                player.getPlayer().getInventory().setItem(0, stack);
+                player.getInventory().setItem(0, stack);
                 break;
             }
             case "pickaxe": {
-                ItemStack stack = new GUIItem(Material.DIAMOND_PICKAXE).getItem();
+                ItemStack stack = new GUIItem(Material.DIAMOND_PICKAXE).getItemStack();
                 stack.addUnsafeEnchantment(Enchantment.DIG_SPEED, 50);
 
                 ItemMeta meta = stack.getItemMeta();
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 stack.setItemMeta(meta);
-                player.getPlayer().getInventory().setItem(0, stack);
+                player.getInventory().setItem(0, stack);
                 break;
             }
         }

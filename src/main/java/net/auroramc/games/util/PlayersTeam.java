@@ -4,8 +4,10 @@
 
 package net.auroramc.games.util;
 
-import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.players.Team;
+
+import net.auroramc.api.player.AuroraMCPlayer;
+import net.auroramc.api.player.Team;
+import net.md_5.bungee.api.ChatColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +27,8 @@ public class PlayersTeam implements Team {
     }
 
     @Override
-    public char getTeamColor() {
-        return 'e';
+    public ChatColor getTeamColor() {
+        return ChatColor.YELLOW;
     }
 
     @Override
