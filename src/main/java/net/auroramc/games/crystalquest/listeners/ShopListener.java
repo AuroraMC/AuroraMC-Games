@@ -75,6 +75,9 @@ public class ShopListener implements Listener {
             if (e.getClickedEntity() instanceof ArmorStand) {
                 if (e.getClickedEntity().getCustomName() != null) {
                     AuroraMCServerPlayer player = e.getPlayer();
+                    if (((AuroraMCGamePlayer)player).isSpectator() || player.isVanished()) {
+                        return;
+                    }
                     CQRed red = (CQRed) EngineAPI.getActiveGame().getTeams().get("Red");
                     CQBlue blue = (CQBlue) EngineAPI.getActiveGame().getTeams().get("Blue");
                     if (e.getClickedEntity().equals(red.getRobotSlotA().getEntity())) {
@@ -119,6 +122,9 @@ public class ShopListener implements Listener {
                     return;
                 }
             } else if (e.getClickedEntity() instanceof Villager) {
+                if (((AuroraMCGamePlayer)e.getPlayer()).isSpectator() || e.getPlayer().isVanished()) {
+                    return;
+                }
                 if (((Villager) e.getClickedEntity()).getProfession() == Villager.Profession.LIBRARIAN) {
                     gui = new PlayerShop((AuroraMCGamePlayer) e.getPlayer());
                 } else if (((Villager) e.getClickedEntity()).getProfession() == Villager.Profession.BLACKSMITH) {

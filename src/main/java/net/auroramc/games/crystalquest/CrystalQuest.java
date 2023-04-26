@@ -130,17 +130,6 @@ public class CrystalQuest extends Game {
     public void start() {
         super.start();
         generateMine(0.145f, 0.1f, 0.005f);
-        DeathRespawnListener.register(100, false);
-        PregameMoveListener.register();
-        DisableWeatherListener.register();
-        Bukkit.getPluginManager().registerEvents(showListener, EngineAPI.getGameEngine());
-        Bukkit.getPluginManager().registerEvents(shopListener, EngineAPI.getGameEngine());
-        Bukkit.getPluginManager().registerEvents(inventoryListener, EngineAPI.getGameEngine());
-        Bukkit.getPluginManager().registerEvents(miningListener, EngineAPI.getGameEngine());
-        Bukkit.getPluginManager().registerEvents(crystalListener, EngineAPI.getGameEngine());
-        Bukkit.getPluginManager().registerEvents(chestListener, EngineAPI.getGameEngine());
-        Bukkit.getPluginManager().registerEvents(kitListener, EngineAPI.getGameEngine());
-
         int redSpawnIndex = 0;
         int blueSpawnIndex = 0;
         JSONArray redSpawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("RED");
@@ -184,6 +173,17 @@ public class CrystalQuest extends Game {
                 gp.getKit().onGameStart(player);
             }
         }
+
+        DeathRespawnListener.register(100, false);
+        PregameMoveListener.register();
+        DisableWeatherListener.register();
+        Bukkit.getPluginManager().registerEvents(showListener, EngineAPI.getGameEngine());
+        Bukkit.getPluginManager().registerEvents(shopListener, EngineAPI.getGameEngine());
+        Bukkit.getPluginManager().registerEvents(inventoryListener, EngineAPI.getGameEngine());
+        Bukkit.getPluginManager().registerEvents(miningListener, EngineAPI.getGameEngine());
+        Bukkit.getPluginManager().registerEvents(crystalListener, EngineAPI.getGameEngine());
+        Bukkit.getPluginManager().registerEvents(chestListener, EngineAPI.getGameEngine());
+        Bukkit.getPluginManager().registerEvents(kitListener, EngineAPI.getGameEngine());
 
         for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
             PlayerScoreboard scoreboard = player.getScoreboard();
@@ -850,6 +850,7 @@ public class CrystalQuest extends Game {
 
     @Override
     public void onPlayerJoin(Player player) {
+        AuroraMCAPI.getLogger().info("1");
         JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
         int x, y, z;
         x = specSpawn.getInt("x");
@@ -863,12 +864,16 @@ public class CrystalQuest extends Game {
                 for (Player player2 : Bukkit.getOnlinePlayers()) {
                     player2.hidePlayer(player);
                 }
+                AuroraMCAPI.getLogger().info("2");
             }
         }.runTaskLater(ServerAPI.getCore(), 2);
     }
 
     @Override
     public void onPlayerJoin(AuroraMCGamePlayer auroraMCGamePlayer) {
+
+        AuroraMCAPI.getLogger().info("3");
+
         if (!auroraMCGamePlayer.isVanished()) {
             EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Spectator Joined").put("player", auroraMCGamePlayer.getName())));
         }
@@ -879,6 +884,7 @@ public class CrystalQuest extends Game {
                     player2.hidePlayer(auroraMCGamePlayer);
                 }
                 auroraMCGamePlayer.setSpectator(true, true);
+                AuroraMCAPI.getLogger().info("4");
             }
         }.runTask(ServerAPI.getCore());
     }

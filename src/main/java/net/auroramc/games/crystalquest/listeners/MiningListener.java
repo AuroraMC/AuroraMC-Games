@@ -36,6 +36,11 @@ public class MiningListener implements Listener {
 
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
+        if (EngineAPI.getActiveGame().isStarting() || ((AuroraMCGamePlayer)e.getPlayer()).isSpectator() || e.getPlayer().isVanished()) {
+            e.setCancelled(true);
+            return;
+        }
+
         CQRed red = (CQRed) EngineAPI.getActiveGame().getTeams().get("Red");
         CQBlue blue = (CQBlue) EngineAPI.getActiveGame().getTeams().get("Blue");
 

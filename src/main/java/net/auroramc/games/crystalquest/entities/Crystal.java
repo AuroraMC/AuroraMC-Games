@@ -126,8 +126,8 @@ public class Crystal {
 
                 String finalMessage = team + "§l" + holder.getByDisguiseName() + " captured " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!");
                 for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
-                    player.sendTitle(title, ((player.equals(holder) && player.isDisguised() && player.getPreferences().isHideDisguiseNameEnabled())?new TextComponent(holder.getName() + " collected " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!")):subtitle), 20, 100, 20);
-                    player.sendMessage(TextFormatter.pluginMessage("Game", ((player.equals(holder) && player.isDisguised() && player.getPreferences().isHideDisguiseNameEnabled())?team + "§l" + holder.getName() + " collected " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!"):finalMessage) + " §r" + ((player.getTeam() != null)?((player.getTeam().equals(homeTeam)?"Kill them to return it to the base!":"Protect them at all costs.")):"")));
+                    player.sendTitle(title, ((player.equals(holder) && player.isDisguised() && player.getPreferences().isHideDisguiseNameEnabled())?new TextComponent(holder.getName() + " captured " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!")):subtitle), 20, 100, 20);
+                    player.sendMessage(TextFormatter.pluginMessage("Game", ((player.equals(holder) && player.isDisguised() && player.getPreferences().isHideDisguiseNameEnabled())?team + "§l" + holder.getName() + " captured " + homeTeam.getName() + "'s " + ((isBoss())?"Boss Crystal!":"Tower Crystal!"):finalMessage)));
                 }
             }
             this.holder = null;

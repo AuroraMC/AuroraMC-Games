@@ -179,8 +179,12 @@ public class Paintball extends Game {
         if (InventoryListener.getRunnable() != null) {
             InventoryListener.getRunnable().cancel();
         }
-        runnable.cancel();
-        endGameTask.cancel();
+        if (runnable != null) {
+            runnable.cancel();
+        }
+        if (endGameTask != null) {
+            endGameTask.cancel();
+        }
         PlayerDamageByPlayerEvent.getHandlerList().unregister(hitListener);
         PlayerDamageEvent.getHandlerList().unregister(hitListener);
         PlayerArmorStandManipulateEvent.getHandlerList().unregister(hitListener);
@@ -256,7 +260,7 @@ public class Paintball extends Game {
                     player.sendMessage(TextFormatter.pluginMessage("Game", "The amount of lives taken per kill has increased! You now take **" + livesPerKill + "** per kill!"));
                 }
             }
-        }.runTaskTimer(ServerAPI.getCore(), 4800, 1200);
+        }.runTaskTimer(ServerAPI.getCore(), 3600, 1200);
     }
 
     @Override

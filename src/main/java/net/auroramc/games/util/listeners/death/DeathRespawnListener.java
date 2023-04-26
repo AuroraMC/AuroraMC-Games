@@ -59,6 +59,14 @@ public class DeathRespawnListener implements Listener {
                 player.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
             }
             return;
+        } else {
+            if (e instanceof  PlayerDamageByPlayerEvent) {
+                AuroraMCGamePlayer damager = (AuroraMCGamePlayer) ((PlayerDamageByPlayerEvent) e).getDamager();
+                if (damager.isSpectator() || damager.isVanished()) {
+                    e.setCancelled(true);
+                    return;
+                }
+            }
         }
         if (EngineAPI.getServerState() != ServerState.IN_GAME || EngineAPI.getActiveGame().isStarting()) {
             e.setCancelled(true);
@@ -294,7 +302,7 @@ public class DeathRespawnListener implements Listener {
 
         } else if (e instanceof PlayerDamageByPlayerEvent) {
             if (e.getDamage() > 0) {
-                AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) e.getPlayer();
+                AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) ((PlayerDamageByPlayerEvent) e).getDamager();
                 if (!player1.isSpectator()) {
                     long time = System.currentTimeMillis();
                     player.setLastHitBy(player1);
