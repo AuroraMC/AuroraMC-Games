@@ -532,6 +532,9 @@ public class CrystalQuest extends Game {
             public void run() {
                 for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
+                    if (!pl.getWorld().getName().equals("map_world")) {
+                        return;
+                    }
                     if (!player.isSpectator()) {
                         CQBlue blue = (CQBlue) teams.get("Blue");
                         CQRed red = (CQRed) teams.get("Red");
