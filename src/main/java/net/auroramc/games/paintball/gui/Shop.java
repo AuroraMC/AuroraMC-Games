@@ -5,10 +5,8 @@
 package net.auroramc.games.paintball.gui;
 
 import net.auroramc.api.utils.TextFormatter;
-import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.ServerAPI;
 import net.auroramc.core.api.player.AuroraMCServerPlayer;
-import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.utils.gui.GUI;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
