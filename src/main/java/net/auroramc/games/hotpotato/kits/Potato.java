@@ -4,7 +4,7 @@
 
 package net.auroramc.games.hotpotato.kits;
 
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.games.Kit;
 import org.bukkit.Material;
 
@@ -16,7 +16,7 @@ public class Potato extends Kit {
     }
 
     @Override
-    public void onGameStart(AuroraMCPlayer player) {
+    public void onGameStart(AuroraMCServerPlayer player) {
     }
 
     @Override

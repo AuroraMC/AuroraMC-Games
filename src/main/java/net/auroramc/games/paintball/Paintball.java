@@ -4,9 +4,16 @@
 
 package net.auroramc.games.paintball;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.players.Team;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.player.Team;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.events.entity.PlayerDamageByPlayerEvent;
+import net.auroramc.core.api.events.entity.PlayerDamageEvent;
+import net.auroramc.core.api.events.player.PlayerArmorStandManipulateEvent;
+import net.auroramc.core.api.events.player.PlayerDropItemEvent;
+import net.auroramc.core.api.events.player.PlayerInteractEvent;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.Game;
@@ -28,11 +35,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
-import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.NameTagVisibility;
@@ -82,7 +88,7 @@ public class Paintball extends Game {
         int blueSpawnIndex = 0;
         JSONArray redSpawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("RED");
         JSONArray blueSpawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("BLUE");
-        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
             AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
             gp.getScoreboard().clear();
             gp.getScoreboard().setTitle("&3&l-= &b&lPAINTBALL &3&l=-");
@@ -93,10 +99,10 @@ public class Paintball extends Game {
                 y = specSpawn.getInt("y");
                 z = specSpawn.getInt("z");
                 float yaw = specSpawn.getFloat("yaw");
-                gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                gp.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
             } else {
                 gp.getGameData().put("gold", 1);
-                gp.getPlayer().setGameMode(GameMode.ADVENTURE);
+                gp.setGameMode(GameMode.ADVENTURE);
                 if (gp.getTeam() instanceof PBRed) {
                     JSONObject spawn = redSpawns.getJSONObject(redSpawnIndex);
                     int x, y, z;
@@ -104,7 +110,7 @@ public class Paintball extends Game {
                     y = spawn.getInt("y");
                     z = spawn.getInt("z");
                     float yaw = spawn.getFloat("yaw");
-                    gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                    gp.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
                     redSpawnIndex++;
                     if (redSpawnIndex >= redSpawns.length()) {
                         redSpawnIndex = 0;
@@ -116,7 +122,7 @@ public class Paintball extends Game {
                     y = spawn.getInt("y");
                     z = spawn.getInt("z");
                     float yaw = spawn.getFloat("yaw");
-                    gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                    gp.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
                     blueSpawnIndex++;
                     if (blueSpawnIndex >= blueSpawns.length()) {
                         blueSpawnIndex = 0;
@@ -124,9 +130,9 @@ public class Paintball extends Game {
                 }
                 gp.getKit().onGameStart(player);
                 for (org.bukkit.scoreboard.Team team : gp.getScoreboard().getScoreboard().getTeams()) {
-                    AuroraMCPlayer player1 = AuroraMCAPI.getDisguisedPlayer(team.getName());
+                    AuroraMCServerPlayer player1 = ServerAPI.getDisguisedPlayer(team.getName());
                     if (player1 == null) {
-                        player1 = AuroraMCAPI.getPlayer(team.getName());
+                        player1 = ServerAPI.getPlayer(team.getName());
                     }
                     if (!((AuroraMCGamePlayer)player1).isSpectator() && !player1.getTeam().equals(gp.getTeam())) {
                         team.setNameTagVisibility(NameTagVisibility.NEVER);
@@ -134,7 +140,7 @@ public class Paintball extends Game {
                 }
             }
         }
-        runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
+        runnable.runTaskTimer(ServerAPI.getCore(), 0, 20);
         hitListener = new HitListener();
         inventoryListener = new InventoryListener();
         Bukkit.getPluginManager().registerEvents(hitListener, EngineAPI.getGameEngine());
@@ -151,7 +157,7 @@ public class Paintball extends Game {
     }
 
     @Override
-    public void end(AuroraMCPlayer winner) {
+    public void end(AuroraMCServerPlayer winner) {
         end();
         if (winner != null) {
             winner.getStats().addProgress(AuroraMCAPI.getAchievement(122), 1, winner.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(122), 0), true);
@@ -166,17 +172,21 @@ public class Paintball extends Game {
     }
 
     @Override
-    public void generateTeam(AuroraMCPlayer auroraMCPlayer) {
+    public void generateTeam(AuroraMCServerPlayer auroraMCPlayer) {
     }
 
     private void end() {
         if (InventoryListener.getRunnable() != null) {
             InventoryListener.getRunnable().cancel();
         }
-        runnable.cancel();
-        endGameTask.cancel();
-        EntityDamageByEntityEvent.getHandlerList().unregister(hitListener);
-        EntityDamageEvent.getHandlerList().unregister(hitListener);
+        if (runnable != null) {
+            runnable.cancel();
+        }
+        if (endGameTask != null) {
+            endGameTask.cancel();
+        }
+        PlayerDamageByPlayerEvent.getHandlerList().unregister(hitListener);
+        PlayerDamageEvent.getHandlerList().unregister(hitListener);
         PlayerArmorStandManipulateEvent.getHandlerList().unregister(hitListener);
         PlayerInteractEvent.getHandlerList().unregister(inventoryListener);
         InventoryInteractEvent.getHandlerList().unregister(inventoryListener);
@@ -195,18 +205,18 @@ public class Paintball extends Game {
         DisableItemPickup.unregister();
         DisableMovableItems.unregister();
         DisableWeatherListener.unregister();
-        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
             if (!((AuroraMCGamePlayer)player).isSpectator() && !starting) {
                 ((BukkitTask)((AuroraMCGamePlayer)player).getGameData().get("runnable")).cancel();
             }
-            player.getPlayer().setGameMode(GameMode.SURVIVAL);
+            player.setGameMode(GameMode.SURVIVAL);
         }
     }
 
     @Override
     public void inProgress() {
         super.inProgress();
-        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
             if (!((AuroraMCGamePlayer)player).isSpectator()) {
                 int interval = 12 * 20;
                 if (((AuroraMCGamePlayer) player).getKit() instanceof Tribute) {
@@ -226,12 +236,12 @@ public class Paintball extends Game {
                 ((AuroraMCGamePlayer) player).getGameData().put("runnable", new BukkitRunnable(){
                     @Override
                     public void run() {
-                        if (player.getPlayer().isOnline()) {
-                            if (!player.getPlayer().getInventory().contains(Material.SNOW_BALL, 64)) {
-                                if (player.getPlayer().getInventory().getItem(0) != null && player.getPlayer().getInventory().getItem(0).getType() == Material.SNOW_BALL) {
-                                    player.getPlayer().getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null, player.getPlayer().getInventory().getItem(0).getAmount() + 1, null).getItem());
+                        if (player.isOnline()) {
+                            if (!player.getInventory().contains(Material.SNOW_BALL, 64)) {
+                                if (player.getInventory().getItem(0) != null && player.getInventory().getItem(0).getType() == Material.SNOW_BALL) {
+                                    player.getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null, player.getInventory().getItem(0).getAmount() + 1, null).getItemStack());
                                 } else {
-                                    player.getPlayer().getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null, 1, null).getItem());
+                                    player.getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null, 1, null).getItemStack());
                                 }
                             }
                         } else {
@@ -246,11 +256,11 @@ public class Paintball extends Game {
             @Override
             public void run() {
                 livesPerKill++;
-                for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The amount of lives taken per kill has increased! You now take **" + livesPerKill + "** per kill!"));
+                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                    player.sendMessage(TextFormatter.pluginMessage("Game", "The amount of lives taken per kill has increased! You now take **" + livesPerKill + "** per kill!"));
                 }
             }
-        }.runTaskTimer(AuroraMCAPI.getCore(), 4800, 1200);
+        }.runTaskTimer(ServerAPI.getCore(), 3600, 1200);
     }
 
     @Override
@@ -269,30 +279,30 @@ public class Paintball extends Game {
                     player2.hidePlayer(player);
                 }
             }
-        }.runTaskLater(AuroraMCAPI.getCore(), 2);
+        }.runTaskLater(ServerAPI.getCore(), 2);
     }
 
     @Override
     public void onPlayerJoin(AuroraMCGamePlayer auroraMCGamePlayer) {
         if (!auroraMCGamePlayer.isVanished()) {
-            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Spectator Joined").put("player", auroraMCGamePlayer.getPlayer().getName())));
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Spectator Joined").put("player", auroraMCGamePlayer.getByDisguiseName())));
         }
         new BukkitRunnable(){
             @Override
             public void run() {
-                for (Player player2 : Bukkit.getOnlinePlayers()) {
-                    player2.hidePlayer(auroraMCGamePlayer.getPlayer());
+                for (AuroraMCServerPlayer player2 : ServerAPI.getPlayers()) {
+                    player2.hidePlayer(auroraMCGamePlayer);
                 }
                 auroraMCGamePlayer.setSpectator(true, true);
             }
-        }.runTask(AuroraMCAPI.getCore());
+        }.runTask(ServerAPI.getCore());
 
     }
 
     @Override
     public void onPlayerLeave(AuroraMCGamePlayer auroraMCGamePlayer) {
         if (!auroraMCGamePlayer.isVanished()) {
-            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Leave").put("player", auroraMCGamePlayer.getPlayer().getName())));
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Leave").put("player", auroraMCGamePlayer.getByDisguiseName())));
         }
         if (!auroraMCGamePlayer.isSpectator()) {
             for (Turret turret : new ArrayList<>(turrets.values())) {
@@ -303,8 +313,8 @@ public class Paintball extends Game {
                 }
             }
         }
-        List<AuroraMCPlayer> blueAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && (player.getTeam() instanceof PBBlue) && !player.equals(auroraMCGamePlayer)).collect(Collectors.toList());
-        List<AuroraMCPlayer> redAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && (player.getTeam() instanceof PBRed) && !player.equals(auroraMCGamePlayer)).collect(Collectors.toList());
+        List<AuroraMCServerPlayer> blueAlive = ServerAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && (player.getTeam() instanceof PBBlue) && !player.equals(auroraMCGamePlayer)).collect(Collectors.toList());
+        List<AuroraMCServerPlayer> redAlive = ServerAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator() && (player.getTeam() instanceof PBRed) && !player.equals(auroraMCGamePlayer)).collect(Collectors.toList());
         if (blueAlive.size() == 0) {
             this.end(this.teams.get("Red"), null);
             return;

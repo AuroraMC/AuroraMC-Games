@@ -4,14 +4,22 @@
 
 package net.auroramc.games.util.listeners.death;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.cosmetics.Cosmetic;
-import net.auroramc.core.api.cosmetics.DeathEffect;
-import net.auroramc.core.api.cosmetics.KillMessage;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.cosmetics.Cosmetic;
+import net.auroramc.api.cosmetics.DeathEffect;
+import net.auroramc.api.cosmetics.KillMessage;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.events.entity.PlayerDamageByEntityEvent;
+import net.auroramc.core.api.events.entity.PlayerDamageByPlayerEvent;
+import net.auroramc.core.api.events.entity.PlayerDamageByPlayerRangedEvent;
+import net.auroramc.core.api.events.entity.PlayerDamageEvent;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -37,285 +45,276 @@ public class DeathRespawnListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onDamage(EntityDamageEvent e) {
-        if (e.getEntity() instanceof Player) {
-            Player pl = (Player) e.getEntity();
-            AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(pl);
-            if (player.isSpectator() || player.isVanished()) {
-                e.setCancelled(true);
-                if (e.getCause() == EntityDamageEvent.DamageCause.VOID) {
-                    JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
-                    int x, y, z;
-                    x = specSpawn.getInt("x");
-                    y = specSpawn.getInt("y");
-                    z = specSpawn.getInt("z");
-                    float yaw = specSpawn.getFloat("yaw");
-                    player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
-                }
-                return;
-            }
-            if (EngineAPI.getServerState() != ServerState.IN_GAME || EngineAPI.getActiveGame().isStarting()) {
-                e.setCancelled(true);
-                return;
-            }
-            if (!friendlyFire) {
-                if (e instanceof EntityDamageByEntityEvent) {
-                    if (((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
-                        Player damager = (Player) ((EntityDamageByEntityEvent) e).getDamager();
-                        AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(damager);
-                        if (player1.getTeam().equals(player.getTeam())) {
-                            e.setCancelled(true);
-                            return;
-                        }
-                    } else if (((EntityDamageByEntityEvent) e).getDamager() instanceof Projectile) {
-                        Projectile projectile = (Projectile) ((EntityDamageByEntityEvent) e).getDamager();
-                        if (projectile.getShooter() instanceof Player) {
-                            Player damager = (Player) projectile.getShooter();
-                            AuroraMCPlayer auroraMCPlayer = AuroraMCAPI.getPlayer(damager);
-                            if (auroraMCPlayer.getTeam().equals(player.getTeam())) {
-                                e.setCancelled(true);
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-            if (e.getFinalDamage() >= player.getPlayer().getHealth() && !player.isSpectator()) {
-                e.setDamage(0);
-
-                Entity entity = null;
-                AuroraMCGamePlayer killer = null;
-                KillMessage killMessage;
-                KillMessage.KillReason killReason = KillMessage.KillReason.MELEE;
-                if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.KILL_MESSAGE)) {
-                    killMessage = (KillMessage) player.getActiveCosmetics().get(Cosmetic.CosmeticType.KILL_MESSAGE);
-                } else {
-                    killMessage = (KillMessage) AuroraMCAPI.getCosmetics().get(500);
-                }
-                if (e instanceof EntityDamageByEntityEvent) {
-                    if (((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
-                        Player damager = (Player) ((EntityDamageByEntityEvent) e).getDamager();
-                        killer = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(damager);
-                        if (killer.isSpectator()) {
-                           e.setCancelled(true);
-                           return;
-                        }
-                        switch (e.getCause()) {
-                            case PROJECTILE: {
-                                killReason = KillMessage.KillReason.BOW;
-                                if (EngineAPI.getActiveGameInfo().getId() == 1) {
-                                    if (killer.getPlayer().getLocation().distanceSquared(player.getPlayer().getLocation()) > 1600) {
-                                        if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(71))) {
-                                            killer.getStats().achievementGained(AuroraMCAPI.getAchievement(71), 1, true);
-                                        }
-                                    }
-                                }
-                                break;
-                            }
-                            case VOID: {
-                                killReason = KillMessage.KillReason.VOID;
-                                break;
-                            }
-                            case FALL: {
-                                killReason = KillMessage.KillReason.FALL;
-                                break;
-                            }
-                            case BLOCK_EXPLOSION: {
-                                killReason = KillMessage.KillReason.TNT;
-                                break;
-                            }
-                        }
-                    } else if (((EntityDamageByEntityEvent) e).getDamager() instanceof TNTPrimed) {
-                        TNTPrimed primed = (TNTPrimed) ((EntityDamageByEntityEvent) e).getDamager();
-                        if (primed.getSource() instanceof Player) {
-                            Player damager = (Player) primed.getSource();
-                            killer = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(damager);
-                            killReason = KillMessage.KillReason.TNT;
-                        }
-                    } else if (((EntityDamageByEntityEvent) e).getDamager() instanceof Arrow) {
-                        Projectile projectile = (Projectile) ((EntityDamageByEntityEvent) e).getDamager();
-                        if (projectile.getShooter() instanceof Player) {
-                            Player damager = (Player) projectile.getShooter();
-                            killer = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(damager);
-                            killReason = KillMessage.KillReason.BOW;
-                            if (EngineAPI.getActiveGameInfo().getId() == 1) {
-                                if (killer.getPlayer().getLocation().distanceSquared(player.getPlayer().getLocation()) > 1600) {
-                                    if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(71))) {
-                                        killer.getStats().achievementGained(AuroraMCAPI.getAchievement(71), 1, true);
-                                    }
-                                }
-                            }
-                        } else {
-                            if (projectile.getShooter() instanceof Entity) {
-                                //Damage by entity.
-                                entity = (Entity) projectile.getShooter();
-                                killReason = KillMessage.KillReason.ENTITY;
-                            }
-                        }
-                        projectile.remove();
-                    } else {
-                        //Damage by entity.
-                        entity = ((EntityDamageByEntityEvent) e).getDamager();
-                        killReason = KillMessage.KillReason.ENTITY;
-                    }
-                } else {
-                    switch (e.getCause()) {
-                        case FALL: {
-                            killReason = KillMessage.KillReason.FALL;
-                            if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
-                                killer = player.getLastHitBy();
-                            }
-                            break;
-                        }
-                        case VOID: {
-                            killReason = KillMessage.KillReason.VOID;
-                            if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
-                                killer = player.getLastHitBy();
-                            }
-                            break;
-                        }
-                        case LAVA: {
-                            killReason = KillMessage.KillReason.LAVA;
-                            if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
-                                killer = player.getLastHitBy();
-                            }
-                            break;
-                        }
-                        case FIRE_TICK: {
-                            killReason = KillMessage.KillReason.FIRE;
-                            if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
-                                killer = player.getLastHitBy();
-                            }
-                            break;
-                        }
-                        case DROWNING: {
-                            killReason = KillMessage.KillReason.DROWNING;
-                            if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
-                                killer = player.getLastHitBy();
-                            }
-                            break;
-                        }
-                        default: {
-                            killReason = KillMessage.KillReason.UNKNOWN;
-                            if (e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
-                                if (EngineAPI.getActiveGameInfo().getId() == 1) {
-                                    if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(75))) {
-                                        player.getStats().achievementGained(AuroraMCAPI.getAchievement(75), 1, true);
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-                }
-                if (killer != null) {
-                    if (killer.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.KILL_MESSAGE)) {
-                        killMessage = (KillMessage) killer.getActiveCosmetics().get(Cosmetic.CosmeticType.KILL_MESSAGE);
-                    } else {
-                        killMessage = (KillMessage) AuroraMCAPI.getCosmetics().get(500);
-                    }
-                    killer.getRewards().addXp("Kills", 25);
-                    killer.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills", 1, true);
-                    killer.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills;" + killReason.name(), 1, true);
-
-                    if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(22))) {
-                        killer.getStats().achievementGained(AuroraMCAPI.getAchievement(22), 1, true);
-                    }
-
-                    //If there is a killer, give out assists.
-                    for (Map.Entry<AuroraMCGamePlayer, Long> entry : player.getLatestHits().entrySet()) {
-                        if (System.currentTimeMillis() - entry.getValue() < 60000 && entry.getKey().getId() != killer.getId()) {
-                            entry.getKey().getRewards().addXp("Assists", 10);
-                            entry.getKey().getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "assists", 1, true);
-                            entry.getKey().getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", "You got an assist on player **" + player.getPlayer().getName() + "**!"));
-                            entry.getKey().getPlayer().playSound(entry.getKey().getPlayer().getLocation(), Sound.ARROW_HIT, 100, 1);
-                            if (EngineAPI.getActiveGameInfo().getId() == 1) {
-                                entry.getKey().getStats().addProgress(AuroraMCAPI.getAchievement(74), 1, entry.getKey().getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(74), 0), true);
-                            }
-                        }
-                    }
-                }
-
-                boolean finalKill = EngineAPI.getActiveGame().onDeath(player, killer);
-
-                if (timeout > 0) {
-                    player.setSpectator(true, finalKill);
-                }
-
-                if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.DEATH_EFFECT)) {
-                    ((DeathEffect)player.getActiveCosmetics().get(Cosmetic.CosmeticType.DEATH_EFFECT)).onDeath(player);
-                }
+    public void onDamage(PlayerDamageEvent e) {
+        AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
+        if (player.isSpectator() || player.isVanished()) {
+            e.setCancelled(true);
+            if (e.getCause() == PlayerDamageEvent.DamageCause.VOID) {
                 JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
                 int x, y, z;
                 x = specSpawn.getInt("x");
                 y = specSpawn.getInt("y");
                 z = specSpawn.getInt("z");
                 float yaw = specSpawn.getFloat("yaw");
-                player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
-
-                player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
-                player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths;" + killReason.name(), 1, true);
-
-                player.setLastHitAt(-1);
-                player.setLastHitBy(null);
-                player.getLatestHits().clear();
-                player.getPlayer().getInventory().clear();
-                player.getPlayer().getInventory().setHelmet(new ItemStack(Material.AIR));
-                player.getPlayer().getInventory().setChestplate(new ItemStack(Material.AIR));
-                player.getPlayer().getInventory().setLeggings(new ItemStack(Material.AIR));
-                player.getPlayer().getInventory().setBoots(new ItemStack(Material.AIR));
-                player.getPlayer().setFireTicks(0);
-
-                for (Player player2 : Bukkit.getOnlinePlayers()) {
-                    if (timeout > 0) {
-                        player2.hidePlayer(player.getPlayer());
-                    }
-                    player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(AuroraMCAPI.getPlayer(player2), killer, player, entity, killReason, EngineAPI.getActiveGameInfo().getId()) + ((finalKill)?" &c&lFINAL KILL!":"")));
+                player.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+            }
+            return;
+        } else {
+            if (e instanceof  PlayerDamageByPlayerEvent) {
+                AuroraMCGamePlayer damager = (AuroraMCGamePlayer) ((PlayerDamageByPlayerEvent) e).getDamager();
+                if (damager.isSpectator() || damager.isVanished()) {
+                    e.setCancelled(true);
+                    return;
                 }
-
-                if (!finalKill) {
-                    if (timeout > 0) {
-                        player.sendTitle(AuroraMCAPI.getFormatter().convert("&c&lYou Died!"), AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight("You will respawn in **" + (timeout / 20) + "** seconds!")), 20, 100, 20, ChatColor.RED, ChatColor.RESET, true, false);
-                    }
-                    new BukkitRunnable(){
-                        @Override
-                        public void run() {
-                            //Check if they are still connected.
-                            if (player.getPlayer().isOnline()) {
-                                player.getPlayer().setFallDistance(0);
-                                player.getPlayer().setFireTicks(0);
-                                player.getPlayer().setVelocity(new Vector(0, 0, 0));
-                                EngineAPI.getActiveGame().onRespawn(player);
-                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You respawned!"));
-                                if (timeout > 0) {
-                                    for (Player player2 : Bukkit.getOnlinePlayers()) {
-                                        player2.showPlayer(player.getPlayer());
-                                    }
-                                    player.setSpectator(false, false);
-                                    player.sendTitle(AuroraMCAPI.getFormatter().convert("&3&lYou respawned!"), "", 20, 100, 20, ChatColor.DARK_AQUA, ChatColor.RESET, true, false);
-                                }
-                            }
-                        }
-                    }.runTaskLater(AuroraMCAPI.getCore(), timeout);
-                } else {
-                    EngineAPI.getActiveGame().onFinalKill(player);
-                }
-
-            } else if (e instanceof EntityDamageByEntityEvent) {
-                if (e.getFinalDamage() > 0 && ((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
-                    AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) ((EntityDamageByEntityEvent) e).getDamager());
-                    if (!player1.isSpectator()) {
-                        long time = System.currentTimeMillis();
-                        player.setLastHitBy(player1);
-                        player.setLastHitAt(time);
-                        player.getLatestHits().put(player1, time);
-                        player1.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "damageDealt", Math.round(e.getFinalDamage() * 100), true);
-                    } else {
+            }
+        }
+        if (EngineAPI.getServerState() != ServerState.IN_GAME || EngineAPI.getActiveGame().isStarting()) {
+            e.setCancelled(true);
+            return;
+        }
+        if (!friendlyFire) {
+            if (e instanceof PlayerDamageByPlayerEvent) {
+                if (!(e instanceof PlayerDamageByPlayerRangedEvent)) {
+                    AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) ((PlayerDamageByPlayerEvent) e).getDamager();
+                    if (player1.getTeam().equals(player.getTeam())) {
                         e.setCancelled(true);
+                        return;
+                    }
+                } else {
+                    AuroraMCServerPlayer auroraMCPlayer = ((PlayerDamageByPlayerRangedEvent) e).getDamager();
+                    if (auroraMCPlayer.getTeam().equals(player.getTeam())) {
+                        e.setCancelled(true);
+                        return;
                     }
                 }
             }
         }
+        if (e.getDamage() >= player.getHealth() && !player.isSpectator()) {
+            e.setDamage(0);
+
+            Entity entity = null;
+            AuroraMCGamePlayer killer = null;
+            KillMessage killMessage;
+            KillMessage.KillReason killReason = KillMessage.KillReason.MELEE;
+            if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.KILL_MESSAGE)) {
+                killMessage = (KillMessage) player.getActiveCosmetics().get(Cosmetic.CosmeticType.KILL_MESSAGE);
+            } else {
+                killMessage = (KillMessage) AuroraMCAPI.getCosmetics().get(500);
+            }
+            if (e instanceof PlayerDamageByPlayerEvent) {
+
+                if (e instanceof PlayerDamageByPlayerRangedEvent) {
+                    killer = (AuroraMCGamePlayer) ((PlayerDamageByPlayerRangedEvent) e).getDamager();
+                    killReason = KillMessage.KillReason.BOW;
+                    ((PlayerDamageByPlayerRangedEvent) e).getProjectile().remove();
+                } else {
+                    killer = (AuroraMCGamePlayer) ((PlayerDamageByPlayerEvent) e).getDamager();
+                    if (killer.isSpectator()) {
+                        e.setCancelled(true);
+                        return;
+                    }
+                    killer.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "damageDealt", Math.round(e.getDamage() * 100), true);
+                    switch (e.getCause()) {
+                        case PROJECTILE: {
+                            killReason = KillMessage.KillReason.BOW;
+                            break;
+                        }
+                        case VOID: {
+                            killReason = KillMessage.KillReason.VOID;
+                            break;
+                        }
+                        case FALL: {
+                            if (EngineAPI.getActiveGameInfo().getId() == 102) {
+                                if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(146))) {
+                                    player.getStats().achievementGained(AuroraMCAPI.getAchievement(146), 1, true);
+                                }
+                            }
+                            killReason = KillMessage.KillReason.FALL;
+                            break;
+                        }
+                        case BLOCK_EXPLOSION: {
+                            killReason = KillMessage.KillReason.TNT;
+                            break;
+                        }
+                    }
+                }
+            } else if (e instanceof PlayerDamageByEntityEvent) {
+                if (((PlayerDamageByEntityEvent) e).getDamager() instanceof TNTPrimed) {
+                    TNTPrimed primed = (TNTPrimed) ((PlayerDamageByEntityEvent) e).getDamager();
+                    if (primed.getSource() instanceof Player) {
+                        Player damager = (Player) primed.getSource();
+                        killer = (AuroraMCGamePlayer) ServerAPI.getPlayer(damager);
+                        killReason = KillMessage.KillReason.TNT;
+                    }
+                } else if (((PlayerDamageByEntityEvent) e).getDamager() instanceof Arrow) {
+                    if (((Arrow) ((PlayerDamageByEntityEvent) e).getDamager()).getShooter() instanceof Entity) {
+                        //Damage by entity.
+                        entity = (Entity) ((Arrow) ((PlayerDamageByEntityEvent) e).getDamager()).getShooter();
+                        killReason = KillMessage.KillReason.ENTITY;
+                    }
+                } else {
+                    entity = ((PlayerDamageByEntityEvent) e).getDamager();
+                    killReason = KillMessage.KillReason.ENTITY;
+                }
+            } else {
+                switch (e.getCause()) {
+                    case FALL: {
+                        killReason = KillMessage.KillReason.FALL;
+                        if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
+                            killer = player.getLastHitBy();
+                        }
+                        if (EngineAPI.getActiveGameInfo().getId() == 102) {
+                            if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(146))) {
+                                player.getStats().achievementGained(AuroraMCAPI.getAchievement(146), 1, true);
+                            }
+                        }
+                        break;
+                    }
+                    case VOID: {
+                        killReason = KillMessage.KillReason.VOID;
+                        if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
+                            killer = player.getLastHitBy();
+                        }
+                        break;
+                    }
+                    case LAVA: {
+                        killReason = KillMessage.KillReason.LAVA;
+                        if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
+                            killer = player.getLastHitBy();
+                        }
+                        break;
+                    }
+                    case FIRE_TICK: {
+                        killReason = KillMessage.KillReason.FIRE;
+                        if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
+                            killer = player.getLastHitBy();
+                        }
+                        break;
+                    }
+                    case DROWNING: {
+                        killReason = KillMessage.KillReason.DROWNING;
+                        if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
+                            killer = player.getLastHitBy();
+                        }
+                        break;
+                    }
+                    default: {
+                        killReason = KillMessage.KillReason.UNKNOWN;
+                    }
+                }
+            }
+            if (killer != null) {
+                if (killer.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.KILL_MESSAGE)) {
+                    killMessage = (KillMessage) killer.getActiveCosmetics().get(Cosmetic.CosmeticType.KILL_MESSAGE);
+                } else {
+                    killMessage = (KillMessage) AuroraMCAPI.getCosmetics().get(500);
+                }
+                killer.getRewards().addXp("Kills", 25);
+                killer.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills", 1, true);
+                killer.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "kills;" + killReason.name(), 1, true);
+                if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(22))) {
+                    killer.getStats().achievementGained(AuroraMCAPI.getAchievement(22), 1, true);
+                }
+
+                //If there is a killer, give out assists.
+                for (Map.Entry<AuroraMCGamePlayer, Long> entry : player.getLatestHits().entrySet()) {
+                    if (System.currentTimeMillis() - entry.getValue() < 60000 && entry.getKey().getId() != killer.getId()) {
+                        entry.getKey().getRewards().addXp("Assists", 10);
+                        entry.getKey().sendMessage(TextFormatter.pluginMessage("Kill", "You got an assist on player **" + player.getByDisguiseName() + "**!"));
+                        entry.getKey().playSound(entry.getKey().getLocation(), Sound.ARROW_HIT, 100, 1);
+                    }
+                }
+            }
+
+            boolean finalKill = EngineAPI.getActiveGame().onDeath(player, killer);
+
+            if (timeout > 0) {
+                player.setSpectator(true, finalKill);
+            }
+
+            if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.DEATH_EFFECT)) {
+                ((DeathEffect) player.getActiveCosmetics().get(Cosmetic.CosmeticType.DEATH_EFFECT)).onDeath(player);
+            }
+            JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
+            int x, y, z;
+            x = specSpawn.getInt("x");
+            y = specSpawn.getInt("y");
+            z = specSpawn.getInt("z");
+            float yaw = specSpawn.getFloat("yaw");
+            player.teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
+
+            player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
+            player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths;" + killReason.name(), 1, true);
+
+            player.setLastHitAt(-1);
+            player.setLastHitBy(null);
+            player.getLatestHits().clear();
+            player.getInventory().clear();
+            player.getInventory().setHelmet(new ItemStack(Material.AIR));
+            player.getInventory().setChestplate(new ItemStack(Material.AIR));
+            player.getInventory().setLeggings(new ItemStack(Material.AIR));
+            player.getInventory().setBoots(new ItemStack(Material.AIR));
+            player.setFireTicks(0);
+
+            String ent = ((entity == null)?null: WordUtils.capitalizeFully(WordUtils.capitalizeFully(entity.getType().name().replace("_", " "))));
+
+            for (AuroraMCServerPlayer player2 : ServerAPI.getPlayers()) {
+                if (timeout > 0) {
+                    player2.hidePlayer(player);
+                }
+                player2.sendMessage(TextFormatter.pluginMessage("Kill", killMessage.onKill(player2, killer, player, ent, killReason, EngineAPI.getActiveGameInfo().getId()) + ((finalKill) ? " §c§lFINAL KILL!" : "")));
+            }
+
+            if (!finalKill) {
+                if (timeout > 0) {
+                    TextComponent title = new TextComponent("You Died!");
+                    title.setColor(ChatColor.RED.asBungee());
+                    title.setBold(true);
+
+                    player.sendTitle(title, TextFormatter.highlight("You will respawn in **" + (timeout / 20) + "** seconds!"), 20, 100, 20);
+                }
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        //Check if they are still connected.
+                        if (player.isOnline()) {
+                            player.setFallDistance(0);
+                            player.setFireTicks(0);
+                            player.setVelocity(new Vector(0, 0, 0));
+                            EngineAPI.getActiveGame().onRespawn(player);
+                            player.sendMessage(TextFormatter.pluginMessage("Game", "You respawned!"));
+                            if (timeout > 0) {
+                                for (AuroraMCServerPlayer player2 : ServerAPI.getPlayers()) {
+                                    player2.showPlayer(player);
+                                }
+                                player.setSpectator(false, false);
+                                TextComponent title = new TextComponent("You Respawned!");
+                                title.setColor(ChatColor.DARK_AQUA.asBungee());
+                                title.setBold(true);
+                                player.sendTitle(title, new TextComponent(""), 20, 100, 20);
+                            }
+                        }
+                    }
+                }.runTaskLater(ServerAPI.getCore(), timeout);
+            } else {
+                EngineAPI.getActiveGame().onFinalKill(player);
+            }
+
+        } else if (e instanceof PlayerDamageByPlayerEvent) {
+            if (e.getDamage() > 0) {
+                AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) ((PlayerDamageByPlayerEvent) e).getDamager();
+                if (!player1.isSpectator()) {
+                    long time = System.currentTimeMillis();
+                    player.setLastHitBy(player1);
+                    player.setLastHitAt(time);
+                    player.getLatestHits().put(player1, time);
+                    player1.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "damageDealt", Math.round(e.getDamage() * 100), true);
+                } else {
+                    e.setCancelled(true);
+                }
+            }
+        }
+
     }
 
 
@@ -326,6 +325,6 @@ public class DeathRespawnListener implements Listener {
     }
 
     public static void unregister() {
-        EntityDamageEvent.getHandlerList().unregister(instance);
+        PlayerDamageEvent.getHandlerList().unregister(instance);
     }
 }

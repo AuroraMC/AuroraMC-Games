@@ -4,14 +4,17 @@
 
 package net.auroramc.games.crystalquest.teams;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.players.Team;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.player.AuroraMCPlayer;
+import net.auroramc.api.player.Team;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.entities.Crystal;
 import net.auroramc.games.crystalquest.entities.MiningRobot;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -20,7 +23,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Chest;
-import org.bukkit.material.DirectionalContainer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -101,8 +103,8 @@ public class CQRed implements Team {
     }
 
     @Override
-    public char getTeamColor() {
-        return 'c';
+    public ChatColor getTeamColor() {
+        return ChatColor.RED;
     }
 
     @Override
@@ -146,7 +148,7 @@ public class CQRed implements Team {
     public void lostLife() {
         lives--;
         for (AuroraMCPlayer player : players) {
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "One of your players died, so you lost a life! You now have **" + lives + "** lives!"));
+            player.sendMessage(TextFormatter.pluginMessage("Game", "One of your players died, so you lost a life! You now have **" + lives + "** lives!"));
         }
     }
 
@@ -156,7 +158,7 @@ public class CQRed implements Team {
         }
         lives++;
         for (AuroraMCPlayer player : players) {
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You now have an additional life! You now have **" + lives + "** lives!"));
+            player.sendMessage(TextFormatter.pluginMessage("Game", "You now have an additional life! You now have **" + lives + "** lives!"));
         }
         return true;
     }
@@ -175,11 +177,11 @@ public class CQRed implements Team {
             }
         }
         for (AuroraMCPlayer player : players) {
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Your **Power Upgrade** was upgraded to **Level " + powerUpgrade + "**!"));
+            player.sendMessage(TextFormatter.pluginMessage("Game", "Your **Power Upgrade** was upgraded to **Level " + powerUpgrade + "**!"));
             if (!((AuroraMCGamePlayer) player).isSpectator()) {
-                int i = player.getPlayer().getInventory().first(Material.BOW);
+                int i = ((AuroraMCServerPlayer)player).getInventory().first(Material.BOW);
                 if (i > -1) {
-                    ItemStack stack = player.getPlayer().getInventory().getItem(i);
+                    ItemStack stack = ((AuroraMCServerPlayer)player).getInventory().getItem(i);
                     stack.addEnchantment(Enchantment.ARROW_DAMAGE, powerUpgrade);
                 }
             } else if (((AuroraMCGamePlayer) player).getGameData().containsKey("death_inventory")) {
@@ -207,14 +209,14 @@ public class CQRed implements Team {
             }
         }
         for (AuroraMCPlayer player : players) {
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Your **Protection Upgrade** was upgraded to **Level " + protUpgrade + "**!"));
+            ((AuroraMCServerPlayer)player).sendMessage(TextFormatter.pluginMessage("Game", "Your **Protection Upgrade** was upgraded to **Level " + protUpgrade + "**!"));
             if (!((AuroraMCGamePlayer) player).isSpectator()) {
-                player.getPlayer().getInventory().getBoots().addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protUpgrade);
-                player.getPlayer().getInventory().getHelmet().addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protUpgrade);
-                player.getPlayer().getInventory().getChestplate().addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protUpgrade);
-                player.getPlayer().getInventory().getLeggings().addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protUpgrade);
+                ((AuroraMCServerPlayer)player).getInventory().getBoots().addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protUpgrade);
+                ((AuroraMCServerPlayer)player).getInventory().getHelmet().addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protUpgrade);
+                ((AuroraMCServerPlayer)player).getInventory().getChestplate().addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protUpgrade);
+                ((AuroraMCServerPlayer)player).getInventory().getLeggings().addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protUpgrade);
             } else {
-                if (!player.isDead()) {
+                if (!((AuroraMCServerPlayer)player).isDead()) {
                     ((ItemStack)((AuroraMCGamePlayer) player).getGameData().get("death_helmet")).addEnchantment(Enchantment.DAMAGE_ALL, protUpgrade);
                     ((ItemStack)((AuroraMCGamePlayer) player).getGameData().get("death_chestplate")).addEnchantment(Enchantment.DAMAGE_ALL, protUpgrade);
                     ((ItemStack)((AuroraMCGamePlayer) player).getGameData().get("death_leggings")).addEnchantment(Enchantment.DAMAGE_ALL, protUpgrade);
@@ -238,20 +240,20 @@ public class CQRed implements Team {
             }
         }
         for (AuroraMCPlayer player : players) {
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Your **Sharpness Upgrade** was upgraded to **Level " + sharpUpgrade + "**!"));
+            player.sendMessage(TextFormatter.pluginMessage("Game", "Your **Sharpness Upgrade** was upgraded to **Level " + sharpUpgrade + "**!"));
             if (!((AuroraMCGamePlayer) player).isSpectator()) {
                 int slot = -1;
                 for (int i = 0; i < 36; i++) {
-                    if (player.getPlayer().getInventory().getItem(i) == null) {
+                    if (((AuroraMCServerPlayer)player).getInventory().getItem(i) == null) {
                         continue;
                     }
-                    if (player.getPlayer().getInventory().getItem(i).getType().name().endsWith("_SWORD")) {
+                    if (((AuroraMCServerPlayer)player).getInventory().getItem(i).getType().name().endsWith("_SWORD")) {
                         slot = i;
                         break;
                     }
                 }
                 if (slot > -1) {
-                    ItemStack stack = player.getPlayer().getInventory().getItem(slot);
+                    ItemStack stack = ((AuroraMCServerPlayer)player).getInventory().getItem(slot);
                     stack.addEnchantment(Enchantment.DAMAGE_ALL, sharpUpgrade);
                 }
             } else {

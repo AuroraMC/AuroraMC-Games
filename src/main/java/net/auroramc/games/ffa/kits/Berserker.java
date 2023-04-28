@@ -4,7 +4,7 @@
 
 package net.auroramc.games.ffa.kits;
 
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.games.Kit;
 import org.bukkit.Material;
@@ -17,17 +17,17 @@ public class Berserker extends Kit {
     }
 
     @Override
-    public void onGameStart(AuroraMCPlayer auroraMCPlayer) {
-        auroraMCPlayer.getPlayer().getInventory().setHelmet(new GUIItem(Material.IRON_HELMET).getItem());
-        auroraMCPlayer.getPlayer().getInventory().setChestplate(new GUIItem(Material.IRON_CHESTPLATE).getItem());
-        auroraMCPlayer.getPlayer().getInventory().setLeggings(new GUIItem(Material.IRON_LEGGINGS).getItem());
-        auroraMCPlayer.getPlayer().getInventory().setBoots(new GUIItem(Material.IRON_BOOTS).getItem());
+    public void onGameStart(AuroraMCServerPlayer auroraMCPlayer) {
+        auroraMCPlayer.getInventory().setHelmet(new GUIItem(Material.IRON_HELMET).getItemStack());
+        auroraMCPlayer.getInventory().setChestplate(new GUIItem(Material.IRON_CHESTPLATE).getItemStack());
+        auroraMCPlayer.getInventory().setLeggings(new GUIItem(Material.IRON_LEGGINGS).getItemStack());
+        auroraMCPlayer.getInventory().setBoots(new GUIItem(Material.IRON_BOOTS).getItemStack());
 
-        auroraMCPlayer.getPlayer().getInventory().setItem(0, new GUIItem(Material.DIAMOND_AXE).getItem());
-        auroraMCPlayer.getPlayer().getInventory().setItem(1, new GUIItem(Material.FISHING_ROD).getItem());
-        auroraMCPlayer.getPlayer().getInventory().setItem(2, new GUIItem(Material.BOW).getItem());
-        auroraMCPlayer.getPlayer().getInventory().setItem(3, new GUIItem(Material.ARROW, null, 10).getItem());
-        auroraMCPlayer.getPlayer().getInventory().setItem(4, new GUIItem(Material.GOLDEN_APPLE, null, 3).getItem());
+        auroraMCPlayer.getInventory().setItem(0, new GUIItem(Material.DIAMOND_AXE).getItemStack());
+        auroraMCPlayer.getInventory().setItem(1, new GUIItem(Material.FISHING_ROD).getItemStack());
+        auroraMCPlayer.getInventory().setItem(2, new GUIItem(Material.BOW).getItemStack());
+        auroraMCPlayer.getInventory().setItem(3, new GUIItem(Material.ARROW, null, 10).getItemStack());
+        auroraMCPlayer.getInventory().setItem(4, new GUIItem(Material.GOLDEN_APPLE, null, 3).getItemStack());
     }
 
     @Override

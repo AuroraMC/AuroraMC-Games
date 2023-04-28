@@ -4,8 +4,9 @@
 
 package net.auroramc.games.paintball.gui;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUI;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
@@ -21,9 +22,9 @@ import java.util.stream.Collectors;
 
 public class Shop extends GUI {
 
-    private AuroraMCPlayer player;
+    private AuroraMCServerPlayer player;
 
-    public Shop(AuroraMCPlayer player) {
+    public Shop(AuroraMCServerPlayer player) {
         super("&3&lPaintball Shop", 2, true);
         border("&3&lPaintball Shop", null);
         this.player = player;
@@ -43,7 +44,7 @@ public class Shop extends GUI {
         switch (column) {
             case 1: {
                 if (gold >= 10) {
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
+                    player.playSound(player.getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "extraLives", 1, true);
                     if (player.getTeam() instanceof PBBlue) {
                         PBBlue blue = (PBBlue) player.getTeam();
@@ -58,33 +59,33 @@ public class Shop extends GUI {
                     if (i == 0) {
                         i = 1;
                     }
-                    player.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + gold + " Gold", i).getItem());
+                    player.getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + gold + " Gold", i).getItemStack());
                 } else {
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+                    player.playSound(player.getLocation(), Sound.ITEM_BREAK, 100, 0);
                 }
                 break;
             }
             case 2: {
                 if (gold >= 12) {
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
+                    player.playSound(player.getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "extraAmmo", 1, true);
                     int amountLeft = 32;
                     for (int i = 0;i < 8;i++) {
-                        ItemStack stack = player.getPlayer().getInventory().getItem(i);
+                        ItemStack stack = player.getInventory().getItem(i);
                         if (stack != null) {
                             if (stack.getType() == Material.SNOW_BALL) {
                                 if (stack.getAmount() < 64) {
                                     if (stack.getAmount() + amountLeft > 64) {
                                         amountLeft -= (64-stack.getAmount());
-                                        player.getPlayer().getInventory().setItem(i, new GUIItem(Material.SNOW_BALL, null, 64).getItem());
+                                        player.getInventory().setItem(i, new GUIItem(Material.SNOW_BALL, null, 64).getItemStack());
                                     } else {
-                                        player.getPlayer().getInventory().setItem(i, new GUIItem(Material.SNOW_BALL, null, stack.getAmount() + amountLeft).getItem());
+                                        player.getInventory().setItem(i, new GUIItem(Material.SNOW_BALL, null, stack.getAmount() + amountLeft).getItemStack());
                                         break;
                                     }
                                 }
                             }
                         } else {
-                            player.getPlayer().getInventory().setItem(i, new GUIItem(Material.SNOW_BALL, null, amountLeft).getItem());
+                            player.getInventory().setItem(i, new GUIItem(Material.SNOW_BALL, null, amountLeft).getItemStack());
                             break;
                         }
                     }
@@ -94,38 +95,38 @@ public class Shop extends GUI {
                     if (i == 0) {
                         i = 1;
                     }
-                    player.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + gold + " Gold", i).getItem());
+                    player.getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + gold + " Gold", i).getItemStack());
                 } else {
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+                    player.playSound(player.getLocation(), Sound.ITEM_BREAK, 100, 0);
                 }
                 break;
             }
             case 3: {
                 if (gold >= 24) {
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
+                    player.playSound(player.getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "teamAmmo", 1, true);
-                    for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers().stream().filter(pl -> !pl.isDead() && !((AuroraMCGamePlayer)pl).isSpectator() && pl.getTeam() != null && pl.getTeam().equals(player.getTeam())).collect(Collectors.toList())) {
+                    for (AuroraMCServerPlayer pl : ServerAPI.getPlayers().stream().filter(pl -> !pl.isDead() && !((AuroraMCGamePlayer)pl).isSpectator() && pl.getTeam() != null && pl.getTeam().equals(player.getTeam())).collect(Collectors.toList())) {
                         int amountLeft = 32;
                         for (int i = 0;i < 8;i++) {
-                            ItemStack stack = pl.getPlayer().getInventory().getItem(i);
+                            ItemStack stack = pl.getInventory().getItem(i);
                             if (stack != null) {
                                 if (stack.getType() == Material.SNOW_BALL) {
                                     if (stack.getAmount() < 64) {
                                         if (stack.getAmount() + amountLeft > 64) {
                                             amountLeft -= (64-stack.getAmount());
-                                            pl.getPlayer().getInventory().setItem(i, new GUIItem(Material.SNOW_BALL, null, 64).getItem());
+                                            pl.getInventory().setItem(i, new GUIItem(Material.SNOW_BALL, null, 64).getItemStack());
                                         } else {
-                                            pl.getPlayer().getInventory().setItem(i, new GUIItem(Material.SNOW_BALL, null, stack.getAmount() + amountLeft).getItem());
+                                            pl.getInventory().setItem(i, new GUIItem(Material.SNOW_BALL, null, stack.getAmount() + amountLeft).getItemStack());
                                             break;
                                         }
                                     }
                                 }
                             } else {
-                                pl.getPlayer().getInventory().setItem(i, new GUIItem(Material.SNOW_BALL, null, amountLeft).getItem());
+                                pl.getInventory().setItem(i, new GUIItem(Material.SNOW_BALL, null, amountLeft).getItemStack());
                                 break;
                             }
                         }
-                        pl.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You received **32 snowballs** as **" + player.getPlayer().getName() + "** bought team ammo!"));
+                        pl.sendMessage(TextFormatter.pluginMessage("Game", "You received **32 snowballs** as **" + player.getName() + "** bought team ammo!"));
                     }
                     gold -= 24;
                     ((AuroraMCGamePlayer) player).getGameData().put("gold", gold);
@@ -133,16 +134,16 @@ public class Shop extends GUI {
                     if (i == 0) {
                         i = 1;
                     }
-                    player.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + gold + " Gold", i).getItem());
+                    player.getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + gold + " Gold", i).getItemStack());
                 } else {
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+                    player.playSound(player.getLocation(), Sound.ITEM_BREAK, 100, 0);
                 }
                 break;
             }
             case 5: {
-                if (gold >= 24 && !player.getPlayer().getInventory().contains(Material.FIREWORK, 1)) {
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
-                    player.getPlayer().getInventory().addItem(new GUIItem(Material.FIREWORK, "&c&lMissile Strike", 1).getItem());
+                if (gold >= 24 && !player.getInventory().contains(Material.FIREWORK, 1)) {
+                    player.playSound(player.getLocation(), Sound.NOTE_PLING, 100, 0);
+                    player.getInventory().addItem(new GUIItem(Material.FIREWORK, "&c&lMissile Strike", 1).getItemStack());
                     player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "missileStrike", 1, true);
                     gold -= 24;
                     ((AuroraMCGamePlayer) player).getGameData().put("gold", gold);
@@ -150,19 +151,19 @@ public class Shop extends GUI {
                     if (i == 0) {
                         i = 1;
                     }
-                    player.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + gold + " Gold", i).getItem());
-                } else if (player.getPlayer().getInventory().contains(Material.FIREWORK, 1)) {
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You can only have 1 Missile Strike item in your inventory at a time!"));
+                    player.getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + gold + " Gold", i).getItemStack());
+                } else if (player.getInventory().contains(Material.FIREWORK, 1)) {
+                    player.playSound(player.getLocation(), Sound.ITEM_BREAK, 100, 0);
+                    player.sendMessage(TextFormatter.pluginMessage("Game", "You can only have 1 Missile Strike item in your inventory at a time!"));
                 } else {
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+                    player.playSound(player.getLocation(), Sound.ITEM_BREAK, 100, 0);
                 }
                 break;
             }
             case 6: {
                 if (gold >= 12) {
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
-                    player.getPlayer().getInventory().addItem(new GUIItem(Material.EGG, "&c&lFlashbang", 1).getItem());
+                    player.playSound(player.getLocation(), Sound.NOTE_PLING, 100, 0);
+                    player.getInventory().addItem(new GUIItem(Material.EGG, "&c&lFlashbang", 1).getItemStack());
                     player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "flashbang", 1, true);
                     gold -= 12;
                     ((AuroraMCGamePlayer) player).getGameData().put("gold", gold);
@@ -170,29 +171,29 @@ public class Shop extends GUI {
                     if (i == 0) {
                         i = 1;
                     }
-                    player.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + gold + " Gold", i).getItem());
+                    player.getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + gold + " Gold", i).getItemStack());
                 } else {
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+                    player.playSound(player.getLocation(), Sound.ITEM_BREAK, 100, 0);
                 }
                 break;
             }
             case 7: {
-                if (gold >= 16 && !player.getPlayer().getInventory().contains(Material.GOLD_BARDING, 1)) {
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 0);
+                if (gold >= 16 && !player.getInventory().contains(Material.GOLD_BARDING, 1)) {
+                    player.playSound(player.getLocation(), Sound.NOTE_PLING, 100, 0);
                     player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "turret", 1, true);
-                    player.getPlayer().getInventory().addItem(new GUIItem(Material.GOLD_BARDING, "&c&lTurret", 1).getItem());
+                    player.getInventory().addItem(new GUIItem(Material.GOLD_BARDING, "&c&lTurret", 1).getItemStack());
                     gold -= 16;
                     ((AuroraMCGamePlayer) player).getGameData().put("gold", gold);
                     int i = gold;
                     if (i == 0) {
                         i = 1;
                     }
-                    player.getPlayer().getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + gold + " Gold", i).getItem());
-                } else if (player.getPlayer().getInventory().contains(Material.GOLD_BARDING, 1)) {
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You can only have 1 Turret item in your inventory at a time!"));
+                    player.getInventory().setItem(8, new GUIItem(Material.GOLD_NUGGET, "&c&lShop &7- &6&l" + gold + " Gold", i).getItemStack());
+                } else if (player.getInventory().contains(Material.GOLD_BARDING, 1)) {
+                    player.playSound(player.getLocation(), Sound.ITEM_BREAK, 100, 0);
+                    player.sendMessage(TextFormatter.pluginMessage("Game", "You can only have 1 Turret item in your inventory at a time!"));
                 } else {
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+                    player.playSound(player.getLocation(), Sound.ITEM_BREAK, 100, 0);
                 }
                 break;
             }

@@ -4,9 +4,9 @@
 
 package net.auroramc.games.ffa.util;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.players.scoreboard.PlayerScoreboard;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
+import net.auroramc.core.api.player.scoreboard.PlayerScoreboard;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.ffa.FFA;
@@ -20,7 +20,7 @@ public class FFAScoreboardRunnable extends BukkitRunnable {
     @Override
     public void run() {
         if (EngineAPI.getActiveGame() != null && EngineAPI.getActiveGame() instanceof FFA) {
-            List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
+            List<AuroraMCServerPlayer> playersAlive = ServerAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
             long gametime = (System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp()) - 10000;
 
             double minutes = gametime / 1000d / 60d;
@@ -28,14 +28,14 @@ public class FFAScoreboardRunnable extends BukkitRunnable {
             if (gametime < 0) {
                 finalValue = 0;
             }
-            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
                 PlayerScoreboard scoreboard = player.getScoreboard();
                 if (playersAlive.size() < 10) {
                     scoreboard.setLine(3, "   ");
                     scoreboard.setLine(2, "&b&l«GAME TIME»");
                     scoreboard.setLine(1,  finalValue + " minutes");
                     int i = 4;
-                    for (AuroraMCPlayer player1 : playersAlive) {
+                    for (AuroraMCServerPlayer player1 : playersAlive) {
                         if (player1.equals(player)) {
                             if (player1.isDisguised() && player1.getPreferences().isHideDisguiseNameEnabled()) {
                                 scoreboard.setLine(i, "&e" + player1.getName());

@@ -4,6 +4,7 @@
 
 package net.auroramc.games.util.listeners.death;
 
+import net.auroramc.core.api.events.player.PlayerMoveEvent;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.server.ServerState;
 import org.bukkit.Bukkit;
@@ -11,7 +12,6 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.json.JSONArray;
@@ -25,7 +25,7 @@ public class BorderListener implements Listener {
             if (EngineAPI.getServerState() == ServerState.IN_GAME && !EngineAPI.getActiveGame().isStarting()) {
                 if (!EngineAPI.getActiveMap().isInBorder(e.getTo())) {
                     //Call entity damage event so the games can handle them appropriately.
-                    EntityDamageEvent event = new EntityDamageEvent(e.getPlayer(), EntityDamageEvent.DamageCause.VOID, 500);
+                    EntityDamageEvent event = new EntityDamageEvent(e.getPlayer().getCraft(), EntityDamageEvent.DamageCause.VOID, 500);
                     Bukkit.getPluginManager().callEvent(event);
                 }
             } else if (EngineAPI.getServerState() != ServerState.ENDING && EngineAPI.getServerState() != ServerState.IN_GAME) {

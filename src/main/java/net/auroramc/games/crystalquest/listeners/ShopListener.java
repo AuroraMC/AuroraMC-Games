@@ -4,8 +4,12 @@
 
 package net.auroramc.games.crystalquest.listeners;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.events.entity.EntityDamageByPlayerEvent;
+import net.auroramc.core.api.events.inventory.InventoryOpenEvent;
+import net.auroramc.core.api.events.player.PlayerArmorStandManipulateEvent;
+import net.auroramc.core.api.events.player.PlayerInteractAtEntityEvent;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUI;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -20,33 +24,27 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.MerchantInventory;
 
 public class ShopListener implements Listener {
 
     @EventHandler
-    public void onDamage(EntityDamageByEntityEvent e) {
+    public void onDamage(EntityDamageByPlayerEvent e) {
         GUI gui = null;
-        if (e.getDamager() instanceof Player) {
-            if (e.getEntity() instanceof Villager) {
-                e.setCancelled(true);
-                if (((Villager) e.getEntity()).getProfession() == Villager.Profession.LIBRARIAN) {
-                    gui = new PlayerShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager()));
-                } else if (((Villager) e.getEntity()).getProfession() == Villager.Profession.BLACKSMITH) {
-                    gui = new TeamShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager()));
-                } else {
-                    return;
-                }
-            } else if (e.getEntity() instanceof ArmorStand) {
-                e.setCancelled(true);
+        if (e.getDamaged() instanceof Villager) {
+            e.setCancelled(true);
+            if (((Villager) e.getDamaged()).getProfession() == Villager.Profession.LIBRARIAN) {
+                gui = new PlayerShop((AuroraMCGamePlayer) e.getPlayer());
+            } else if (((Villager) e.getDamaged()).getProfession() == Villager.Profession.BLACKSMITH) {
+                gui = new TeamShop((AuroraMCGamePlayer) e.getPlayer());
+            } else {
+                return;
             }
+        } else if (e.getDamaged() instanceof ArmorStand) {
+            e.setCancelled(true);
         }
         if (e.isCancelled() && gui != null) {
-                gui.open(AuroraMCAPI.getPlayer((Player) e.getDamager()));
-            AuroraMCAPI.openGUI(AuroraMCAPI.getPlayer((Player) e.getDamager()), gui);
+            gui.open(e.getPlayer());
         }
     }
 
@@ -71,67 +69,72 @@ public class ShopListener implements Listener {
 
     @EventHandler
     public void onEntityInteract(PlayerInteractAtEntityEvent e) {
-        if (e.getRightClicked() instanceof Villager || e.getRightClicked() instanceof ArmorStand) {
+        if (e.getClickedEntity() instanceof Villager || e.getClickedEntity() instanceof ArmorStand) {
             e.setCancelled(true);
             GUI gui = null;
-            if (e.getRightClicked() instanceof ArmorStand) {
-                if (e.getRightClicked().getCustomName() != null) {
-                    AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
-                        CQRed red = (CQRed) EngineAPI.getActiveGame().getTeams().get("Red");
-                        CQBlue blue = (CQBlue) EngineAPI.getActiveGame().getTeams().get("Blue");
-                        if (e.getRightClicked().equals(red.getRobotSlotA().getEntity())) {
-                            if (player.getTeam().equals(red)) {
-                                red.getRobotSlotA().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
-                            } else {
-                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "This is not your mining robot!"));
-                            }
-                        } else if (e.getRightClicked().equals(red.getRobotSlotB().getEntity())) {
-                            if (player.getTeam().equals(red)) {
-                                red.getRobotSlotB().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
-                            } else {
-                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "This is not your mining robot!"));
-                            }
-                        } else if (e.getRightClicked().equals(red.getRobotSlotC().getEntity())) {
-                            if (player.getTeam().equals(red)) {
-                                red.getRobotSlotC().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
-                            } else {
-                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "This is not your mining robot!"));
-                            }
-                        } else if (e.getRightClicked().equals(blue.getRobotSlotA().getEntity())) {
-                            if (player.getTeam().equals(blue)) {
-                                blue.getRobotSlotA().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
-                            } else {
-                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "This is not your mining robot!"));
-                            }
-                        } else if (e.getRightClicked().equals(blue.getRobotSlotB().getEntity())) {
-                            if (player.getTeam().equals(blue)) {
-                                blue.getRobotSlotB().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
-                            } else {
-                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "This is not your mining robot!"));
-                            }
-                        } else if (e.getRightClicked().equals(blue.getRobotSlotC().getEntity())) {
-                            if (player.getTeam().equals(blue)) {
-                                blue.getRobotSlotC().openGUI(AuroraMCAPI.getPlayer(e.getPlayer()));
-                            } else {
-                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "This is not your mining robot!"));
-                            }
-                        }
+            if (e.getClickedEntity() instanceof ArmorStand) {
+                if (e.getClickedEntity().getCustomName() != null) {
+                    AuroraMCServerPlayer player = e.getPlayer();
+                    if (((AuroraMCGamePlayer)player).isSpectator() || player.isVanished()) {
                         return;
+                    }
+                    CQRed red = (CQRed) EngineAPI.getActiveGame().getTeams().get("Red");
+                    CQBlue blue = (CQBlue) EngineAPI.getActiveGame().getTeams().get("Blue");
+                    if (e.getClickedEntity().equals(red.getRobotSlotA().getEntity())) {
+                        if (player.getTeam().equals(red)) {
+                            red.getRobotSlotA().openGUI(e.getPlayer());
+                        } else {
+                            player.sendMessage(TextFormatter.pluginMessage("Game", "This is not your mining robot!"));
+                        }
+                    } else if (e.getClickedEntity().equals(red.getRobotSlotB().getEntity())) {
+                        if (player.getTeam().equals(red)) {
+                            red.getRobotSlotB().openGUI(e.getPlayer());
+                        } else {
+                            player.sendMessage(TextFormatter.pluginMessage("Game", "This is not your mining robot!"));
+                        }
+                    } else if (e.getClickedEntity().equals(red.getRobotSlotC().getEntity())) {
+                        if (player.getTeam().equals(red)) {
+                            red.getRobotSlotC().openGUI(e.getPlayer());
+                        } else {
+                            player.sendMessage(TextFormatter.pluginMessage("Game", "This is not your mining robot!"));
+                        }
+                    } else if (e.getClickedEntity().equals(blue.getRobotSlotA().getEntity())) {
+                        if (player.getTeam().equals(blue)) {
+                            blue.getRobotSlotA().openGUI(e.getPlayer());
+                        } else {
+                            player.sendMessage(TextFormatter.pluginMessage("Game", "This is not your mining robot!"));
+                        }
+                    } else if (e.getClickedEntity().equals(blue.getRobotSlotB().getEntity())) {
+                        if (player.getTeam().equals(blue)) {
+                            blue.getRobotSlotB().openGUI(e.getPlayer());
+                        } else {
+                            player.sendMessage(TextFormatter.pluginMessage("Game", "This is not your mining robot!"));
+                        }
+                    } else if (e.getClickedEntity().equals(blue.getRobotSlotC().getEntity())) {
+                        if (player.getTeam().equals(blue)) {
+                            blue.getRobotSlotC().openGUI(e.getPlayer());
+                        } else {
+                            player.sendMessage(TextFormatter.pluginMessage("Game", "This is not your mining robot!"));
+                        }
+                    }
+                    return;
                 } else {
                     return;
                 }
-            } else if (e.getRightClicked() instanceof Villager) {
-                if (((Villager) e.getRightClicked()).getProfession() == Villager.Profession.LIBRARIAN) {
-                    gui = new PlayerShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer()));
-                } else if (((Villager) e.getRightClicked()).getProfession() == Villager.Profession.BLACKSMITH) {
-                    gui = new TeamShop((AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer()));
+            } else if (e.getClickedEntity() instanceof Villager) {
+                if (((AuroraMCGamePlayer)e.getPlayer()).isSpectator() || e.getPlayer().isVanished()) {
+                    return;
+                }
+                if (((Villager) e.getClickedEntity()).getProfession() == Villager.Profession.LIBRARIAN) {
+                    gui = new PlayerShop((AuroraMCGamePlayer) e.getPlayer());
+                } else if (((Villager) e.getClickedEntity()).getProfession() == Villager.Profession.BLACKSMITH) {
+                    gui = new TeamShop((AuroraMCGamePlayer) e.getPlayer());
                 } else {
                     return;
                 }
             }
             if (gui != null) {
-                gui.open(AuroraMCAPI.getPlayer(e.getPlayer()));
-                AuroraMCAPI.openGUI(AuroraMCAPI.getPlayer(e.getPlayer()), gui);
+                gui.open(e.getPlayer());
             }
         }
 

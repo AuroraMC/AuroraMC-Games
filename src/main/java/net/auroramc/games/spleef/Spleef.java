@@ -4,10 +4,15 @@
 
 package net.auroramc.games.spleef;
 
-import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.player.Team;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.events.block.BlockBreakEvent;
+import net.auroramc.core.api.events.entity.FoodLevelChangeEvent;
+import net.auroramc.core.api.events.player.PlayerDropItemEvent;
+import net.auroramc.core.api.events.player.PlayerMoveEvent;
 import net.auroramc.core.api.events.player.PlayerShowEvent;
-import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.players.Team;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
@@ -27,12 +32,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -72,7 +73,7 @@ public class Spleef extends Game {
         super.start();
         int spawnIndex = 0;
         JSONArray spawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
-        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
             AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
             gp.getScoreboard().clear();
             gp.getScoreboard().setTitle("&3&l-= &b&lSPLEEF &3&l=-");
@@ -83,7 +84,7 @@ public class Spleef extends Game {
                 y = specSpawn.getInt("y");
                 z = specSpawn.getInt("z");
                 float yaw = specSpawn.getFloat("yaw");
-                gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y + 0.5, z, yaw, 0));
+                gp.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y + 0.5, z, yaw, 0));
             } else {
                 JSONObject spawn = spawns.getJSONObject(spawnIndex);
                 int x, y, z;
@@ -91,7 +92,7 @@ public class Spleef extends Game {
                 y = spawn.getInt("y");
                 z = spawn.getInt("z");
                 float yaw = spawn.getFloat("yaw");
-                gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                gp.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
                 spawnIndex++;
                 if (spawnIndex >= spawns.length()) {
                     spawnIndex = 0;
@@ -114,11 +115,11 @@ public class Spleef extends Game {
         Bukkit.getPluginManager().registerEvents(hungerListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(breakListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(waterListener, EngineAPI.getGameEngine());
-        runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
+        runnable.runTaskTimer(ServerAPI.getCore(), 0, 20);
     }
 
     @Override
-    public void end(AuroraMCPlayer winner) {
+    public void end(AuroraMCServerPlayer winner) {
         end();
         if (winner != null) {
             winner.getStats().addProgress(AuroraMCAPI.getAchievement(122), 1, winner.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(122), 0), true);
@@ -133,7 +134,7 @@ public class Spleef extends Game {
     }
 
     @Override
-    public void generateTeam(AuroraMCPlayer auroraMCPlayer) {
+    public void generateTeam(AuroraMCServerPlayer auroraMCPlayer) {
     }
 
     private void end() {
@@ -168,32 +169,32 @@ public class Spleef extends Game {
                     player2.hidePlayer(player);
                 }
             }
-        }.runTaskLater(AuroraMCAPI.getCore(), 2);
+        }.runTaskLater(ServerAPI.getCore(), 2);
     }
 
     @Override
     public void onPlayerJoin(AuroraMCGamePlayer auroraMCGamePlayer) {
         if (!auroraMCGamePlayer.isVanished()) {
-            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Spectator Joined").put("player", auroraMCGamePlayer.getPlayer().getName())));
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Spectator Joined").put("player", auroraMCGamePlayer.getByDisguiseName())));
         }
         new BukkitRunnable(){
             @Override
             public void run() {
-                for (Player player2 : Bukkit.getOnlinePlayers()) {
-                    player2.hidePlayer(auroraMCGamePlayer.getPlayer());
+                for (AuroraMCServerPlayer player2 : ServerAPI.getPlayers()) {
+                    player2.hidePlayer(auroraMCGamePlayer);
                 }
                 auroraMCGamePlayer.setSpectator(true, true);
             }
-        }.runTask(AuroraMCAPI.getCore());
+        }.runTask(ServerAPI.getCore());
 
     }
 
     @Override
     public void onPlayerLeave(AuroraMCGamePlayer auroraMCGamePlayer) {
         if (!auroraMCGamePlayer.isVanished()) {
-            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Leave").put("player", auroraMCGamePlayer.getPlayer().getName())));
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Leave").put("player", auroraMCGamePlayer.getByDisguiseName())));
         }
-        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
+        List<AuroraMCServerPlayer> playersAlive = ServerAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
         if (playersAlive.size() == 1 || (playersAlive.contains(auroraMCGamePlayer) && playersAlive.size() == 2)) {
             playersAlive.remove(auroraMCGamePlayer);
             EngineAPI.getActiveGame().end(playersAlive.get(0));
@@ -206,7 +207,7 @@ public class Spleef extends Game {
 
     @Override
     public boolean onDeath(AuroraMCGamePlayer auroraMCGamePlayer, AuroraMCGamePlayer killer) {
-        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", auroraMCGamePlayer.getPlayer().getName()).put("killer", ((killer != null)?killer.getPlayer().getName():"None")).put("final", true)));
+        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", auroraMCGamePlayer.getByDisguiseName()).put("killer", ((killer != null)?killer.getByDisguiseName():"None")).put("final", true)));
         if (killer != null) {
             if (!killer.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(124))) {
                 killer.getStats().achievementGained(AuroraMCAPI.getAchievement(124), 1, true);
@@ -218,7 +219,7 @@ public class Spleef extends Game {
                 auroraMCGamePlayer.getStats().achievementGained(AuroraMCAPI.getAchievement(125), 1, true);
             }
         }
-        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
+        List<AuroraMCServerPlayer> playersAlive = ServerAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
         if (playersAlive.size() == 1) {
             this.end(playersAlive.get(0));
         }

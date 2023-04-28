@@ -4,7 +4,7 @@
 
 package net.auroramc.games.run.kits;
 
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.games.Kit;
 import org.bukkit.Material;
@@ -18,10 +18,10 @@ public class Berserker extends Kit {
     }
 
     @Override
-    public void onGameStart(AuroraMCPlayer player) {
-        player.getPlayer().getInventory().clear();
-        ItemStack stack = new GUIItem(Material.DIAMOND_AXE).getItem();
-        player.getPlayer().getInventory().setItem(0, stack);
+    public void onGameStart(AuroraMCServerPlayer player) {
+        player.getInventory().clear();
+        ItemStack stack = new GUIItem(Material.DIAMOND_AXE).getItemStack();
+        player.getInventory().setItem(0, stack);
     }
 
     @Override

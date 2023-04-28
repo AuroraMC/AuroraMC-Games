@@ -4,9 +4,9 @@
 
 package net.auroramc.games.tag.utils;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.players.scoreboard.PlayerScoreboard;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
+import net.auroramc.core.api.player.scoreboard.PlayerScoreboard;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.tag.Tag;
@@ -21,8 +21,8 @@ public class TagScoreboardRunnable extends BukkitRunnable {
     @Override
     public void run() {
         if (EngineAPI.getActiveGame() != null && EngineAPI.getActiveGame() instanceof Tag) {
-            List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !(player.getTeam() instanceof TaggedTeam) && !player.isVanished() && !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
-            List<AuroraMCPlayer> taggers = AuroraMCAPI.getPlayers().stream().filter(player -> (player.getTeam() instanceof TaggedTeam) && !player.isVanished() && !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
+            List<AuroraMCServerPlayer> playersAlive = ServerAPI.getPlayers().stream().filter(player -> !(player.getTeam() instanceof TaggedTeam) && !player.isVanished() && !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
+            List<AuroraMCServerPlayer> taggers = ServerAPI.getPlayers().stream().filter(player -> (player.getTeam() instanceof TaggedTeam) && !player.isVanished() && !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
             long gametime = (System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp()) - 10000;
 
             double minutes = gametime / 1000d / 60d;
@@ -30,7 +30,7 @@ public class TagScoreboardRunnable extends BukkitRunnable {
             if (gametime < 0) {
                 finalValue = 0;
             }
-            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
                 PlayerScoreboard scoreboard = player.getScoreboard();
                 scoreboard.setLine(8, "&b&l«TAGGERS»");
                 scoreboard.setLine(7, taggers.size() + "");

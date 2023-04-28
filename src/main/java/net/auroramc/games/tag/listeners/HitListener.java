@@ -4,10 +4,14 @@
 
 package net.auroramc.games.tag.listeners;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.cosmetics.Cosmetic;
-import net.auroramc.core.api.cosmetics.KillMessage;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.cosmetics.Cosmetic;
+import net.auroramc.api.cosmetics.KillMessage;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.events.entity.PlayerDamageByPlayerEvent;
+import net.auroramc.core.api.events.entity.PlayerDamageEvent;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.GameSession;
@@ -15,10 +19,7 @@ import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.games.tag.teams.RunnersTeam;
 import net.auroramc.games.tag.teams.TaggedTeam;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,59 +39,55 @@ import java.util.stream.Collectors;
 public class HitListener implements Listener {
 
     @EventHandler
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
+    public void onEntityDamageByEntity(PlayerDamageByPlayerEvent e) {
         if (EngineAPI.getServerState() != ServerState.IN_GAME || EngineAPI.getActiveGame().isStarting()) {
             e.setCancelled(true);
             return;
         }
-        if (e.getDamager() instanceof Player) {
-            e.setDamage(0);
-            AuroraMCPlayer pl = AuroraMCAPI.getPlayer((Player) e.getDamager());
-            if (pl instanceof AuroraMCGamePlayer) {
-                AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
-                AuroraMCGamePlayer hit = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity());
-                if (!player.isSpectator() && !player.isVanished() && player.getTeam() instanceof TaggedTeam && hit.getTeam() instanceof RunnersTeam) {
-                    e.setDamage(0);
-                    hit.setTeam(player.getTeam());
-                    hit.setKit(EngineAPI.getActiveGame().getKits().get(0));
-                    hit.getPlayer().getInventory().setItem(8, new ItemStack(Material.AIR));
-                    hit.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You were tagged!"));
-                    player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "tags", 1, true);
-                    hit.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "tagged", 1, true);
+        e.setDamage(0);
+        AuroraMCServerPlayer pl = e.getDamager();
+        if (pl instanceof AuroraMCGamePlayer) {
+            AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
+            AuroraMCGamePlayer hit = (AuroraMCGamePlayer) e.getPlayer();
+            if (!player.isSpectator() && !player.isVanished() && player.getTeam() instanceof TaggedTeam && hit.getTeam() instanceof RunnersTeam) {
+                e.setDamage(0);
+                hit.setTeam(player.getTeam());
+                hit.setKit(EngineAPI.getActiveGame().getKits().get(0));
+                hit.getInventory().setItem(8, new ItemStack(Material.AIR));
+                hit.sendMessage(TextFormatter.pluginMessage("Game", "You were tagged!"));
+                player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "tags", 1, true);
+                hit.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "tagged", 1, true);
 
-                    hit.getPlayer().getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
-                    hit.getPlayer().getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
-                    hit.getPlayer().getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
-                    hit.getPlayer().getInventory().setBoots(new GUIItem(Material.LEATHER_BOOTS, null, 1, null, (short)0,false, Color.fromRGB(255, 0, 0)).getItem());
+                hit.getInventory().setHelmet(new GUIItem(Material.LEATHER_HELMET, null, 1, null, (short) 0, false, Color.fromRGB(255, 0, 0)).getItemStack());
+                hit.getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE, null, 1, null, (short) 0, false, Color.fromRGB(255, 0, 0)).getItemStack());
+                hit.getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS, null, 1, null, (short) 0, false, Color.fromRGB(255, 0, 0)).getItemStack());
+                hit.getInventory().setBoots(new GUIItem(Material.LEATHER_BOOTS, null, 1, null, (short) 0, false, Color.fromRGB(255, 0, 0)).getItemStack());
 
-                    Firework firework = hit.getPlayer().getLocation().getWorld().spawn(hit.getPlayer().getEyeLocation(), Firework.class);
-                    FireworkMeta meta = firework.getFireworkMeta();
-                    meta.setPower(0);
-                    meta.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(255, 0, 0)).trail(true).flicker(true).with(FireworkEffect.Type.BURST).build());
-                    firework.setFireworkMeta(meta);
-                    new BukkitRunnable(){
-                        @Override
-                        public void run() {
-                            firework.detonate();
-                        }
-                    }.runTaskLater(AuroraMCAPI.getCore(), 2);
-
-                    KillMessage killMessage = (KillMessage) player.getActiveCosmetics().getOrDefault(Cosmetic.CosmeticType.KILL_MESSAGE, AuroraMCAPI.getCosmetics().get(500));
-
-                    for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
-                        player1.updateNametag(hit);
-                        player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Kill", killMessage.onKill(player1, player, hit, null, KillMessage.KillReason.TAG, EngineAPI.getActiveGameInfo().getId())));
+                Firework firework = hit.getLocation().getWorld().spawn(hit.getEyeLocation(), Firework.class);
+                FireworkMeta meta = firework.getFireworkMeta();
+                meta.setPower(0);
+                meta.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(255, 0, 0)).trail(true).flicker(true).with(FireworkEffect.Type.BURST).build());
+                firework.setFireworkMeta(meta);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        firework.detonate();
                     }
-                    EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", hit.getPlayer().getName()).put("killer", player.getPlayer().getName()).put("final", true)));
-                    List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(pl2 -> !((AuroraMCGamePlayer) pl2).isSpectator() && !(pl2.getTeam() instanceof TaggedTeam)).collect(Collectors.toList());
-                    if (playersAlive.size() == 1) {
-                        EngineAPI.getActiveGame().end(playersAlive.get(0));
-                    }
-                } else if (!player.isSpectator() && !player.isVanished() && player.getTeam().equals(hit.getTeam()) && player.getKit() instanceof net.auroramc.games.tag.kits.Player) {
-                    e.setDamage(0);
-                } else {
-                    e.setCancelled(true);
+                }.runTaskLater(ServerAPI.getCore(), 2);
+
+                KillMessage killMessage = (KillMessage) player.getActiveCosmetics().getOrDefault(Cosmetic.CosmeticType.KILL_MESSAGE, AuroraMCAPI.getCosmetics().get(500));
+
+                for (AuroraMCServerPlayer player1 : ServerAPI.getPlayers()) {
+                    player1.updateNametag(hit);
+                    player1.sendMessage(TextFormatter.pluginMessage("Kill", killMessage.onKill(player1, player, hit, null, KillMessage.KillReason.TAG, EngineAPI.getActiveGameInfo().getId())));
                 }
+                EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", hit.getByDisguiseName()).put("killer", player.getByDisguiseName()).put("final", true)));
+                List<AuroraMCServerPlayer> playersAlive = ServerAPI.getPlayers().stream().filter(pl2 -> !((AuroraMCGamePlayer) pl2).isSpectator() && !(pl2.getTeam() instanceof TaggedTeam)).collect(Collectors.toList());
+                if (playersAlive.size() == 1) {
+                    EngineAPI.getActiveGame().end(playersAlive.get(0));
+                }
+            } else if (!player.isSpectator() && !player.isVanished() && player.getTeam().equals(hit.getTeam()) && player.getKit() instanceof net.auroramc.games.tag.kits.Player) {
+                e.setDamage(0);
             } else {
                 e.setCancelled(true);
             }
@@ -100,18 +97,18 @@ public class HitListener implements Listener {
     }
 
     @EventHandler
-    public void onEntityDamage(EntityDamageEvent e) {
+    public void onEntityDamage(PlayerDamageEvent e) {
         if (EngineAPI.getServerState() != ServerState.IN_GAME) {
             e.setCancelled(true);
             return;
         }
-        if (!(e instanceof EntityDamageByEntityEvent)) {
+        if (!(e instanceof PlayerDamageByPlayerEvent)) {
             e.setCancelled(true);
         }
 
-        if (e.getCause() == EntityDamageEvent.DamageCause.VOID && e.getEntity() instanceof Player) {
-            AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getEntity());
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You went outside of the border so was teleported back to spawn."));
+        if (e.getCause() == PlayerDamageEvent.DamageCause.VOID) {
+            AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
+            player.sendMessage(TextFormatter.pluginMessage("Game", "You went outside of the border so was teleported back to spawn."));
             JSONArray playerSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("PLAYER");
             if (player.isSpectator()) {
                 JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
@@ -120,7 +117,7 @@ public class HitListener implements Listener {
                 y = specSpawn.getInt("y");
                 z = specSpawn.getInt("z");
                 float yaw = specSpawn.getFloat("yaw");
-                player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                player.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
             } else {
                 JSONObject spawn = playerSpawns.getJSONObject(new Random().nextInt(playerSpawns.length()));
                 int x, y, z;
@@ -128,7 +125,7 @@ public class HitListener implements Listener {
                 y = spawn.getInt("y");
                 z = spawn.getInt("z");
                 float yaw = spawn.getFloat("yaw");
-                player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                player.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
             }
         }
     }

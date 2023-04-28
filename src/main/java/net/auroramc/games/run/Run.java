@@ -4,10 +4,13 @@
 
 package net.auroramc.games.run;
 
-import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.api.player.Team;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.events.player.PlayerDropItemEvent;
+import net.auroramc.core.api.events.player.PlayerInteractEvent;
+import net.auroramc.core.api.events.player.PlayerMoveEvent;
 import net.auroramc.core.api.events.player.PlayerShowEvent;
-import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.players.Team;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
@@ -27,9 +30,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -66,7 +66,7 @@ public class Run extends Game {
         super.start();
         int spawnIndex = 0;
         JSONArray spawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
-        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
             AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
             gp.getScoreboard().clear();
             gp.getScoreboard().setTitle("&3&l-= &b&lRUN &3&l=-");
@@ -77,7 +77,7 @@ public class Run extends Game {
                 y = specSpawn.getInt("y");
                 z = specSpawn.getInt("z");
                 float yaw = specSpawn.getFloat("yaw");
-                gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                gp.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
             } else {
                 JSONObject spawn = spawns.getJSONObject(spawnIndex);
                 int x, y, z;
@@ -85,7 +85,7 @@ public class Run extends Game {
                 y = spawn.getInt("y");
                 z = spawn.getInt("z");
                 float yaw = spawn.getFloat("yaw");
-                gp.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                gp.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
                 spawnIndex++;
                 if (spawnIndex >= spawns.length()) {
                     spawnIndex = 0;
@@ -107,11 +107,11 @@ public class Run extends Game {
         Bukkit.getPluginManager().registerEvents(deathListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(moveListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(leapListener, EngineAPI.getGameEngine());
-        runnable.runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
+        runnable.runTaskTimer(ServerAPI.getCore(), 0, 20);
     }
 
     @Override
-    public void end(AuroraMCPlayer winner) {
+    public void end(AuroraMCServerPlayer winner) {
         end();
         super.end(winner);
     }
@@ -123,7 +123,7 @@ public class Run extends Game {
     }
 
     @Override
-    public void generateTeam(AuroraMCPlayer auroraMCPlayer) {
+    public void generateTeam(AuroraMCServerPlayer auroraMCPlayer) {
     }
 
     private void end() {
@@ -150,12 +150,12 @@ public class Run extends Game {
         new BukkitRunnable() {
             @Override
             public void run() {
-                for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
+                for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
                     AuroraMCGamePlayer gp = (AuroraMCGamePlayer) pl;
                     if (gp.isSpectator() || gp.isVanished()) {
                         return;
                     }
-                    Location location = gp.getPlayer().getLocation().clone();
+                    Location location = gp.getLocation().clone();
                     location.setY(location.getY() - 1);
                     if (location.getBlock().getType() != Material.AIR && (location.getBlock().getType() != Material.STAINED_CLAY || location.getBlock().getData() != 14) && !location.getBlock().isLiquid()) {
                         gp.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "blocksBroken", 1, true);
@@ -166,7 +166,7 @@ public class Run extends Game {
                             public void run() {
                                 location.getBlock().setType(Material.AIR);
                             }
-                        }.runTaskLater(AuroraMCAPI.getCore(), 20);
+                        }.runTaskLater(ServerAPI.getCore(), 20);
                     }
                     int wholeX = (int) ((location.getX() >= 0)?Math.floor(location.getX()):Math.ceil(location.getX()));
                     int wholeZ = (int) ((location.getZ() >= 0)?Math.floor(location.getZ()):Math.ceil(location.getZ()));
@@ -199,7 +199,7 @@ public class Run extends Game {
                             public void run() {
                                 finX.getBlock().setType(Material.AIR);
                             }
-                        }.runTaskLater(AuroraMCAPI.getCore(), 20);
+                        }.runTaskLater(ServerAPI.getCore(), 20);
                     }
 
                     if (decZ <= 0.31) {
@@ -228,7 +228,7 @@ public class Run extends Game {
                                 public void run() {
                                     finZ.getBlock().setType(Material.AIR);
                                 }
-                            }.runTaskLater(AuroraMCAPI.getCore(), 20);
+                            }.runTaskLater(ServerAPI.getCore(), 20);
                         }
                         if (x != null) {
                             Location loc2 = x.clone();
@@ -242,13 +242,13 @@ public class Run extends Game {
                                     public void run() {
                                         loc2.getBlock().setType(Material.AIR);
                                     }
-                                }.runTaskLater(AuroraMCAPI.getCore(), 20);
+                                }.runTaskLater(ServerAPI.getCore(), 20);
                             }
                         }
                     }
                 }
             }
-        }.runTask(AuroraMCAPI.getCore());
+        }.runTask(ServerAPI.getCore());
     }
 
     @Override
@@ -267,32 +267,32 @@ public class Run extends Game {
                     player2.hidePlayer(player);
                 }
             }
-        }.runTaskLater(AuroraMCAPI.getCore(), 2);
+        }.runTaskLater(ServerAPI.getCore(), 2);
     }
 
     @Override
     public void onPlayerJoin(AuroraMCGamePlayer auroraMCGamePlayer) {
         if (!auroraMCGamePlayer.isVanished()) {
-            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Spectator Joined").put("player", auroraMCGamePlayer.getPlayer().getName())));
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Spectator Joined").put("player", auroraMCGamePlayer.getByDisguiseName())));
         }
         new BukkitRunnable(){
             @Override
             public void run() {
-                for (Player player2 : Bukkit.getOnlinePlayers()) {
-                    player2.hidePlayer(auroraMCGamePlayer.getPlayer());
+                for (AuroraMCServerPlayer player2 : ServerAPI.getPlayers()) {
+                    player2.hidePlayer(auroraMCGamePlayer);
                 }
                 auroraMCGamePlayer.setSpectator(true, true);
             }
-        }.runTask(AuroraMCAPI.getCore());
+        }.runTask(ServerAPI.getCore());
 
     }
 
     @Override
     public void onPlayerLeave(AuroraMCGamePlayer auroraMCGamePlayer) {
         if (!auroraMCGamePlayer.isVanished()) {
-            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Leave").put("player", auroraMCGamePlayer.getPlayer().getName())));
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Leave").put("player", auroraMCGamePlayer.getByDisguiseName())));
         }
-        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
+        List<AuroraMCServerPlayer> playersAlive = ServerAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
         if (playersAlive.size() == 1 || (playersAlive.contains(auroraMCGamePlayer) && playersAlive.size() == 2)) {
             playersAlive.remove(auroraMCGamePlayer);
             EngineAPI.getActiveGame().end(playersAlive.get(0));
@@ -305,8 +305,8 @@ public class Run extends Game {
 
     @Override
     public boolean onDeath(AuroraMCGamePlayer auroraMCGamePlayer, AuroraMCGamePlayer killer) {
-        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", auroraMCGamePlayer.getPlayer().getName()).put("killer", ((killer != null)?killer.getPlayer().getName():"None")).put("final", true)));
-        List<AuroraMCPlayer> playersAlive = AuroraMCAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
+        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", auroraMCGamePlayer.getByDisguiseName()).put("killer", ((killer != null)?killer.getByDisguiseName():"None")).put("final", true)));
+        List<AuroraMCServerPlayer> playersAlive = ServerAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer)player).isSpectator()).collect(Collectors.toList());
         if (playersAlive.size() == 1) {
             this.end(playersAlive.get(0));
         }

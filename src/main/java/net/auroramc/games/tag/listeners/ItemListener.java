@@ -4,7 +4,9 @@
 
 package net.auroramc.games.tag.listeners;
 
-import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.events.player.PlayerInteractEvent;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
@@ -15,7 +17,6 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,7 +27,7 @@ public class ItemListener implements Listener {
 
     @EventHandler
     public void onClick(PlayerInteractEvent e) {
-        AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
+        AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
         if (e.getItem() != null && e.getItem().getType() == Material.ENDER_PEARL) {
             e.setCancelled(true);
             if (player != null && !player.isSpectator() && player.getKit() instanceof Blinker && EngineAPI.getServerState() == ServerState.IN_GAME && !EngineAPI.getActiveGame().isStarting()) {
@@ -35,7 +36,7 @@ public class ItemListener implements Listener {
                     public void run() {
                         e.getPlayer().updateInventory();
                     }
-                }.runTaskLater(AuroraMCAPI.getCore(), 2);
+                }.runTaskLater(ServerAPI.getCore(), 2);
                 if (player.getGameData().containsKey("last_blink")) {
                     int cooldown = 40000;
                     switch (player.getKitLevel().getLatestUpgrade()) {
@@ -57,7 +58,7 @@ public class ItemListener implements Listener {
                             amount1 = 0;
                         }
                         e.setCancelled(true);
-                        e.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You cannot use **Blink** for **" + (amount1 / 10f) + "** seconds!"));
+                        e.getPlayer().sendMessage(TextFormatter.pluginMessage("Game", "You cannot use **Blink** for **" + (amount1 / 10f) + "** seconds!"));
                         return;
                     }
                 }
@@ -70,9 +71,9 @@ public class ItemListener implements Listener {
                 y = spawn.getInt("y");
                 z = spawn.getInt("z");
                 float yaw = spawn.getFloat("yaw");
-                player.getPlayer().getLocation().getWorld().playSound(player.getPlayer().getLocation(), Sound.ENDERMAN_TELEPORT, 1, 1);
-                player.getPlayer().getLocation().getWorld().playEffect(player.getPlayer().getLocation(), Effect.PORTAL, 0, 1);
-                player.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+                player.getLocation().getWorld().playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1, 1);
+                player.getLocation().getWorld().playEffect(player.getLocation(), Effect.PORTAL, 0, 1);
+                player.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
             }
         }
     }

@@ -6,8 +6,9 @@ package net.auroramc.games.paintball.entities;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.GameSession;
@@ -87,22 +88,22 @@ public class Turret {
     private final Location location;
     private final ArmorStand armorStand;
     private final BukkitTask task;
-    private final AuroraMCPlayer owner;
+    private final AuroraMCServerPlayer owner;
 
-    public Turret(AuroraMCPlayer owner, Location location) {
+    public Turret(AuroraMCServerPlayer owner, Location location) {
         this.location = location;
         this.armorStand = location.getWorld().spawn(location, ArmorStand.class);
         armorStand.setBasePlate(false);
         armorStand.setArms(true);
         armorStand.setHelmet(((owner.getTeam() instanceof PBBlue)?BLUE_HEAD:RED_HEAD));
         Color data = ((owner.getTeam() instanceof PBBlue)?Color.BLUE:Color.RED);
-        armorStand.setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE, null, 1, null, (short)0, false, data).getItem());
-        armorStand.setLeggings(new GUIItem(Material.LEATHER_LEGGINGS, null, 1, null, (short)0, false, data).getItem());
-        armorStand.setBoots(new GUIItem(Material.LEATHER_BOOTS, null, 1, null, (short)0, false, data).getItem());
+        armorStand.setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE, null, 1, null, (short)0, false, data).getItemStack());
+        armorStand.setLeggings(new GUIItem(Material.LEATHER_LEGGINGS, null, 1, null, (short)0, false, data).getItemStack());
+        armorStand.setBoots(new GUIItem(Material.LEATHER_BOOTS, null, 1, null, (short)0, false, data).getItemStack());
         armorStand.setItemInHand(new ItemStack(((owner.getTeam() instanceof PBBlue)?Material.DIAMOND_BARDING:Material.GOLD_BARDING)));
         this.owner = owner;
         ((Paintball)EngineAPI.getActiveGame()).getTurrets().put(armorStand, this);
-        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Turret Placed").put("player", owner.getPlayer().getName())));
+        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Turret Placed").put("player", owner.getByDisguiseName())));
         task = new BukkitRunnable(){
 
             int lifetime = 0;
@@ -114,12 +115,12 @@ public class Turret {
                     Player closest = null;
                     for (Entity entity : closeEntities) {
                         if (closest == null && entity instanceof Player) {
-                            AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) entity);
+                            AuroraMCGamePlayer player = (AuroraMCGamePlayer) ServerAPI.getPlayer((Player) entity);
                             if (!player.isSpectator() && !player.getTeam().equals(owner.getTeam())) {
                                 closest = (Player) entity;
                             }
                         } else if (entity instanceof Player && closest.getLocation().distanceSquared(armorStand.getLocation()) > entity.getLocation().distanceSquared(armorStand.getLocation())) {
-                            AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) entity);
+                            AuroraMCGamePlayer player = (AuroraMCGamePlayer) ServerAPI.getPlayer((Player) entity);
                             if (!player.isSpectator() && !player.getTeam().equals(owner.getTeam())) {
                                 closest = (Player) entity;
                             }
@@ -137,7 +138,7 @@ public class Turret {
                 lifetime++;
                 if (lifetime >= 30) {
                     armorStand.remove();
-                    owner.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "One of your turrets has expired!"));
+                    owner.sendMessage(TextFormatter.pluginMessage("Game", "One of your turrets has expired!"));
                     ((Paintball)EngineAPI.getActiveGame()).getTurrets().remove(armorStand);
                     this.cancel();
                 }
@@ -154,7 +155,7 @@ public class Turret {
         return location;
     }
 
-    public AuroraMCPlayer getOwner() {
+    public AuroraMCServerPlayer getOwner() {
         return owner;
     }
 

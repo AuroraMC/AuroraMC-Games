@@ -4,14 +4,19 @@
 
 package net.auroramc.games.hotpotato.entities;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.cosmetics.Cosmetic;
-import net.auroramc.core.api.cosmetics.DeathEffect;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.cosmetics.Cosmetic;
+import net.auroramc.api.cosmetics.DeathEffect;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
+import org.bukkit.Color;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -43,13 +48,13 @@ public class Potato {
                     }
                 }
             }
-            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Potato Given").put("player", this.holder.getPlayer().getName()).put("to", holder.getPlayer().getName())));
+            EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Potato Given").put("player", this.holder.getName()).put("to", holder.getName())));
             this.oldHolder = this.holder;
             lastPassed = System.currentTimeMillis();
-            this.holder.getPlayer().getInventory().clear();
-            this.holder.getPlayer().removePotionEffect(PotionEffectType.SPEED);
+            this.holder.getInventory().clear();
+            this.holder.removePotionEffect(PotionEffectType.SPEED);
             this.holder.getGameData().remove("potato_holder");
-            PlayerInventory inventory = this.holder.getPlayer().getInventory();
+            PlayerInventory inventory = this.holder.getInventory();
             inventory.setBoots(new ItemStack(Material.AIR));
             inventory.setLeggings(new ItemStack(Material.AIR));
             inventory.setChestplate(new ItemStack(Material.AIR));
@@ -58,14 +63,14 @@ public class Potato {
         }
         this.holder = holder;
         this.holder.getGameData().put("potato_holder", this);
-        this.holder.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 1000000, 1, false, false));
-        this.holder.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "You've been given the Hot Potato! Get rid of it before it explodes by punching a player!"));
-        PlayerInventory inventory = this.holder.getPlayer().getInventory();
-        inventory.setBoots(new GUIItem(Material.LEATHER_BOOTS, null, 1, null, (short)0, false, Color.fromRGB(255, 0, 0)).getItem());
-        inventory.setLeggings(new GUIItem(Material.LEATHER_LEGGINGS, null, 1, null, (short)0, false, Color.fromRGB(255, 0, 0)).getItem());
-        inventory.setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE, null, 1, null, (short)0, false, Color.fromRGB(255, 0, 0)).getItem());
-        inventory.setHelmet(new GUIItem(Material.TNT).getItem());
-        Firework firework = this.holder.getPlayer().getLocation().getWorld().spawn(this.holder.getPlayer().getEyeLocation(), Firework.class);
+        this.holder.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 1000000, 1, false, false));
+        this.holder.sendMessage(TextFormatter.pluginMessage("Game", "You've been given the Hot Potato! Get rid of it before it explodes by punching a player!"));
+        PlayerInventory inventory = this.holder.getInventory();
+        inventory.setBoots(new GUIItem(Material.LEATHER_BOOTS, null, 1, null, (short)0, false, Color.fromRGB(255, 0, 0)).getItemStack());
+        inventory.setLeggings(new GUIItem(Material.LEATHER_LEGGINGS, null, 1, null, (short)0, false, Color.fromRGB(255, 0, 0)).getItemStack());
+        inventory.setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE, null, 1, null, (short)0, false, Color.fromRGB(255, 0, 0)).getItemStack());
+        inventory.setHelmet(new GUIItem(Material.TNT).getItemStack());
+        Firework firework = this.holder.getLocation().getWorld().spawn(this.holder.getEyeLocation(), Firework.class);
         FireworkMeta meta = firework.getFireworkMeta();
         meta.setPower(0);
         meta.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(255, 0, 0)).trail(true).flicker(true).with(FireworkEffect.Type.BURST).build());
@@ -75,10 +80,10 @@ public class Potato {
             public void run() {
                 firework.detonate();
             }
-        }.runTaskLater(AuroraMCAPI.getCore(), 2);
-        ItemStack stack = new GUIItem(Material.POTATO_ITEM, "&c&lHot Potato", 1, ";&rPunch a player to get rid of the hot potato!").getItem();
+        }.runTaskLater(ServerAPI.getCore(), 2);
+        ItemStack stack = new GUIItem(Material.POTATO_ITEM, "&c&lHot Potato", 1, ";&rPunch a player to get rid of the hot potato!").getItemStack();
         for (int i = 0;i < 36;i++) {
-            holder.getPlayer().getInventory().setItem(i, stack);
+            holder.getInventory().setItem(i, stack);
         }
     }
 
@@ -93,27 +98,36 @@ public class Potato {
             ((DeathEffect)holder.getActiveCosmetics().get(Cosmetic.CosmeticType.DEATH_EFFECT)).onDeath(holder);
         }
         holder.getGameData().clear();
-        holder.getPlayer().teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
+        holder.teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
         holder.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
 
         holder.setLastHitAt(-1);
         holder.setLastHitBy(null);
         holder.getLatestHits().clear();
-        holder.getPlayer().getInventory().clear();
-        holder.getPlayer().getInventory().setHelmet(new ItemStack(Material.AIR));
-        holder.getPlayer().getInventory().setChestplate(new ItemStack(Material.AIR));
-        holder.getPlayer().getInventory().setLeggings(new ItemStack(Material.AIR));
-        holder.getPlayer().getInventory().setBoots(new ItemStack(Material.AIR));
-        holder.getPlayer().setFireTicks(0);
+        holder.getInventory().clear();
+        holder.getInventory().setHelmet(new ItemStack(Material.AIR));
+        holder.getInventory().setChestplate(new ItemStack(Material.AIR));
+        holder.getInventory().setLeggings(new ItemStack(Material.AIR));
+        holder.getInventory().setBoots(new ItemStack(Material.AIR));
+        holder.setFireTicks(0);
 
-        for (Player player2 : Bukkit.getOnlinePlayers()) {
-            player2.hidePlayer(holder.getPlayer());
-            player2.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Death", ((holder.isDisguised())?holder.getActiveDisguise().getName():holder.getName())));
-            player2.playSound(holder.getPlayer().getLocation(), Sound.EXPLODE, 1, 100);
+        for (AuroraMCServerPlayer player2 : ServerAPI.getPlayers()) {
+            player2.hidePlayer(holder);
+            player2.sendMessage(TextFormatter.pluginMessage("Death", ((holder.isDisguised())?holder.getActiveDisguise().getName():holder.getName())));
+            player2.playSound(holder.getLocation(), Sound.EXPLODE, 1, 100);
         }
 
         holder.setSpectator(true, true);
-        holder.sendTitle(AuroraMCAPI.getFormatter().convert("&c&lYou Died!"), AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight("You were holding the Hot Potato when it exploded!")), 20, 100, 20, ChatColor.RED, ChatColor.RESET, true, false);
+
+        TextComponent title = new TextComponent("You Died!");
+        title.setColor(ChatColor.RED.asBungee());
+        title.setBold(true);
+
+        TextComponent subtitle = new TextComponent("You were holding the Hot Potato when it exploded!");
+        subtitle.setColor(ChatColor.WHITE.asBungee());
+        subtitle.setBold(false);
+
+        holder.sendTitle(title, subtitle, 20, 100, 20);
         if (lastPassed == -1) {
             if (!this.holder.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(171))) {
                 this.holder.getStats().achievementGained(AuroraMCAPI.getAchievement(171), 1, true);
