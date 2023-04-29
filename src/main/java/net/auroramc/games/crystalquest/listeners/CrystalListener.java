@@ -122,8 +122,9 @@ public class CrystalListener implements Listener {
 
     @EventHandler
     public void onDamage(EntityDamageByPlayerEvent e) {
-        if (e.getDamaged() instanceof EnderCrystal && e.getCause() == PlayerDamageEvent.DamageCause.ENTITY_ATTACK) {
+        if (e.getDamaged() instanceof EnderCrystal) {
             e.setCancelled(true);
+            if (e.getCause() == PlayerDamageEvent.DamageCause.ENTITY_ATTACK) {
                 AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
                 EnderCrystal crystal = (EnderCrystal) e.getDamaged();
                 if (!player.isSpectator() && crystal.getCustomName() != null) {
@@ -135,6 +136,7 @@ public class CrystalListener implements Listener {
                 } else if (crystal.getCustomName() == null) {
                     player.sendMessage(TextFormatter.pluginMessage("Game", "You can't collect a crystal that's already been captured!"));
                 }
+            }
         }
     }
 
