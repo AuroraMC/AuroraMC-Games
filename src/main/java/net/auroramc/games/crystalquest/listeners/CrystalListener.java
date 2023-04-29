@@ -6,6 +6,7 @@ package net.auroramc.games.crystalquest.listeners;
 
 import net.auroramc.api.utils.TextFormatter;
 import net.auroramc.core.api.events.entity.EntityDamageByPlayerEvent;
+import net.auroramc.core.api.events.entity.PlayerDamageEvent;
 import net.auroramc.core.api.events.player.PlayerInteractAtEntityEvent;
 import net.auroramc.core.api.events.player.PlayerTeleportEvent;
 import net.auroramc.engine.api.EngineAPI;
@@ -123,6 +124,7 @@ public class CrystalListener implements Listener {
     public void onDamage(EntityDamageByPlayerEvent e) {
         if (e.getDamaged() instanceof EnderCrystal) {
             e.setCancelled(true);
+            if (e.getCause() == PlayerDamageEvent.DamageCause.ENTITY_ATTACK) {
                 AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
                 EnderCrystal crystal = (EnderCrystal) e.getDamaged();
                 if (!player.isSpectator() && crystal.getCustomName() != null) {
@@ -134,6 +136,7 @@ public class CrystalListener implements Listener {
                 } else if (crystal.getCustomName() == null) {
                     player.sendMessage(TextFormatter.pluginMessage("Game", "You can't collect a crystal that's already been captured!"));
                 }
+            }
         }
     }
 
