@@ -6,6 +6,7 @@ package net.auroramc.games.crystalquest.listeners;
 
 import net.auroramc.api.utils.TextFormatter;
 import net.auroramc.core.api.events.entity.EntityDamageByPlayerEvent;
+import net.auroramc.core.api.events.entity.PlayerDamageEvent;
 import net.auroramc.core.api.events.player.PlayerInteractAtEntityEvent;
 import net.auroramc.core.api.events.player.PlayerTeleportEvent;
 import net.auroramc.engine.api.EngineAPI;
@@ -21,6 +22,23 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class CrystalListener implements Listener {
+
+    @EventHandler
+    public void onInteract(PlayerInteractAtEntityEvent e) {
+        if (e.getClickedEntity().getType() == EntityType.ENDER_CRYSTAL) {
+            AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
+            EnderCrystal crystal = (EnderCrystal) e.getClickedEntity();
+            if (!player.isSpectator() && crystal.getCustomName() != null) {
+                if (System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp() - 10000 >= 120000L) {
+                    crystalCapture(player, crystal);
+                } else {
+                    player.sendMessage(TextFormatter.pluginMessage("Game", "You cannot collect crystals within the first 2 minutes!"));
+                }
+            } else if (crystal.getCustomName() == null) {
+                player.sendMessage(TextFormatter.pluginMessage("Game", "You can't collect a crystal that's already been captured!"));
+            }
+        }
+    }
 
     private void crystalCapture(AuroraMCGamePlayer player, EnderCrystal crystal) {
         CQRed red = (CQRed) EngineAPI.getActiveGame().getTeams().get("Red");
@@ -104,7 +122,7 @@ public class CrystalListener implements Listener {
 
     @EventHandler
     public void onDamage(EntityDamageByPlayerEvent e) {
-        if (e.getDamaged() instanceof EnderCrystal) {
+        if (e.getDamaged() instanceof EnderCrystal && e.getCause() == PlayerDamageEvent.DamageCause.ENTITY_ATTACK) {
             e.setCancelled(true);
                 AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
                 EnderCrystal crystal = (EnderCrystal) e.getDamaged();
