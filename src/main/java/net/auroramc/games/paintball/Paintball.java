@@ -133,6 +133,12 @@ public class Paintball extends Game {
                     AuroraMCServerPlayer player1 = ServerAPI.getDisguisedPlayer(team.getName());
                     if (player1 == null) {
                         player1 = ServerAPI.getPlayer(team.getName());
+                        if (player1 == null) {
+                            player1 = ServerAPI.getDisguisedPlayer(team.getName());
+                        }
+                    }
+                    if (player1 == null) {
+                        continue;
                     }
                     if (!((AuroraMCGamePlayer)player1).isSpectator() && !player1.getTeam().equals(gp.getTeam())) {
                         team.setNameTagVisibility(NameTagVisibility.NEVER);

@@ -71,7 +71,7 @@ public class BreakListener implements Listener {
 
     @EventHandler
     public void onPlayerHit(PlayerDamageByPlayerEvent e) {
-        e.getDamager().setFoodLevel(((Player) e.getDamager()).getFoodLevel() + 2);
+        e.getDamager().setFoodLevel(e.getDamager().getFoodLevel() + 2);
     }
 
 }
