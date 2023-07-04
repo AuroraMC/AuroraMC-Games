@@ -10,13 +10,14 @@ import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
+import net.auroramc.engine.api.games.GameVariationInfo;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import org.bukkit.entity.Player;
 
 public class Backstab extends Game {
 
 
-    public Backstab(GameVariation gameVariation) {
+    public Backstab(GameVariationInfo gameVariation) {
         super(gameVariation);
     }
 
