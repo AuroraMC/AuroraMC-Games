@@ -352,4 +352,12 @@ public class HotPotato extends Game {
     public int getPotatoes() {
         return potatoes;
     }
+
+    public int getRoundLength() {
+        return roundLength;
+    }
+
+    public void setRoundLength(int roundLength) {
+        this.roundLength = roundLength;
+    }
 }
