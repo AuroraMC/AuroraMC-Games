@@ -28,7 +28,8 @@ public class HealthSetting implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onHealth(PlayerRegainHealthEvent e) {
         if (EngineAPI.getActiveGame().getHealth() != -1) {
-            e.setAmount(EngineAPI.getActiveGame().getHealth());
+            e.setAmount(0);
+            e.getPlayer().setHealth(EngineAPI.getActiveGame().getHealth());
         }
     }
 
