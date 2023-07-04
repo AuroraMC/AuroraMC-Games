@@ -249,6 +249,10 @@ public class NoDamageInstaKillListener implements Listener {
                 player2.sendMessage(TextFormatter.pluginMessage("Kill", killMessage.onKill(player2, killer, player, ent, killReason, EngineAPI.getActiveGameInfo().getId())));
             }
         } else if (e instanceof PlayerDamageByPlayerEvent) {
+            if (!EngineAPI.getActiveGame().isDamagePvP()) {
+                e.setCancelled(true);
+                return;
+            }
             e.setDamage(0);
             AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) e.getPlayer();
             if (!player1.isSpectator()) {
@@ -258,6 +262,10 @@ public class NoDamageInstaKillListener implements Listener {
                 player.getLatestHits().put(player1, time);
                 player1.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "damageDealt", Math.round(e.getDamage() * 100), true);
             } else {
+                e.setCancelled(true);
+            }
+        } else if (e instanceof PlayerDamageByEntityEvent) {
+            if (!EngineAPI.getActiveGame().isDamageEvP()) {
                 e.setCancelled(true);
             }
         } else {

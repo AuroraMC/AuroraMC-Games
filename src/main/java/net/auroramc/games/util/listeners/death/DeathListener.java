@@ -279,6 +279,10 @@ public class DeathListener implements Listener {
                 player2.sendMessage(TextFormatter.pluginMessage("Kill", killMessage.onKill(player2, killer, player, ent, killReason, EngineAPI.getActiveGameInfo().getId())));
             }
         } else if (e instanceof PlayerDamageByPlayerEvent) {
+            if (!EngineAPI.getActiveGame().isDamagePvP()) {
+                e.setCancelled(true);
+                return;
+            }
             if (e.getDamage() > 0) {
                 AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) ((PlayerDamageByPlayerEvent) e).getDamager();
                 if (!player1.isSpectator()) {
@@ -290,6 +294,10 @@ public class DeathListener implements Listener {
                 } else {
                     e.setCancelled(true);
                 }
+            }
+        } else if (e instanceof PlayerDamageByEntityEvent) {
+            if (!EngineAPI.getActiveGame().isDamageEvP()) {
+                e.setCancelled(true);
             }
         }
     }
