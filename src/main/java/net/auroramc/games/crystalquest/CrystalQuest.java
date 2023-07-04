@@ -808,6 +808,7 @@ public class CrystalQuest extends Game {
     }
 
     public void destroyCrystals() {
+        boolean send = false;
         CQBlue blue = (CQBlue) teams.get("Blue");
         CQRed red = (CQRed) teams.get("Red");
 
@@ -821,14 +822,17 @@ public class CrystalQuest extends Game {
 
         if (red.getTowerACrystal().getState() != Crystal.CrystalState.DEAD) {
             blueUnlucky = false;
+            send = true;
             red.getTowerACrystal().crystalDead(a, false);
         }
         if (red.getTowerBCrystal().getState() != Crystal.CrystalState.DEAD) {
             blueUnlucky = false;
+            send = true;
             red.getTowerBCrystal().crystalDead(b, false);
         }
         if (red.getBossCrystal().getState() != Crystal.CrystalState.DEAD) {
             blueUnlucky = false;
+            send = true;
             red.getBossCrystal().crystalDead(c, false);
         }
 
@@ -842,19 +846,24 @@ public class CrystalQuest extends Game {
 
         if (blue.getTowerACrystal().getState() != Crystal.CrystalState.DEAD) {
             redUnlucky = false;
+            send = true;
             blue.getTowerACrystal().crystalDead(a, false);
         }
         if (blue.getTowerBCrystal().getState() != Crystal.CrystalState.DEAD) {
             redUnlucky = false;
+            send = true;
             blue.getTowerBCrystal().crystalDead(b, false);
         }
         if (blue.getBossCrystal().getState() != Crystal.CrystalState.DEAD) {
             redUnlucky = false;
+            send = true;
             blue.getBossCrystal().crystalDead(c, false);
         }
 
-        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
-            player.sendMessage(TextFormatter.pluginMessage("Game", "&c&lAll Crystals have been destroyed! Last team alive wins!"));
+        if (send) {
+            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                player.sendMessage(TextFormatter.pluginMessage("Game", "&c&lAll Crystals have been destroyed! Last team alive wins!"));
+            }
         }
     }
 
