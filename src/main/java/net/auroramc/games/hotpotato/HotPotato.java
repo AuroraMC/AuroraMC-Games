@@ -202,6 +202,7 @@ public class HotPotato extends Game {
             potato.explode();
         }
         potatoList.clear();
+        potatoes = 0;
         EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Potatoes Exploded")));
         List<AuroraMCServerPlayer> playersAlive = ServerAPI.getPlayers().stream().filter(player -> !((AuroraMCGamePlayer) player).isSpectator()).collect(Collectors.toList());
         for (AuroraMCServerPlayer player : playersAlive) {
