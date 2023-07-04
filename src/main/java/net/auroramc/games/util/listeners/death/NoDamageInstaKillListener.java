@@ -268,6 +268,8 @@ public class NoDamageInstaKillListener implements Listener {
             if (!EngineAPI.getActiveGame().isDamageEvP()) {
                 e.setCancelled(true);
             }
+        } else if (e.getCause() == PlayerDamageEvent.DamageCause.FALL && !EngineAPI.getActiveGame().isDamageFall()) {
+            e.setCancelled(true);
         } else {
             e.setDamage(0);
         }

@@ -299,7 +299,10 @@ public class DeathListener implements Listener {
             if (!EngineAPI.getActiveGame().isDamageEvP()) {
                 e.setCancelled(true);
             }
+        } else if (e.getCause() == PlayerDamageEvent.DamageCause.FALL && !EngineAPI.getActiveGame().isDamageFall()) {
+                e.setCancelled(true);
         }
+
     }
 
     @EventHandler
