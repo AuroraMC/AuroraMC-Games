@@ -15,10 +15,7 @@ import net.auroramc.core.api.events.player.PlayerInteractEvent;
 import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
-import net.auroramc.engine.api.games.Game;
-import net.auroramc.engine.api.games.GameMap;
-import net.auroramc.engine.api.games.GameSession;
-import net.auroramc.engine.api.games.GameVariation;
+import net.auroramc.engine.api.games.*;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.tag.kits.Blinker;
 import net.auroramc.games.tag.listeners.HitListener;
@@ -44,7 +41,7 @@ import java.util.stream.Collectors;
 public class Tag extends Game {
 
 
-    public Tag(GameVariation gameVariation) {
+    public Tag(GameVariationInfo gameVariation) {
         super(gameVariation);
     }
 
@@ -61,6 +58,9 @@ public class Tag extends Game {
         runnable = new TagScoreboardRunnable();
         itemListener = new ItemListener();
         hitListener = new HitListener();
+
+        itemDrop = false;
+        itemPickup = false;
     }
 
     @Override
@@ -258,7 +258,16 @@ public class Tag extends Game {
     }
 
     @Override
-    public void onRespawn(AuroraMCGamePlayer auroraMCGamePlayer) {
+    public void onRespawn(AuroraMCGamePlayer gp) {
+        JSONArray spawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
+        JSONObject spawn = spawns.getJSONObject(new Random().nextInt(spawns.length()));
+        int x, y, z;
+        x = spawn.getInt("x");
+        y = spawn.getInt("y");
+        z = spawn.getInt("z");
+        float yaw = spawn.getFloat("yaw");
+        gp.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+        gp.getKit().onGameStart(gp);
     }
 
     @Override

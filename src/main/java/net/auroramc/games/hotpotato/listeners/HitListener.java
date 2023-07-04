@@ -33,6 +33,12 @@ public class HitListener implements Listener {
             e.setCancelled(true);
             return;
         }
+
+        if (!EngineAPI.getActiveGame().isDamagePvP()) {
+            e.setCancelled(true);
+            return;
+        }
+
         e.setDamage(0);
         AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getDamager();
         if (!player.isSpectator() && !player.isVanished()) {
@@ -62,6 +68,12 @@ public class HitListener implements Listener {
         }
         if (!(e instanceof PlayerDamageByPlayerEvent)) {
             e.setCancelled(true);
+            return;
+        }
+
+        if (!EngineAPI.getActiveGame().isDamageAll()) {
+            e.setCancelled(true);
+            return;
         }
 
         if (e.getCause() == PlayerDamageEvent.DamageCause.VOID) {

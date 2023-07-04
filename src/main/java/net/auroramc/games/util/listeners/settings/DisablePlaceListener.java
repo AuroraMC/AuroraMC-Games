@@ -9,6 +9,7 @@ package net.auroramc.games.util.listeners.settings;
 import net.auroramc.core.api.events.block.BlockPlaceEvent;
 import net.auroramc.engine.api.EngineAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -22,7 +23,14 @@ public class DisablePlaceListener implements Listener {
 
     @EventHandler
     public void onMove(BlockPlaceEvent e) {
-        e.setCancelled(true);
+        if (!EngineAPI.getActiveGame().isBlockPlace()) {
+            if (e.getPlayer().getGameMode() == GameMode.CREATIVE && EngineAPI.getActiveGame().isBlockPlaceCreative()) {
+                return;
+            }
+            e.setCancelled(true);
+        } else if (e.getPlayer().getGameMode() == GameMode.CREATIVE && !EngineAPI.getActiveGame().isBlockPlaceCreative()) {
+            e.setCancelled(true);
+        }
     }
 
     public static void register() {

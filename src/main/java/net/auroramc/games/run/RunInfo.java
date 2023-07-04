@@ -7,10 +7,21 @@
 package net.auroramc.games.run;
 
 import net.auroramc.engine.api.games.GameInfo;
+import net.auroramc.engine.api.games.GameVariationInfo;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RunInfo extends GameInfo {
 
+    private static final Map<String, GameVariationInfo> variations;
+
+    static {
+        variations = new HashMap<>();
+
+    }
+
     public RunInfo() {
-        super(104, "Run", Run.class, "Run and don't stop.\nBe the last one alive.", "RUN", false, "v0.0.1-ALPHA");
+        super(104, "Run", Run.class, "Run and don't stop.\nBe the last one alive.", "RUN", false, variations);
     }
 }

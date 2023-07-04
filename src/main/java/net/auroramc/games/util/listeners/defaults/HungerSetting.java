@@ -1,33 +1,34 @@
 /*
- * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2023 AuroraMC Ltd. All Rights Reserved.
  *
  * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
-package net.auroramc.games.util.listeners.settings;
+package net.auroramc.games.util.listeners.defaults;
 
 import net.auroramc.core.api.events.entity.FoodLevelChangeEvent;
+import net.auroramc.core.api.events.player.PlayerDropItemEvent;
 import net.auroramc.engine.api.EngineAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-public class DisableHungerListener implements Listener {
+public class HungerSetting implements Listener {
 
-    private final static DisableHungerListener instance;
+    private final static HungerSetting instance;
 
     static {
-        instance = new DisableHungerListener();
+        instance = new HungerSetting();
     }
 
-    @EventHandler
-    public void onMove(FoodLevelChangeEvent e) {
-        if (EngineAPI.getActiveGame().getHunger() != -1) {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onFoodLevelChange(FoodLevelChangeEvent e) {
+        if (EngineAPI.getActiveGame().getHunger() == -1) {
             e.setLevel(EngineAPI.getActiveGame().getHunger());
-        } else if (e.getLevel() < 30) {
-            e.setLevel(30);
         }
     }
+
 
     public static void register() {
         Bukkit.getPluginManager().registerEvents(instance, EngineAPI.getGameEngine());

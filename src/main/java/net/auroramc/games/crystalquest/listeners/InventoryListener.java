@@ -79,6 +79,8 @@ public class InventoryListener implements Listener {
         if (e.getItemDrop().getItemStack().getType().name().endsWith("_SWORD") || e.getItemDrop().getItemStack().getType().name().endsWith("_PICKAXE") || e.getItemDrop().getItemStack().getType().name().endsWith("_AXE") || e.getItemDrop().getItemStack().getType() == Material.COMPASS || e.getItemDrop().getItemStack().getType().name().endsWith("_HELMET") || e.getItemDrop().getItemStack().getType().name().endsWith("_CHESTPLATE") || e.getItemDrop().getItemStack().getType().name().endsWith("_LEGGINGS") || e.getItemDrop().getItemStack().getType().name().endsWith("_BOOTS") || e.getItemDrop().getItemStack().getType() == Material.NETHER_STAR || e.getItemDrop().getItemStack().getType() == Material.ARROW || e.getItemDrop().getItemStack().getType() == Material.BOW) {
             e.setCancelled(true);
             e.getPlayer().sendMessage(TextFormatter.pluginMessage("Game", "You cannot drop this item!"));
+        } else {
+            e.setCancelled(!EngineAPI.getActiveGame().isItemDrop());
         }
     }
 
@@ -86,6 +88,8 @@ public class InventoryListener implements Listener {
     public void onPickup(PlayerPickupItemEvent e) {
         if (e.getItem().getItemStack().getType() == Material.ARROW) {
             e.setCancelled(true);
+        } else {
+            e.setCancelled(!EngineAPI.getActiveGame().isItemPickup());
         }
     }
 

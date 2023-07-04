@@ -57,7 +57,7 @@ public class LeapListener implements Listener {
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent e) {
-        e.setCancelled(true);
+        e.setCancelled(!EngineAPI.getActiveGame().isItemDrop());
     }
 
 }

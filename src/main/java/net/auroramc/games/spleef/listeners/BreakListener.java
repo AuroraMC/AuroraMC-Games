@@ -34,6 +34,10 @@ public class BreakListener implements Listener {
 
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
+        if (!EngineAPI.getActiveGame().isBlockBreak()) {
+            e.setCancelled(true);
+            return;
+        }
         if (EngineAPI.getActiveGame().isStarting()) {
             e.setCancelled(true);
         } else {
@@ -104,7 +108,7 @@ public class BreakListener implements Listener {
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent e) {
-        e.setCancelled(true);
+        e.setCancelled(!EngineAPI.getActiveGame().isItemDrop());
     }
 
 }

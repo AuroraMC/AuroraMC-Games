@@ -88,6 +88,10 @@ public class DeathListener implements Listener {
                 }
             }
         }
+        if (!EngineAPI.getActiveGame().isDamageAll()) {
+            e.setCancelled(true);
+            return;
+        }
         if (e.getDamage() >= player.getHealth() && !player.isSpectator()) {
             e.setDamage(0);
 
@@ -101,7 +105,10 @@ public class DeathListener implements Listener {
                 killMessage = (KillMessage) AuroraMCAPI.getCosmetics().get(500);
             }
             if (e instanceof PlayerDamageByPlayerEvent) {
-
+                if (!EngineAPI.getActiveGame().isDamagePvP()) {
+                    e.setCancelled(true);
+                    return;
+                }
                 if (e instanceof PlayerDamageByPlayerRangedEvent) {
                     killer = (AuroraMCGamePlayer) ((PlayerDamageByPlayerRangedEvent) e).getDamager();
                     killReason = KillMessage.KillReason.BOW;
@@ -123,6 +130,10 @@ public class DeathListener implements Listener {
                             break;
                         }
                         case FALL: {
+                            if (!EngineAPI.getActiveGame().isDamageFall()) {
+                                e.setCancelled(true);
+                                return;
+                            }
                             if (EngineAPI.getActiveGameInfo().getId() == 102) {
                                 if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(146))) {
                                     player.getStats().achievementGained(AuroraMCAPI.getAchievement(146), 1, true);
@@ -148,16 +159,28 @@ public class DeathListener implements Listener {
                 } else if (((PlayerDamageByEntityEvent) e).getDamager() instanceof Arrow) {
                     if (((Arrow) ((PlayerDamageByEntityEvent) e).getDamager()).getShooter() instanceof Entity) {
                         //Damage by entity.
+                        if (!EngineAPI.getActiveGame().isDamageEvP()) {
+                            e.setCancelled(true);
+                            return;
+                        }
                         entity = (Entity) ((Arrow) ((PlayerDamageByEntityEvent) e).getDamager()).getShooter();
                         killReason = KillMessage.KillReason.ENTITY;
                     }
                 } else {
+                    if (!EngineAPI.getActiveGame().isDamageEvP()) {
+                        e.setCancelled(true);
+                        return;
+                    }
                     entity = ((PlayerDamageByEntityEvent) e).getDamager();
                     killReason = KillMessage.KillReason.ENTITY;
                 }
             } else {
                 switch (e.getCause()) {
                     case FALL: {
+                        if (!EngineAPI.getActiveGame().isDamageFall()) {
+                            e.setCancelled(true);
+                            return;
+                        }
                         killReason = KillMessage.KillReason.FALL;
                         if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
                             killer = player.getLastHitBy();
@@ -268,6 +291,13 @@ public class DeathListener implements Listener {
                     e.setCancelled(true);
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onDamage(EntityDamageByPlayerEvent e) {
+        if (!EngineAPI.getActiveGame().isDamagePvE()) {
+            e.setCancelled(true);
         }
     }
 

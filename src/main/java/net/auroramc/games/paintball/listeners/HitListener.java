@@ -28,7 +28,6 @@ import net.auroramc.games.paintball.kits.Tribute;
 import net.auroramc.games.paintball.teams.PBBlue;
 import net.auroramc.games.paintball.teams.PBRed;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
@@ -36,11 +35,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -52,6 +47,10 @@ public class HitListener implements Listener {
 
     @EventHandler
     public void onDamage(PlayerDamageEvent e) {
+        if (!EngineAPI.getActiveGame().isDamageAll()) {
+            e.setCancelled(true);
+            return;
+        }
         if (!(e instanceof PlayerDamageByPlayerEvent)) {
             e.setCancelled(true);
         }
@@ -94,6 +93,10 @@ public class HitListener implements Listener {
 
     @EventHandler
     public void onDamage(PlayerDamageByPlayerEvent e) {
+        if (!EngineAPI.getActiveGame().isDamagePvP()) {
+            e.setCancelled(true);
+            return;
+        }
         if (e instanceof PlayerDamageByPlayerRangedEvent) {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
             if (player.isSpectator() || player.isVanished()) {
@@ -199,6 +202,10 @@ public class HitListener implements Listener {
         if (e.getDamager() instanceof Snowball) {
             Snowball snowball = (Snowball) e.getDamager();
             if (snowball.getShooter() instanceof ArmorStand) {
+                if (!EngineAPI.getActiveGame().isDamageEvP()) {
+                    e.setCancelled(true);
+                    return;
+                }
                 Turret turret = ((Paintball)EngineAPI.getActiveGame()).getTurrets().get((ArmorStand) snowball.getShooter());
                 if (turret.getOwner().getTeam().equals(e.getPlayer().getTeam())) {
                     e.setCancelled(true);

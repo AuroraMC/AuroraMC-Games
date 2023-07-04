@@ -22,7 +22,7 @@ public class DisableItemPickup implements Listener {
 
     @EventHandler
     public void onMove(PlayerPickupItemEvent e) {
-        e.setCancelled(true);
+        e.setCancelled(!EngineAPI.getActiveGame().isItemPickup());
     }
 
     public static void register() {

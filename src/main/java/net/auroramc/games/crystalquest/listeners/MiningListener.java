@@ -20,6 +20,7 @@ import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.games.crystalquest.kits.Miner;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -38,7 +39,7 @@ public class MiningListener implements Listener {
 
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
-        if (EngineAPI.getActiveGame().isStarting() || ((AuroraMCGamePlayer)e.getPlayer()).isSpectator() || e.getPlayer().isVanished()) {
+        if (EngineAPI.getActiveGame().isStarting() || ((AuroraMCGamePlayer)e.getPlayer()).isSpectator() || e.getPlayer().isVanished() || (!EngineAPI.getActiveGame().isBlockBreak() && e.getPlayer().getGameMode() != GameMode.CREATIVE) || (!EngineAPI.getActiveGame().isBlockBreakCreative() && e.getPlayer().getGameMode() == GameMode.CREATIVE)) {
             e.setCancelled(true);
             return;
         }
@@ -379,6 +380,9 @@ public class MiningListener implements Listener {
             if (e.getBlockAgainst().getType() == Material.BARRIER) {
                 e.setCancelled(true);
             }
+            if ((!EngineAPI.getActiveGame().isBlockBreak() && e.getPlayer().getGameMode() != GameMode.CREATIVE) || (!EngineAPI.getActiveGame().isBlockBreakCreative() && e.getPlayer().getGameMode() == GameMode.CREATIVE)) {
+                e.setCancelled(true);
+            }
         }
     }
 
@@ -404,6 +408,7 @@ public class MiningListener implements Listener {
         if (e.getItem().getItemStack().getType() == Material.ARROW) {
             e.getItem().setItemStack(new ItemStack(Material.ARROW, e.getItem().getItemStack().getAmount()));
         }
+        e.setCancelled(!EngineAPI.getActiveGame().isItemPickup());
     }
 
     @EventHandler

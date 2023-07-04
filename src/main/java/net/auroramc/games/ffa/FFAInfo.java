@@ -7,10 +7,21 @@
 package net.auroramc.games.ffa;
 
 import net.auroramc.engine.api.games.GameInfo;
+import net.auroramc.engine.api.games.GameVariationInfo;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FFAInfo extends GameInfo {
 
+    private static final Map<String, GameVariationInfo> variations;
+
+    static {
+        variations = new HashMap<>();
+
+    }
+
     public FFAInfo() {
-        super(102, "FFA", FFA.class, "Kill your opponents and be the last one alive. That's it. Yes, it's really that simple.", "FFA", false, "v0.0.1-ALPHA");
+        super(102, "FFA", FFA.class, "Kill your opponents and be the last one alive. That's it. Yes, it's really that simple.", "FFA", false, variations);
     }
 }

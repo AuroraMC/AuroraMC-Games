@@ -7,10 +7,21 @@
 package net.auroramc.games.tag;
 
 import net.auroramc.engine.api.games.GameInfo;
+import net.auroramc.engine.api.games.GameVariationInfo;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class TagInfo extends GameInfo {
 
+    private static final Map<String, GameVariationInfo> variations;
+
+    static {
+        variations = new HashMap<>();
+
+    }
+
     public TagInfo() {
-        super(103, "Tag", Tag.class, "Avoid getting tagged and be the last person alive!", "TAG", false, "v0.0.1-ALPHA");
+        super(103, "Tag", Tag.class, "Avoid getting tagged and be the last person alive!", "TAG", false, variations);
     }
 }

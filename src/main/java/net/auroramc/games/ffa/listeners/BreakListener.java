@@ -68,12 +68,16 @@ public class BreakListener implements Listener {
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent e) {
-        e.setCancelled(true);
+        e.setCancelled(!EngineAPI.getActiveGame().isItemDrop());
     }
 
     @EventHandler
     public void onPlayerHit(PlayerDamageByPlayerEvent e) {
-        e.getDamager().setFoodLevel(e.getDamager().getFoodLevel() + 2);
+        if (EngineAPI.getActiveGame().getHunger() == -1) {
+            e.getDamager().setFoodLevel(EngineAPI.getActiveGame().getHunger());
+        } else {
+            e.getDamager().setFoodLevel(e.getDamager().getFoodLevel() + 2);
+        }
     }
 
 }
