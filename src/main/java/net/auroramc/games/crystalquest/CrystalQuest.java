@@ -862,7 +862,7 @@ public class CrystalQuest extends Game {
 
         if (send) {
             for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
-                player.sendMessage(TextFormatter.pluginMessage("Game", "&c&lAll Crystals have been destroyed! Last team alive wins!"));
+                player.sendMessage(TextFormatter.pluginMessage("Game", "§c§lAll Crystals have been destroyed! Last team alive wins!"));
             }
         }
     }
