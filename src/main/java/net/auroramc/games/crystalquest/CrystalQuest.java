@@ -612,7 +612,7 @@ public class CrystalQuest extends Game {
 
                             @Override
                             public void run() {
-                                if (player.isOnline()) {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
                                     if (!player.getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
                                         player.getInventory().addItem(new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack());
                                     }
@@ -630,7 +630,7 @@ public class CrystalQuest extends Game {
 
                             @Override
                             public void run() {
-                                if (player.isOnline()) {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
                                     if (!player.getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
                                         player.getInventory().addItem(stack);
                                     }
@@ -648,7 +648,7 @@ public class CrystalQuest extends Game {
 
                             @Override
                             public void run() {
-                                if (player.isOnline()) {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
                                     if (!player.getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
                                         player.getInventory().addItem(stack);
                                     }
@@ -666,7 +666,7 @@ public class CrystalQuest extends Game {
 
                             @Override
                             public void run() {
-                                if (player.isOnline()) {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
                                     if (!player.getInventory().contains(Material.STAINED_GLASS, 14) && !player.isSpectator()) {
                                         player.getInventory().addItem(stack);
                                     }
@@ -684,7 +684,7 @@ public class CrystalQuest extends Game {
 
                             @Override
                             public void run() {
-                                if (player.isOnline()) {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
                                     if (!player.getInventory().contains(Material.STAINED_GLASS, 16) && !player.isSpectator()) {
                                         player.getInventory().addItem(stack);
                                     }
@@ -702,7 +702,7 @@ public class CrystalQuest extends Game {
 
                             @Override
                             public void run() {
-                                if (player.isOnline()) {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
                                     if (!player.getInventory().contains(Material.STAINED_GLASS, 16) && !player.isSpectator()) {
                                         player.getInventory().addItem(stack);
                                     }
@@ -741,7 +741,7 @@ public class CrystalQuest extends Game {
 
                     @Override
                     public void run() {
-                        if (player.isOnline()) {
+                        if (player.isOnline() && player.getKit() instanceof Archer) {
                             if (!player.getInventory().contains(Material.ARROW, max) && !player.isSpectator()) {
                                 player.getInventory().addItem(stack);
                             }
@@ -783,19 +783,31 @@ public class CrystalQuest extends Game {
                 tasks.add(new BukkitRunnable(){
                     @Override
                     public void run() {
-                        player.getInventory().addItem(new ItemStack(Material.IRON_INGOT, finalAmountIron));
+                        if (player.isOnline() && player.getKit() instanceof Economist) {
+                            player.getInventory().addItem(new ItemStack(Material.IRON_INGOT, finalAmountIron));
+                        } else {
+                            this.cancel();
+                        }
                     }
                 }.runTaskTimer(EngineAPI.getGameEngine(), iron, iron));
                 tasks.add(new BukkitRunnable(){
                     @Override
                     public void run() {
-                        player.getInventory().addItem(new ItemStack(Material.GOLD_INGOT, finalAmountGold));
+                        if (player.isOnline() && player.getKit() instanceof Economist) {
+                            player.getInventory().addItem(new ItemStack(Material.GOLD_INGOT, finalAmountGold));
+                        } else {
+                            this.cancel();
+                        }
                     }
                 }.runTaskTimer(EngineAPI.getGameEngine(), gold, gold));
                 tasks.add(new BukkitRunnable(){
                     @Override
                     public void run() {
-                        player.getInventory().addItem(new ItemStack(Material.EMERALD, 1));
+                        if (player.isOnline() && player.getKit() instanceof Economist) {
+                            player.getInventory().addItem(new ItemStack(Material.EMERALD, 1));
+                        } else {
+                            this.cancel();
+                        }
                     }
                 }.runTaskTimer(EngineAPI.getGameEngine(), emerald, emerald));
             }
@@ -1059,7 +1071,7 @@ public class CrystalQuest extends Game {
 
                             @Override
                             public void run() {
-                                if (player.isOnline()) {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
                                     if (!player.getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
                                         player.getInventory().addItem(new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack());
                                     }
@@ -1077,7 +1089,7 @@ public class CrystalQuest extends Game {
 
                             @Override
                             public void run() {
-                                if (player.isOnline()) {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
                                     if (!player.getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
                                         player.getInventory().addItem(stack);
                                     }
@@ -1095,7 +1107,7 @@ public class CrystalQuest extends Game {
 
                             @Override
                             public void run() {
-                                if (player.isOnline()) {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
                                     if (!player.getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
                                         player.getInventory().addItem(stack);
                                     }
@@ -1113,7 +1125,7 @@ public class CrystalQuest extends Game {
 
                             @Override
                             public void run() {
-                                if (player.isOnline()) {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
                                     if (!player.getInventory().contains(Material.STAINED_GLASS, 14) && !player.isSpectator()) {
                                         player.getInventory().addItem(stack);
                                     }
@@ -1131,7 +1143,7 @@ public class CrystalQuest extends Game {
 
                             @Override
                             public void run() {
-                                if (player.isOnline()) {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
                                     if (!player.getInventory().contains(Material.STAINED_GLASS, 16) && !player.isSpectator()) {
                                         player.getInventory().addItem(stack);
                                     }
@@ -1149,7 +1161,7 @@ public class CrystalQuest extends Game {
 
                             @Override
                             public void run() {
-                                if (player.isOnline()) {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
                                     if (!player.getInventory().contains(Material.STAINED_GLASS, 16) && !player.isSpectator()) {
                                         player.getInventory().addItem(stack);
                                     }
@@ -1188,7 +1200,7 @@ public class CrystalQuest extends Game {
 
                     @Override
                     public void run() {
-                        if (player.isOnline()) {
+                        if (player.isOnline() && player.getKit() instanceof Archer) {
                             if (!player.getInventory().contains(Material.ARROW, max) && !player.isSpectator()) {
                                 player.getInventory().addItem(stack);
                             }
@@ -1230,19 +1242,31 @@ public class CrystalQuest extends Game {
                 tasks.add(new BukkitRunnable(){
                     @Override
                     public void run() {
-                        player.getInventory().addItem(new ItemStack(Material.IRON_INGOT, finalAmountIron));
+                        if (player.isOnline() && player.getKit() instanceof Economist) {
+                            player.getInventory().addItem(new ItemStack(Material.IRON_INGOT, finalAmountIron));
+                        } else {
+                            this.cancel();
+                        }
                     }
                 }.runTaskTimer(EngineAPI.getGameEngine(), iron, iron));
                 tasks.add(new BukkitRunnable(){
                     @Override
                     public void run() {
-                        player.getInventory().addItem(new ItemStack(Material.GOLD_INGOT, finalAmountGold));
+                        if (player.isOnline() && player.getKit() instanceof Economist) {
+                            player.getInventory().addItem(new ItemStack(Material.GOLD_INGOT, finalAmountGold));
+                        } else {
+                            this.cancel();
+                        }
                     }
                 }.runTaskTimer(EngineAPI.getGameEngine(), gold, gold));
                 tasks.add(new BukkitRunnable(){
                     @Override
                     public void run() {
-                        player.getInventory().addItem(new ItemStack(Material.EMERALD, 1));
+                        if (player.isOnline() && player.getKit() instanceof Economist) {
+                            player.getInventory().addItem(new ItemStack(Material.EMERALD, 1));
+                        } else {
+                            this.cancel();
+                        }
                     }
                 }.runTaskTimer(EngineAPI.getGameEngine(), emerald, emerald));
             }
