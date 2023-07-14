@@ -107,7 +107,11 @@ public class YOLO extends CrystalQuestVariation {
                 livesLost.put(player.getUniqueId(), i);
                 player.sendMessage(TextFormatter.pluginMessage("YOLO", "You have **" + (lives - i) + "** lives left."));
             }
+        } else {
+            livesLost.put(player.getUniqueId(), 1);
+            player.sendMessage(TextFormatter.pluginMessage("YOLO", "You have **" + (lives - 1) + "** lives left."));
         }
+
         return false;
     }
 
