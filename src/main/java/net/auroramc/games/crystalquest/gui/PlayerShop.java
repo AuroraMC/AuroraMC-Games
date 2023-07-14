@@ -9,10 +9,12 @@ package net.auroramc.games.crystalquest.gui;
 import net.auroramc.api.utils.TextFormatter;
 import net.auroramc.core.api.utils.gui.GUI;
 import net.auroramc.core.api.utils.gui.GUIItem;
+import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.kits.Archer;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
+import net.auroramc.games.crystalquest.variations.CrystalQuestVariation;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
@@ -49,6 +51,9 @@ public class PlayerShop extends GUI {
                 break;
             }
         }
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
         this.setItem(1, 4, item);
 
         switch (player.getInventory().getChestplate().getType()) {
@@ -68,6 +73,9 @@ public class PlayerShop extends GUI {
                 item = new GUIItem(Material.BARRIER, "&3Chestplate Upgrade", 1, ";&r&fYou have the max upgrade.");
                 break;
             }
+        }
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
         }
         this.setItem(2, 4, item);
 
@@ -89,6 +97,9 @@ public class PlayerShop extends GUI {
                 break;
             }
         }
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
         this.setItem(3, 4, item);
 
         switch (player.getInventory().getBoots().getType()) {
@@ -109,15 +120,46 @@ public class PlayerShop extends GUI {
                 break;
             }
         }
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
         this.setItem(4, 4, item);
 
+        item = new GUIItem(Material.STAINED_CLAY, "&3&l16 Clay Blocks", 16, ";&r&fClick to purchase **16** &fClay Blocks.;;&r&fCost: &b16&7 Iron Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11));
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
+        this.setItem(1, 1, item);
 
-        this.setItem(1, 1, new GUIItem(Material.STAINED_CLAY, "&3&l16 Clay Blocks", 16, ";&r&fClick to purchase **16** &fClay Blocks.;;&r&fCost: &b16&7 Iron Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
-        this.setItem(0, 1, new GUIItem(Material.WOOL, "&3&l16 Wool Blocks", 16, ";&r&fClick to purchase **16** &fWool Blocks.;;&r&fCost: &b12&7 Iron Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
-        this.setItem(3, 1, new GUIItem(Material.WOOD, "&3&l16 Wood Blocks", 16, ";&r&fClick to purchase **16** &fWood Blocks.;;&r&fCost: &b8&6 Gold Ingots"));
-        this.setItem(2, 1, new GUIItem(Material.STAINED_GLASS, "&3&l16 Glass Blocks", 16, ";&r&fClick to purchase **16** &fGlass Blocks.;;&r&fCost: &b16&6 Gold Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11)));
-        this.setItem(4, 1, new GUIItem(Material.ENDER_STONE, "&3&l8 End Stone", 8, ";&r&fClick to purchase **8** &fEnd Stone.;;&r&fCost: &b24&6 Gold Ingots"));
-        this.setItem(5, 1, new GUIItem(Material.OBSIDIAN, "&3&l1 Obsidian", 1, ";&r&fClick to purchase **1** &fObsidian.;;&r&fCost: &b4&a Emeralds"));
+        item = new GUIItem(Material.WOOL, "&3&l16 Wool Blocks", 16, ";&r&fClick to purchase **16** &fWool Blocks.;;&r&fCost: &b12&7 Iron Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11));
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
+        this.setItem(0, 1, item);
+
+        item = new GUIItem(Material.WOOD, "&3&l16 Wood Blocks", 16, ";&r&fClick to purchase **16** &fWood Blocks.;;&r&fCost: &b8&6 Gold Ingots");
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
+        this.setItem(3, 1, item);
+
+        item = new GUIItem(Material.STAINED_GLASS, "&3&l16 Glass Blocks", 16, ";&r&fClick to purchase **16** &fGlass Blocks.;;&r&fCost: &b16&6 Gold Ingots", (short)((player.getTeam().getName().equalsIgnoreCase("Red"))?14:11));
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
+        this.setItem(2, 1, item);
+
+        item = new GUIItem(Material.ENDER_STONE, "&3&l8 End Stone", 8, ";&r&fClick to purchase **8** &fEnd Stone.;;&r&fCost: &b24&6 Gold Ingots");
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
+        this.setItem(4, 1, item);
+
+        item = new GUIItem(Material.OBSIDIAN, "&3&l1 Obsidian", 1, ";&r&fClick to purchase **1** &fObsidian.;;&r&fCost: &b4&a Emeralds");
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
+        this.setItem(5, 1, item);
 
         int swordSlot = 0, pickSlot = 1, axeSlot = 2;
 
@@ -156,6 +198,9 @@ public class PlayerShop extends GUI {
                 break;
             }
         }
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
         this.setItem(2, 5, item);
 
         switch (player.getInventory().getItem(axeSlot).getType()) {
@@ -176,10 +221,17 @@ public class PlayerShop extends GUI {
                 break;
             }
         }
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
         this.setItem(3, 5, item);
 
         if (!player.getInventory().contains(Material.SHEARS)) {
-            this.setItem(4, 5, new GUIItem(Material.SHEARS, "&3Shears", 1, ";&r&fClick here to buy;&7Shears.;;&r&fCost: &b16 &7Iron."));
+            item = new GUIItem(Material.SHEARS, "&3Shears", 1, ";&r&fClick here to buy;&7Shears.;;&r&fCost: &b16 &7Iron.");
+            if (EngineAPI.getActiveGame().getGameVariation() != null) {
+                item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+            }
+            this.setItem(4, 5, item);
         } else {
             this.setItem(4, 5, new GUIItem(Material.BARRIER, "&3Shears", 1, ";&r&fYou already have Shears."));
         }
@@ -198,28 +250,77 @@ public class PlayerShop extends GUI {
                 break;
             }
         }
-        this.setItem(1, 5, new GUIItem(Material.GOLD_INGOT, "&3Gold Ingot Conversion", 1, ";&r&fClick here to buy;&61 Gold Ingot.;;&r&fCost: &b20 &7Iron."));
-        this.setItem(1, 3, new GUIItem(Material.IRON_INGOT, "&3Iron Ingot Conversion", 1, ";&r&fClick here to buy;&720 Iron Ingots.;;&r&fCost: &b1 &6Gold."));
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
         this.setItem(2, 3, item);
 
+        item = new GUIItem(Material.GOLD_INGOT, "&3Gold Ingot Conversion", 1, ";&r&fClick here to buy;&61 Gold Ingot.;;&r&fCost: &b20 &7Iron.");
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
+        this.setItem(1, 5, item);
+        item = new GUIItem(Material.IRON_INGOT, "&3Iron Ingot Conversion", 1, ";&r&fClick here to buy;&720 Iron Ingots.;;&r&fCost: &b1 &6Gold.");
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
+        this.setItem(1, 3, item);
+
         if (!player.getInventory().contains(Material.BOW)) {
-            this.setItem(3, 3, new GUIItem(Material.BOW, "&3Bow", 1, ";&r&fClick here to buy;&7Bow.;;&r&fCost: &b16 &7Iron."));
+            item = new GUIItem(Material.BOW, "&3Bow", 1, ";&r&fClick here to buy;&7Bow.;;&r&fCost: &b16 &7Iron.");
+            if (EngineAPI.getActiveGame().getGameVariation() != null) {
+                item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+            }
+            this.setItem(3, 3, item);
         } else {
             this.setItem(3, 3, new GUIItem(Material.BARRIER, "&3Bow", 1, ";&r&fYou already have a Bow."));
         }
 
         if (!(player.getKit() instanceof Archer)) {
-            this.setItem(4, 3, new GUIItem(Material.ARROW, "&32 Arrows", 2, ";&r&fClick here to buy;&72 Arrows.;;&r&fCost: &b8 &7Iron."));
+            item = new GUIItem(Material.ARROW, "&32 Arrows", 2, ";&r&fClick here to buy;&72 Arrows.;;&r&fCost: &b8 &7Iron.");
+            if (EngineAPI.getActiveGame().getGameVariation() != null) {
+                item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+            }
+            this.setItem(4, 3, item);
         } else {
             this.setItem(4, 3, new GUIItem(Material.BARRIER, "&32 Arrows", 1, ";&r&fYou are not able to buy arrows with Archer Kit enabled."));
         }
 
-        this.setItem(0, 7, new GUIItem(Material.WATER_BUCKET, "&3&lWater Bucket", 1, ";&r&fClick to purchase **Water Bucket**.;;&r&fCost: &b48&7 Iron"));
-        this.setItem(1, 7, new GUIItem(Material.GOLDEN_APPLE, "&3&lGolden Apple", 1, ";&r&fClick to purchase **Golden Apple**.;;&r&fCost: &b8&6 Gold"));
-        this.setItem(2, 7, new GUIItem(Material.COOKIE, "&3&lInstant Cookie", 1, ";&r&fClick to purchase **Instant Cookie**.;;&r&fCost: &b2&a Emerald"));
-        this.setItem(3, 7, new GUIItem(Material.FLINT_AND_STEEL, "&3&lFlint and Steel", 1, ";&r&fClick to purchase **Flint and Steel**.;;&r&fCost: &b2&a Emeralds"));
-        this.setItem(4, 7, new GUIItem(Material.ENDER_PEARL, "&3&lEthereal Pearl", 1, ";&r&fClick to purchase **Ethereal Pearl**.;;&r&fCost: &b8&a Emeralds"));
-        this.setItem(5, 7, new GUIItem(Material.LADDER, "&3&l8 Ladders", 8, ";&r&fClick to purchase **8** &fLadders.;;&r&fCost: &b10&7 Iron"));
+        item = new GUIItem(Material.WATER_BUCKET, "&3&lWater Bucket", 1, ";&r&fClick to purchase **Water Bucket**.;;&r&fCost: &b48&7 Iron");
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
+        this.setItem(0, 7, item);
+
+        item = new GUIItem(Material.GOLDEN_APPLE, "&3&lGolden Apple", 1, ";&r&fClick to purchase **Golden Apple**.;;&r&fCost: &b8&6 Gold");
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
+        this.setItem(1, 7, item);
+
+        item = new GUIItem(Material.COOKIE, "&3&lInstant Cookie", 1, ";&r&fClick to purchase **Instant Cookie**.;;&r&fCost: &b2&a Emerald");
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
+        this.setItem(2, 7, item);
+
+        item = new GUIItem(Material.FLINT_AND_STEEL, "&3&lFlint and Steel", 1, ";&r&fClick to purchase **Flint and Steel**.;;&r&fCost: &b2&a Emeralds");
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
+        this.setItem(3, 7, item);
+
+        item = new GUIItem(Material.ENDER_PEARL, "&3&lEthereal Pearl", 1, ";&r&fClick to purchase **Ethereal Pearl**.;;&r&fCost: &b8&a Emeralds");
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
+        this.setItem(4, 7, item);
+
+        item = new GUIItem(Material.LADDER, "&3&l8 Ladders", 8, ";&r&fClick to purchase **8** &fLadders.;;&r&fCost: &b10&7 Iron");
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            item = ((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopDisplayItem(item);
+        }
+        this.setItem(5, 7, item);
     }
 
     @Override
@@ -236,6 +337,12 @@ public class PlayerShop extends GUI {
                 axeSlot = i;
             } else if (player.getInventory().getItem(i).getType().name().endsWith("_PICKAXE")) {
                 pickSlot = i;
+            }
+        }
+        if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            if (!((CrystalQuestVariation)EngineAPI.getActiveGame().getGameVariation()).onShopPurchase(item.getType())) {
+                player.playSound(player.getLocation(), Sound.ITEM_BREAK, 100, 0);
+                return;
             }
         }
         switch (item.getType()) {

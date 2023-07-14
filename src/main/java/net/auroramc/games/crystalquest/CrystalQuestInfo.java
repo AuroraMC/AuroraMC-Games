@@ -8,6 +8,13 @@ package net.auroramc.games.crystalquest;
 
 import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.GameVariationInfo;
+import net.auroramc.games.crystalquest.variations.hungergames.HungerGamesInfo;
+import net.auroramc.games.crystalquest.variations.killtheking.KillTheKingInfo;
+import net.auroramc.games.crystalquest.variations.knockback.KnockbackInfo;
+import net.auroramc.games.crystalquest.variations.op.OPInfo;
+import net.auroramc.games.crystalquest.variations.oresbegone.OresBeGoneInfo;
+import net.auroramc.games.crystalquest.variations.staffvscommunity.StaffVsCommunityInfo;
+import net.auroramc.games.crystalquest.variations.yolo.YOLOInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +25,13 @@ public class CrystalQuestInfo extends GameInfo {
 
     static {
         variations = new HashMap<>();
-
+        variations.put("OP", new OPInfo());
+        variations.put("YOLO", new YOLOInfo());
+        variations.put("STAFF_VS_COMMUNITY", new StaffVsCommunityInfo());
+        variations.put("HUNGER_GAMES", new HungerGamesInfo());
+        variations.put("KILL_THE_KING", new KillTheKingInfo());
+        variations.put("KNOCKBACK", new KnockbackInfo());
+        variations.put("ORES_BE_GONE", new OresBeGoneInfo());
     }
 
     public CrystalQuestInfo() {

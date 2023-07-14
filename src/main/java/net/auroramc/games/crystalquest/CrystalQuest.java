@@ -36,6 +36,7 @@ import net.auroramc.games.crystalquest.kits.*;
 import net.auroramc.games.crystalquest.listeners.*;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
+import net.auroramc.games.crystalquest.variations.CrystalQuestVariation;
 import net.auroramc.games.util.listeners.death.DeathRespawnListener;
 import net.auroramc.games.util.listeners.defaults.HealthSetting;
 import net.auroramc.games.util.listeners.defaults.HungerSetting;
@@ -71,6 +72,7 @@ public class CrystalQuest extends Game {
     private final ChestListener chestListener;
     private final KitListener kitListener;
     private BukkitTask mineTask;
+    private float mineMultiplier;
 
     private BukkitTask destroyTask;
     private BukkitTask endTask;
@@ -108,6 +110,7 @@ public class CrystalQuest extends Game {
         this.tasks = new ArrayList<>();
         blueUnlucky = true;
         redUnlucky = true;
+        mineMultiplier = 1.0f;
     }
 
     @Override
@@ -257,9 +260,9 @@ public class CrystalQuest extends Game {
 
     private void generateMine(float iron, float gold, float emerald) {
         JSONArray dataLocations = map.getMapData().getJSONArray("data_locations");
-        int emeralds = Math.round(emerald * dataLocations.length());
-        int ironOres = Math.round(iron * dataLocations.length());
-        int goldOres = Math.round(gold * dataLocations.length());
+        int emeralds = Math.round(emerald * dataLocations.length() * mineMultiplier);
+        int ironOres = Math.round(iron * dataLocations.length() * mineMultiplier);
+        int goldOres = Math.round(gold * dataLocations.length() * mineMultiplier);
 
         List<Location> locations = new ArrayList<>();
         for (int i = 0;i < dataLocations.length();i++) {
@@ -283,6 +286,11 @@ public class CrystalQuest extends Game {
                 location.getBlock().setType(Material.STONE);
             }
         }
+
+        if (gameVariation != null) {
+            ((CrystalQuestVariation)gameVariation).onMineGenerate();
+        }
+
         EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Mine regenerated")));
     }
 
@@ -873,6 +881,9 @@ public class CrystalQuest extends Game {
         }
 
         if (send) {
+            if (gameVariation != null) {
+                ((CrystalQuestVariation)gameVariation).onCrystalDestroy();
+            }
             for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
                 player.sendMessage(TextFormatter.pluginMessage("Game", "§c§lAll Crystals have been destroyed! Last team alive wins!"));
             }
@@ -900,8 +911,7 @@ public class CrystalQuest extends Game {
 
     @Override
     public void onPlayerJoin(AuroraMCGamePlayer auroraMCGamePlayer) {
-
-
+        super.onPlayerJoin(auroraMCGamePlayer);
         if (!auroraMCGamePlayer.isVanished()) {
             EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Spectator Joined").put("player", auroraMCGamePlayer.getName())));
         }
@@ -918,6 +928,7 @@ public class CrystalQuest extends Game {
 
     @Override
     public void onPlayerLeave(AuroraMCGamePlayer player) {
+        super.onPlayerJoin(player);
         if (!player.isVanished()) {
             EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Leave").put("player", player.getName())));
         }
@@ -1281,6 +1292,8 @@ public class CrystalQuest extends Game {
         player.setLevel(0);
         player.setFlying(false);
         player.setAllowFlight(false);
+
+        super.onRespawn(player);
     }
 
     @Override
@@ -1659,11 +1672,13 @@ public class CrystalQuest extends Game {
                 }
             }
         }
-        return finalKill;
+
+        return finalKill || super.onDeath(player, killer);
     }
 
     @Override
     public void onFinalKill(AuroraMCGamePlayer player) {
+        super.onFinalKill(player);
         if (player.getTeam().getPlayers().stream().noneMatch(auroraMCPlayer -> (!((AuroraMCGamePlayer)auroraMCPlayer).isDead()))) {
             if (player.getTeam() instanceof CQBlue) {
                 //Red won.
@@ -1673,6 +1688,10 @@ public class CrystalQuest extends Game {
                 this.end(teams.get("Blue"), null);
             }
         }
+    }
+
+    public void setMineMultiplier(float mineMultiplier) {
+        this.mineMultiplier = mineMultiplier;
     }
 }
 
