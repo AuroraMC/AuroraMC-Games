@@ -6,6 +6,8 @@
 
 package net.auroramc.games.crystalquest.variations.knockback;
 
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -76,7 +78,31 @@ public class Knockback extends CrystalQuestVariation {
 
     @Override
     public void inProgress() {
+        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+            AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
+            if (!gp.isSpectator()) {
+                int cookieSlot = -1;
 
+                for (int i = 0; i < 36; i++) {
+                    if (player.getInventory().getItem(i) == null) {
+                        continue;
+                    }
+                    if (player.getInventory().getItem(i).getType().name().equals("COOKIE")) {
+                        cookieSlot = i;
+                        break;
+                    }
+                }
+
+                if (cookieSlot == -1) {
+                    ItemStack stack = new ItemStack(Material.COOKIE);
+                    stack.addUnsafeEnchantment(Enchantment.KNOCKBACK, 200);
+                    ItemMeta itemMeta = stack.getItemMeta();
+                    itemMeta.setDisplayName("§cMmmmmm, cookie.");
+                    stack.setItemMeta(itemMeta);
+                    player.getInventory().addItem(stack);
+                }
+            }
+        }
     }
 
     @Override
