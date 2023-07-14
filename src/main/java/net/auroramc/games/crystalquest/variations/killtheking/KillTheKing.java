@@ -195,14 +195,14 @@ public class KillTheKing extends CrystalQuestVariation {
 
     @Override
     public void balanceTeams() {
-        if (kingBlue != null) {
+        if (kingBlue != null && !kingBlue.isOptedSpec()) {
             kingBlue.setTeam(EngineAPI.getActiveGame().getTeams().get("Blue"));
             kingBlue.getTeam().getPlayers().add(kingBlue);
             for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
                 pl.updateNametag(kingBlue);
             }
         }
-        if (kingRed != null) {
+        if (kingRed != null && !kingRed.isOptedSpec()) {
             kingRed.setTeam(EngineAPI.getActiveGame().getTeams().get("Red"));
             kingRed.getTeam().getPlayers().add(kingRed);
             for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
@@ -236,12 +236,12 @@ public class KillTheKing extends CrystalQuestVariation {
                 gp.setKit(EngineAPI.getActiveGame().getKits().get(0));
             }
         }
-        if (kingBlue == null) {
+        if (kingBlue == null || kingBlue.isOptedSpec()) {
             Team team = EngineAPI.getActiveGame().getTeams().get("Blue");
             kingBlue = (AuroraMCGamePlayer) team.getPlayers().get(new Random().nextInt(team.getPlayers().size()));
             kingBlue.sendMessage(TextFormatter.pluginMessage("Kill The King", "You have been selected as the **Blue** teams king!"));
         }
-        if (kingRed == null) {
+        if (kingRed == null || kingRed.isOptedSpec()) {
             Team team = EngineAPI.getActiveGame().getTeams().get("Red");
             kingRed = (AuroraMCGamePlayer) team.getPlayers().get(new Random().nextInt(team.getPlayers().size()));
             kingRed.sendMessage(TextFormatter.pluginMessage("Kill The King", "You have been selected as the **Red** teams king!"));
