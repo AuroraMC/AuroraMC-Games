@@ -271,7 +271,7 @@ public class DeathRespawnListener implements Listener {
             player.setLastHitAt(-1);
             player.setLastHitBy(null);
             player.getLatestHits().clear();
-            if (!EngineAPI.getActiveGame().isKeepInventory() && timeout == 0) {
+            if (!EngineAPI.getActiveGame().isKeepInventory()) {
                 player.getInventory().clear();
                 player.getInventory().setHelmet(new ItemStack(Material.AIR));
                 player.getInventory().setChestplate(new ItemStack(Material.AIR));

@@ -11,6 +11,8 @@ import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.games.Kit;
 import net.auroramc.games.crystalquest.CrystalQuest;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
 
 public class Archer extends Kit {
 
@@ -27,7 +29,9 @@ public class Archer extends Kit {
 
         player.getInventory().setItem(0, new GUIItem(Material.STONE_SWORD).getItemStack());
         player.getInventory().setItem(1, new GUIItem(Material.STONE_PICKAXE).getItemStack());
-        player.getInventory().setItem(2, new GUIItem(Material.WOOD_AXE).getItemStack());
+        ItemStack axe = new GUIItem(Material.WOOD_AXE).getItemStack();
+        axe.addEnchantment(Enchantment.DAMAGE_ALL, 1);
+        player.getInventory().setItem(2, axe);
         player.getInventory().setItem(3, new GUIItem(Material.BOW, "&3&lArcher's Bow", 1, ";&r&aLeft-Click to use Quickshot;&r&cFully charge the bow to use Barrage.").getItemStack());
 
         player.getInventory().setItem(8, CrystalQuest.compass);

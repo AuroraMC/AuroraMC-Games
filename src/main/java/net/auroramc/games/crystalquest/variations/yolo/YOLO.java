@@ -7,6 +7,8 @@
 package net.auroramc.games.crystalquest.variations.yolo;
 
 import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -70,6 +72,9 @@ public class YOLO extends CrystalQuestVariation {
 
     @Override
     public boolean start() {
+        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+            player.sendMessage(TextFormatter.pluginMessage("YOLO", "You are playing the YOLO game variation! You are limited to **" + lives + "** lives!"));
+        }
         return false;
     }
 

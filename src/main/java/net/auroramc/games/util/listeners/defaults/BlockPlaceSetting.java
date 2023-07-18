@@ -25,7 +25,7 @@ public class BlockPlaceSetting implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockPlaceEvent e) {
         if (e.getPlayer().getGameMode() == GameMode.CREATIVE) {
-            e.setCancelled(!EngineAPI.getActiveGame().isBlockPlaceCreative() || EngineAPI.getActiveGame().isBlockPlace());
+            e.setCancelled(!EngineAPI.getActiveGame().isBlockPlaceCreative() && !EngineAPI.getActiveGame().isBlockPlace());
         } else {
             e.setCancelled(!EngineAPI.getActiveGame().isBlockPlace());
         }

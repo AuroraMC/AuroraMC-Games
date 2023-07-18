@@ -79,7 +79,7 @@ public class CrystalQuest extends Game {
     private BukkitTask compassTask;
     private BukkitTask protectionTask;
 
-    private List<BukkitTask> tasks;
+    private final Map<AuroraMCGamePlayer, List<BukkitTask>> tasks;
 
     private BukkitTask scoreboardTask;
 
@@ -107,7 +107,7 @@ public class CrystalQuest extends Game {
         this.kits.add(new Fighter());
         this.kits.add(new Archer());
         this.kits.add(new Economist());
-        this.tasks = new ArrayList<>();
+        this.tasks = new HashMap<>();
         blueUnlucky = true;
         redUnlucky = true;
         mineMultiplier = 1.0f;
@@ -116,6 +116,7 @@ public class CrystalQuest extends Game {
     @Override
     public void preLoad() {
         this.keepInventory = false;
+        super.preLoad();
     }
 
     @Override
@@ -397,8 +398,10 @@ public class CrystalQuest extends Game {
             blue.getBossCrystal().unregisterListener();
         }
 
-        for (BukkitTask task : tasks) {
-            task.cancel();
+        for (List<BukkitTask> tasks : tasks.values()) {
+            for (BukkitTask task : tasks) {
+                task.cancel();
+            }
         }
     }
 
@@ -611,10 +614,14 @@ public class CrystalQuest extends Game {
         for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
             pl.sendMessage(TextFormatter.pluginMessage("Game", "Crystals are protected for the first 2 minutes of the game!"));
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
+            List<BukkitTask> tasks1 = tasks.getOrDefault(player, new ArrayList<>());
+            if (tasks1.size() == 0) {
+                tasks.put(player, tasks1);
+            }
             if (!player.isSpectator() && player.getKit() instanceof Defender) {
                 switch (player.getKitLevel().getLatestUpgrade()) {
                     case 0: {
-                        tasks.add(new BukkitRunnable() {
+                        tasks1.add(new BukkitRunnable() {
 
                             private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
@@ -632,7 +639,7 @@ public class CrystalQuest extends Game {
                         break;
                     }
                     case 1: {
-                        tasks.add(new BukkitRunnable() {
+                        tasks1.add(new BukkitRunnable() {
 
                             private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
@@ -650,7 +657,7 @@ public class CrystalQuest extends Game {
                         break;
                     }
                     case 2: {
-                        tasks.add(new BukkitRunnable() {
+                        tasks1.add(new BukkitRunnable() {
 
                             private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
@@ -668,7 +675,7 @@ public class CrystalQuest extends Game {
                         break;
                     }
                     case 3: {
-                        tasks.add(new BukkitRunnable() {
+                        tasks1.add(new BukkitRunnable() {
 
                             private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
@@ -686,7 +693,7 @@ public class CrystalQuest extends Game {
                         break;
                     }
                     case 4: {
-                        tasks.add(new BukkitRunnable() {
+                        tasks1.add(new BukkitRunnable() {
 
                             private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
@@ -704,7 +711,7 @@ public class CrystalQuest extends Game {
                         break;
                     }
                     case 5: {
-                        tasks.add(new BukkitRunnable() {
+                        tasks1.add(new BukkitRunnable() {
 
                             private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
@@ -742,7 +749,7 @@ public class CrystalQuest extends Game {
                     }
                 }
                 int fm = max;
-                tasks.add(new BukkitRunnable() {
+                tasks1.add(new BukkitRunnable() {
 
                     private final ItemStack stack = new GUIItem(Material.ARROW, "&eArcher's Arrow").getItemStack();
                     private final int max = fm;
@@ -788,7 +795,7 @@ public class CrystalQuest extends Game {
                 }
 
                 int finalAmountIron = amountIron, finalAmountGold = amountGold;
-                tasks.add(new BukkitRunnable(){
+                tasks1.add(new BukkitRunnable(){
                     @Override
                     public void run() {
                         if (player.isOnline() && player.getKit() instanceof Economist) {
@@ -798,7 +805,7 @@ public class CrystalQuest extends Game {
                         }
                     }
                 }.runTaskTimer(EngineAPI.getGameEngine(), iron, iron));
-                tasks.add(new BukkitRunnable(){
+                tasks1.add(new BukkitRunnable(){
                     @Override
                     public void run() {
                         if (player.isOnline() && player.getKit() instanceof Economist) {
@@ -808,7 +815,7 @@ public class CrystalQuest extends Game {
                         }
                     }
                 }.runTaskTimer(EngineAPI.getGameEngine(), gold, gold));
-                tasks.add(new BukkitRunnable(){
+                tasks1.add(new BukkitRunnable(){
                     @Override
                     public void run() {
                         if (player.isOnline() && player.getKit() instanceof Economist) {
@@ -1072,11 +1079,23 @@ public class CrystalQuest extends Game {
             }
             player.getInventory().setItem(8, compass);
         } else {
+            player.getInventory().clear();
+            player.getInventory().setArmorContents(new ItemStack[4]);
             player.getKit().onGameStart(player);
+
+            List<BukkitTask> tasks1 = tasks.getOrDefault(player, new ArrayList<>());
+            if (tasks1.size() == 0) {
+                tasks.put(player, tasks1);
+            } else {
+                for (BukkitTask task : tasks1) {
+                    task.cancel();
+                }
+                tasks1.clear();
+            }
             if (!player.isSpectator() && player.getKit() instanceof Defender) {
                 switch (player.getKitLevel().getLatestUpgrade()) {
                     case 0: {
-                        tasks.add(new BukkitRunnable() {
+                        tasks1.add(new BukkitRunnable() {
 
                             private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
@@ -1094,7 +1113,7 @@ public class CrystalQuest extends Game {
                         break;
                     }
                     case 1: {
-                        tasks.add(new BukkitRunnable() {
+                        tasks1.add(new BukkitRunnable() {
 
                             private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
@@ -1112,7 +1131,7 @@ public class CrystalQuest extends Game {
                         break;
                     }
                     case 2: {
-                        tasks.add(new BukkitRunnable() {
+                        tasks1.add(new BukkitRunnable() {
 
                             private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
@@ -1130,7 +1149,7 @@ public class CrystalQuest extends Game {
                         break;
                     }
                     case 3: {
-                        tasks.add(new BukkitRunnable() {
+                        tasks1.add(new BukkitRunnable() {
 
                             private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
@@ -1148,7 +1167,7 @@ public class CrystalQuest extends Game {
                         break;
                     }
                     case 4: {
-                        tasks.add(new BukkitRunnable() {
+                        tasks1.add(new BukkitRunnable() {
 
                             private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
@@ -1166,7 +1185,7 @@ public class CrystalQuest extends Game {
                         break;
                     }
                     case 5: {
-                        tasks.add(new BukkitRunnable() {
+                        tasks1.add(new BukkitRunnable() {
 
                             private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
@@ -1204,7 +1223,7 @@ public class CrystalQuest extends Game {
                     }
                 }
                 int fm = max;
-                tasks.add(new BukkitRunnable() {
+                tasks1.add(new BukkitRunnable() {
 
                     private final ItemStack stack = new GUIItem(Material.ARROW, "&eArcher's Arrow").getItemStack();
                     private final int max = fm;
@@ -1250,7 +1269,7 @@ public class CrystalQuest extends Game {
                 }
 
                 int finalAmountIron = amountIron, finalAmountGold = amountGold;
-                tasks.add(new BukkitRunnable(){
+                tasks1.add(new BukkitRunnable(){
                     @Override
                     public void run() {
                         if (player.isOnline() && player.getKit() instanceof Economist) {
@@ -1260,7 +1279,7 @@ public class CrystalQuest extends Game {
                         }
                     }
                 }.runTaskTimer(EngineAPI.getGameEngine(), iron, iron));
-                tasks.add(new BukkitRunnable(){
+                tasks1.add(new BukkitRunnable(){
                     @Override
                     public void run() {
                         if (player.isOnline() && player.getKit() instanceof Economist) {
@@ -1270,7 +1289,7 @@ public class CrystalQuest extends Game {
                         }
                     }
                 }.runTaskTimer(EngineAPI.getGameEngine(), gold, gold));
-                tasks.add(new BukkitRunnable(){
+                tasks1.add(new BukkitRunnable(){
                     @Override
                     public void run() {
                         if (player.isOnline() && player.getKit() instanceof Economist) {

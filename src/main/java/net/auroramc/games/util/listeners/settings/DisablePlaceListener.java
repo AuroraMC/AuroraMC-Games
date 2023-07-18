@@ -23,13 +23,10 @@ public class DisablePlaceListener implements Listener {
 
     @EventHandler
     public void onMove(BlockPlaceEvent e) {
-        if (!EngineAPI.getActiveGame().isBlockPlace()) {
-            if (e.getPlayer().getGameMode() == GameMode.CREATIVE && EngineAPI.getActiveGame().isBlockPlaceCreative()) {
-                return;
-            }
-            e.setCancelled(true);
-        } else if (e.getPlayer().getGameMode() == GameMode.CREATIVE && !EngineAPI.getActiveGame().isBlockPlaceCreative()) {
-            e.setCancelled(true);
+        if (e.getPlayer().getGameMode() == GameMode.CREATIVE) {
+            e.setCancelled(!EngineAPI.getActiveGame().isBlockPlaceCreative() && !EngineAPI.getActiveGame().isBlockPlace());
+        } else {
+            e.setCancelled(!EngineAPI.getActiveGame().isBlockPlace());
         }
     }
 

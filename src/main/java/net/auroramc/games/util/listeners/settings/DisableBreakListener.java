@@ -23,13 +23,10 @@ public class DisableBreakListener implements Listener {
 
     @EventHandler
     public void onMove(BlockBreakEvent e) {
-        if (!EngineAPI.getActiveGame().isBlockBreak()) {
-            if (e.getPlayer().getGameMode() == GameMode.CREATIVE && EngineAPI.getActiveGame().isBlockBreakCreative()) {
-                return;
-            }
-            e.setCancelled(true);
-        } else if (e.getPlayer().getGameMode() == GameMode.CREATIVE && !EngineAPI.getActiveGame().isBlockBreakCreative()) {
-            e.setCancelled(true);
+        if (e.getPlayer().getGameMode() == GameMode.CREATIVE) {
+            e.setCancelled(!EngineAPI.getActiveGame().isBlockBreak() && !EngineAPI.getActiveGame().isBlockBreakCreative());
+        } else {
+            e.setCancelled(!EngineAPI.getActiveGame().isBlockBreak());
         }
     }
 

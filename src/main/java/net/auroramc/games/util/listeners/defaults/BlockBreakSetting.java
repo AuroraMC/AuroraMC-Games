@@ -25,7 +25,7 @@ public class BlockBreakSetting implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent e) {
         if (e.getPlayer().getGameMode() == GameMode.CREATIVE) {
-            e.setCancelled(!EngineAPI.getActiveGame().isBlockBreakCreative() || EngineAPI.getActiveGame().isBlockBreak());
+            e.setCancelled(!EngineAPI.getActiveGame().isBlockBreak() && !EngineAPI.getActiveGame().isBlockBreakCreative());
         } else {
             e.setCancelled(!EngineAPI.getActiveGame().isBlockBreak());
         }
