@@ -257,13 +257,16 @@ public class DeathRespawnListener implements Listener {
             if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.DEATH_EFFECT)) {
                 ((DeathEffect) player.getActiveCosmetics().get(Cosmetic.CosmeticType.DEATH_EFFECT)).onDeath(player);
             }
-            JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
-            int x, y, z;
-            x = specSpawn.getInt("x");
-            y = specSpawn.getInt("y");
-            z = specSpawn.getInt("z");
-            float yaw = specSpawn.getFloat("yaw");
-            player.teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
+
+            if (timeout > 0) {
+                JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
+                int x, y, z;
+                x = specSpawn.getInt("x");
+                y = specSpawn.getInt("y");
+                z = specSpawn.getInt("z");
+                float yaw = specSpawn.getFloat("yaw");
+                player.teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
+            }
 
             player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
             player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths;" + killReason.name(), 1, true);

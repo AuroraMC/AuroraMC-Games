@@ -19,6 +19,7 @@ import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.hotpotato.entities.Potato;
 import net.auroramc.games.hotpotato.listeners.HitListener;
 import net.auroramc.games.hotpotato.utils.HotPotatoScoreboardRunnable;
+import net.auroramc.games.hotpotato.variations.HotPotatoVariation;
 import net.auroramc.games.util.PlayersTeam;
 import net.auroramc.games.util.listeners.settings.*;
 import org.bukkit.Bukkit;
@@ -66,11 +67,13 @@ public class HotPotato extends Game {
         itemDrop = false;
         itemPickup = false;
         roundLength = 900;
+        super.preLoad();
     }
 
     @Override
     public void load(GameMap gameMap) {
         this.map = gameMap;
+        super.load(gameMap);
     }
 
     @Override
@@ -170,6 +173,12 @@ public class HotPotato extends Game {
         potatoes = Math.round(playersAlive.size() / 4f);
         if (potatoes < 1) {
             potatoes = 1;
+        } else if (potatoes == playersAlive.size()) {
+            potatoes = playersAlive.size() - 1;
+        }
+
+        if (gameVariation != null) {
+            potatoes = ((HotPotatoVariation)getGameVariation()).onGeneratePotatoes(potatoes, playersAlive.size());
         }
 
         EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", potatoes + " Potatoes Released")));
@@ -199,7 +208,15 @@ public class HotPotato extends Game {
                 }
             }
             potato.getHolder().getStats().addProgress(AuroraMCAPI.getAchievement(168), 1, potato.getHolder().getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(165), 0), true);
-            potato.explode();
+            if (gameVariation != null) {
+                if (((HotPotatoVariation)gameVariation).onExplode(potato)) {
+                    potato.explode();
+                } else {
+                    potato.newHolder(null);
+                }
+            } else {
+                potato.explode();
+            }
         }
         potatoList.clear();
         potatoes = 0;

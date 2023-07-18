@@ -72,11 +72,13 @@ public class Paintball extends Game {
         livesPerKill = 1;
         itemDrop = false;
         itemPickup = false;
+        super.preLoad();
     }
 
     @Override
     public void load(GameMap gameMap) {
         this.map = gameMap;
+        super.load(gameMap);
     }
 
     @Override
@@ -353,8 +355,8 @@ public class Paintball extends Game {
         player.getKit().onGameStart(player);
 
         int interval = 12 * 20;
-        if (((AuroraMCGamePlayer) player).getKit() instanceof Tribute) {
-            switch (((AuroraMCGamePlayer) player).getKitLevel().getLatestUpgrade()) {
+        if (player.getKit() instanceof Tribute) {
+            switch (player.getKitLevel().getLatestUpgrade()) {
                 case 5:
                     interval-=40;
                 case 4:

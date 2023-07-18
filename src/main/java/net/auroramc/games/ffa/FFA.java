@@ -65,11 +65,13 @@ public class FFA extends Game {
         runnable = new FFAScoreboardRunnable();
         itemDrop = false;
         itemPickup = false;
+        super.preLoad();
     }
 
     @Override
     public void load(GameMap gameMap) {
         this.map = gameMap;
+        super.load(gameMap);
     }
 
     @Override

@@ -42,6 +42,17 @@ public class Potato {
     }
 
     public void newHolder(AuroraMCGamePlayer holder) {
+        if (holder == null) {
+            this.holder.getInventory().clear();
+            this.holder.removePotionEffect(PotionEffectType.SPEED);
+            this.holder.getGameData().remove("potato_holder");
+            PlayerInventory inventory = this.holder.getInventory();
+            inventory.setBoots(new ItemStack(Material.AIR));
+            inventory.setLeggings(new ItemStack(Material.AIR));
+            inventory.setChestplate(new ItemStack(Material.AIR));
+            inventory.setHelmet(new ItemStack(Material.AIR));
+            return;
+        }
         if (this.holder != null) {
             if (oldHolder != null) {
                 if (oldHolder.equals(holder)) {

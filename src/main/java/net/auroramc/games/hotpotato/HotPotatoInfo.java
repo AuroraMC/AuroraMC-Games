@@ -8,6 +8,8 @@ package net.auroramc.games.hotpotato;
 
 import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.GameVariationInfo;
+import net.auroramc.games.hotpotato.variations.oneround.OneRoundInfo;
+import net.auroramc.games.hotpotato.variations.yolt.YOLTInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +20,8 @@ public class HotPotatoInfo extends GameInfo {
 
     static {
         variations = new HashMap<>();
-
+        variations.put("ONE_ROUND", new OneRoundInfo());
+        variations.put("YOLT", new YOLTInfo());
     }
 
     public HotPotatoInfo() {

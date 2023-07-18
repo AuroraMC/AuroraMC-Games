@@ -27,6 +27,7 @@ import net.auroramc.games.paintball.entities.Turret;
 import net.auroramc.games.paintball.kits.Tribute;
 import net.auroramc.games.paintball.teams.PBBlue;
 import net.auroramc.games.paintball.teams.PBRed;
+import net.auroramc.games.paintball.variations.PaintballVariation;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -59,6 +60,9 @@ public class HitListener implements Listener {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
             EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", player.getName()).put("killer", "None").put("final", false)));
             player.sendMessage(TextFormatter.pluginMessage("Game", "You went outside of the border so was teleported back to spawn."));
+            if (EngineAPI.getActiveGame().getGameVariation() != null) {
+                EngineAPI.getActiveGame().getGameVariation().onDeath(player, null);
+            }
             JSONArray redSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("RED");
             JSONArray blueSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("BLUE");
             if (player.isSpectator()) {
@@ -179,6 +183,9 @@ public class HitListener implements Listener {
             }
             player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
             player.getKit().onGameStart(player);
+            if (EngineAPI.getActiveGame().getGameVariation() != null) {
+                EngineAPI.getActiveGame().getGameVariation().onDeath(player, (AuroraMCGamePlayer) shooter);
+            }
             if (shooter != null) {
                 KillMessage killMessage = (KillMessage) shooter.getActiveCosmetics().getOrDefault(Cosmetic.CosmeticType.KILL_MESSAGE, AuroraMCAPI.getCosmetics().get(500));
                 for (AuroraMCServerPlayer player1 : ServerAPI.getPlayers()) {

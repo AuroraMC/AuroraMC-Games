@@ -8,6 +8,8 @@ package net.auroramc.games.ffa;
 
 import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.GameVariationInfo;
+import net.auroramc.games.ffa.variations.knockback.KnockbackInfo;
+import net.auroramc.games.ffa.variations.op.OPInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +20,8 @@ public class FFAInfo extends GameInfo {
 
     static {
         variations = new HashMap<>();
-
+        variations.put("OVERPOWERED", new OPInfo());
+        variations.put("KNOCKBACK", new KnockbackInfo());
     }
 
     public FFAInfo() {
