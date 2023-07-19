@@ -4,7 +4,7 @@
  * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
-package net.auroramc.games.hotpotato.variations.yolt;
+package net.auroramc.games.paintball.variations.infiniteammo;
 
 import net.auroramc.api.utils.TextFormatter;
 import net.auroramc.core.api.ServerAPI;
@@ -13,51 +13,27 @@ import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.util.GameStartingRunnable;
-import net.auroramc.games.crystalquest.CrystalQuest;
-import net.auroramc.games.crystalquest.entities.Crystal;
-import net.auroramc.games.crystalquest.variations.CrystalQuestVariation;
 import net.auroramc.games.hotpotato.HotPotato;
 import net.auroramc.games.hotpotato.entities.Potato;
 import net.auroramc.games.hotpotato.variations.HotPotatoVariation;
+import net.auroramc.games.paintball.Paintball;
+import net.auroramc.games.paintball.variations.PaintballVariation;
 import org.bukkit.Material;
+import org.bukkit.entity.Projectile;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class YOLT extends HotPotatoVariation {
+public class InfiniteAmmo extends PaintballVariation {
 
-    private int lives;
-    private final Map<UUID, Integer> livesLost;
-
-    public YOLT(HotPotato game) {
+    public InfiniteAmmo(Paintball game) {
         super(game);
-        lives = 3;
-        livesLost = new HashMap<>();
     }
 
     @Override
-    public int onGeneratePotatoes(int potatoes, int playersAlive) {
-        return potatoes;
-    }
-
-    @Override
-    public boolean onExplode(Potato potato) {
-        if (livesLost.containsKey(potato.getHolder().getUniqueId())) {
-            int i = livesLost.get(potato.getHolder().getUniqueId());
-            if (++i >= lives) {
-                potato.getHolder().sendMessage(TextFormatter.pluginMessage("YOLT", "You ran out of lives, so you are now permanently dead."));
-                return true;
-            } else {
-                livesLost.put(potato.getHolder().getUniqueId(), i);
-                potato.getHolder().sendMessage(TextFormatter.pluginMessage("YOLT", "You have **" + (lives - i) + "** lives left."));
-            }
-        } else {
-            livesLost.put(potato.getHolder().getUniqueId(), 1);
-            potato.getHolder().sendMessage(TextFormatter.pluginMessage("YOLT", "You have **" + (lives - 1) + "** lives left."));
-        }
-
-        return false;
+    public void onThrow(AuroraMCGamePlayer player, Projectile projectile) {
+        player.getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null, 64, null).getItemStack());
     }
 
 
@@ -73,9 +49,6 @@ public class YOLT extends HotPotatoVariation {
 
     @Override
     public boolean start() {
-        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
-            player.sendMessage(TextFormatter.pluginMessage("YOLO", "You are playing the YOLT (You Only Live Twice) game variation! You have more lives, and can ensure **" + lives + "** potato explosions!"));
-        }
         return false;
     }
 
@@ -110,14 +83,6 @@ public class YOLT extends HotPotatoVariation {
     @Override
     public void onFinalKill(AuroraMCGamePlayer auroraMCGamePlayer) {
 
-    }
-
-    public int getLives() {
-        return lives;
-    }
-
-    public void setLives(int lives) {
-        this.lives = lives;
     }
 
 

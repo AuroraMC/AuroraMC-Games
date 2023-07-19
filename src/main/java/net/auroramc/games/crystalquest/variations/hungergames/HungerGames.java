@@ -107,7 +107,9 @@ public class HungerGames extends CrystalQuestVariation {
 
     @Override
     public void onRespawn(AuroraMCGamePlayer player) {
-
+        if (!(player.getKit() instanceof Archer)) {
+            player.getInventory().setItem(0, new GUIItem(Material.BOW).getItemStack());
+        }
     }
 
     @Override

@@ -22,7 +22,7 @@ public class DisableHungerListener implements Listener {
 
     @EventHandler
     public void onMove(FoodLevelChangeEvent e) {
-        if (EngineAPI.getActiveGame().getHunger() != -1) {
+        if (EngineAPI.getActiveGame().getHunger() < 0) {
             e.setLevel(EngineAPI.getActiveGame().getHunger());
         } else if (e.getLevel() < 30) {
             e.setLevel(30);

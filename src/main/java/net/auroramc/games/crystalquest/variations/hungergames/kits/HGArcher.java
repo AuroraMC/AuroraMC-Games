@@ -21,9 +21,10 @@ public class HGArcher extends Archer {
         player.getInventory().setChestplate(new GUIItem(Material.LEATHER_CHESTPLATE).getItemStack());
         player.getInventory().setLeggings(new GUIItem(Material.LEATHER_LEGGINGS).getItemStack());
 
-        player.getInventory().setItem(0, new GUIItem(Material.STONE_PICKAXE).getItemStack());
-        player.getInventory().setItem(1, new GUIItem(Material.WOOD_AXE).getItemStack());
-        player.getInventory().setItem(2, new GUIItem(Material.BOW, "&3&lArcher's Bow", 1, ";&r&aLeft-Click to use Quickshot;&r&cFully charge the bow to use Barrage.").getItemStack());
+        player.getInventory().setItem(0, new GUIItem(Material.BOW, "&3&lArcher's Bow", 1, ";&r&aLeft-Click to use Quickshot;&r&cFully charge the bow to use Barrage.").getItemStack());
+        player.getInventory().setItem(1, new GUIItem(Material.STONE_PICKAXE).getItemStack());
+        player.getInventory().setItem(2, new GUIItem(Material.WOOD_AXE).getItemStack());
+
 
         player.getInventory().setItem(8, CrystalQuest.compass);
     }

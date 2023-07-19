@@ -8,6 +8,7 @@ package net.auroramc.games.tag;
 
 import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.GameVariationInfo;
+import net.auroramc.games.tag.variations.hacker.HackerSimulatorInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +19,7 @@ public class TagInfo extends GameInfo {
 
     static {
         variations = new HashMap<>();
-
+        variations.put("HACKER_SIMULATOR", new HackerSimulatorInfo());
     }
 
     public TagInfo() {

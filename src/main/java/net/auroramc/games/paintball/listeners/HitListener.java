@@ -264,6 +264,8 @@ public class HitListener implements Listener {
             e.setCancelled(true);
             AuroraMCGamePlayer gp = (AuroraMCGamePlayer) ServerAPI.getPlayer((Player) e.getEntity().getShooter());
             gp.getKit().onGameStart(gp);
+        } else if (EngineAPI.getActiveGame().getGameVariation() != null) {
+            ((PaintballVariation)EngineAPI.getActiveGame().getGameVariation()).onThrow((AuroraMCGamePlayer) ServerAPI.getPlayer((Player) e.getEntity().getShooter()), e.getEntity());
         }
     }
 

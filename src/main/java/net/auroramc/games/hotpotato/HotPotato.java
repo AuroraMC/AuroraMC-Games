@@ -66,6 +66,8 @@ public class HotPotato extends Game {
         round = 0;
         itemDrop = false;
         itemPickup = false;
+        blockBreak = false;
+        blockPlace = false;
         roundLength = 900;
         super.preLoad();
     }

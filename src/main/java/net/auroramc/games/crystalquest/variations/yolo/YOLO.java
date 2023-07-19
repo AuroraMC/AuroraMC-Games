@@ -105,7 +105,7 @@ public class YOLO extends CrystalQuestVariation {
     public boolean onDeath(AuroraMCGamePlayer player, AuroraMCGamePlayer auroraMCGamePlayer1) {
         if (livesLost.containsKey(player.getUniqueId())) {
             int i = livesLost.get(player.getUniqueId());
-            if (i++ >= lives) {
+            if (++i >= lives) {
                 player.sendMessage(TextFormatter.pluginMessage("YOLO", "You ran out of lives, so you are now permanently dead."));
                 return true;
             } else {

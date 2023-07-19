@@ -61,6 +61,7 @@ public class Spleef extends Game {
 
         itemDrop = false;
         itemPickup = false;
+        blockPlace = false;
     }
 
     @Override

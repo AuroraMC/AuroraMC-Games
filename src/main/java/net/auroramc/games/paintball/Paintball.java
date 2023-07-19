@@ -72,6 +72,8 @@ public class Paintball extends Game {
         livesPerKill = 1;
         itemDrop = false;
         itemPickup = false;
+        blockBreak = false;
+        blockPlace = false;
         super.preLoad();
     }
 

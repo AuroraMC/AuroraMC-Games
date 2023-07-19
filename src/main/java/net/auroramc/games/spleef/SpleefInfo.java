@@ -8,6 +8,8 @@ package net.auroramc.games.spleef;
 
 import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.GameVariationInfo;
+import net.auroramc.games.spleef.variations.blind.BlindInfo;
+import net.auroramc.games.spleef.variations.sandstorm.SandstormInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +20,8 @@ public class SpleefInfo extends GameInfo {
 
     static {
         variations = new HashMap<>();
-
+        variations.put("SANDSTORM", new SandstormInfo());
+        variations.put("BLIND", new BlindInfo());
     }
 
     public SpleefInfo() {

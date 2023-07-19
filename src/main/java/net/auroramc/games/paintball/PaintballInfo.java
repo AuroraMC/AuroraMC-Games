@@ -8,6 +8,7 @@ package net.auroramc.games.paintball;
 
 import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.GameVariationInfo;
+import net.auroramc.games.paintball.variations.infiniteammo.InfiniteAmmoInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +19,7 @@ public class PaintballInfo extends GameInfo {
 
     static {
         variations = new HashMap<>();
-
+        variations.put("INFINITE_AMMO", new InfiniteAmmoInfo());
     }
 
     public PaintballInfo() {

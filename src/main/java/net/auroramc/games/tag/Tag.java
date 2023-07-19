@@ -61,6 +61,8 @@ public class Tag extends Game {
 
         itemDrop = false;
         itemPickup = false;
+        blockBreak = false;
+        blockPlace = false;
     }
 
     @Override
