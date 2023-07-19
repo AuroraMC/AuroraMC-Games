@@ -53,10 +53,6 @@ public class OresBeGone extends CrystalQuestVariation {
 
     @Override
     public boolean preLoad() {
-        ((CQRed)this.getGame().getTeams().get("Red")).newRobot();
-        ((CQRed)this.getGame().getTeams().get("Red")).newRobot();
-        ((CQBlue)this.getGame().getTeams().get("Blue")).newRobot();
-        ((CQBlue)this.getGame().getTeams().get("Blue")).newRobot();
         this.getGame().setMineMultiplier(0f);
         return false;
     }
@@ -68,6 +64,10 @@ public class OresBeGone extends CrystalQuestVariation {
 
     @Override
     public boolean start() {
+        ((CQRed)this.getGame().getTeams().get("Red")).newRobot();
+        ((CQRed)this.getGame().getTeams().get("Red")).newRobot();
+        ((CQBlue)this.getGame().getTeams().get("Blue")).newRobot();
+        ((CQBlue)this.getGame().getTeams().get("Blue")).newRobot();
         return false;
     }
 
