@@ -118,7 +118,7 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onEat(PlayerInteractEvent e) {
-        if (e.getItem() != null && e.getItem().getType() == Material.COOKIE) {
+        if (e.getItem() != null && e.getItem().getType() == Material.COOKIE && e.getItem().getEnchantments().size() == 0) {
             e.setCancelled(true);
             if (e.getItem().getAmount() == 1) {
                 e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
