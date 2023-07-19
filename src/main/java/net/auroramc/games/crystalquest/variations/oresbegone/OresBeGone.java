@@ -64,10 +64,10 @@ public class OresBeGone extends CrystalQuestVariation {
 
     @Override
     public boolean start() {
-        ((CQRed)this.getGame().getTeams().get("Red")).newRobot();
-        ((CQRed)this.getGame().getTeams().get("Red")).newRobot();
-        ((CQBlue)this.getGame().getTeams().get("Blue")).newRobot();
-        ((CQBlue)this.getGame().getTeams().get("Blue")).newRobot();
+        ((CQRed)this.getGame().getTeams().get("Red")).newRobot().spawn();
+        ((CQRed)this.getGame().getTeams().get("Red")).newRobot().spawn();
+        ((CQBlue)this.getGame().getTeams().get("Blue")).newRobot().spawn();
+        ((CQBlue)this.getGame().getTeams().get("Blue")).newRobot().spawn();
         return false;
     }
 
