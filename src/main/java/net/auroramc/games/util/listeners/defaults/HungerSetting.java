@@ -24,7 +24,7 @@ public class HungerSetting implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onFoodLevelChange(FoodLevelChangeEvent e) {
-        if (EngineAPI.getActiveGame().getHunger() < 0) {
+        if (EngineAPI.getActiveGame().getHunger() > -1) {
             e.setLevel(EngineAPI.getActiveGame().getHunger());
         }
     }
