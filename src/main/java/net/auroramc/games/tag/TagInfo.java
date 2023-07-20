@@ -9,6 +9,7 @@ package net.auroramc.games.tag;
 import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.GameVariationInfo;
 import net.auroramc.games.tag.variations.hacker.HackerSimulatorInfo;
+import org.bukkit.Material;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +24,6 @@ public class TagInfo extends GameInfo {
     }
 
     public TagInfo() {
-        super(103, "Tag", Tag.class, "Avoid getting tagged and be the last person alive!", "TAG", false, variations);
+        super(103, "Tag", Tag.class, "Avoid getting tagged and be the last person alive!", "TAG", false, variations, Material.LEASH, (short)0);
     }
 }

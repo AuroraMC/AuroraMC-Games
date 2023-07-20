@@ -7,9 +7,10 @@
 package net.auroramc.games.ffa.variations.op;
 
 import net.auroramc.engine.api.games.GameVariationInfo;
+import org.bukkit.Material;
 
 public class OPInfo extends GameVariationInfo {
     public OPInfo() {
-        super(0, "Overpowered", OP.class, "It's overpowered. Simple.", null);
+        super(0, "Overpowered", OP.class, "It's overpowered. Simple.", null, Material.DIAMOND_CHESTPLATE, (short)0);
     }
 }

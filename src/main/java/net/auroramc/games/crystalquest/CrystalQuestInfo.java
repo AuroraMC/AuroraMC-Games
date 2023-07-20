@@ -15,6 +15,7 @@ import net.auroramc.games.crystalquest.variations.op.OPInfo;
 import net.auroramc.games.crystalquest.variations.oresbegone.OresBeGoneInfo;
 import net.auroramc.games.crystalquest.variations.staffvscommunity.StaffVsCommunityInfo;
 import net.auroramc.games.crystalquest.variations.yolo.YOLOInfo;
+import org.bukkit.Material;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +38,6 @@ public class CrystalQuestInfo extends GameInfo {
     public CrystalQuestInfo() {
         super(1, "Crystal Quest", CrystalQuest.class, "Protect your crystals and steal enemy crystals.\n" +
                 "Mine ores or collect resources from your mining robot.\n" +
-                "Upgrade your gear and be the last alive.", "CRYSTAL_QUEST", false, variations);
+                "Upgrade your gear and be the last alive.", "CRYSTAL_QUEST", false, variations, Material.NETHER_STAR, (short)0);
     }
 }

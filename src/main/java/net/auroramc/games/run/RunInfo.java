@@ -11,6 +11,7 @@ import net.auroramc.engine.api.games.GameVariationInfo;
 import net.auroramc.games.run.variations.blind.BlindInfo;
 import net.auroramc.games.run.variations.quick.QuickInfo;
 import net.auroramc.games.spleef.variations.sandstorm.SandstormInfo;
+import org.bukkit.Material;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +27,6 @@ public class RunInfo extends GameInfo {
     }
 
     public RunInfo() {
-        super(104, "Run", Run.class, "Run and don't stop.\nBe the last one alive.", "RUN", false, variations);
+        super(104, "Run", Run.class, "Run and don't stop.\nBe the last one alive.", "RUN", false, variations, Material.STAINED_CLAY, (short)14);
     }
 }

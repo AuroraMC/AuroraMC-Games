@@ -10,6 +10,7 @@ import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.GameVariationInfo;
 import net.auroramc.games.ffa.variations.knockback.KnockbackInfo;
 import net.auroramc.games.ffa.variations.op.OPInfo;
+import org.bukkit.Material;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,6 @@ public class FFAInfo extends GameInfo {
     }
 
     public FFAInfo() {
-        super(102, "FFA", FFA.class, "Kill your opponents and be the last one alive. That's it. Yes, it's really that simple.", "FFA", false, variations);
+        super(102, "FFA", FFA.class, "Kill your opponents and be the last one alive. That's it. Yes, it's really that simple.", "FFA", false, variations, Material.IRON_AXE, (short)0);
     }
 }
