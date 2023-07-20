@@ -8,6 +8,7 @@ package net.auroramc.games.spleef.variations.blind;
 
 import net.auroramc.core.api.ServerAPI;
 import net.auroramc.core.api.player.AuroraMCServerPlayer;
+import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.util.GameStartingRunnable;
@@ -17,6 +18,7 @@ import net.auroramc.games.spleef.Spleef;
 import net.auroramc.games.spleef.variations.SpleefVariation;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Blind extends SpleefVariation {
 
@@ -43,9 +45,14 @@ public class Blind extends SpleefVariation {
 
     @Override
     public void inProgress() {
-        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 1000000, 0, true, false));
-        }
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 1000000, 0, true, false));
+                }
+            }
+        }.runTask(EngineAPI.getGameEngine());
     }
 
     @Override

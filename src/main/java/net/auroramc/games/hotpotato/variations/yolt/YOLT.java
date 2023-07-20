@@ -74,7 +74,7 @@ public class YOLT extends HotPotatoVariation {
     @Override
     public boolean start() {
         for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
-            player.sendMessage(TextFormatter.pluginMessage("YOLO", "You are playing the YOLT (You Only Live Twice) game variation! You have more lives, and can ensure **" + lives + "** potato explosions!"));
+            player.sendMessage(TextFormatter.pluginMessage("YOLO", "You are playing the YOLT (You Only Live Twice) game variation! You have more lives, and can endure **" + lives + "** potato explosions!"));
         }
         return false;
     }

@@ -9,6 +9,7 @@ package net.auroramc.games.run.variations.blind;
 import net.auroramc.api.utils.TextFormatter;
 import net.auroramc.core.api.ServerAPI;
 import net.auroramc.core.api.player.AuroraMCServerPlayer;
+import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.util.GameStartingRunnable;
@@ -16,6 +17,7 @@ import net.auroramc.games.run.Run;
 import net.auroramc.games.run.variations.RunVariation;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Blind extends RunVariation {
 
@@ -42,9 +44,15 @@ public class Blind extends RunVariation {
 
     @Override
     public void inProgress() {
-        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 1000000, 0, true, false));
-        }
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 1000000, 0, true, false));
+                }
+            }
+        }.runTask(EngineAPI.getGameEngine());
+
     }
 
     @Override

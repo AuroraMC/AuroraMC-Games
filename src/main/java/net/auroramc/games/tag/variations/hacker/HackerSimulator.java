@@ -8,6 +8,7 @@ package net.auroramc.games.tag.variations.hacker;
 
 import net.auroramc.core.api.ServerAPI;
 import net.auroramc.core.api.player.AuroraMCServerPlayer;
+import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.util.GameStartingRunnable;
@@ -15,6 +16,7 @@ import net.auroramc.games.tag.Tag;
 import net.auroramc.games.tag.variations.TagVariation;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class HackerSimulator extends TagVariation {
 
@@ -41,10 +43,15 @@ public class HackerSimulator extends TagVariation {
 
     @Override
     public void inProgress() {
-        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 1000000, 4, true, false));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 1000000, 4, true, false));
-        }
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 1000000, 4, true, false));
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 1000000, 4, true, false));
+                }
+            }
+        }.runTask(EngineAPI.getGameEngine());
     }
 
     @Override
