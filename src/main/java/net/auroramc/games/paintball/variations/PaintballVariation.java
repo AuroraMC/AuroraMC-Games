@@ -16,5 +16,5 @@ public abstract class PaintballVariation extends GameVariation<Paintball> {
         super(game);
     }
 
-    public abstract void onThrow(AuroraMCGamePlayer player, Projectile projectile);
+    public abstract void onThrow(AuroraMCGamePlayer player);
 }

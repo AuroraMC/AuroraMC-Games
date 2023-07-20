@@ -260,13 +260,7 @@ public class HitListener implements Listener {
 
     @EventHandler
     public void onThrow(ProjectileLaunchEvent e) {
-        if (EngineAPI.getActiveGame().isStarting()) {
-            e.setCancelled(true);
-            AuroraMCGamePlayer gp = (AuroraMCGamePlayer) ServerAPI.getPlayer((Player) e.getEntity().getShooter());
-            gp.getKit().onGameStart(gp);
-        } else if (EngineAPI.getActiveGame().getGameVariation() != null) {
-            ((PaintballVariation)EngineAPI.getActiveGame().getGameVariation()).onThrow((AuroraMCGamePlayer) ServerAPI.getPlayer((Player) e.getEntity().getShooter()), e.getEntity());
-        }
+
     }
 
 }

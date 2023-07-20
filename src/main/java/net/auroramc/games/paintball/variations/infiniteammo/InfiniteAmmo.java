@@ -32,7 +32,7 @@ public class InfiniteAmmo extends PaintballVariation {
     }
 
     @Override
-    public void onThrow(AuroraMCGamePlayer player, Projectile projectile) {
+    public void onThrow(AuroraMCGamePlayer player) {
         player.getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null, 64, null).getItemStack());
     }
 
