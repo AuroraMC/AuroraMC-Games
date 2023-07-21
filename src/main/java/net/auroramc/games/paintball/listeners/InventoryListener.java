@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.games.paintball.listeners;
@@ -15,6 +17,7 @@ import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.games.paintball.entities.Turret;
 import net.auroramc.games.paintball.gui.Shop;
+import net.auroramc.games.paintball.variations.PaintballVariation;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.Color;
@@ -110,6 +113,26 @@ public class InventoryListener implements Listener {
             } else if (e.getItem().getType() == Material.FIREWORK) {
                 e.setCancelled(true);
                 e.getPlayer().sendMessage(TextFormatter.pluginMessage("Game", "You cannot use a Missile Strike while one is in progress!"));
+            } else if (e.getItem().getType() == Material.SNOW_BALL) {
+                if (EngineAPI.getActiveGame().isStarting()) {
+                    e.setCancelled(true);
+                    AuroraMCGamePlayer gp = (AuroraMCGamePlayer) e.getPlayer();
+                    gp.getKit().onGameStart(gp);
+                    new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            gp.updateInventory();
+                        }
+                    }.runTask(EngineAPI.getGameEngine());
+                } else if (EngineAPI.getActiveGame().getGameVariation() != null) {
+                    ((PaintballVariation)EngineAPI.getActiveGame().getGameVariation()).onThrow((AuroraMCGamePlayer) e.getPlayer());
+                    new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            e.getPlayer().updateInventory();
+                        }
+                    }.runTask(EngineAPI.getGameEngine());
+                }
             }
         }
     }
@@ -166,7 +189,7 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent e) {
-        e.setCancelled(true);
+        e.setCancelled(!EngineAPI.getActiveGame().isItemDrop());
     }
 
     public static BukkitTask getRunnable() {

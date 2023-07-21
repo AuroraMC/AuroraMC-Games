@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.games.paintball;
@@ -16,10 +18,7 @@ import net.auroramc.core.api.events.player.PlayerInteractEvent;
 import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
-import net.auroramc.engine.api.games.Game;
-import net.auroramc.engine.api.games.GameMap;
-import net.auroramc.engine.api.games.GameSession;
-import net.auroramc.engine.api.games.GameVariation;
+import net.auroramc.engine.api.games.*;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.paintball.entities.Turret;
 import net.auroramc.games.paintball.kits.Tribute;
@@ -45,16 +44,13 @@ import org.bukkit.scoreboard.NameTagVisibility;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Paintball extends Game {
 
 
-    public Paintball(GameVariation gameVariation) {
+    public Paintball(GameVariationInfo gameVariation) {
         super(gameVariation);
     }
 
@@ -74,11 +70,17 @@ public class Paintball extends Game {
         this.kits.add(new Tribute());
         this.turrets = new HashMap<>();
         livesPerKill = 1;
+        itemDrop = false;
+        itemPickup = false;
+        blockBreak = false;
+        blockPlace = false;
+        super.preLoad();
     }
 
     @Override
     public void load(GameMap gameMap) {
         this.map = gameMap;
+        super.load(gameMap);
     }
 
     @Override
@@ -133,6 +135,12 @@ public class Paintball extends Game {
                     AuroraMCServerPlayer player1 = ServerAPI.getDisguisedPlayer(team.getName());
                     if (player1 == null) {
                         player1 = ServerAPI.getPlayer(team.getName());
+                        if (player1 == null) {
+                            player1 = ServerAPI.getDisguisedPlayer(team.getName());
+                        }
+                    }
+                    if (player1 == null) {
+                        continue;
                     }
                     if (!((AuroraMCGamePlayer)player1).isSpectator() && !player1.getTeam().equals(gp.getTeam())) {
                         team.setNameTagVisibility(NameTagVisibility.NEVER);
@@ -326,7 +334,59 @@ public class Paintball extends Game {
     }
 
     @Override
-    public void onRespawn(AuroraMCGamePlayer auroraMCGamePlayer) {
+    public void onRespawn(AuroraMCGamePlayer player) {
+        JSONArray redSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("RED");
+        JSONArray blueSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("BLUE");
+        if (player.getTeam() instanceof PBRed) {
+            JSONObject spawn = redSpawns.getJSONObject(new Random().nextInt(redSpawns.length()));
+            int x, y, z;
+            x = spawn.getInt("x");
+            y = spawn.getInt("y");
+            z = spawn.getInt("z");
+            float yaw = spawn.getFloat("yaw");
+            player.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+        } else {
+            JSONObject spawn = blueSpawns.getJSONObject(new Random().nextInt(blueSpawns.length()));
+            int x, y, z;
+            x = spawn.getInt("x");
+            y = spawn.getInt("y");
+            z = spawn.getInt("z");
+            float yaw = spawn.getFloat("yaw");
+            player.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+        }
+        player.getKit().onGameStart(player);
+
+        int interval = 12 * 20;
+        if (player.getKit() instanceof Tribute) {
+            switch (player.getKitLevel().getLatestUpgrade()) {
+                case 5:
+                    interval-=40;
+                case 4:
+                    interval-=20;
+                case 3:
+                    interval-=20;
+                case 2:
+                    interval-=20;
+                case 1:
+                    interval-=20;
+            }
+        }
+        player.getGameData().put("runnable", new BukkitRunnable(){
+            @Override
+            public void run() {
+                if (player.isOnline()) {
+                    if (!player.getInventory().contains(Material.SNOW_BALL, 64)) {
+                        if (player.getInventory().getItem(0) != null && player.getInventory().getItem(0).getType() == Material.SNOW_BALL) {
+                            player.getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null, player.getInventory().getItem(0).getAmount() + 1, null).getItemStack());
+                        } else {
+                            player.getInventory().setItem(0, new GUIItem(Material.SNOW_BALL, null, 1, null).getItemStack());
+                        }
+                    }
+                } else {
+                    this.cancel();
+                }
+            }
+        }.runTaskTimer(EngineAPI.getGameEngine(), interval, interval));
     }
 
     @Override

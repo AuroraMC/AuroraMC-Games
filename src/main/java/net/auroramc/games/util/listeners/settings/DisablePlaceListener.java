@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.games.util.listeners.settings;
@@ -7,6 +9,7 @@ package net.auroramc.games.util.listeners.settings;
 import net.auroramc.core.api.events.block.BlockPlaceEvent;
 import net.auroramc.engine.api.EngineAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -20,7 +23,11 @@ public class DisablePlaceListener implements Listener {
 
     @EventHandler
     public void onMove(BlockPlaceEvent e) {
-        e.setCancelled(true);
+        if (e.getPlayer().getGameMode() == GameMode.CREATIVE) {
+            e.setCancelled(!EngineAPI.getActiveGame().isBlockPlaceCreative() && !EngineAPI.getActiveGame().isBlockPlace());
+        } else {
+            e.setCancelled(!EngineAPI.getActiveGame().isBlockPlace());
+        }
     }
 
     public static void register() {

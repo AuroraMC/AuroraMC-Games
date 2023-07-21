@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.games.backstab;
@@ -8,13 +10,14 @@ import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
+import net.auroramc.engine.api.games.GameVariationInfo;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import org.bukkit.entity.Player;
 
 public class Backstab extends Game {
 
 
-    public Backstab(GameVariation gameVariation) {
+    public Backstab(GameVariationInfo gameVariation) {
         super(gameVariation);
     }
 

@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.games.spleef.listeners;
@@ -32,6 +34,10 @@ public class BreakListener implements Listener {
 
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
+        if (!EngineAPI.getActiveGame().isBlockBreak()) {
+            e.setCancelled(true);
+            return;
+        }
         if (EngineAPI.getActiveGame().isStarting()) {
             e.setCancelled(true);
         } else {
@@ -102,7 +108,7 @@ public class BreakListener implements Listener {
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent e) {
-        e.setCancelled(true);
+        e.setCancelled(!EngineAPI.getActiveGame().isItemDrop());
     }
 
 }

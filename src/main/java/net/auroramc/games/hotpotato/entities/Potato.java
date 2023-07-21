@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.games.hotpotato.entities;
@@ -40,6 +42,17 @@ public class Potato {
     }
 
     public void newHolder(AuroraMCGamePlayer holder) {
+        if (holder == null) {
+            this.holder.getInventory().clear();
+            this.holder.removePotionEffect(PotionEffectType.SPEED);
+            this.holder.getGameData().remove("potato_holder");
+            PlayerInventory inventory = this.holder.getInventory();
+            inventory.setBoots(new ItemStack(Material.AIR));
+            inventory.setLeggings(new ItemStack(Material.AIR));
+            inventory.setChestplate(new ItemStack(Material.AIR));
+            inventory.setHelmet(new ItemStack(Material.AIR));
+            return;
+        }
         if (this.holder != null) {
             if (oldHolder != null) {
                 if (oldHolder.equals(holder)) {

@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.games.tag.listeners;
@@ -40,6 +42,14 @@ public class HitListener implements Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(PlayerDamageByPlayerEvent e) {
+        if (!EngineAPI.getActiveGame().isDamageAll()) {
+            e.setCancelled(true);
+            return;
+        }
+        if (!EngineAPI.getActiveGame().isDamagePvP()) {
+            e.setCancelled(true);
+            return;
+        }
         if (EngineAPI.getServerState() != ServerState.IN_GAME || EngineAPI.getActiveGame().isStarting()) {
             e.setCancelled(true);
             return;
@@ -98,6 +108,10 @@ public class HitListener implements Listener {
 
     @EventHandler
     public void onEntityDamage(PlayerDamageEvent e) {
+        if (!EngineAPI.getActiveGame().isDamageAll()) {
+            e.setCancelled(true);
+            return;
+        }
         if (EngineAPI.getServerState() != ServerState.IN_GAME) {
             e.setCancelled(true);
             return;

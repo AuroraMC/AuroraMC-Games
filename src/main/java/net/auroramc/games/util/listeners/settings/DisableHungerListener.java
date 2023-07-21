@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.games.util.listeners.settings;
@@ -20,7 +22,9 @@ public class DisableHungerListener implements Listener {
 
     @EventHandler
     public void onMove(FoodLevelChangeEvent e) {
-        if (e.getLevel() < 30) {
+        if (EngineAPI.getActiveGame().getHunger() > -1) {
+            e.setLevel(EngineAPI.getActiveGame().getHunger());
+        } else if (e.getLevel() < 30) {
             e.setLevel(30);
         }
     }

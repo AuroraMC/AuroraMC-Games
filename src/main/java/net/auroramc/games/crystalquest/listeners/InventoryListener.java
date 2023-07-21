@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.games.crystalquest.listeners;
@@ -77,6 +79,8 @@ public class InventoryListener implements Listener {
         if (e.getItemDrop().getItemStack().getType().name().endsWith("_SWORD") || e.getItemDrop().getItemStack().getType().name().endsWith("_PICKAXE") || e.getItemDrop().getItemStack().getType().name().endsWith("_AXE") || e.getItemDrop().getItemStack().getType() == Material.COMPASS || e.getItemDrop().getItemStack().getType().name().endsWith("_HELMET") || e.getItemDrop().getItemStack().getType().name().endsWith("_CHESTPLATE") || e.getItemDrop().getItemStack().getType().name().endsWith("_LEGGINGS") || e.getItemDrop().getItemStack().getType().name().endsWith("_BOOTS") || e.getItemDrop().getItemStack().getType() == Material.NETHER_STAR || e.getItemDrop().getItemStack().getType() == Material.ARROW || e.getItemDrop().getItemStack().getType() == Material.BOW) {
             e.setCancelled(true);
             e.getPlayer().sendMessage(TextFormatter.pluginMessage("Game", "You cannot drop this item!"));
+        } else {
+            e.setCancelled(!EngineAPI.getActiveGame().isItemDrop());
         }
     }
 
@@ -84,6 +88,8 @@ public class InventoryListener implements Listener {
     public void onPickup(PlayerPickupItemEvent e) {
         if (e.getItem().getItemStack().getType() == Material.ARROW) {
             e.setCancelled(true);
+        } else {
+            e.setCancelled(!EngineAPI.getActiveGame().isItemPickup());
         }
     }
 
@@ -112,7 +118,7 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onEat(PlayerInteractEvent e) {
-        if (e.getItem() != null && e.getItem().getType() == Material.COOKIE) {
+        if (e.getItem() != null && e.getItem().getType() == Material.COOKIE && e.getItem().getEnchantments().size() == 0) {
             e.setCancelled(true);
             if (e.getItem().getAmount() == 1) {
                 e.getPlayer().setItemInHand(new ItemStack(Material.AIR));

@@ -1,9 +1,14 @@
 /*
- * Copyright (c) 2021-2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2021-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.games;
 
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.backend.info.ServerInfo;
+import net.auroramc.core.api.ServerAPI;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.games.crystalquest.CrystalQuestInfo;
 import net.auroramc.games.ffa.FFAInfo;
@@ -14,7 +19,11 @@ import net.auroramc.games.spleef.SpleefInfo;
 import net.auroramc.games.tag.TagInfo;
 import net.auroramc.games.util.listeners.death.BorderListener;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.InvalidDescriptionException;
+import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.IOException;
 
 public class AuroraMCGames extends JavaPlugin {
 
@@ -27,6 +36,15 @@ public class AuroraMCGames extends JavaPlugin {
         EngineAPI.registerGame(new RunInfo());
         EngineAPI.registerGame(new TagInfo());
         EngineAPI.registerGame(new PaintballInfo());
+        ServerInfo info = ((ServerInfo)AuroraMCAPI.getInfo());
+        if (info.getServerType().has("event") && info.getServerType().getBoolean("event")) {
+            try {
+                ServerAPI.loadEvent();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         EngineAPI.loadRotation();
 
         Bukkit.getPluginManager().registerEvents(new BorderListener(), this);

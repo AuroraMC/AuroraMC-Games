@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.games.paintball.listeners;
@@ -25,8 +27,8 @@ import net.auroramc.games.paintball.entities.Turret;
 import net.auroramc.games.paintball.kits.Tribute;
 import net.auroramc.games.paintball.teams.PBBlue;
 import net.auroramc.games.paintball.teams.PBRed;
+import net.auroramc.games.paintball.variations.PaintballVariation;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.apache.commons.text.WordUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
@@ -34,11 +36,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -50,6 +48,10 @@ public class HitListener implements Listener {
 
     @EventHandler
     public void onDamage(PlayerDamageEvent e) {
+        if (!EngineAPI.getActiveGame().isDamageAll()) {
+            e.setCancelled(true);
+            return;
+        }
         if (!(e instanceof PlayerDamageByPlayerEvent)) {
             e.setCancelled(true);
         }
@@ -58,6 +60,9 @@ public class HitListener implements Listener {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
             EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", player.getName()).put("killer", "None").put("final", false)));
             player.sendMessage(TextFormatter.pluginMessage("Game", "You went outside of the border so was teleported back to spawn."));
+            if (EngineAPI.getActiveGame().getGameVariation() != null) {
+                EngineAPI.getActiveGame().getGameVariation().onDeath(player, null);
+            }
             JSONArray redSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("RED");
             JSONArray blueSpawns = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("BLUE");
             if (player.isSpectator()) {
@@ -92,6 +97,10 @@ public class HitListener implements Listener {
 
     @EventHandler
     public void onDamage(PlayerDamageByPlayerEvent e) {
+        if (!EngineAPI.getActiveGame().isDamagePvP()) {
+            e.setCancelled(true);
+            return;
+        }
         if (e instanceof PlayerDamageByPlayerRangedEvent) {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
             if (player.isSpectator() || player.isVanished()) {
@@ -174,6 +183,9 @@ public class HitListener implements Listener {
             }
             player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
             player.getKit().onGameStart(player);
+            if (EngineAPI.getActiveGame().getGameVariation() != null) {
+                EngineAPI.getActiveGame().getGameVariation().onDeath(player, (AuroraMCGamePlayer) shooter);
+            }
             if (shooter != null) {
                 KillMessage killMessage = (KillMessage) shooter.getActiveCosmetics().getOrDefault(Cosmetic.CosmeticType.KILL_MESSAGE, AuroraMCAPI.getCosmetics().get(500));
                 for (AuroraMCServerPlayer player1 : ServerAPI.getPlayers()) {
@@ -197,6 +209,10 @@ public class HitListener implements Listener {
         if (e.getDamager() instanceof Snowball) {
             Snowball snowball = (Snowball) e.getDamager();
             if (snowball.getShooter() instanceof ArmorStand) {
+                if (!EngineAPI.getActiveGame().isDamageEvP()) {
+                    e.setCancelled(true);
+                    return;
+                }
                 Turret turret = ((Paintball)EngineAPI.getActiveGame()).getTurrets().get((ArmorStand) snowball.getShooter());
                 if (turret.getOwner().getTeam().equals(e.getPlayer().getTeam())) {
                     e.setCancelled(true);
@@ -244,11 +260,7 @@ public class HitListener implements Listener {
 
     @EventHandler
     public void onThrow(ProjectileLaunchEvent e) {
-        if (EngineAPI.getActiveGame().isStarting()) {
-            e.setCancelled(true);
-            AuroraMCGamePlayer gp = (AuroraMCGamePlayer) ServerAPI.getPlayer((Player) e.getEntity().getShooter());
-            gp.getKit().onGameStart(gp);
-        }
+
     }
 
 }

@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.games.crystalquest;
@@ -26,10 +28,7 @@ import net.auroramc.core.api.player.scoreboard.PlayerScoreboard;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.core.api.utils.holograms.Hologram;
 import net.auroramc.engine.api.EngineAPI;
-import net.auroramc.engine.api.games.Game;
-import net.auroramc.engine.api.games.GameMap;
-import net.auroramc.engine.api.games.GameSession;
-import net.auroramc.engine.api.games.GameVariation;
+import net.auroramc.engine.api.games.*;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.crystalquest.entities.Crystal;
 import net.auroramc.games.crystalquest.entities.CrystalQuestScoreboardRunnable;
@@ -37,7 +36,10 @@ import net.auroramc.games.crystalquest.kits.*;
 import net.auroramc.games.crystalquest.listeners.*;
 import net.auroramc.games.crystalquest.teams.CQBlue;
 import net.auroramc.games.crystalquest.teams.CQRed;
+import net.auroramc.games.crystalquest.variations.CrystalQuestVariation;
 import net.auroramc.games.util.listeners.death.DeathRespawnListener;
+import net.auroramc.games.util.listeners.defaults.HealthSetting;
+import net.auroramc.games.util.listeners.defaults.HungerSetting;
 import net.auroramc.games.util.listeners.settings.DisableWeatherListener;
 import net.auroramc.games.util.listeners.settings.PregameMoveListener;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -70,13 +72,14 @@ public class CrystalQuest extends Game {
     private final ChestListener chestListener;
     private final KitListener kitListener;
     private BukkitTask mineTask;
+    private float mineMultiplier;
 
     private BukkitTask destroyTask;
     private BukkitTask endTask;
     private BukkitTask compassTask;
     private BukkitTask protectionTask;
 
-    private List<BukkitTask> tasks;
+    private final Map<AuroraMCGamePlayer, List<BukkitTask>> tasks;
 
     private BukkitTask scoreboardTask;
 
@@ -88,7 +91,7 @@ public class CrystalQuest extends Game {
     }
 
 
-    public CrystalQuest(GameVariation gameVariation) {
+    public CrystalQuest(GameVariationInfo gameVariation) {
         super(gameVariation);
         showListener = new ShowListener();
         shopListener = new ShopListener();
@@ -104,17 +107,21 @@ public class CrystalQuest extends Game {
         this.kits.add(new Fighter());
         this.kits.add(new Archer());
         this.kits.add(new Economist());
-        this.tasks = new ArrayList<>();
+        this.tasks = new HashMap<>();
         blueUnlucky = true;
         redUnlucky = true;
+        mineMultiplier = 1.0f;
     }
 
     @Override
     public void preLoad() {
+        this.keepInventory = false;
+        super.preLoad();
     }
 
     @Override
     public void load(GameMap gameMap) {
+        super.load(gameMap);
         this.map = gameMap;
         ((CQBlue)this.teams.get("Blue")).loadRobots(map);
         ((CQRed)this.teams.get("Red")).loadRobots(map);
@@ -177,6 +184,8 @@ public class CrystalQuest extends Game {
         DeathRespawnListener.register(100, false);
         PregameMoveListener.register();
         DisableWeatherListener.register();
+        HealthSetting.register();
+        HungerSetting.register();
         Bukkit.getPluginManager().registerEvents(showListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(shopListener, EngineAPI.getGameEngine());
         Bukkit.getPluginManager().registerEvents(inventoryListener, EngineAPI.getGameEngine());
@@ -252,9 +261,9 @@ public class CrystalQuest extends Game {
 
     private void generateMine(float iron, float gold, float emerald) {
         JSONArray dataLocations = map.getMapData().getJSONArray("data_locations");
-        int emeralds = Math.round(emerald * dataLocations.length());
-        int ironOres = Math.round(iron * dataLocations.length());
-        int goldOres = Math.round(gold * dataLocations.length());
+        int emeralds = Math.round(emerald * dataLocations.length() * mineMultiplier);
+        int ironOres = Math.round(iron * dataLocations.length() * mineMultiplier);
+        int goldOres = Math.round(gold * dataLocations.length() * mineMultiplier);
 
         List<Location> locations = new ArrayList<>();
         for (int i = 0;i < dataLocations.length();i++) {
@@ -278,6 +287,11 @@ public class CrystalQuest extends Game {
                 location.getBlock().setType(Material.STONE);
             }
         }
+
+        if (gameVariation != null) {
+            ((CrystalQuestVariation)gameVariation).onMineGenerate();
+        }
+
         EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Mine regenerated")));
     }
 
@@ -369,6 +383,8 @@ public class CrystalQuest extends Game {
         DeathRespawnListener.unregister();
         PregameMoveListener.unregister();
         DisableWeatherListener.unregister();
+        HealthSetting.unregister();
+        HungerSetting.unregister();
 
         if (!starting) {
             CQRed red = (CQRed) getTeams().get("Red");
@@ -382,8 +398,10 @@ public class CrystalQuest extends Game {
             blue.getBossCrystal().unregisterListener();
         }
 
-        for (BukkitTask task : tasks) {
-            task.cancel();
+        for (List<BukkitTask> tasks : tasks.values()) {
+            for (BukkitTask task : tasks) {
+                task.cancel();
+            }
         }
     }
 
@@ -460,55 +478,7 @@ public class CrystalQuest extends Game {
                 destroyTask = new BukkitRunnable(){
                     @Override
                     public void run() {
-                        CQBlue blue = (CQBlue) teams.get("Blue");
-                        CQRed red = (CQRed) teams.get("Red");
-
-                        JSONArray returnPoints = EngineAPI.getActiveMap().getMapData().getJSONObject("game").getJSONObject("CRYSTAL").getJSONArray("RETURN RED");
-                        JSONObject pointA = returnPoints.getJSONObject(0);
-                        JSONObject pointB = returnPoints.getJSONObject(1);
-                        JSONObject pointC = returnPoints.getJSONObject(2);
-                        Location a = new Location(EngineAPI.getMapWorld(), pointA.getInt("x") + 0.5, pointA.getInt("y") - 0.5, pointA.getInt("z") + 0.5);
-                        Location b = new Location(EngineAPI.getMapWorld(), pointB.getInt("x") + 0.5, pointB.getInt("y") - 0.5, pointB.getInt("z") + 0.5);
-                        Location c = new Location(EngineAPI.getMapWorld(), pointC.getInt("x") + 0.5, pointC.getInt("y") - 0.5, pointC.getInt("z") + 0.5);
-
-                        if (red.getTowerACrystal().getState() != Crystal.CrystalState.DEAD) {
-                            blueUnlucky = false;
-                            red.getTowerACrystal().crystalDead(a, false);
-                        }
-                        if (red.getTowerBCrystal().getState() != Crystal.CrystalState.DEAD) {
-                            blueUnlucky = false;
-                            red.getTowerBCrystal().crystalDead(b, false);
-                        }
-                        if (red.getBossCrystal().getState() != Crystal.CrystalState.DEAD) {
-                            blueUnlucky = false;
-                            red.getBossCrystal().crystalDead(c, false);
-                        }
-
-                        returnPoints = EngineAPI.getActiveMap().getMapData().getJSONObject("game").getJSONObject("CRYSTAL").getJSONArray("RETURN BLUE");
-                        pointA = returnPoints.getJSONObject(0);
-                        pointB = returnPoints.getJSONObject(1);
-                        pointC = returnPoints.getJSONObject(2);
-                        a = new Location(EngineAPI.getMapWorld(), pointA.getInt("x") + 0.5, pointA.getInt("y") - 0.5, pointA.getInt("z") + 0.5);
-                        b = new Location(EngineAPI.getMapWorld(), pointB.getInt("x") + 0.5, pointB.getInt("y") - 0.5, pointB.getInt("z") + 0.5);
-                        c = new Location(EngineAPI.getMapWorld(), pointC.getInt("x") + 0.5, pointC.getInt("y") - 0.5, pointC.getInt("z") + 0.5);
-
-                        if (blue.getTowerACrystal().getState() != Crystal.CrystalState.DEAD) {
-                            redUnlucky = false;
-                            blue.getTowerACrystal().crystalDead(a, false);
-                        }
-                        if (blue.getTowerBCrystal().getState() != Crystal.CrystalState.DEAD) {
-                            redUnlucky = false;
-                            blue.getTowerBCrystal().crystalDead(b, false);
-                        }
-                        if (blue.getBossCrystal().getState() != Crystal.CrystalState.DEAD) {
-                            redUnlucky = false;
-                            blue.getBossCrystal().crystalDead(c, false);
-                        }
-
-                        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
-                            player.sendMessage(TextFormatter.pluginMessage("Game", "&c&lAll Crystals have been destroyed! Last team alive wins!"));
-                        }
-
+                        destroyCrystals();
                     }
                 }.runTaskLater(ServerAPI.getCore(), 5999);
             }
@@ -517,7 +487,7 @@ public class CrystalQuest extends Game {
             @Override
             public void run() {
                 for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
-                    player.sendMessage(TextFormatter.pluginMessage("Game", "The game will be end in **5 minutes**!"));
+                    player.sendMessage(TextFormatter.pluginMessage("Game", "The game will be ending in **5 minutes**!"));
                 }
                 endTask = new BukkitRunnable(){
                     @Override
@@ -644,16 +614,20 @@ public class CrystalQuest extends Game {
         for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
             pl.sendMessage(TextFormatter.pluginMessage("Game", "Crystals are protected for the first 2 minutes of the game!"));
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
+            List<BukkitTask> tasks1 = tasks.getOrDefault(player, new ArrayList<>());
+            if (tasks1.size() == 0) {
+                tasks.put(player, tasks1);
+            }
             if (!player.isSpectator() && player.getKit() instanceof Defender) {
                 switch (player.getKitLevel().getLatestUpgrade()) {
                     case 0: {
-                        tasks.add(new BukkitRunnable() {
+                        tasks1.add(new BukkitRunnable() {
 
                             private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
                             @Override
                             public void run() {
-                                if (player.isOnline()) {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
                                     if (!player.getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
                                         player.getInventory().addItem(new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack());
                                     }
@@ -665,13 +639,13 @@ public class CrystalQuest extends Game {
                         break;
                     }
                     case 1: {
-                        tasks.add(new BukkitRunnable() {
+                        tasks1.add(new BukkitRunnable() {
 
                             private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
                             @Override
                             public void run() {
-                                if (player.isOnline()) {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
                                     if (!player.getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
                                         player.getInventory().addItem(stack);
                                     }
@@ -683,13 +657,13 @@ public class CrystalQuest extends Game {
                         break;
                     }
                     case 2: {
-                        tasks.add(new BukkitRunnable() {
+                        tasks1.add(new BukkitRunnable() {
 
                             private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
                             @Override
                             public void run() {
-                                if (player.isOnline()) {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
                                     if (!player.getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
                                         player.getInventory().addItem(stack);
                                     }
@@ -701,13 +675,13 @@ public class CrystalQuest extends Game {
                         break;
                     }
                     case 3: {
-                        tasks.add(new BukkitRunnable() {
+                        tasks1.add(new BukkitRunnable() {
 
                             private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
                             @Override
                             public void run() {
-                                if (player.isOnline()) {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
                                     if (!player.getInventory().contains(Material.STAINED_GLASS, 14) && !player.isSpectator()) {
                                         player.getInventory().addItem(stack);
                                     }
@@ -719,13 +693,13 @@ public class CrystalQuest extends Game {
                         break;
                     }
                     case 4: {
-                        tasks.add(new BukkitRunnable() {
+                        tasks1.add(new BukkitRunnable() {
 
                             private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
                             @Override
                             public void run() {
-                                if (player.isOnline()) {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
                                     if (!player.getInventory().contains(Material.STAINED_GLASS, 16) && !player.isSpectator()) {
                                         player.getInventory().addItem(stack);
                                     }
@@ -737,13 +711,13 @@ public class CrystalQuest extends Game {
                         break;
                     }
                     case 5: {
-                        tasks.add(new BukkitRunnable() {
+                        tasks1.add(new BukkitRunnable() {
 
                             private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
 
                             @Override
                             public void run() {
-                                if (player.isOnline()) {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
                                     if (!player.getInventory().contains(Material.STAINED_GLASS, 16) && !player.isSpectator()) {
                                         player.getInventory().addItem(stack);
                                     }
@@ -775,14 +749,14 @@ public class CrystalQuest extends Game {
                     }
                 }
                 int fm = max;
-                tasks.add(new BukkitRunnable() {
+                tasks1.add(new BukkitRunnable() {
 
                     private final ItemStack stack = new GUIItem(Material.ARROW, "&eArcher's Arrow").getItemStack();
                     private final int max = fm;
 
                     @Override
                     public void run() {
-                        if (player.isOnline()) {
+                        if (player.isOnline() && player.getKit() instanceof Archer) {
                             if (!player.getInventory().contains(Material.ARROW, max) && !player.isSpectator()) {
                                 player.getInventory().addItem(stack);
                             }
@@ -821,22 +795,34 @@ public class CrystalQuest extends Game {
                 }
 
                 int finalAmountIron = amountIron, finalAmountGold = amountGold;
-                tasks.add(new BukkitRunnable(){
+                tasks1.add(new BukkitRunnable(){
                     @Override
                     public void run() {
-                        player.getInventory().addItem(new ItemStack(Material.IRON_INGOT, finalAmountIron));
+                        if (player.isOnline() && player.getKit() instanceof Economist) {
+                            player.getInventory().addItem(new ItemStack(Material.IRON_INGOT, finalAmountIron));
+                        } else {
+                            this.cancel();
+                        }
                     }
                 }.runTaskTimer(EngineAPI.getGameEngine(), iron, iron));
-                tasks.add(new BukkitRunnable(){
+                tasks1.add(new BukkitRunnable(){
                     @Override
                     public void run() {
-                        player.getInventory().addItem(new ItemStack(Material.GOLD_INGOT, finalAmountGold));
+                        if (player.isOnline() && player.getKit() instanceof Economist) {
+                            player.getInventory().addItem(new ItemStack(Material.GOLD_INGOT, finalAmountGold));
+                        } else {
+                            this.cancel();
+                        }
                     }
                 }.runTaskTimer(EngineAPI.getGameEngine(), gold, gold));
-                tasks.add(new BukkitRunnable(){
+                tasks1.add(new BukkitRunnable(){
                     @Override
                     public void run() {
-                        player.getInventory().addItem(new ItemStack(Material.EMERALD, 1));
+                        if (player.isOnline() && player.getKit() instanceof Economist) {
+                            player.getInventory().addItem(new ItemStack(Material.EMERALD, 1));
+                        } else {
+                            this.cancel();
+                        }
                     }
                 }.runTaskTimer(EngineAPI.getGameEngine(), emerald, emerald));
             }
@@ -848,9 +834,71 @@ public class CrystalQuest extends Game {
 
     }
 
+    public void destroyCrystals() {
+        boolean send = false;
+        CQBlue blue = (CQBlue) teams.get("Blue");
+        CQRed red = (CQRed) teams.get("Red");
+
+        JSONArray returnPoints = EngineAPI.getActiveMap().getMapData().getJSONObject("game").getJSONObject("CRYSTAL").getJSONArray("RETURN RED");
+        JSONObject pointA = returnPoints.getJSONObject(0);
+        JSONObject pointB = returnPoints.getJSONObject(1);
+        JSONObject pointC = returnPoints.getJSONObject(2);
+        Location a = new Location(EngineAPI.getMapWorld(), pointA.getInt("x") + 0.5, pointA.getInt("y") - 0.5, pointA.getInt("z") + 0.5);
+        Location b = new Location(EngineAPI.getMapWorld(), pointB.getInt("x") + 0.5, pointB.getInt("y") - 0.5, pointB.getInt("z") + 0.5);
+        Location c = new Location(EngineAPI.getMapWorld(), pointC.getInt("x") + 0.5, pointC.getInt("y") - 0.5, pointC.getInt("z") + 0.5);
+
+        if (red.getTowerACrystal().getState() != Crystal.CrystalState.DEAD) {
+            blueUnlucky = false;
+            send = true;
+            red.getTowerACrystal().crystalDead(a, false);
+        }
+        if (red.getTowerBCrystal().getState() != Crystal.CrystalState.DEAD) {
+            blueUnlucky = false;
+            send = true;
+            red.getTowerBCrystal().crystalDead(b, false);
+        }
+        if (red.getBossCrystal().getState() != Crystal.CrystalState.DEAD) {
+            blueUnlucky = false;
+            send = true;
+            red.getBossCrystal().crystalDead(c, false);
+        }
+
+        returnPoints = EngineAPI.getActiveMap().getMapData().getJSONObject("game").getJSONObject("CRYSTAL").getJSONArray("RETURN BLUE");
+        pointA = returnPoints.getJSONObject(0);
+        pointB = returnPoints.getJSONObject(1);
+        pointC = returnPoints.getJSONObject(2);
+        a = new Location(EngineAPI.getMapWorld(), pointA.getInt("x") + 0.5, pointA.getInt("y") - 0.5, pointA.getInt("z") + 0.5);
+        b = new Location(EngineAPI.getMapWorld(), pointB.getInt("x") + 0.5, pointB.getInt("y") - 0.5, pointB.getInt("z") + 0.5);
+        c = new Location(EngineAPI.getMapWorld(), pointC.getInt("x") + 0.5, pointC.getInt("y") - 0.5, pointC.getInt("z") + 0.5);
+
+        if (blue.getTowerACrystal().getState() != Crystal.CrystalState.DEAD) {
+            redUnlucky = false;
+            send = true;
+            blue.getTowerACrystal().crystalDead(a, false);
+        }
+        if (blue.getTowerBCrystal().getState() != Crystal.CrystalState.DEAD) {
+            redUnlucky = false;
+            send = true;
+            blue.getTowerBCrystal().crystalDead(b, false);
+        }
+        if (blue.getBossCrystal().getState() != Crystal.CrystalState.DEAD) {
+            redUnlucky = false;
+            send = true;
+            blue.getBossCrystal().crystalDead(c, false);
+        }
+
+        if (send) {
+            if (gameVariation != null) {
+                ((CrystalQuestVariation)gameVariation).onCrystalDestroy();
+            }
+            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                player.sendMessage(TextFormatter.pluginMessage("Game", "§c§lAll Crystals have been destroyed! Last team alive wins!"));
+            }
+        }
+    }
+
     @Override
     public void onPlayerJoin(Player player) {
-        AuroraMCAPI.getLogger().info("1");
         JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
         int x, y, z;
         x = specSpawn.getInt("x");
@@ -864,16 +912,13 @@ public class CrystalQuest extends Game {
                 for (Player player2 : Bukkit.getOnlinePlayers()) {
                     player2.hidePlayer(player);
                 }
-                AuroraMCAPI.getLogger().info("2");
             }
         }.runTaskLater(ServerAPI.getCore(), 2);
     }
 
     @Override
     public void onPlayerJoin(AuroraMCGamePlayer auroraMCGamePlayer) {
-
-        AuroraMCAPI.getLogger().info("3");
-
+        super.onPlayerJoin(auroraMCGamePlayer);
         if (!auroraMCGamePlayer.isVanished()) {
             EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Spectator Joined").put("player", auroraMCGamePlayer.getName())));
         }
@@ -884,13 +929,13 @@ public class CrystalQuest extends Game {
                     player2.hidePlayer(auroraMCGamePlayer);
                 }
                 auroraMCGamePlayer.setSpectator(true, true);
-                AuroraMCAPI.getLogger().info("4");
             }
         }.runTask(ServerAPI.getCore());
     }
 
     @Override
     public void onPlayerLeave(AuroraMCGamePlayer player) {
+        super.onPlayerJoin(player);
         if (!player.isVanished()) {
             EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Player Leave").put("player", player.getName())));
         }
@@ -1010,7 +1055,7 @@ public class CrystalQuest extends Game {
             player.getInventory().setChestplate((ItemStack) player.getGameData().get("death_chestplate"));
             player.getInventory().setLeggings((ItemStack) player.getGameData().get("death_leggings"));
             player.getInventory().setBoots((ItemStack) player.getGameData().get("death_boots"));
-        } else {
+        } else if (player.getGameData().containsKey("death_chestplate")) {
             player.getInventory().setHelmet((ItemStack) player.getGameData().get("death_helmet"));
             player.getInventory().setChestplate((ItemStack) player.getGameData().get("death_chestplate"));
             player.getInventory().setLeggings((ItemStack) player.getGameData().get("death_leggings"));
@@ -1033,6 +1078,228 @@ public class CrystalQuest extends Game {
                 }
             }
             player.getInventory().setItem(8, compass);
+        } else {
+            player.getInventory().clear();
+            player.getInventory().setArmorContents(new ItemStack[4]);
+            player.getKit().onGameStart(player);
+
+            List<BukkitTask> tasks1 = tasks.getOrDefault(player, new ArrayList<>());
+            if (tasks1.size() == 0) {
+                tasks.put(player, tasks1);
+            } else {
+                for (BukkitTask task : tasks1) {
+                    task.cancel();
+                }
+                tasks1.clear();
+            }
+            if (!player.isSpectator() && player.getKit() instanceof Defender) {
+                switch (player.getKitLevel().getLatestUpgrade()) {
+                    case 0: {
+                        tasks1.add(new BukkitRunnable() {
+
+                            private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
+
+                            @Override
+                            public void run() {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
+                                    if (!player.getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
+                                        player.getInventory().addItem(new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack());
+                                    }
+                                } else {
+                                    this.cancel();
+                                }
+                            }
+                        }.runTaskTimer(EngineAPI.getGameEngine(), 240, 240));
+                        break;
+                    }
+                    case 1: {
+                        tasks1.add(new BukkitRunnable() {
+
+                            private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
+
+                            @Override
+                            public void run() {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
+                                    if (!player.getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
+                                        player.getInventory().addItem(stack);
+                                    }
+                                } else {
+                                    this.cancel();
+                                }
+                            }
+                        }.runTaskTimer(EngineAPI.getGameEngine(), 220, 220));
+                        break;
+                    }
+                    case 2: {
+                        tasks1.add(new BukkitRunnable() {
+
+                            private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
+
+                            @Override
+                            public void run() {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
+                                    if (!player.getInventory().contains(Material.STAINED_GLASS, 12) && !player.isSpectator()) {
+                                        player.getInventory().addItem(stack);
+                                    }
+                                } else {
+                                    this.cancel();
+                                }
+                            }
+                        }.runTaskTimer(EngineAPI.getGameEngine(), 200, 200));
+                        break;
+                    }
+                    case 3: {
+                        tasks1.add(new BukkitRunnable() {
+
+                            private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
+
+                            @Override
+                            public void run() {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
+                                    if (!player.getInventory().contains(Material.STAINED_GLASS, 14) && !player.isSpectator()) {
+                                        player.getInventory().addItem(stack);
+                                    }
+                                } else {
+                                    this.cancel();
+                                }
+                            }
+                        }.runTaskTimer(EngineAPI.getGameEngine(), 180, 180));
+                        break;
+                    }
+                    case 4: {
+                        tasks1.add(new BukkitRunnable() {
+
+                            private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
+
+                            @Override
+                            public void run() {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
+                                    if (!player.getInventory().contains(Material.STAINED_GLASS, 16) && !player.isSpectator()) {
+                                        player.getInventory().addItem(stack);
+                                    }
+                                } else {
+                                    this.cancel();
+                                }
+                            }
+                        }.runTaskTimer(EngineAPI.getGameEngine(), 160, 160));
+                        break;
+                    }
+                    case 5: {
+                        tasks1.add(new BukkitRunnable() {
+
+                            private final ItemStack stack = new GUIItem(Material.STAINED_GLASS, null, 1, null, (short)((player.getTeam() instanceof CQBlue)?11:14)).getItemStack();
+
+                            @Override
+                            public void run() {
+                                if (player.isOnline() && player.getKit() instanceof Defender) {
+                                    if (!player.getInventory().contains(Material.STAINED_GLASS, 16) && !player.isSpectator()) {
+                                        player.getInventory().addItem(stack);
+                                    }
+                                } else {
+                                    this.cancel();
+                                }
+
+                            }
+                        }.runTaskTimer(EngineAPI.getGameEngine(), 120, 120));
+                        break;
+                    }
+                }
+            } else if (!player.isSpectator() && player.getKit() instanceof Archer) {
+                int max = 0;
+                switch (player.getKitLevel().getLatestUpgrade()) {
+                    case 5: {
+                        max+=2;
+                    }
+                    case 4:
+                    case 3:{
+                        max++;
+                    }
+                    case 2:
+                    case 1: {
+                        max++;
+                    }
+                    case 0: {
+                        max += 6;
+                    }
+                }
+                int fm = max;
+                tasks1.add(new BukkitRunnable() {
+
+                    private final ItemStack stack = new GUIItem(Material.ARROW, "&eArcher's Arrow").getItemStack();
+                    private final int max = fm;
+
+                    @Override
+                    public void run() {
+                        if (player.isOnline() && player.getKit() instanceof Archer) {
+                            if (!player.getInventory().contains(Material.ARROW, max) && !player.isSpectator()) {
+                                player.getInventory().addItem(stack);
+                            }
+                        } else {
+                            this.cancel();
+                        }
+                    }
+                }.runTaskTimer(EngineAPI.getGameEngine(), 120, 120));
+
+            } else if (!player.isSpectator() && player.getKit() instanceof Economist) {
+                int iron = 400, gold = 800, emerald = 1200;
+                int amountIron = 3, amountGold = 2;
+                switch (player.getKitLevel().getLatestUpgrade()) {
+                    case 5:
+                        iron-=10;
+                        gold-=10;
+                        emerald-=10;
+                    case 4:
+                        iron-=10;
+                        gold-=10;
+                        emerald-=10;
+                        amountGold++;
+                    case 3:
+                        iron-=10;
+                        gold-=10;
+                        emerald-=10;
+                    case 2:
+                        iron-=10;
+                        gold-=10;
+                        emerald-=10;
+                        amountIron++;
+                    case 1:
+                        iron-=10;
+                        gold-=10;
+                        emerald-=10;
+                }
+
+                int finalAmountIron = amountIron, finalAmountGold = amountGold;
+                tasks1.add(new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        if (player.isOnline() && player.getKit() instanceof Economist) {
+                            player.getInventory().addItem(new ItemStack(Material.IRON_INGOT, finalAmountIron));
+                        } else {
+                            this.cancel();
+                        }
+                    }
+                }.runTaskTimer(EngineAPI.getGameEngine(), iron, iron));
+                tasks1.add(new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        if (player.isOnline() && player.getKit() instanceof Economist) {
+                            player.getInventory().addItem(new ItemStack(Material.GOLD_INGOT, finalAmountGold));
+                        } else {
+                            this.cancel();
+                        }
+                    }
+                }.runTaskTimer(EngineAPI.getGameEngine(), gold, gold));
+                tasks1.add(new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        if (player.isOnline() && player.getKit() instanceof Economist) {
+                            player.getInventory().addItem(new ItemStack(Material.EMERALD, 1));
+                        } else {
+                            this.cancel();
+                        }
+                    }
+                }.runTaskTimer(EngineAPI.getGameEngine(), emerald, emerald));
+            }
         }
 
         player.getGameData().clear();
@@ -1044,6 +1311,8 @@ public class CrystalQuest extends Game {
         player.setLevel(0);
         player.setFlying(false);
         player.setAllowFlight(false);
+
+        super.onRespawn(player);
     }
 
     @Override
@@ -1113,7 +1382,7 @@ public class CrystalQuest extends Game {
             }
         }
         EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.DEATH, new JSONObject().put("player", player.getName()).put("killer", ((killer != null)?killer.getName():"None")).put("final", finalKill)));
-        if (!finalKill) {
+        if (!finalKill || ServerAPI.isEventMode()) {
             if (life) {
                 player.getGameData().put("death_helmet", player.getInventory().getHelmet());
                 player.getGameData().put("death_chestplate", player.getInventory().getChestplate());
@@ -1422,11 +1691,13 @@ public class CrystalQuest extends Game {
                 }
             }
         }
-        return finalKill;
+
+        return finalKill || super.onDeath(player, killer);
     }
 
     @Override
     public void onFinalKill(AuroraMCGamePlayer player) {
+        super.onFinalKill(player);
         if (player.getTeam().getPlayers().stream().noneMatch(auroraMCPlayer -> (!((AuroraMCGamePlayer)auroraMCPlayer).isDead()))) {
             if (player.getTeam() instanceof CQBlue) {
                 //Red won.
@@ -1436,6 +1707,10 @@ public class CrystalQuest extends Game {
                 this.end(teams.get("Blue"), null);
             }
         }
+    }
+
+    public void setMineMultiplier(float mineMultiplier) {
+        this.mineMultiplier = mineMultiplier;
     }
 }
 

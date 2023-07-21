@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.games.crystalquest.kits;
@@ -9,6 +11,8 @@ import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.games.Kit;
 import net.auroramc.games.crystalquest.CrystalQuest;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
 
 public class Economist extends Kit {
 
@@ -25,7 +29,9 @@ public class Economist extends Kit {
 
         player.getInventory().setItem(0, new GUIItem(Material.STONE_SWORD).getItemStack());
         player.getInventory().setItem(1, new GUIItem(Material.STONE_PICKAXE).getItemStack());
-        player.getInventory().setItem(2, new GUIItem(Material.WOOD_AXE).getItemStack());
+        ItemStack axe = new GUIItem(Material.WOOD_AXE).getItemStack();
+        axe.addEnchantment(Enchantment.DAMAGE_ALL, 1);
+        player.getInventory().setItem(2, axe);
 
         player.getInventory().setItem(8, CrystalQuest.compass);
     }

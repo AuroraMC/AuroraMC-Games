@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.games.ffa;
@@ -14,10 +16,7 @@ import net.auroramc.core.api.events.player.PlayerInteractEvent;
 import net.auroramc.core.api.events.player.PlayerShowEvent;
 import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.EngineAPI;
-import net.auroramc.engine.api.games.Game;
-import net.auroramc.engine.api.games.GameMap;
-import net.auroramc.engine.api.games.GameSession;
-import net.auroramc.engine.api.games.GameVariation;
+import net.auroramc.engine.api.games.*;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.games.ffa.kits.Berserker;
 import net.auroramc.games.ffa.listeners.BreakListener;
@@ -26,6 +25,9 @@ import net.auroramc.games.ffa.listeners.ShowListener;
 import net.auroramc.games.ffa.util.FFAScoreboardRunnable;
 import net.auroramc.games.util.PlayersTeam;
 import net.auroramc.games.util.listeners.death.DeathListener;
+import net.auroramc.games.util.listeners.defaults.HealthSetting;
+import net.auroramc.games.util.listeners.defaults.HungerSetting;
+import net.auroramc.games.util.listeners.defaults.ItemPickupSetting;
 import net.auroramc.games.util.listeners.settings.DisableItemDrop;
 import net.auroramc.games.util.listeners.settings.DisableItemPickup;
 import net.auroramc.games.util.listeners.settings.DisableRemovableArmor;
@@ -40,12 +42,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class FFA extends Game {
 
 
-    public FFA(GameVariation gameVariation) {
+    public FFA(GameVariationInfo gameVariation) {
         super(gameVariation);
     }
 
@@ -60,11 +63,15 @@ public class FFA extends Game {
         this.teams.put("players", new PlayersTeam());
         this.kits.add(new Berserker());
         runnable = new FFAScoreboardRunnable();
+        itemDrop = false;
+        itemPickup = false;
+        super.preLoad();
     }
 
     @Override
     public void load(GameMap gameMap) {
         this.map = gameMap;
+        super.load(gameMap);
     }
 
     @Override
@@ -114,6 +121,8 @@ public class FFA extends Game {
         DisableItemPickup.register();
         DisableRemovableArmor.register();
         DisableWeatherListener.register();
+        HealthSetting.register();
+        HungerSetting.register();
         Bukkit.getPluginManager().registerEvents(breakListener, EngineAPI.getGameEngine());
         runnable.runTaskTimer(ServerAPI.getCore(), 0, 20);
     }
@@ -141,6 +150,8 @@ public class FFA extends Game {
         DisableItemPickup.unregister();
         DisableRemovableArmor.unregister();
         DisableWeatherListener.unregister();
+        HealthSetting.unregister();
+        HungerSetting.unregister();
         PlayerInteractEvent.getHandlerList().unregister(breakListener);
         PlayerShowEvent.getHandlerList().unregister(showListener);
         PlayerDropItemEvent.getHandlerList().unregister(breakListener);
@@ -204,7 +215,16 @@ public class FFA extends Game {
     }
 
     @Override
-    public void onRespawn(AuroraMCGamePlayer auroraMCGamePlayer) {
+    public void onRespawn(AuroraMCGamePlayer gp) {
+        JSONArray spawns = this.map.getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
+        JSONObject spawn = spawns.getJSONObject(new Random().nextInt(spawns.length()));
+        int x, y, z;
+        x = spawn.getInt("x");
+        y = spawn.getInt("y");
+        z = spawn.getInt("z");
+        float yaw = spawn.getFloat("yaw");
+        gp.teleport(new Location(EngineAPI.getMapWorld(), x + 0.5, y, z + 0.5, yaw, 0));
+        gp.getKit().onGameStart(gp);
     }
 
     @Override

@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.games.util.listeners.death;
@@ -10,10 +12,7 @@ import net.auroramc.api.cosmetics.DeathEffect;
 import net.auroramc.api.cosmetics.KillMessage;
 import net.auroramc.api.utils.TextFormatter;
 import net.auroramc.core.api.ServerAPI;
-import net.auroramc.core.api.events.entity.PlayerDamageByEntityEvent;
-import net.auroramc.core.api.events.entity.PlayerDamageByPlayerEvent;
-import net.auroramc.core.api.events.entity.PlayerDamageByPlayerRangedEvent;
-import net.auroramc.core.api.events.entity.PlayerDamageEvent;
+import net.auroramc.core.api.events.entity.*;
 import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -89,6 +88,10 @@ public class DeathRespawnListener implements Listener {
                 }
             }
         }
+        if (!EngineAPI.getActiveGame().isDamageAll()) {
+            e.setCancelled(true);
+            return;
+        }
         if (e.getDamage() >= player.getHealth() && !player.isSpectator()) {
             e.setDamage(0);
 
@@ -102,7 +105,10 @@ public class DeathRespawnListener implements Listener {
                 killMessage = (KillMessage) AuroraMCAPI.getCosmetics().get(500);
             }
             if (e instanceof PlayerDamageByPlayerEvent) {
-
+                if (!EngineAPI.getActiveGame().isDamagePvP()) {
+                    e.setCancelled(true);
+                    return;
+                }
                 if (e instanceof PlayerDamageByPlayerRangedEvent) {
                     killer = (AuroraMCGamePlayer) ((PlayerDamageByPlayerRangedEvent) e).getDamager();
                     killReason = KillMessage.KillReason.BOW;
@@ -124,6 +130,10 @@ public class DeathRespawnListener implements Listener {
                             break;
                         }
                         case FALL: {
+                            if (!EngineAPI.getActiveGame().isDamageFall()) {
+                                e.setCancelled(true);
+                                return;
+                            }
                             if (EngineAPI.getActiveGameInfo().getId() == 102) {
                                 if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(146))) {
                                     player.getStats().achievementGained(AuroraMCAPI.getAchievement(146), 1, true);
@@ -149,16 +159,28 @@ public class DeathRespawnListener implements Listener {
                 } else if (((PlayerDamageByEntityEvent) e).getDamager() instanceof Arrow) {
                     if (((Arrow) ((PlayerDamageByEntityEvent) e).getDamager()).getShooter() instanceof Entity) {
                         //Damage by entity.
+                        if (!EngineAPI.getActiveGame().isDamageEvP()) {
+                            e.setCancelled(true);
+                            return;
+                        }
                         entity = (Entity) ((Arrow) ((PlayerDamageByEntityEvent) e).getDamager()).getShooter();
                         killReason = KillMessage.KillReason.ENTITY;
                     }
                 } else {
+                    if (!EngineAPI.getActiveGame().isDamageEvP()) {
+                        e.setCancelled(true);
+                        return;
+                    }
                     entity = ((PlayerDamageByEntityEvent) e).getDamager();
                     killReason = KillMessage.KillReason.ENTITY;
                 }
             } else {
                 switch (e.getCause()) {
                     case FALL: {
+                        if (!EngineAPI.getActiveGame().isDamageFall()) {
+                            e.setCancelled(true);
+                            return;
+                        }
                         killReason = KillMessage.KillReason.FALL;
                         if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
                             killer = player.getLastHitBy();
@@ -235,13 +257,16 @@ public class DeathRespawnListener implements Listener {
             if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.DEATH_EFFECT)) {
                 ((DeathEffect) player.getActiveCosmetics().get(Cosmetic.CosmeticType.DEATH_EFFECT)).onDeath(player);
             }
-            JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
-            int x, y, z;
-            x = specSpawn.getInt("x");
-            y = specSpawn.getInt("y");
-            z = specSpawn.getInt("z");
-            float yaw = specSpawn.getFloat("yaw");
-            player.teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
+
+            if (timeout > 0) {
+                JSONObject specSpawn = EngineAPI.getActiveMap().getMapData().getJSONObject("spawn").getJSONArray("SPECTATOR").getJSONObject(0);
+                int x, y, z;
+                x = specSpawn.getInt("x");
+                y = specSpawn.getInt("y");
+                z = specSpawn.getInt("z");
+                float yaw = specSpawn.getFloat("yaw");
+                player.teleport(new Location(EngineAPI.getMapWorld(), x, y, z, yaw, 0));
+            }
 
             player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths", 1, true);
             player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "deaths;" + killReason.name(), 1, true);
@@ -249,11 +274,13 @@ public class DeathRespawnListener implements Listener {
             player.setLastHitAt(-1);
             player.setLastHitBy(null);
             player.getLatestHits().clear();
-            player.getInventory().clear();
-            player.getInventory().setHelmet(new ItemStack(Material.AIR));
-            player.getInventory().setChestplate(new ItemStack(Material.AIR));
-            player.getInventory().setLeggings(new ItemStack(Material.AIR));
-            player.getInventory().setBoots(new ItemStack(Material.AIR));
+            if (!EngineAPI.getActiveGame().isKeepInventory()) {
+                player.getInventory().clear();
+                player.getInventory().setHelmet(new ItemStack(Material.AIR));
+                player.getInventory().setChestplate(new ItemStack(Material.AIR));
+                player.getInventory().setLeggings(new ItemStack(Material.AIR));
+                player.getInventory().setBoots(new ItemStack(Material.AIR));
+            }
             player.setFireTicks(0);
 
             String ent = ((entity == null)?null: WordUtils.capitalizeFully(WordUtils.capitalizeFully(entity.getType().name().replace("_", " "))));
@@ -301,6 +328,10 @@ public class DeathRespawnListener implements Listener {
             }
 
         } else if (e instanceof PlayerDamageByPlayerEvent) {
+            if (!EngineAPI.getActiveGame().isDamagePvP()) {
+                e.setCancelled(true);
+                return;
+            }
             if (e.getDamage() > 0) {
                 AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) ((PlayerDamageByPlayerEvent) e).getDamager();
                 if (!player1.isSpectator()) {
@@ -313,8 +344,21 @@ public class DeathRespawnListener implements Listener {
                     e.setCancelled(true);
                 }
             }
+        } else if (e instanceof PlayerDamageByEntityEvent) {
+            if (!EngineAPI.getActiveGame().isDamageEvP()) {
+                e.setCancelled(true);
+            }
+        } else if (e.getCause() == PlayerDamageEvent.DamageCause.FALL && !EngineAPI.getActiveGame().isDamageFall()) {
+            e.setCancelled(true);
         }
 
+    }
+
+    @EventHandler
+    public void onDamage(EntityDamageByPlayerEvent e) {
+        if (!EngineAPI.getActiveGame().isDamagePvE()) {
+            e.setCancelled(true);
+        }
     }
 
 
@@ -326,5 +370,9 @@ public class DeathRespawnListener implements Listener {
 
     public static void unregister() {
         PlayerDamageEvent.getHandlerList().unregister(instance);
+    }
+
+    public static long getTimeout() {
+        return timeout;
     }
 }

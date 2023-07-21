@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.games.util.listeners.death;
@@ -10,10 +12,7 @@ import net.auroramc.api.cosmetics.DeathEffect;
 import net.auroramc.api.cosmetics.KillMessage;
 import net.auroramc.api.utils.TextFormatter;
 import net.auroramc.core.api.ServerAPI;
-import net.auroramc.core.api.events.entity.PlayerDamageByEntityEvent;
-import net.auroramc.core.api.events.entity.PlayerDamageByPlayerEvent;
-import net.auroramc.core.api.events.entity.PlayerDamageByPlayerRangedEvent;
-import net.auroramc.core.api.events.entity.PlayerDamageEvent;
+import net.auroramc.core.api.events.entity.*;
 import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -56,6 +55,10 @@ public class NoDamageInstaKillListener implements Listener {
             }
             return;
         }
+        if (!EngineAPI.getActiveGame().isDamageAll()) {
+            e.setCancelled(true);
+            return;
+        }
         if (EngineAPI.getServerState() != ServerState.IN_GAME || EngineAPI.getActiveGame().isStarting()) {
             e.setCancelled(true);
             return;
@@ -73,7 +76,10 @@ public class NoDamageInstaKillListener implements Listener {
                 killMessage = (KillMessage) AuroraMCAPI.getCosmetics().get(500);
             }
             if (e instanceof PlayerDamageByPlayerEvent) {
-
+                if (!EngineAPI.getActiveGame().isDamagePvP()) {
+                    e.setCancelled(true);
+                    return;
+                }
                 if (e instanceof PlayerDamageByPlayerRangedEvent) {
                     killer = (AuroraMCGamePlayer) ((PlayerDamageByPlayerRangedEvent) e).getDamager();
                     killReason = KillMessage.KillReason.BOW;
@@ -95,6 +101,10 @@ public class NoDamageInstaKillListener implements Listener {
                             break;
                         }
                         case FALL: {
+                            if (!EngineAPI.getActiveGame().isDamageFall()) {
+                                e.setCancelled(true);
+                                return;
+                            }
                             if (EngineAPI.getActiveGameInfo().getId() == 102) {
                                 if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(146))) {
                                     player.getStats().achievementGained(AuroraMCAPI.getAchievement(146), 1, true);
@@ -120,16 +130,28 @@ public class NoDamageInstaKillListener implements Listener {
                 } else if (((PlayerDamageByEntityEvent) e).getDamager() instanceof Arrow) {
                     if (((Arrow) ((PlayerDamageByEntityEvent) e).getDamager()).getShooter() instanceof Entity) {
                         //Damage by entity.
+                        if (!EngineAPI.getActiveGame().isDamageEvP()) {
+                            e.setCancelled(true);
+                            return;
+                        }
                         entity = (Entity) ((Arrow) ((PlayerDamageByEntityEvent) e).getDamager()).getShooter();
                         killReason = KillMessage.KillReason.ENTITY;
                     }
                 } else {
+                    if (!EngineAPI.getActiveGame().isDamageEvP()) {
+                        e.setCancelled(true);
+                        return;
+                    }
                     entity = ((PlayerDamageByEntityEvent) e).getDamager();
                     killReason = KillMessage.KillReason.ENTITY;
                 }
             } else {
                 switch (e.getCause()) {
                     case FALL: {
+                        if (!EngineAPI.getActiveGame().isDamageFall()) {
+                            e.setCancelled(true);
+                            return;
+                        }
                         killReason = KillMessage.KillReason.FALL;
                         if (player.getLastHitBy() != null && System.currentTimeMillis() - player.getLastHitAt() < 60000) {
                             killer = player.getLastHitBy();
@@ -227,6 +249,10 @@ public class NoDamageInstaKillListener implements Listener {
                 player2.sendMessage(TextFormatter.pluginMessage("Kill", killMessage.onKill(player2, killer, player, ent, killReason, EngineAPI.getActiveGameInfo().getId())));
             }
         } else if (e instanceof PlayerDamageByPlayerEvent) {
+            if (!EngineAPI.getActiveGame().isDamagePvP()) {
+                e.setCancelled(true);
+                return;
+            }
             e.setDamage(0);
             AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) e.getPlayer();
             if (!player1.isSpectator()) {
@@ -238,8 +264,21 @@ public class NoDamageInstaKillListener implements Listener {
             } else {
                 e.setCancelled(true);
             }
+        } else if (e instanceof PlayerDamageByEntityEvent) {
+            if (!EngineAPI.getActiveGame().isDamageEvP()) {
+                e.setCancelled(true);
+            }
+        } else if (e.getCause() == PlayerDamageEvent.DamageCause.FALL && !EngineAPI.getActiveGame().isDamageFall()) {
+            e.setCancelled(true);
         } else {
             e.setDamage(0);
+        }
+    }
+
+    @EventHandler
+    public void onDamage(EntityDamageByPlayerEvent e) {
+        if (!EngineAPI.getActiveGame().isDamagePvE()) {
+            e.setCancelled(true);
         }
     }
 
