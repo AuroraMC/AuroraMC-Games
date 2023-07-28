@@ -24,6 +24,7 @@ import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 public class AuroraMCGames extends JavaPlugin {
 
@@ -41,7 +42,7 @@ public class AuroraMCGames extends JavaPlugin {
             try {
                 ServerAPI.loadEvent();
             } catch (Exception e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
             }
         }
 

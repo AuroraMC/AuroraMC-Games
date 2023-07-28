@@ -8,6 +8,7 @@ package net.auroramc.games.crystalquest.entities;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.auroramc.api.AuroraMCAPI;
 import net.auroramc.api.player.AuroraMCPlayer;
 import net.auroramc.api.player.Team;
 import net.auroramc.api.utils.TextFormatter;
@@ -26,6 +27,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.logging.Level;
 
 public class MiningRobot {
 
@@ -46,11 +48,11 @@ public class MiningRobot {
             try {
                 field.set(meta, profile);
             } catch (IllegalAccessException | IllegalArgumentException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
             }
             head.setItemMeta(meta);
         } catch (NoSuchFieldException | SecurityException e) {
-            e.printStackTrace();
+            AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
         }
     }
 
