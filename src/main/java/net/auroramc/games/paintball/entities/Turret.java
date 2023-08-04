@@ -8,6 +8,7 @@ package net.auroramc.games.paintball.entities;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.auroramc.api.AuroraMCAPI;
 import net.auroramc.api.utils.TextFormatter;
 import net.auroramc.core.api.ServerAPI;
 import net.auroramc.core.api.player.AuroraMCServerPlayer;
@@ -35,6 +36,7 @@ import java.lang.reflect.Field;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class Turret {
 
@@ -53,7 +55,7 @@ public class Turret {
             try {
                 field = meta.getClass().getDeclaredField("profile");
             } catch (NoSuchFieldException | SecurityException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
                 BLUE_HEAD = null;
                 break init;
             }
@@ -61,7 +63,7 @@ public class Turret {
             try {
                 field.set(meta, profile);
             } catch (IllegalAccessException | IllegalArgumentException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
             }
             RED_HEAD.setItemMeta(meta);
 
@@ -74,14 +76,14 @@ public class Turret {
             try {
                 field = meta.getClass().getDeclaredField("profile");
             } catch (NoSuchFieldException | SecurityException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
                 break init;
             }
             field.setAccessible(true);
             try {
                 field.set(meta, profile);
             } catch (IllegalAccessException | IllegalArgumentException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
             }
             BLUE_HEAD.setItemMeta(meta);
         }
