@@ -71,6 +71,15 @@ public class HackerSimulator extends TagVariation {
 
     @Override
     public void onRespawn(AuroraMCGamePlayer player) {
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 1000000, 4, true, false));
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 1000000, 4, true, false));
+                }
+            }
+        }.runTask(EngineAPI.getGameEngine());
     }
 
     @Override

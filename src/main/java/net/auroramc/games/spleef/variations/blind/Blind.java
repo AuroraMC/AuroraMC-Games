@@ -72,6 +72,14 @@ public class Blind extends SpleefVariation {
 
     @Override
     public void onRespawn(AuroraMCGamePlayer player) {
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 1000000, 0, true, false));
+                }
+            }
+        }.runTask(EngineAPI.getGameEngine());
     }
 
     @Override
