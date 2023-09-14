@@ -62,11 +62,13 @@ public class Spleef extends Game {
         itemDrop = false;
         itemPickup = false;
         blockPlace = false;
+        super.preLoad();
     }
 
     @Override
     public void load(GameMap gameMap) {
         this.map = gameMap;
+        super.load(gameMap);
     }
 
     @Override
