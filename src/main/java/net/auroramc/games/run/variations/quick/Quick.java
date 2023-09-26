@@ -77,6 +77,14 @@ public class Quick extends RunVariation {
 
     @Override
     public void onRespawn(AuroraMCGamePlayer player) {
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 1000000, 49, true, false));
+                }
+            }
+        }.runTask(EngineAPI.getGameEngine());
     }
 
     @Override

@@ -82,6 +82,10 @@ public class NoDamageInstaKillListener implements Listener {
                 }
                 if (e instanceof PlayerDamageByPlayerRangedEvent) {
                     killer = (AuroraMCGamePlayer) ((PlayerDamageByPlayerRangedEvent) e).getDamager();
+                    if (killer != null && killer.isSpectator()) {
+                        e.setCancelled(true);
+                        return;
+                    }
                     killReason = KillMessage.KillReason.BOW;
                     ((PlayerDamageByPlayerRangedEvent) e).getProjectile().remove();
                 } else {
@@ -249,7 +253,7 @@ public class NoDamageInstaKillListener implements Listener {
                 player2.sendMessage(TextFormatter.pluginMessage("Kill", killMessage.onKill(player2, killer, player, ent, killReason, EngineAPI.getActiveGameInfo().getId())));
             }
         } else if (e instanceof PlayerDamageByPlayerEvent) {
-            if (!EngineAPI.getActiveGame().isDamagePvP()) {
+            if (!EngineAPI.getActiveGame().isDamagePvP() || ((AuroraMCGamePlayer)((PlayerDamageByPlayerEvent) e).getDamager()).isSpectator()) {
                 e.setCancelled(true);
                 return;
             }

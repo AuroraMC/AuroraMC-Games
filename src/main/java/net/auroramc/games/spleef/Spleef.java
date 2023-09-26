@@ -62,11 +62,13 @@ public class Spleef extends Game {
         itemDrop = false;
         itemPickup = false;
         blockPlace = false;
+        super.preLoad();
     }
 
     @Override
     public void load(GameMap gameMap) {
         this.map = gameMap;
+        super.load(gameMap);
     }
 
     @Override
@@ -240,5 +242,9 @@ public class Spleef extends Game {
     @Override
     public void onFinalKill(AuroraMCGamePlayer auroraMCGamePlayer) {
 
+    }
+
+    public BreakListener getBreakListener() {
+        return breakListener;
     }
 }
