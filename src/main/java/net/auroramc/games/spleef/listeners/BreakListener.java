@@ -24,12 +24,16 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BreakListener implements Listener {
 
-    private final Material material;
+    private final List<Material> material;
 
     public BreakListener(Material material) {
-        this.material = material;
+        this.material = new ArrayList<>();
+        this.material.add(material);
     }
 
     @EventHandler
@@ -42,7 +46,7 @@ public class BreakListener implements Listener {
             e.setCancelled(true);
         } else {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
-            if (e.getBlock().getType() != material) {
+            if (!material.contains(e.getBlock().getType())) {
                 e.setCancelled(true);
             } else {
                 if (!player.isSpectator()) {
@@ -74,7 +78,7 @@ public class BreakListener implements Listener {
             BlockIterator iterator = new BlockIterator(location.getWorld(), location.toVector(), e.getEntity().getVelocity().normalize(), 0, 2);
             while (iterator.hasNext()) {
                 Block hitBlock = iterator.next();
-                if (hitBlock != null && hitBlock.getType() == material) {
+                if (hitBlock != null && material.contains(hitBlock.getType())) {
                     hitBlock.setType(Material.AIR);
                     player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "blocksBroken", 1, true);
                     if (player.getGameData().containsKey("blocksBroken")) {
@@ -85,7 +89,7 @@ public class BreakListener implements Listener {
                     } else {
                         player.getGameData().put("blocksBroken", 1);
                     }
-                    if (material == Material.SNOW_BLOCK) {
+                    if (material.contains(Material.SNOW_BLOCK)) {
                         player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "snowBlocksBroken", 1, true);
                         if (player.getStats().getStatistic(EngineAPI.getActiveGameInfo().getId(), "snowBlocksBroken") >= 50000 && !player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(123))) {
                             player.getStats().achievementGained(AuroraMCAPI.getAchievement(123), 1, true);
@@ -111,4 +115,7 @@ public class BreakListener implements Listener {
         e.setCancelled(!EngineAPI.getActiveGame().isItemDrop());
     }
 
+    public List<Material> getMaterial() {
+        return material;
+    }
 }

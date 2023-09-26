@@ -14,6 +14,7 @@ import net.auroramc.games.run.variations.RunVariation;
 import net.auroramc.games.spleef.Spleef;
 import net.auroramc.games.spleef.variations.SpleefVariation;
 import net.auroramc.games.spleef.variations.sandstorm.kits.SandstormSnowman;
+import org.bukkit.Material;
 
 public class Sandstorm extends SpleefVariation {
 
@@ -43,6 +44,7 @@ public class Sandstorm extends SpleefVariation {
 
     @Override
     public void inProgress() {
+        getGame().getBreakListener().getMaterial().add(Material.SAND);
     }
 
     @Override

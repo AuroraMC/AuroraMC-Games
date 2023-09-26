@@ -243,4 +243,8 @@ public class Spleef extends Game {
     public void onFinalKill(AuroraMCGamePlayer auroraMCGamePlayer) {
 
     }
+
+    public BreakListener getBreakListener() {
+        return breakListener;
+    }
 }
